@@ -3,6 +3,10 @@
 Circles are kept strictly away from the image boundary and from each other by a
 constant gap using rejection sampling — any proposed image that cannot satisfy the
 constraints is discarded entirely and redrawn, preserving manifold structure.
+
+Antialiasing: pixel values are computed from the signed distance to each circle
+edge. Pixels fully inside a circle are 0, fully outside are 1, and edge pixels
+blend linearly over a 1-pixel band (coverage = clamp(dist + 0.5, 0, 1)).
 """
 import random
 from pathlib import Path
@@ -15,10 +19,12 @@ import tqdm as _tqdm
 
 # ── primitives ────────────────────────────────────────────────────────────────
 
-def _circle_mask(im_size: int, cx: int, cy: int, r: int) -> torch.Tensor:
-    xs = torch.arange(im_size, dtype=torch.int32).view(-1, 1)
-    ys = torch.arange(im_size, dtype=torch.int32).view(1, -1)
-    return (xs - cx) ** 2 + (ys - cy) ** 2 <= r**2
+def _circle_values(im_size: int, cx: float, cy: float, r: float) -> torch.Tensor:
+    """Return (im_size, im_size) float32 with antialiased circle (background=1, fill=0)."""
+    xs = torch.arange(im_size, dtype=torch.float32).view(-1, 1)
+    ys = torch.arange(im_size, dtype=torch.float32).view(1, -1)
+    dist = torch.sqrt((xs - cx) ** 2 + (ys - cy) ** 2) - r  # signed: neg inside
+    return torch.clamp(dist + 0.5, 0.0, 1.0)
 
 
 def _overlaps(cx: int, cy: int, r: int,
@@ -62,10 +68,10 @@ def _try_place(
 
 def generate_fixed_n(
     n_circles: int,
-    num_samples: int = 20_000,
+    num_samples: int = 500_000,
     im_size: int = 64,
     r_min: int = 4,
-    r_max: int = 10,
+    r_max: int = 8,
     border_gap: int = 4,   # pixels between circle edge and image border
     circle_gap: int = 4,   # pixels between circle edges
     attempts_per_circle: int = 500,
@@ -98,7 +104,7 @@ def generate_fixed_n(
 
         img = torch.ones(im_size, im_size, dtype=torch.float32)
         for cx, cy, r in placed:
-            img[_circle_mask(im_size, cx, cy, r)] = 0.0
+            img = torch.minimum(img, _circle_values(im_size, cx, cy, r))
         data[idx] = img
 
     return data
@@ -108,9 +114,9 @@ def generate_fixed_n(
 
 def split(
     data: torch.Tensor,
-    train: int = 18_000,
-    val: int = 1_000,
-    test: int = 1_000,
+    train: int = 480_000,
+    val: int = 10_000,
+    test: int = 10_000,
 ) -> Dict[str, torch.Tensor]:
     assert train + val + test == len(data)
     return {
@@ -124,7 +130,7 @@ def split(
 
 def generate_all(
     out_dir: Path = Path("data"),
-    num_samples: int = 20_000,
+    num_samples: int = 500_000,
     seed: int = 42,
     **kwargs,
 ) -> Dict[int, Path]:
@@ -146,46 +152,10 @@ def generate_all(
 
 
 # ── legacy wrapper (kept for backwards compatibility) ─────────────────────────
-
-def generate(
-    num_samples: int = 20_000,
-    im_size: int = 64,
-    r_min: int = 4,
-    r_max: int = 10,
-    border_pad: int = 4,
-    min_circles: int = 1,
-    max_circles: int = 4,
-    circle_gap: int = 4,
-    max_attempts: int = 500,
-    show_progress: bool = True,
-    seed: Optional[int] = None,
-) -> torch.Tensor:
-    """Mixed-count dataset (n ~ Unif{min_circles..max_circles})."""
-    rng  = random.Random(seed)
-    data = torch.zeros(num_samples, im_size, im_size, dtype=torch.float32)
-
-    it = range(num_samples)
-    if show_progress and _tqdm is not None:
-        it = _tqdm.tqdm(it, desc="Generating circles 64×64")
-
-    for idx in it:
-        n = rng.randint(min_circles, max_circles)
-        while True:
-            placed = _try_place(n, rng, im_size, r_min, r_max,
-                                border_pad, circle_gap, max_attempts)
-            if placed is not None:
-                break
-        img = torch.ones(im_size, im_size, dtype=torch.float32)
-        for cx, cy, r in placed:
-            img[_circle_mask(im_size, cx, cy, r)] = 0.0
-        data[idx] = img
-
-    return data
-
-
+    
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    print("Generating 4 × 20k circle datasets …")
-    generate_all(num_samples=20_000, seed=42)
+    print("Generating 4 × 500k circle datasets …")
+    generate_all(num_samples=500_000, seed=42)
     print("Done.")

@@ -1,0 +1,24 @@
+[project]
+name = "d-flow"
+version = "0.1.0"
+description = "D-Flow: inverse problems via differentiable flow matching"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.0",
+    "matplotlib",
+    "cmocean",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+notebooks = [
+    "jupyter",
+    "ipykernel",
+]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.setuptools.packages.find]
+include = ["models*", "sampler*", "dataset*"]

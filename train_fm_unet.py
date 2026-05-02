@@ -1,5 +1,6 @@
 """Unconditional flow-matching training on 64×64 circles (UNet velocity model)."""
 import argparse
+import math
 from pathlib import Path
 
 import cmocean
@@ -24,19 +25,12 @@ _CMAP = cmocean.cm.dense_r
 DATA_PATH  = Path("data/circles-64-uniform.pt")
 OUT_DIR    = Path("outputs/fm_unet")
 
-BATCH       = 128
-EPOCHS      = 150
-LR          = 2e-4
+BATCH       = 1024
+EPOCHS      = 250
+LR          = 16e-4
 WD          = 1e-4
 EMA_DECAY   = 0.999
 EULER_STEPS = 200
-
-# sampler configs used in the post-training comparison
-SAMPLER_CONFIGS = [
-    ("Euler  200 steps", "euler", 200),
-    ("Euler 1000 steps", "euler", 1000),
-    ("RK4   100 steps",  "rk4",   100),
-]
 
 
 # ── dataset ───────────────────────────────────────────────────────────────────
@@ -75,10 +69,11 @@ def sample(model, n, device, method="euler", n_steps=200):
 
 
 # ── eval grid + checkpoint ────────────────────────────────────────────────────
-def save_eval_grid(model, epoch, device, eval_dir: Path, ckpt_dir: Path):
+def save_eval_grid(model, epoch, device, eval_dir: Path, ckpt_dir: Path,
+                   train_losses=None, val_losses=None, out_dir: Path = None):
     model.eval()
-    imgs = sample(model, 25, device, method="rk4", n_steps=100)[:, 0].cpu().numpy()
-    fig, axes = plt.subplots(5, 5, figsize=(5.5, 5.5),
+    imgs = sample(model, 12, device, method="euler", n_steps=200)[:, 0].cpu().numpy()
+    fig, axes = plt.subplots(3, 4, figsize=(5.5, 4.2),
                              gridspec_kw={"hspace": 0.04, "wspace": 0.04})
     for ax, img in zip(axes.flat, imgs):
         ax.imshow(img, cmap=_CMAP, vmin=0, vmax=1, interpolation="nearest")
@@ -87,54 +82,15 @@ def save_eval_grid(model, epoch, device, eval_dir: Path, ckpt_dir: Path):
             sp.set_visible(False)
     fig.suptitle(f"Epoch {epoch}", fontsize=10)
     eval_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(eval_dir / f"epoch_{epoch:04d}.png", dpi=150, bbox_inches="tight")
+    fig.savefig(eval_dir / f"epoch_{epoch:04d}.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     torch.save(model.state_dict(), ckpt_dir / f"epoch_{epoch:04d}.pt")
     tqdm.write(f"  → eval + checkpoint saved (epoch {epoch})")
 
-
-# ── sampler comparison ────────────────────────────────────────────────────────
-def save_sampler_comparison(model, device, eval_dir: Path):
-    """3-column grid: Euler-200 | Euler-1000 | RK4-100, 5 rows each."""
-    n = 5
-    cols = len(SAMPLER_CONFIGS)
-    fig, axes = plt.subplots(n, cols, figsize=(cols * 2.5 + 0.3, n * 2.5 + 0.5),
-                             gridspec_kw={"hspace": 0.04, "wspace": 0.04})
-
-    model.eval()
-    torch.manual_seed(0)
-    x0_fixed = torch.randn(n, 1, 64, 64, device=device)
-
-    for col, (label, method, n_steps) in enumerate(tqdm(SAMPLER_CONFIGS, desc="Sampler comparison")):
-        step_size = 1.0 / n_steps
-
-        def ode_func(t, x, _model=model):
-            return _model(x, t.expand(x.shape[0]))
-
-        with torch.no_grad():
-            x1 = ode_integrate(
-                ode_func=ode_func,
-                init_x=x0_fixed.clone(),
-                ode_opts={"options": {"step_size": step_size}},
-                sampler=method,
-            ).clamp(0.0, 1.0)
-
-        imgs = x1[:, 0].cpu().numpy()
-        axes[0, col].set_title(label, fontsize=9)
-        for row, img in enumerate(imgs):
-            ax = axes[row, col]
-            ax.imshow(img, cmap=_CMAP, vmin=0, vmax=1, interpolation="nearest")
-            ax.set_xticks([]); ax.set_yticks([])
-            for sp in ax.spines.values():
-                sp.set_visible(False)
-
-    fig.suptitle("Sampler comparison (same initial noise)", fontsize=11, y=1.01)
-    eval_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(eval_dir / "sampler_comparison.png", dpi=150, bbox_inches="tight")
-    plt.close(fig)
-    print(f"  → saved sampler comparison")
+    if train_losses is not None and out_dir is not None:
+        save_loss_plot(train_losses, val_losses, out_dir)
 
 
 # ── loss plot ─────────────────────────────────────────────────────────────────
@@ -153,7 +109,7 @@ def save_loss_plot(train_losses, val_losses, out_dir: Path):
         ax.legend()
     fig.tight_layout()
     out_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_dir / "loss_curves.png", dpi=150, bbox_inches="tight")
+    fig.savefig(out_dir / "loss_curves.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -185,7 +141,7 @@ def main():
 
     splits     = load_dataset(data_path)
     train_data = splits["train"]
-    val_data   = splits["val"].to(device)
+    val_data   = splits["val"]
     print(f"Split sizes — train: {len(train_data)}  "
           f"val: {len(splits['val'])}  test: {len(splits['test'])}")
 
@@ -198,7 +154,7 @@ def main():
     )
 
     torch.backends.cuda.enable_flash_sdp(True)
-    model = Unet(ch=24, ch_mul=[1, 2, 2], att_channels=[0, 1, 1],
+    model = Unet(ch=16, ch_mul=[1, 2, 4], att_channels=[0, 0, 1],
                  groups=8, dropout=0.0).to(device)
     n_params = sum(p.numel() for p in model.parameters())
     print(f"Parameters: {n_params:,}")
@@ -222,7 +178,8 @@ def main():
         for (x1,) in tqdm(loader, desc=f"  Epoch {epoch:4d}", leave=False, unit="batch"):
             x1 = x1.to(device)
             optimizer.zero_grad()
-            loss = fm_loss(model, x1, device)
+            with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
+                loss = fm_loss(model, x1, device)
             loss.backward()
             optimizer.step()
             ema_model.update_parameters(model)
@@ -232,17 +189,20 @@ def main():
         train_loss = sum(batch_losses) / len(batch_losses)
 
         ema_model.eval()
-        with torch.no_grad():
-            val_loss = fm_loss(ema_model, val_data, device).item()
+        with torch.no_grad(), torch.autocast(device_type="cuda", dtype=torch.bfloat16):
+            val_loss = sum(
+                fm_loss(ema_model, val_data[i:i+batch].to(device), device).item()
+                for i in range(0, len(val_data), batch)
+            ) / math.ceil(len(val_data) / batch)
 
         train_losses.append(train_loss)
         val_losses.append(val_loss)
         epoch_bar.set_postfix(train=f"{train_loss:.4f}", val=f"{val_loss:.4f}")
 
         if epoch % eval_every == 0:
-            save_eval_grid(ema_model, epoch, device, eval_dir, ckpt_dir)
+            save_eval_grid(ema_model, epoch, device, eval_dir, ckpt_dir,
+                           train_losses, val_losses, out_dir)
 
-    save_sampler_comparison(ema_model, device, eval_dir)
     save_loss_plot(train_losses, val_losses, out_dir)
     print(f"Done. Outputs in {out_dir}/")
 

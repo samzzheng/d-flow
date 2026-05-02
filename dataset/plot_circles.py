@@ -58,7 +58,7 @@ def plot_all_counts(
     cbar.set_ticklabels(["", ""])
     cbar.ax.tick_params(length=4)
 
-    fig.suptitle(r"Circles dataset — $r \sim \mathrm{Unif}\{4,\ldots,10\}$",
+    fig.suptitle(r"Circles dataset, $r \sim \mathrm{Unif}\{4,\ldots,8\}$",
                  fontsize=11, y=1.01)
     return fig
 
