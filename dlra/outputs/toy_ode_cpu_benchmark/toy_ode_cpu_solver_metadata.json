@@ -1,0 +1,14 @@
+{
+  "device": "CPU",
+  "blas_threads": 1,
+  "timing_statistic": "median",
+  "repeats": 3,
+  "warmups": 1,
+  "interval": [
+    0.0,
+    1.0
+  ],
+  "initial_condition": "exact rank-r",
+  "singular_values": "linspace(1.0, 0.4, rank), matching dlra_toy.ipynb",
+  "reference": "exp(L) A0 exp(R)"
+}

@@ -22,8 +22,14 @@ class Upsample(nn.Module):
         self.up = nn.Upsample(scale_factor=2, mode='nearest')
         self.conv = nn.Conv2d(in_channels, out_channels, 3, padding=1)
 
-    def forward(self, x):
-        x = self.up(x)
+    def forward(self, x, output_size=None):
+        # Odd intermediate resolutions (e.g. 250 -> 125 -> 63) cannot be undone by
+        # doubling, so the matching skip-connection size is passed in explicitly.
+        # For even resolutions this is exactly scale_factor=2 nearest upsampling.
+        if output_size is None:
+            x = self.up(x)
+        else:
+            x = F.interpolate(x, size=tuple(output_size), mode='nearest')
         return self.conv(x)
 
 

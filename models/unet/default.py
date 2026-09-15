@@ -82,8 +82,8 @@ class Unet(nn.Module):
             h = self.up[i][0](torch.cat((h, down_path.pop()), dim=1), emb)
             h = self.up[i][1](torch.cat((h, down_path.pop()), dim=1), emb)
 
-            if i < (len(self.down) - 1): # upsample
-                h = self.up[i][2](h)
+            if i < (len(self.down) - 1): # upsample to the next skip connection's size
+                h = self.up[i][2](h, output_size=down_path[-1].shape[-2:])
 
         x = torch.cat((h, x), dim=1)
         return self.final(x)

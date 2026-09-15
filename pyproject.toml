@@ -8,6 +8,7 @@ dependencies = [
     "matplotlib",
     "cmocean",
     "tqdm",
+    "scikit-image",
 ]
 
 [project.optional-dependencies]
