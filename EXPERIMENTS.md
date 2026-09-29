@@ -1,0 +1,12 @@
+# Experiment index
+
+Detailed experiment rows belong in the dated logs.
+
+| Date | Log |
+| --- | --- |
+| 2026-09-29 | [Experiments](experiments/experiments-2026-09-29.md) |
+
+Dated log header:
+
+| Time | Experiment | Motivation | What Tried / Evidence | Correctness | Timing | Merge decision |
+| --- | --- | --- | --- | --- | --- | --- |
