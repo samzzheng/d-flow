@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import statistics
 from pathlib import Path
 
@@ -22,6 +23,27 @@ def main() -> None:
     summary = report["summary"]
     directory = args.results.parent
     images = torch.load(directory / "images.pt", map_location="cpu", weights_only=True)
+    # Backfill the requested metric for pilots started before it was recorded.
+    if "relative_l2" not in summary["pflow"]:
+        data = torch.load(report["settings"]["data"], map_location="cpu",
+                          weights_only=True, mmap=True)
+        validation_energy = float((data["val"][:1].float() / 255).square().mean())
+        test_energies = [float(image["truth"].square().mean()) for image in images]
+        groups = [(trial["history"] + [trial["final"]], validation_energy)
+                  for trial in report["calibration"]]
+        groups += [(run["history"] + [run["final"]], test_energies[run["sample"]])
+                   for run in report["runs"]]
+        groups += [([row], test_energies[row["sample"]]) for row in report["initial_metrics"]]
+        for rows, energy in groups:
+            for row in rows:
+                row["relative_l2"] = math.sqrt(row["mse"] / energy)
+                row["clipped_relative_l2"] = math.sqrt(row["clipped_mse"] / energy)
+        for method, values in summary.items():
+            for key in ("relative_l2", "clipped_relative_l2"):
+                values[key] = statistics.mean(run["final"][key] for run in report["runs"]
+                                              if run["method"] == method)
+        report["relative_error_postprocessing"] = "L2 error / ground-truth L2 norm, derived from saved MSE and dataset image energies"
+        args.results.write_text(json.dumps(report, indent=2))
     names = {"pflow": "P-Flow", "dflow": "D-Flow (projected GD)", "fast_dlr": "Fast DLR (projected GD)"}
     figure, axes = plt.subplots(len(images), 6, figsize=(13, 2.3 * len(images)), squeeze=False)
     for row, image_set in enumerate(images):
@@ -39,11 +61,12 @@ def main() -> None:
     figure, axis = plt.subplots(figsize=(7, 4))
     for method, name in names.items():
         runs = [run for run in report["runs"] if run["method"] == method]
-        curves = [[row["psnr"] for row in run["history"]] + [run["final"]["psnr"]] for run in runs]
+        curves = [[100 * row["relative_l2"] for row in run["history"]]
+                  + [100 * run["final"]["relative_l2"]] for run in runs]
         average = [statistics.mean(values) for values in zip(*curves)]
         axis.plot(range(len(average)), average, label=name)
     axis.set_xlabel("Source updates")
-    axis.set_ylabel("Mean raw-image PSNR (dB)")
+    axis.set_ylabel("Mean relative reconstruction error (%)")
     axis.grid(alpha=.25)
     axis.legend()
     figure.tight_layout()
@@ -58,20 +81,21 @@ def main() -> None:
              "Learning rates were selected independently from a common grid using only validation image 0 "
              f"after {settings['calibration_iterations']} updates. Reported accuracy is the final iterate, "
              "without choosing the best test iteration. PSNR uses data range 1; raw and clipped metrics are separate.", "",
-             "| Method | Selected learning rate | Mean iteration (s) | Raw MSE | Raw PSNR (dB) | Clipped PSNR (dB) | Measurement MSE |",
-             "| --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
+             "Relative error means ||reconstruction − truth||₂ / ||truth||₂, averaged across images. These values use unclipped reconstructions.", "",
+             "| Method | Selected learning rate | Mean iteration (s) | Relative error | Raw MSE | Raw PSNR (dB) | Clipped PSNR (dB) | Measurement MSE |",
+             "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for method, name in names.items():
         row = summary[method]
         lines.append(f"| {name} | {report['selected_learning_rates'][method]:g} | {row['mean_iteration_seconds']:.3f} | "
-                     f"{row['mse']:.6g} | {row['psnr']:.3f} | {row['clipped_psnr']:.3f} | {row['measurement_mse']:.6g} |")
+                     f"{100 * row['relative_l2']:.2f}% | {row['mse']:.6g} | {row['psnr']:.3f} | {row['clipped_psnr']:.3f} | {row['measurement_mse']:.6g} |")
     lines += ["", "Iteration timings exclude diagnostics and the extra final-reporting forward solve. "
               f"DLR refreshes rank-{settings['rank']} factors every {settings['refresh_every']} updates; its timings "
               "include those refreshes. There is no Armijo in any of these runs.", "",
-              "## Per-image results", "", "| Sample | Initial PSNR | P-Flow PSNR | D-Flow PSNR | Fast DLR PSNR |",
+              "## Per-image relative reconstruction errors (%)", "", "| Sample | Initial | P-Flow | D-Flow | Fast DLR |",
               "| --- | ---: | ---: | ---: | ---: |"]
     for initial in report["initial_metrics"]:
-        values = [next(run["final"]["psnr"] for run in report["runs"] if run["sample"] == initial["sample"] and run["method"] == method) for method in names]
-        lines.append(f"| {initial['sample']} | {initial['psnr']:.3f} | " + " | ".join(f"{value:.3f}" for value in values) + " |")
+        values = [100 * next(run["final"]["relative_l2"] for run in report["runs"] if run["sample"] == initial["sample"] and run["method"] == method) for method in names]
+        lines.append(f"| {initial['sample']} | {100 * initial['relative_l2']:.2f} | " + " | ".join(f"{value:.2f}" for value in values) + " |")
     lines += ["", "## Shared initial-source gradients", "",
               "| Sample | Approximation | Cosine with exact | Relative gradient error | Norm / exact norm | Tangent cosine | True derivative along projected update |",
               "| --- | --- | ---: | ---: | ---: | ---: | ---: |"]

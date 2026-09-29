@@ -65,7 +65,7 @@ excluded. DLR timing includes its scheduled refreshes and their reuse. The
 forward solve following the final update is always evaluated for final metrics.
 
 `results.json` contains complete settings, model/data hashes, calibration
-histories, paired test histories, raw/clipped PSNR and MSE, measurement MSE,
+histories, paired test histories, raw/clipped relative L2 error, PSNR and MSE, measurement MSE,
 and shared-initial-source gradient diagnostics. `images.pt` contains ground
 truth, observations, initial generations, and final reconstructions.
 
@@ -81,3 +81,37 @@ finite fixed step decreases the objective.
 This is a small pilot on a single task and model, with short validation tuning.
 Neither a global convergence claim nor a general reconstruction-quality ranking
 is supported by it. See `results.md` for the measured pilot results.
+
+## LBFGS + Armijo variant
+
+After the fixed-step pilot finishes:
+
+```sh
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 \
+  .venv/bin/python -m p_flow.benchmark_lbfgs
+
+.venv/bin/python -m p_flow.summarize_lbfgs \
+  p_flow/outputs/lbfgs_64_2026_09_29/results.json
+```
+
+The second runner reuses the same images, noise, and source seeds. It uses
+learning rate 1, history size 100, Armijo c1=1e-4, first-attempt-only L1 scaling,
+and a displacement cap of 0.01 sqrt(d). Sphere projection stays enabled for
+all methods: directions are tangent-projected, Armijo evaluates projected
+trial sources, and curvature pairs use actual accepted displacements.
+This is projected ambient LBFGS; no full Riemannian-BFGS claim is intended.
+`--no-project` is available as an explicitly different ablation.
+
+The standalone adapter in `armijo.py` follows the existing benchmark's
+Armijo policies without importing its obsolete parallel-BUG dependency.
+Production scripts are unchanged. An eight-step unprojected quadratic check,
+including a history reset, matched the existing optimizer's trajectories,
+trial counts, and lifetime scaling to numerical precision. The committed
+tests additionally cover projection, displacement caps, and rejection of an
+ascent proxy.
+
+For P-Flow and DLR, an accepted trial's terminal state is reused for its
+gradient. Timing separates additional trial flows from computation needed
+for accepted steps, keeping reused forward solves in the latter category.
+DLR curvature memory resets at factor refreshes without repeating initial
+step scaling. See `lbfgs_results.md` for the completed comparison.

@@ -41,7 +41,10 @@ def metrics(endpoint: torch.Tensor, truth: torch.Tensor, operator: ForwardOperat
     with torch.no_grad():
         mse = float((endpoint - truth).square().mean())
         clipped_mse = float((endpoint.clamp(0, 1) - truth).square().mean())
+        truth_energy = float(truth.square().mean())
         return {"mse": mse, "clipped_mse": clipped_mse,
+                "relative_l2": math.sqrt(mse / truth_energy),
+                "clipped_relative_l2": math.sqrt(clipped_mse / truth_energy),
                 "psnr": -10 * math.log10(max(mse, 1e-30)),
                 "clipped_psnr": -10 * math.log10(max(clipped_mse, 1e-30)),
                 "measurement_mse": float((operator(endpoint) - measurement).square().mean())}

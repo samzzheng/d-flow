@@ -13,8 +13,10 @@ class LinearFlow(torch.nn.Module):
     def __init__(self) -> None:
         super().__init__()
         self.weight = torch.nn.Parameter(torch.tensor(1., dtype=torch.float64))
+        self.grad_modes: list[bool] = []
 
     def forward(self, x: torch.Tensor, time: torch.Tensor) -> torch.Tensor:
+        self.grad_modes.append(torch.is_grad_enabled())
         return self.weight * x
 
 
@@ -35,6 +37,7 @@ class PFlowTests(unittest.TestCase):
         self.assertFalse(torch.allclose(gradient, 2 * expected_gradient))
         self.assertIsNone(model.weight.grad)
         self.assertFalse(endpoint.requires_grad)
+        self.assertEqual(model.grad_modes, [False])
 
     def test_shell_projection_is_per_sample_and_idempotent(self) -> None:
         z = torch.randn(3, 2, 4, 5, dtype=torch.float64)
