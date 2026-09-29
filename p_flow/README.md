@@ -92,6 +92,9 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 \
 
 .venv/bin/python -m p_flow.summarize_lbfgs \
   p_flow/outputs/lbfgs_64_2026_09_29/results.json
+
+.venv/bin/python -m p_flow.plot_iteration_speed \
+  p_flow/outputs/lbfgs_64_2026_09_29/results.json
 ```
 
 The second runner reuses the same images, noise, and source seeds. It uses
@@ -115,3 +118,12 @@ gradient. Timing separates additional trial flows from computation needed
 for accepted steps, keeping reused forward solves in the latter category.
 DLR curvature memory resets at factor refreshes without repeating initial
 step scaling. See `lbfgs_results.md` for the completed comparison.
+
+Positive alignment of a proxy gradient with the exact gradient guarantees
+only a local descent direction for the negative proxy itself. LBFGS changes
+that direction: even a positive-definite inverse-Hessian approximation can
+destroy this alignment. For example, exact gradient (1, 0), proxy (1, 1),
+and inverse-Hessian matrix [[1, -2], [-2, 5]] have positive initial alignment,
+but the resulting negative preconditioned direction (1, -3) is an ascent
+direction for the exact objective. Thus this LBFGS variant needs its true-loss
+acceptance check; the original proxy-alignment argument alone is insufficient.

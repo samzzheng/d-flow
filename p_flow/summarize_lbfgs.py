@@ -66,7 +66,8 @@ def main() -> None:
     figure.savefig(args.results.parent / "reconstructions.png", dpi=180)
     plt.close(figure)
     relative = args.results.parent.relative_to(args.report.parent)
-    lines += ["", f"![Reconstructions]({relative}/reconstructions.png)", "",
+    lines += ["", f"![Per-iteration speed]({relative}/iteration_speed.png)", "",
+              f"![Reconstructions]({relative}/reconstructions.png)", "",
               f"[Full metrics and settings]({relative}/results.json)", "",
               "This pilot is limited to three 64×64 noisy-blur images and a short common iteration budget. "
               "All methods retain the sphere constraint for a controlled comparison; this differs from "
