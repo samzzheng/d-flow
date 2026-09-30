@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import statistics
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,29 @@ def number(value: float | None) -> str:
 
 def render(out: Path) -> None:
     data = json.loads((out / "results.json").read_text())
+    refinement_file = out / "spectral_refinement_gpu.json"
+    if refinement_file.exists():
+        refinement = json.loads(refinement_file.read_text())
+        if refinement["checkpoint_sha256"] != data["settings"]["checkpoint_sha256"]:
+            raise ValueError("Spectral refinement uses a different model checkpoint")
+        for point in refinement["points"]:
+            spectral = point["spectral"]
+            if point["status"] != "complete" or spectral.get("status") != "certified_numerical":
+                continue
+            if spectral.get("cpu_verified_triplet_residual", float("inf")) >= 1e-3:
+                continue
+            for entry in data.get("diagnostics", []):
+                if (entry["projected"], entry["iteration"]) == (point["projected"], point["iteration"]):
+                    entry["spectral_cpu_initial"] = entry["spectral"]
+                    entry["spectral"] = spectral
+                    entry["spectral_reference_backend"] = "GPU 0 products, CPU singular-residual verification"
+                    entry["cpu_gpu_parity"] = point["cpu_gpu_parity"]
+        data["supplementary_spectral_refinement"] = refinement
+        if "elapsed_seconds" in data and refinement["points"]:
+            last = max(datetime.fromisoformat(point["finished_at"]).timestamp() for point in refinement["points"])
+            data["primary_elapsed_seconds"] = data["elapsed_seconds"]
+            data["elapsed_seconds"] += max(0, last - datetime.fromisoformat(data["updated_at"]).timestamp())
+        (out / "combined_results.json").write_text(json.dumps(data, indent=2, allow_nan=False))
     lines = ["# First-order study at 64×64", "",
              "CPU pilot: 100 Euler steps, non-attention epoch-100 model, 15-angle sparse CT, 1% relative noise. "
              "Analytical alpha = 1 − t, zero trace probes, fresh DLR factors for every gradient.", "",
@@ -141,6 +165,10 @@ def render(out: Path) -> None:
               "Fresh-factor DLR timing is not comparable to earlier factor-reuse benchmarks without accounting for the different refresh policy.",
               "The ten extra noise realizations per saved source are conditional diagnostics, not independent reconstruction samples.",
               "Strong Wolfe results are condition checks at selected trial rates using true derivatives, not a tuned Strong Wolfe reconstruction sweep.", ""]
+    if refinement_file.exists():
+        lines += ["GPU 0 became available after the CPU reconstruction runs. Supplemental spectral references use batched GPU products with TF32 disabled, "
+                  "CPU/GPU endpoint and gradient parity checks, and final CPU singular-triplet residual verification. "
+                  "Only certified supplemental references replace the initial CPU references in this report; optimizer timings remain CPU-only.", ""]
     lines.extend(f"- {message}" for message in data.get("incomplete", []))
     lines.extend(f"- Failure: {entry}" for entry in data.get("failures", []))
     lines += ["", "## Figures", "", "![Convergence](convergence.png)", "",

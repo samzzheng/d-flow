@@ -11,7 +11,7 @@ From the repository root:
 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 timeout --signal=TERM 14400s .venv/bin/python -m dlr_dflow.experiments.first_order_study.study --threads 2 --hours 4
 ```
 
-The runner uses cumulative phase deadlines of 10, 40, 145, 190, and 235 minutes, reserving five minutes for reporting. Unused phase time therefore carries forward. The external timeout enforces the four-hour process limit. No GPU is used. A smaller `--hours` proportionally reduces deadlines; it does not reduce the numerical protocol and may leave tuning incomplete. Use a new `--out` directory for each run.
+The runner uses cumulative phase deadlines of 10, 40, 145, 190, and 235 minutes, reserving five minutes for reporting. Unused phase time therefore carries forward. The external timeout enforces the four-hour process limit. The primary runner uses CPU only. A smaller `--hours` proportionally reduces deadlines; it does not reduce the numerical protocol and may leave tuning incomplete. Use a new `--out` directory for each run.
 
 Each optimizer receives the first-attempt multiplier `min(1, 1 / ||ambient_gradient||_1)` once in its lifetime. Every proposal is capped to Euclidean norm `0.01 sqrt(d)` after constructing the optimizer direction. Sphere runs project directions onto the tangent plane and evaluate Armijo on the retracted trial; Adam projects its preconditioned direction too. The LBFGS control stores actual displacements and differences of tangent gradients but is not a fully transported Riemannian LBFGS method. Its history length is 100.
 
@@ -28,5 +28,13 @@ Re-render without evaluating a model:
 ```sh
 .venv/bin/python -m dlr_dflow.experiments.first_order_study.report PATH_TO_RESULTS
 ```
+
+When GPU 0 is explicitly available, optional supplemental reference refinement can batch 17 directions without changing reconstruction runs or their timing. It disables TF32, checks CPU/GPU endpoint and gradient parity, and verifies final singular residuals against CPU products. The original pilot deadline still applies. This worker uses two CPU threads, so it can run alongside the two-thread primary runner within the four-thread cap:
+
+```sh
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python -m dlr_dflow.experiments.first_order_study.refine PATH_TO_RESULTS --device cuda:0 --both-constraints --output-name spectral_refinement_gpu.json
+```
+
+The refiner writes its own JSON and tensor factors without modifying primary results. Re-rendering selects only certified, CPU-verified supplemental references and saves `combined_results.json`, retaining the initial references for audit. Without GPU availability, `refine` defaults to CPU and unconstrained sources.
 
 Results from three images are a pilot. Extra noise realizations at fixed sources are conditional gradient checks, not extra reconstruction samples. Ground-truth best image checkpoints are retrospective and are paired with their own residuals.
