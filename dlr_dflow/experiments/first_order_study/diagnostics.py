@@ -24,7 +24,8 @@ def comparison(estimate: Tensor, reference: Tensor) -> Record:
 
 
 def reference_svd(J: Product, JT: Product, gx: Tensor, exact: Tensor, rank: int,
-                  seed: int, deadline: float, output: Record, max_refinements: int = 6) -> tuple[Tensor, Tensor, Tensor] | None:
+                  seed: int, deadline: float, output: Record, max_refinements: int = 6,
+                  refine_cutoff: bool = False) -> tuple[Tensor, Tensor, Tensor] | None:
     """Independent block iteration; certification uses both singular residuals.
 
     Keep one extra singular value to expose ambiguity at the rank cutoff.
@@ -61,7 +62,8 @@ def reference_svd(J: Product, JT: Product, gx: Tensor, exact: Tensor, rank: int,
         output["gradient"] = comparison(estimate, exact)
         if residual < 1e-3 and stability is not None and stability < .01:
             output["status"] = "certified_numerical" if gap is None or gap > max(2 * residual, 1e-6) else "ambiguous_cutoff"
-            break
+            if output["status"] == "certified_numerical" or not refine_cutoff:
+                break
         previous = estimate
         if time.monotonic() >= deadline:
             output["status"] = "uncertified_deadline"
