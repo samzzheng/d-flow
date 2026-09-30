@@ -3,6 +3,9 @@ from __future__ import annotations
 
 import time
 import unittest
+import json
+import tempfile
+from pathlib import Path
 from unittest.mock import patch
 
 import torch
@@ -143,6 +146,35 @@ class StudyTests(unittest.TestCase):
                                   (approximate - subspace).square().sum() + (subspace - exact).square().sum())
         self.assertIsNone(comparison(exact, torch.zeros_like(exact))["cosine"])
         self.assertIsNone(comparison(exact, torch.zeros_like(exact))["relative_error"])
+
+    def test_report_requires_cpu_verified_spectral_certification(self) -> None:
+        from .report import render
+        primary = {"settings": {"checkpoint_sha256": "same-model"}, "elapsed_seconds": 100.,
+                   "updated_at": "2026-09-30T19:00:00-04:00", "diagnostics": [
+                       {"projected": False, "iteration": i,
+                        "dlr": {"relative_error": None, "cosine": None},
+                        "subspace": {"relative_error": None},
+                        "spectral": {"status": "uncertified", "gradient": {"relative_error": .02}}}
+                       for i in range(3)]}
+        supplemental = {"checkpoint_sha256": "same-model", "points": [
+            {"projected": False, "iteration": i, "status": "complete",
+             "finished_at": "2026-09-30T19:00:20-04:00", "cpu_gpu_parity": {},
+             "spectral": {"status": status, "cpu_verified_triplet_residual": residual,
+                          "gradient": {"relative_error": .01}}}
+            for i, status, residual in ((0, "certified_numerical", 1e-5),
+                                        (1, "certified_numerical", .01),
+                                        (2, "ambiguous_cutoff", 1e-5))]}
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            (out / "results.json").write_text(json.dumps(primary))
+            (out / "spectral_refinement_gpu.json").write_text(json.dumps(supplemental))
+            render(out)
+            combined = json.loads((out / "combined_results.json").read_text())
+            self.assertEqual([e["spectral"]["status"] for e in combined["diagnostics"]],
+                             ["certified_numerical", "uncertified", "uncertified"])
+            self.assertEqual(combined["elapsed_seconds"], 120.)
+            self.assertEqual(json.loads((out / "results.json").read_text()), primary)
+            self.assertIn("unavailable", (out / "report.md").read_text())
 
 
 if __name__ == "__main__":

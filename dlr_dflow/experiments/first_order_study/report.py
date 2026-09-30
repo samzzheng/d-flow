@@ -77,6 +77,23 @@ def render(out: Path) -> None:
                              f"{row['common_error']:.4f} | {row['final_error']:.4f} | {row['gradient_seconds']:.3f} | "
                              f"{row['seconds_excluding_trials']:.3f} | {row['seconds']:.3f} | {row['stalled_or_failed']}/{len(group)} |")
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
+    fig, axes = plt.subplots(2, 1, figsize=(11, 7), squeeze=False)
+    for projected in (False, True):
+        group = [row for row in summary if row["projected"] == projected]
+        ax = axes[int(projected), 0]
+        positions = list(range(len(group)))
+        base = [row["seconds_excluding_trials"] for row in group]
+        trial = [row["seconds"] - row["seconds_excluding_trials"] for row in group]
+        colors = ["C0" if row["estimator"] == "exact" else "C1" for row in group]
+        ax.bar(positions, base, color=colors, label="Gradient and update")
+        ax.bar(positions, trial, bottom=base, color=colors, alpha=.3, label="Trial forwards")
+        ax.set_xticks(positions, labels=[f"{row['optimizer'].upper()}\n{'D-Flow' if row['estimator'] == 'exact' else 'DLR'}" for row in group])
+        ax.set(ylabel="CPU seconds / iteration", title="Sphere" if projected else "Free sources")
+        ax.legend()
+    fig.suptitle("Fresh DLR factors; dark bars exclude trial-forward cost")
+    fig.tight_layout()
+    fig.savefig(out / "iteration_timing.png", dpi=160)
+    plt.close(fig)
     fig, axes = plt.subplots(2, 3, figsize=(13, 7), squeeze=False)
     for projected in (False, True):
         for column, optimizer in enumerate(("gd", "adam", "lbfgs")):
@@ -172,6 +189,7 @@ def render(out: Path) -> None:
     lines.extend(f"- {message}" for message in data.get("incomplete", []))
     lines.extend(f"- Failure: {entry}" for entry in data.get("failures", []))
     lines += ["", "## Figures", "", "![Convergence](convergence.png)", "",
+              "![Iteration timing](iteration_timing.png)", "",
               "![Learning-rate comparison](learning_rates.png)", "",
               "![Rank and residual comparison](rank_residual.png)", "",
               "![Clean-gradient ratios](clean_gradient_ratios.png)"]

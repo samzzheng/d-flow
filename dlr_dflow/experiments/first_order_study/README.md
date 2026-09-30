@@ -1,5 +1,7 @@
 # First-order study at 64×64
 
+See [the completed pilot results and charts](results_summary.md).
+
 This isolated CPU experiment compares exact D-Flow and fresh-factor DLR with GD+Armijo, Adam, and an LBFGS+Armijo control. It also runs a rank sweep and evaluates exact, independently truncated, DLR, and DLR-subspace gradients at shared sources.
 
 The fixed protocol is circles-64 without attention, epoch 100, 100 Euler steps, 15-angle sparse CT, and Gaussian measurement noise normalized to 1% relative L2. DLR always uses analytical `alpha_t = 1 - t`, `trace_probes=0`, zero enrichment, initialization oversampling 8, and exactly zero terminal alpha. Factors are recomputed for every gradient. No production modules are modified.
