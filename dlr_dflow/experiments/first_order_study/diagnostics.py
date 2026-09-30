@@ -60,6 +60,7 @@ def reference_svd(J: Product, JT: Product, gx: Tensor, exact: Tensor, rank: int,
         output["refinements"].append(row)
         factors = (u[:, :rank], torch.diag(singular[:rank]), v[:, :rank])
         output["gradient"] = comparison(estimate, exact)
+        output["status"] = "uncertified"
         if residual < 1e-3 and stability is not None and stability < .01:
             output["status"] = "certified_numerical" if gap is None or gap > max(2 * residual, 1e-6) else "ambiguous_cutoff"
             if output["status"] == "certified_numerical" or not refine_cutoff:
