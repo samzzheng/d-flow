@@ -14,6 +14,10 @@ import matplotlib.pyplot as plt
 Record = dict[str, Any]
 
 
+def number(value: float | None) -> str:
+    return f"{value:.4f}" if value is not None else "unavailable"
+
+
 def render(out: Path) -> None:
     data = json.loads((out / "results.json").read_text())
     lines = ["# First-order study at 64×64", "",
@@ -119,9 +123,9 @@ def render(out: Path) -> None:
         noise = entry.get("clean_gradient", [])
         trajectory = noise[0]["R"] if noise else None
         spectral_error = spectral.get("gradient", {}).get("relative_error")
-        lines.append(f"| {'Sphere' if entry['projected'] else 'Free'} | {entry['iteration']} | {entry['dlr']['relative_error']:.4f} | "
-                     f"{entry['dlr']['cosine']:.4f} | {entry['subspace']['relative_error']:.4f} | "
-                     f"{spectral_error if spectral_error is not None else 'unavailable'} | {spectral.get('status', 'not reached')} | {trajectory} |")
+        lines.append(f"| {'Sphere' if entry['projected'] else 'Free'} | {entry['iteration']} | {number(entry['dlr']['relative_error'])} | "
+                     f"{number(entry['dlr']['cosine'])} | {number(entry['subspace']['relative_error'])} | "
+                     f"{number(spectral_error)} | {spectral.get('status', 'not reached')} | {number(trajectory)} |")
         ratios = [r["R"] for r in noise if r["R"] is not None]
         ax.scatter([i] * len(ratios), ratios, alpha=.5)
     ax.axhline(1, color="black", linestyle="--")
@@ -136,6 +140,10 @@ def render(out: Path) -> None:
               "Strong Wolfe results are condition checks at selected trial rates using true derivatives, not a tuned Strong Wolfe reconstruction sweep.", ""]
     lines.extend(f"- {message}" for message in data.get("incomplete", []))
     lines.extend(f"- Failure: {entry}" for entry in data.get("failures", []))
+    lines += ["", "## Figures", "", "![Convergence](convergence.png)", "",
+              "![Learning-rate comparison](learning_rates.png)", "",
+              "![Rank and residual comparison](rank_residual.png)", "",
+              "![Clean-gradient ratios](clean_gradient_ratios.png)"]
     (out / "report.md").write_text("\n".join(lines) + "\n")
 
 
