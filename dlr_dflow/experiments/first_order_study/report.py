@@ -97,17 +97,20 @@ def render(out: Path) -> None:
             label = str(r["rank"]) if r["rank"] else "exact"
             lines.append(f"| {'Sphere' if projected else 'Free'} | {label} | {r['attempts']} | {final['relative_image_error']:.4f} | "
                          f"{best['relative_image_error']:.4f} | {final['measurement_residual']:.5f} | {best['measurement_residual']:.5f} |")
-            color = "C0" if r["rank"] else "C2"
-            axes[int(projected), 1].scatter(final["measurement_residual"], final["relative_image_error"], c=color, marker="o")
+            color = f"C{(1, 2, 4, 8, 16, 32).index(r['rank'])}" if r["rank"] else "black"
+            axes[int(projected), 1].scatter(final["measurement_residual"], final["relative_image_error"], c=color, marker="o", label=label)
             axes[int(projected), 1].scatter(best["measurement_residual"], best["relative_image_error"], c=color, marker="x")
-            axes[int(projected), 1].annotate(label, (final["measurement_residual"], final["relative_image_error"]))
         finite = [r for r in group if r["rank"]]
         for selector, style, label in ((lambda hs: hs[-1], "o-", "final"),
                                        (lambda hs: min(hs, key=lambda h: h["relative_image_error"]), "x--", "best seen")):
             axes[int(projected), 0].plot([r["rank"] for r in finite], [selector(r["history"])["relative_image_error"] for r in finite], style, label=label)
         axes[int(projected), 0].set(xlabel="Rank", ylabel="Relative image error", title="Sphere" if projected else "Free")
+        axes[int(projected), 0].set_xscale("log", base=2)
+        axes[int(projected), 0].set_xticks((1, 2, 4, 8, 16, 32), labels=("1", "2", "4", "8", "16", "32"))
         axes[int(projected), 0].legend()
         axes[int(projected), 1].set(xlabel="Noisy measurement residual", ylabel="Relative image error", title="Circle: final; cross: best seen")
+        if group:
+            axes[int(projected), 1].legend(title="Rank", ncol=2, fontsize=8)
     fig.tight_layout()
     fig.savefig(out / "rank_residual.png", dpi=160)
     plt.close(fig)
