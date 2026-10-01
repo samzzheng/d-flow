@@ -15,8 +15,11 @@ import matplotlib.pyplot as plt
 def render(out: Path) -> None:
     data = json.loads((out / "results.json").read_text())
     settings = data["settings"]
+    execution = data.get("parallel_execution")
     lines = ["# GPU first-order convergence study", "",
              f"Status: **{data['status']}**. Last checkpoint: {data['updated_at']}.", "",
+             (f"Parallel execution: {execution['workers_per_gpu']} workers per GPU on GPUs {execution['gpus']}; "
+              "independent checkpoints and one combined-report writer." if execution else "Single-worker execution."), "",
              "64×64 non-attention epoch-100 model; 100 Euler steps; 15-angle sparse CT; 1% relative noise. "
              "Paired inputs match the CPU pilot. Analytical alpha=1−t, zero trace probes, zero enrichment, "
              "initialization oversampling 8, fresh DLR factors at every gradient, exact zero terminal alpha. "

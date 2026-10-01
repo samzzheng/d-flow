@@ -11,6 +11,8 @@ updates, with objective-plateau checks after 500. See the
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python -m dlr_dflow.experiments.first_order_study.gpu_study
 # Resume the same protocol and optimizer state after interruption:
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python -m dlr_dflow.experiments.first_order_study.gpu_study --resume
+# Continue with two independent workers on each GPU:
+CUDA_VISIBLE_DEVICES=0,1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 .venv/bin/python -m dlr_dflow.experiments.first_order_study.gpu_study --resume --gpus 0 1 --workers-per-gpu 2
 ```
 
 This follow-up has no four-hour cutoff. It shares GPU 0, limits its allocator to
@@ -30,6 +32,15 @@ the first-attempt multiplier is never repeated. Final exact tangent-gradient
 norms are recorded. Source snapshots every 25 updates plus terminal states
 support initial/midpoint/final diagnostics. Each run's optimizer state, full
 metric history, and source snapshots are in its own `states/*.pt` checkpoint.
+
+The parallel mode uses four persistent worker processes with one CPU thread each.
+It resumes the original checkpoints in ten-update chunks, then runs held-out
+reconstructions and rank sweeps concurrently after tuning. Workers own distinct
+`shards/<run>/` outputs; only the coordinator updates `results.json`, the combined
+report, and canonical `states/` files. A coordinator lock prevents two parallel
+drivers from owning the same study. GPU assignments are recorded, and the same
+source, optimizer state, and device-local initialization seed follow a run when
+its next chunk moves between GPUs. The six diagnostic points also run in parallel.
 
 This isolated CPU experiment compares exact D-Flow and fresh-factor DLR with GD+Armijo, Adam, and an LBFGS+Armijo control. It also runs a rank sweep and evaluates exact, independently truncated, DLR, and DLR-subspace gradients at shared sources.
 

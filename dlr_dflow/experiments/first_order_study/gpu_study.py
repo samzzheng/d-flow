@@ -157,8 +157,11 @@ def schedule(runs: list[Run], problems: list[CanonicalProblem], section: str,
                   f"error={run.history[-1]['relative_image_error'] if run.history else None}", flush=True)
             if interrupted[0]:
                 raise KeyboardInterrupt
-        from .gpu_report import render
-        render(args.out)
+        if getattr(args, "render_reports", True):
+            from .gpu_report import render
+            render(args.out)
+        if getattr(args, "one_chunk", False):
+            break
 
 
 def main() -> None:
@@ -173,12 +176,16 @@ def main() -> None:
     parser.add_argument("--window", type=int, default=100)
     parser.add_argument("--plateau-relative", type=float, default=.001)
     parser.add_argument("--memory-fraction", type=float, default=.15)
+    parser.add_argument("--gpus", type=int, nargs="+", help="Use a process pool on these visible GPU indices")
+    parser.add_argument("--workers-per-gpu", type=int, default=2)
     args = parser.parse_args()
     if args.out.exists() != args.resume:
         parser.error("Use a new directory, or --resume with an existing directory")
     if not 0 < 2 * args.window <= args.min_updates <= args.max_updates or args.tuning_updates < 1:
         parser.error("Require 0 < 2*window <= min-updates <= max-updates and positive tuning budget")
-    torch.set_num_threads(2)
+    if args.gpus and (len(set(args.gpus)) != len(args.gpus) or not 0 < len(args.gpus) * args.workers_per_gpu <= 4):
+        parser.error("Use unique GPUs and one to four total workers")
+    torch.set_num_threads(1 if args.gpus else 2)
     torch.set_num_interop_threads(1)
     torch.cuda.set_per_process_memory_fraction(args.memory_fraction, args.device)
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -252,7 +259,15 @@ def main() -> None:
                   (project(validation.source) if proj else validation.source).cpu().clone())
               for est in ("exact", "dlr") for proj in (False, True)
               for opt, rates in (("gd", (.01, .1, 1.)), ("adam", (.001, .01, .1))) for lr in rates]
-    schedule(tuning, [validation], "tuning", report, args, interrupted)
+    parallel = None
+    if args.gpus:
+        import atexit
+        from .gpu_parallel import ParallelStudy
+        parallel = ParallelStudy(args, report)
+        atexit.register(parallel.close)
+        parallel.run({"tuning": tuning}, report, interrupted)
+    else:
+        schedule(tuning, [validation], "tuning", report, args, interrupted)
     selections = []
     for est in ("exact", "dlr"):
         for proj in (False, True):
@@ -271,7 +286,6 @@ def main() -> None:
         selected.get((est, opt, proj), 1.), (project(p.source) if proj else p.source).cpu().clone(), sample=i)
         for i, p in enumerate(problems) for est in ("exact", "dlr")
         for proj in (False, True) for opt in ("gd", "adam", "lbfgs")]
-    schedule(comparisons, problems, "comparisons", report, args, interrupted)
     ranks = []
     for proj in (False, True):
         winner = min((row for row in selections if row["estimator"] == "dlr" and row["projected"] == proj),
@@ -279,7 +293,11 @@ def main() -> None:
         for rank in (1, 2, 4, 8, 16, 32, 0):
             ranks.append(Run(f"rank{rank}_{proj}", "dlr" if rank else "exact", winner["optimizer"], proj,
                 winner["lr"], (project(problems[0].source) if proj else problems[0].source).cpu().clone(), rank=rank))
-    schedule(ranks, problems, "ranks", report, args, interrupted)
+    if parallel:
+        parallel.run({"comparisons": comparisons, "ranks": ranks}, report, interrupted)
+    else:
+        schedule(comparisons, problems, "comparisons", report, args, interrupted)
+        schedule(ranks, problems, "ranks", report, args, interrupted)
     # Check actual stationarity, including runs that stopped by line-search failure.
     for run in comparisons + ranks:
         if not run.history:
@@ -295,6 +313,7 @@ def main() -> None:
             "ratio_to_initial_estimator_gradient_norm": norm / initial_norm if initial_norm else None,
             "native_objective": loss, **problems[run.sample].metrics(x)}
         checkpoint(args.out, report)
+    diagnostic_jobs = []
     for projected in (False, True):
         run = next(r for r in comparisons if r.sample == 0 and r.estimator == "exact" and r.optimizer == "gd" and r.projected == projected)
         saved = torch.load(args.out / "states" / f"{run.label}.pt", map_location="cpu", weights_only=True)
@@ -305,6 +324,9 @@ def main() -> None:
                    for e in report.get("diagnostics", [])):
                 continue
             entry = {"projected": projected, "iteration": iteration, "status": "running", "source_run": run.label}
+            if parallel:
+                diagnostic_jobs.append(entry)
+                continue
             report.setdefault("diagnostics", []).append(entry)
             diagnose(problems[0], sources[iteration].to(args.device), entry, math.inf, projected,
                      product_batch_size=17, spectral_seconds=1800, max_refinements=12, refine_cutoff=True)
@@ -314,6 +336,9 @@ def main() -> None:
             print(f"Diagnostics: {run.label}, {iteration}, {entry['spectral']['status']}", flush=True)
             if interrupted[0]:
                 raise KeyboardInterrupt
+    if parallel:
+        parallel.diagnostics(diagnostic_jobs, report, interrupted)
+        parallel.close()
     report["status"] = "complete"
     checkpoint(args.out, report)
     from .gpu_report import render
