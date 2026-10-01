@@ -108,7 +108,7 @@ def render(out: Path) -> None:
                      f"{row['measurement_residual']:.6g} | {row['clean_residual']:.6g} | {row['residual_over_noise']:.3f} | {norm_text} |")
     lines += ["", "## Rank sweep", "", "Test image 0; optimizer family and LR fixed from DLR validation for each constraint, including the exact control. "
               "Crosses mark retrospective best-image checkpoints, paired with their own residuals.", ""]
-    fig, axes = plt.subplots(2, 2, figsize=(11, 8), squeeze=False)
+    fig, axes = plt.subplots(2, 3, figsize=(15, 8), squeeze=False)
     for projected in (False, True):
         group = [r for r in data.get("ranks", []) if r["projected"] == projected and r["history"]]
         for run in group:
@@ -118,10 +118,20 @@ def render(out: Path) -> None:
             color = f"C{(1, 2, 4, 8, 16, 32).index(run['rank'])}" if run["rank"] else "black"
             axes[int(projected), 0].plot([h["iteration"] for h in run["history"]],
                 [h["relative_image_error"] for h in run["history"]], color=color, label=label)
-            axes[int(projected), 1].scatter(final["measurement_residual"], final["relative_image_error"], color=color, label=label)
-            axes[int(projected), 1].scatter(best["measurement_residual"], best["relative_image_error"], color=color, marker="x")
+            axes[int(projected), 2].scatter(final["measurement_residual"], final["relative_image_error"], color=color, label=label)
+            axes[int(projected), 2].scatter(best["measurement_residual"], best["relative_image_error"], color=color, marker="x")
+            if not run["rank"]:
+                axes[int(projected), 1].axhline(final["relative_image_error"], color="black", linestyle=":", label="Exact final")
+        finite = [r for r in group if r["rank"]]
+        axes[int(projected), 1].plot([r["rank"] for r in finite],
+            [r["history"][-1]["relative_image_error"] for r in finite], "o-", label="Final")
+        axes[int(projected), 1].plot([r["rank"] for r in finite],
+            [min(h["relative_image_error"] for h in r["history"]) for r in finite], "x--", label="Best image")
         axes[int(projected), 0].set(title="Sphere" if projected else "Free", xlabel="Updates", ylabel="Relative image error")
-        axes[int(projected), 1].set(xlabel="Noisy measurement residual", ylabel="Relative image error")
+        axes[int(projected), 1].set(xlabel="Rank", ylabel="Relative image error")
+        axes[int(projected), 1].set_xscale("log", base=2)
+        axes[int(projected), 1].set_xticks((1, 2, 4, 8, 16, 32), labels=("1", "2", "4", "8", "16", "32"))
+        axes[int(projected), 2].set(xlabel="Noisy measurement residual", ylabel="Relative image error")
         for ax in axes[int(projected)]:
             if group:
                 ax.legend(title="Rank", fontsize=8)
@@ -143,6 +153,23 @@ def render(out: Path) -> None:
         ratio_text = f"{ratio:.4g}" if ratio is not None else "unavailable"
         lines.append(f"| {'Sphere' if row['projected'] else 'Free'} | {row['iteration']} | " + " | ".join(texts) +
                      f" | {spectral['status']} | {ratio_text} | {sum(e['closer_to_clean'] is True for e in clean)}/{len(clean)} |")
+    completed = [row for row in data.get("diagnostics", []) if row["status"] == "complete"]
+    if completed:
+        fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+        for row in completed:
+            defined = [point for point in row["clean_gradient"] if point["R"] is not None]
+            axes[int(row["projected"])].plot([point["noise_index"] for point in defined],
+                [point["R"] for point in defined], "o-", label=f"Update {row['iteration']}")
+        for projected, ax in enumerate(axes):
+            ax.axhline(1, color="black", linestyle=":")
+            ax.set(yscale="log", xlabel="Noise realization (0 = trajectory)", ylabel="Clean-gradient ratio R",
+                   title="Sphere" if projected else "Free")
+            if ax.get_legend_handles_labels()[0]:
+                ax.legend()
+        fig.tight_layout()
+        fig.savefig(out / "clean_gradient_ratios.png", dpi=140)
+        plt.close(fig)
+        lines += ["", "![Clean-gradient ratios](clean_gradient_ratios.png)"]
     lines += ["", "Unresolved spectral cutoffs remain labeled; noise cases at fixed sources are not independent reconstruction trials.", "",
               "All detailed gradients, cosines, coefficient errors, and stopping evidence are in [results.json](results.json). "
               "Source and optimizer checkpoints are in `states/`. No production algorithm modules were modified.", ""]
