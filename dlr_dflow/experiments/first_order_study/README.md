@@ -13,6 +13,8 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python -m dlr_dflow.experiments.first_order_study.gpu_study --resume
 # Continue with two independent workers on each GPU:
 CUDA_VISIBLE_DEVICES=0,1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 .venv/bin/python -m dlr_dflow.experiments.first_order_study.gpu_study --resume --gpus 0 1 --workers-per-gpu 2
+# Current placement: all four workers on physical GPU 1; GPU 0 is hidden:
+CUDA_VISIBLE_DEVICES=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 .venv/bin/python -m dlr_dflow.experiments.first_order_study.gpu_study --resume --gpus 0 --workers-per-gpu 4
 ```
 
 This follow-up has no four-hour cutoff. It shares GPU 0, limits its allocator to
