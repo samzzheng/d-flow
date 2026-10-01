@@ -35,7 +35,7 @@ def reference_svd(J: Product, JT: Product, gx: Tensor, exact: Tensor, rank: int,
     dimension = gx.numel()
     k = min(dimension, rank + 9)
     generator = torch.Generator().manual_seed(seed)
-    omega = torch.randn(dimension, k, generator=generator, dtype=gx.dtype)
+    omega = torch.randn(dimension, k, generator=generator, dtype=gx.dtype).to(gx.device)
     output.update(status="uncertified", refinements=[])
     previous = None
     factors = None
@@ -98,7 +98,7 @@ def preflight(problem: Problem) -> Record:
     derivative = float((exact * direction).sum())
     derivative_error = abs(finite_difference - derivative) / max(abs(derivative), 1e-8)
     J, JT = make_terminal_flow_products(problem.model, z, problem.steps)
-    q, p = torch.randn(z.numel(), 1), torch.randn(z.numel(), 1)
+    q, p = torch.randn(z.numel(), 1, device=z.device), torch.randn(z.numel(), 1, device=z.device)
     tick = time.perf_counter()
     jq, jtp = J(q), JT(p)
     adjoint_error = abs(float((p * jq).sum() - (q * jtp).sum())) / max(
@@ -112,7 +112,9 @@ def preflight(problem: Problem) -> Record:
             "adjoint_scaled_error": adjoint_error}
 
 
-def diagnose(problem: Problem, z: Tensor, output: Record, deadline: float, projected: bool) -> None:
+def diagnose(problem: Problem, z: Tensor, output: Record, deadline: float, projected: bool,
+             product_batch_size: int = 2, spectral_seconds: float = 360,
+             max_refinements: int = 6, refine_cutoff: bool = False) -> None:
     start = time.perf_counter()
     x, loss, exact = problem.evaluate(z, "exact")
     native, factors, alpha = sensitivity_factors(
@@ -130,12 +132,12 @@ def diagnose(problem: Problem, z: Tensor, output: Record, deadline: float, proje
                   coefficient=comparison(dlr, subspace), decomposition_relative_error=abs(lhs - rhs) / max(lhs, 1e-30),
                   tangent_dlr=comparison(tangent(dlr, z, projected), tangent(exact, z, projected)))
     raw_J, raw_JT = make_terminal_flow_products(problem.model, z, problem.steps)
-    # Bound memory by processing two tangent/cotangent columns at a time.
+    # Bound memory by processing tangent/cotangent columns in batches.
     def J(q: Tensor) -> Tensor:
-        return torch.cat([raw_J(chunk) for chunk in q.split(2, dim=1)], dim=1)
+        return torch.cat([raw_J(chunk) for chunk in q.split(product_batch_size, dim=1)], dim=1)
 
     def JT(q: Tensor) -> Tensor:
-        return torch.cat([raw_JT(chunk) for chunk in q.split(2, dim=1)], dim=1)
+        return torch.cat([raw_JT(chunk) for chunk in q.split(product_batch_size, dim=1)], dim=1)
 
     clean_gx = terminal_gradient(x, problem.operator, problem.clean)
     clean_gradient = JT(clean_gx.reshape(-1, 1)).reshape_as(z)
@@ -143,7 +145,7 @@ def diagnose(problem: Problem, z: Tensor, output: Record, deadline: float, proje
     for noise_index in range(11):
         measurement = problem.noisy
         if noise_index:
-            noise = torch.randn(problem.clean.shape, generator=torch.Generator().manual_seed(problem.seed + 30000 + noise_index))
+            noise = torch.randn(problem.clean.shape, generator=torch.Generator().manual_seed(problem.seed + 30000 + noise_index)).to(problem.clean.device)
             measurement = problem.clean + noise * (.01 * problem.clean.norm() / noise.norm())
         noisy_gx = terminal_gradient(x, problem.operator, measurement)
         noisy_gradient = exact if noise_index == 0 else JT(noisy_gx.reshape(-1, 1)).reshape_as(z)
@@ -178,6 +180,7 @@ def diagnose(problem: Problem, z: Tensor, output: Record, deadline: float, proje
             rate *= .5
     output["spectral"] = {}
     # Reserve capacity for other trajectory points instead of spending the phase at one source.
-    local_deadline = min(deadline, time.monotonic() + 360)
-    reference_svd(J, JT, gx, exact, 8, problem.seed + 40000, local_deadline, output["spectral"])
+    local_deadline = min(deadline, time.monotonic() + spectral_seconds)
+    reference_svd(J, JT, gx, exact, 8, problem.seed + 40000, local_deadline, output["spectral"],
+                  max_refinements=max_refinements, refine_cutoff=refine_cutoff)
     output["seconds"] = time.perf_counter() - start

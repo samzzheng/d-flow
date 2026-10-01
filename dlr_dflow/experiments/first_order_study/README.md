@@ -2,6 +2,35 @@
 
 See [the completed pilot results and charts](results_summary.md).
 
+The CPU pilot's short trajectories do not establish convergence. The follow-up
+GPU study retunes for 200 updates and runs reconstructions and ranks for 500–2,000
+updates, with objective-plateau checks after 500. See the
+[live GPU accuracy report](results/gpu_convergence_20260930/report.md).
+
+```sh
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python -m dlr_dflow.experiments.first_order_study.gpu_study
+# Resume the same protocol and optimizer state after interruption:
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python -m dlr_dflow.experiments.first_order_study.gpu_study --resume
+```
+
+This follow-up has no four-hour cutoff. It shares GPU 0, limits its allocator to
+15% of GPU memory, disables TF32, and saves CPU checkpoints every ten updates.
+The image/model/noise/source inputs are copied from the pilot. DLR's device-local
+random sketches differ from the CPU draws. Its factors are still recomputed at
+every gradient with the same analytical alpha settings. An extra native Euler
+forward makes the objective and terminal gradient identical across estimators
+up to ordinary evaluation roundoff; fast sensitivity endpoint roundoff therefore
+does not affect late Armijo comparisons. No timing comparisons are reported.
+
+Two consecutive 100-update windows with less than 0.1% improvement in the best
+objective trigger a plateau label after the minimum budget. Recent objective
+oscillations above 5% receive a separate label. Stalls and the 2,000-update limit
+are not called convergence. LBFGS gets one retry after clearing failed history;
+the first-attempt multiplier is never repeated. Final exact tangent-gradient
+norms are recorded. Source snapshots every 25 updates plus terminal states
+support initial/midpoint/final diagnostics. Each run's optimizer state, full
+metric history, and source snapshots are in its own `states/*.pt` checkpoint.
+
 This isolated CPU experiment compares exact D-Flow and fresh-factor DLR with GD+Armijo, Adam, and an LBFGS+Armijo control. It also runs a rank sweep and evaluates exact, independently truncated, DLR, and DLR-subspace gradients at shared sources.
 
 The fixed protocol is circles-64 without attention, epoch 100, 100 Euler steps, 15-angle sparse CT, and Gaussian measurement noise normalized to 1% relative L2. DLR always uses analytical `alpha_t = 1 - t`, `trace_probes=0`, zero enrichment, initialization oversampling 8, and exactly zero terminal alpha. Factors are recomputed for every gradient. No production modules are modified.
