@@ -172,6 +172,18 @@ class ParallelStudy:
                     saved = torch.load(local, map_location="cpu", weights_only=True)
                     for key, value in saved["run"].items():
                         setattr(run, key, value)
+                    run.z = saved["source"]
+                    # A worker may have saved its final chunk just before the coordinator stopped.
+                    shutil.copy2(local, canonical.with_suffix(".tmp"))
+                    canonical.with_suffix(".tmp").replace(canonical)
+                    if (shard / "results.json").exists():
+                        recovered = json.loads((shard / "results.json").read_text())
+                        if "terminal_check" in recovered:
+                            report.setdefault("terminal_checks", {})[run.label] = recovered["terminal_check"]
+                        report.setdefault("stopping_evidence", {}).update(recovered.get("stopping_evidence", {}))
+                        for failure in recovered.get("failures", []):
+                            if failure not in report["failures"]:
+                                report["failures"].append(failure)
                 report[section] = [r.public() for r in runs]
         checkpoint(self.args.out, report)
         while any(run.status not in TERMINAL for runs in groups.values() for run in runs):

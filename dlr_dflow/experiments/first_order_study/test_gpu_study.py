@@ -93,6 +93,11 @@ class ConvergenceTests(unittest.TestCase):
                 pool = ParallelStudy(args, report)
                 try:
                     pool.run({"tuning": runs}, report, [False])
+                    recovered = [Run(f"parallel{i}", "exact", "adam", False, .1, source.clone(), sample=i)
+                                 for i, source in enumerate(sources)]
+                    pool.run({"tuning": recovered}, report, [False])
+                    for actual, reference in zip(recovered, expected):
+                        torch.testing.assert_close(actual.z, reference.z, rtol=0, atol=0)
                 finally:
                     pool.close()
             self.assertEqual({run["label"] for run in report["tuning"]}, {run.label for run in expected})
