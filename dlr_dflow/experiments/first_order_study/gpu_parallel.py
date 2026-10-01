@@ -120,7 +120,12 @@ class ParallelStudy:
         self.pool = ProcessPoolExecutor(max_workers=len(args.gpus) * args.workers_per_gpu,
             mp_context=self.context, initializer=initialize_worker, initargs=(args, self.slots))
         self.closed = False
+        if "parallel_execution" in report:
+            report.setdefault("parallel_execution_history", []).append(report["parallel_execution"])
+        visible = os.environ.get("CUDA_VISIBLE_DEVICES")
         report["parallel_execution"] = {"gpus": args.gpus, "workers_per_gpu": args.workers_per_gpu,
+            "cuda_visible_devices": visible,
+            "physical_gpus": [visible.split(",")[gpu] for gpu in args.gpus] if visible else args.gpus,
             "cpu_threads_per_worker": 1, "chunk_updates": 10, "report_writer": "coordinator only",
             "started_at": datetime.now().astimezone().isoformat(),
             "module_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
