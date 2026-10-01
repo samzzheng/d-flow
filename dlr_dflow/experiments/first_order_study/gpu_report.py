@@ -90,7 +90,7 @@ def render(out: Path) -> None:
                 if metric == "residual_over_noise":
                     ax.axhline(1, color="gray", linestyle=":", linewidth=1)
                     ax.set_yscale("log")
-                if ax.lines:
+                if ax.get_legend_handles_labels()[0]:
                     ax.legend(fontsize=6)
         fig.tight_layout()
         fig.savefig(out / filename, dpi=140)

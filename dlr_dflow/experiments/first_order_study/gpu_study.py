@@ -7,8 +7,10 @@ import json
 import math
 import signal
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
+from types import TracebackType
 from typing import Any
 
 import torch
@@ -218,6 +220,10 @@ def main() -> None:
         for key in ("tuning_updates", "min_updates", "max_updates", "window", "plateau_relative", "checkpoint_sha256"):
             if report["settings"][key] != settings[key]:
                 raise ValueError(f"Resume protocol mismatch: {key}")
+        report["status"] = "running"
+        report.setdefault("resumes", []).append({"at": datetime.now().astimezone().isoformat(),
+            "git_head": settings["git_head"],
+            "runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()})
     else:
         (args.out / "states").mkdir(parents=True)
         torch.save(inputs, args.out / "inputs.pt")
@@ -227,6 +233,14 @@ def main() -> None:
                   "failures": [], "status": "running", "source_sha256": {
                       str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in dependencies}}
         checkpoint(args.out, report)
+
+    def record_exception(kind: type[BaseException], error: BaseException, trace: TracebackType | None) -> None:
+        report["status"] = "interrupted" if issubclass(kind, KeyboardInterrupt) else "driver_failed"
+        report["driver_message"] = str(error)
+        checkpoint(args.out, report)
+        sys.__excepthook__(kind, error, trace)
+
+    sys.excepthook = record_exception
     if "preflight" not in report:
         report["preflight"] = preflight(validation)
         # Timing is deliberately omitted from this accuracy-focused report.
@@ -298,10 +312,33 @@ def main() -> None:
             entry["status"] = "complete"
             checkpoint(args.out, report)
             print(f"Diagnostics: {run.label}, {iteration}, {entry['spectral']['status']}", flush=True)
+            if interrupted[0]:
+                raise KeyboardInterrupt
     report["status"] = "complete"
     checkpoint(args.out, report)
     from .gpu_report import render
     render(args.out)
+    now = datetime.now().astimezone()
+    dated = ROOT / "experiments" / f"experiments-{now:%Y-%m-%d}.md"
+    if not dated.exists():
+        dated.write_text(f"# Experiments — {now:%Y-%m-%d}\n\nTimes are local America/New_York; durations in HH:MM.\n\n"
+                         "| Time | Experiment | Motivation | What Tried / Evidence | Correctness | Timing | Merge decision |\n"
+                         "| --- | --- | --- | --- | --- | --- | --- |\n")
+    elapsed_minutes = int((now - datetime.fromisoformat(report["created_at"])).total_seconds() / 60)
+    counts = {status: sum(r.status == status for r in comparisons + ranks)
+              for status in sorted({r.status for r in comparisons + ranks})}
+    with dated.open("a") as stream:
+        stream.write(f"| {now:%H:%M} | Longer GPU convergence study completed | Short pilot trajectories did not establish convergence. "
+            f"| Retuned for {args.tuning_updates} updates; reconstruction/rank statuses: {counts}. "
+            f"[Accuracy report](../{args.out.relative_to(ROOT)}/report.md); shared-source gradient and clean-noise diagnostics repeated. "
+            "| GPU preflight passed; source caps, projection, fresh gradients, initial scaling, and accepted Armijo decrease checked during updates. "
+            f"Stalls and step limits remain distinct from objective plateaus. | {elapsed_minutes // 60:02d}:{elapsed_minutes % 60:02d} "
+            "wall elapsed; no speed comparison. | Keep isolated evidence; inspect terminal statuses before drawing convergence conclusions. |\n")
+    index = ROOT / "EXPERIMENTS.md"
+    text = index.read_text()
+    row = f"| {now:%Y-%m-%d} | [Experiments](experiments/experiments-{now:%Y-%m-%d}.md) |"
+    if row not in text:
+        index.write_text(text.replace("\n\nDated log header:", f"\n{row}\n\nDated log header:"))
     print(f"Completed GPU convergence study: {args.out}", flush=True)
 
 
