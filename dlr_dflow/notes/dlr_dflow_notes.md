@@ -332,21 +332,6 @@ $$
 
 Only skinny QR factorizations of $d\times r$ matrices and small $r\times r$ algebra are required.
 
-The current fast implementation additionally fits the full Euler target within the fixed new bases $U_1,V_1$:
-
-$$
-S_1=\operatorname*{arg\,min}_S
-\frac12\left\|U_1SV_1^\top-\bigl[Y_0+hF(t_0,Y_0)\bigr]\right\|_F^2.
-$$
-
-Setting the derivative with respect to $S$ to zero and using $U_1^\top U_1=V_1^\top V_1=I$ gives
-
-$$
-S_1=U_1^\top\bigl[Y_0+hF(t_0,Y_0)\bigr]V_1.
-$$
-
-This is an additional least-squares core fit after KSL; plain KSL retains $S_1=R_L^\top$ from the L-step QR.
-
 The factor and image grids can be chosen separately, provided $A_t=\partial_xv_\theta(t,x_t)$ is evaluated along a consistent image trajectory. The current default and Section 8 use the same grid for both. With $N$ intervals, one gradient evaluation uses one initialization interval and $N-1$ KSL cycles; applying $VS^\top U^\top g_x$ then requires no further evolution.
 
 ## 7. DLR-D-Flow algorithm
@@ -400,7 +385,7 @@ This gives a D-Flow-like inverse solver, but replaces full Jacobian/SVD operatio
 
 ## 8. Pseudocode
 
-Use $\alpha_t=1-t$, $r$ initialization directions, and one Euler step per split subproblem. Each source-gradient evaluation starts with the initialization in Section 6. The extra core-recomputation branch describes the current fast implementation.
+Use $\alpha_t=1-t$, $r$ initialization directions, and one Euler step per split subproblem. Each source-gradient evaluation starts with the initialization in Section 6.
 
 ```text
 Input:
@@ -454,13 +439,6 @@ for k = 0,...,K-1:
             Q_L, R_L = QR(L_end)
             V_new = Q_L
             S_new = R_L^T
-
-        if using the current fast implementation:
-            # Project the old residual's full Euler target onto new bases.
-            # YV is the skinny product Y_old V_new; no dense Y is formed.
-            YV = U S (V^T V_new)
-            S_new = U_new^T YV + h ((A_t^T U_new)^T (alpha V_new + YV)
-                                   + U_new^T V_new)
 
         U,S,V = U_new,S_new,V_new
         x = x + h v_theta(t,x)
