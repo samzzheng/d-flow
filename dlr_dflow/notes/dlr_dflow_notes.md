@@ -135,7 +135,7 @@ $$
 \alpha_t=1-t,\qquad \dot\alpha_t=-1,\qquad \alpha_1=0.
 $$
 
-This baseline starts from the exact identity sensitivity and vanishes at the terminal time. It is prescribed rather than estimated from the velocity Jacobian; use `trace_probes=0` in the implementation. It does not assert that every singular direction contracts at the same rate.
+This baseline starts from the exact identity sensitivity and vanishes at the terminal time.
 
 Substitute $J_t \approx \alpha_tI+Y_t$ into the sensitivity equation $\dot J_t = A_tJ_t$. Since $\frac{d}{dt}(\alpha_tI)=\dot\alpha_tI$,
 
@@ -181,90 +181,26 @@ This formula is the central DLRA replacement for repeated SVD truncation. Instea
 
 ## 6. Projector-splitting update for the residual
 
-The Lubich-Oseledets projector-splitting integrator evolves the factors $U,S,V$ by three smaller substeps. In this section use the analytical baseline
+Use $\alpha_t=1-t$, so
 
 $$
-\alpha_t=1-t,\qquad \dot\alpha_t=-1,
+F(t,Y)=(1-t)A_t+A_tY+I,
+\qquad A_t=\partial_xv_\theta(t,x_t).
 $$
 
-so the residual equation has right-hand side
+### Initialization
+
+At $t=0$, $x_0=z$, $J_0=I$, and $Y_0=0$. Since $F(0,0)=A_0+I$, the first Euler interval $[0,h]$ gives $Y_h^{\mathrm{Euler}}=h(A_0+I)$. To find its initial subspaces, draw $\Omega\in\mathbb R^{d\times r}$ with independent entries $\pm1$, each with probability $1/2$. Apply the residual and its transpose through JVPs and VJPs, then compute two reduced QR factorizations and one $r\times r$ SVD:
 
 $$
-F(t,Y)=A_t(\alpha_tI+Y)-\dot\alpha_tI
-=(1-t)A_t+A_tY+I.
+\begin{aligned}
+h(A_0\Omega+\Omega)&=Q_1R_1,\\
+h(A_0^\top Q_1+Q_1)&=Q_2R_2,\\
+R_2&=U_{\mathrm{SVD}}\Sigma_{\mathrm{SVD}}V_{\mathrm{SVD}}^\top.
+\end{aligned}
 $$
 
-Here $A_t=\partial_xv_\theta(t,x_t)\in\mathbb{R}^{d\times d}$ is the velocity Jacobian, distinct from the measurement operator $\mathcal A$. Only its products with skinny matrices are needed.
-
-### Initialization from the first Euler increment
-
-At the start of each source-gradient evaluation,
-
-$$
-x_0=z,\qquad J_0=I,\qquad \alpha_0=1,\qquad Y_0=0.
-$$
-
-The zero residual does not determine left and right subspaces. Setting every factor to zero would also violate the orthonormality requirements on $U$ and $V$. Instead, obtain the factors from the first residual increment. Its right-hand side is generally nonzero:
-
-$$
-F(0,0)=A_0+I.
-$$
-
-For a first step of length $h$, Euler gives the target
-
-$$
-Y_h^{\mathrm{Euler}}
-=Y_0+hF(0,Y_0)
-=h(A_0+I).
-$$
-
-Equivalently, $J_h\approx I+hA_0$ and $\alpha_h=1-h$, so subtracting $\alpha_hI$ gives the same target. This initialization covers only $[0,h]$, not the whole flow interval $[0,1]$.
-
-Choose exactly $r$ random directions, with $r<d$:
-
-$$
-\Omega\in\mathbb{R}^{d\times r},\qquad
-\Pr(\Omega_{ij}=+1)=\Pr(\Omega_{ij}=-1)=\frac12,
-$$
-
-independently across entries. Each column is an input direction on which to sample the residual. Random sampling supplies directions without requiring prior knowledge of its subspaces; it does not add a random residual at $t=0$. These initialization directions are separate from trace probes, which are disabled. In the implementation, set `initialization_oversampling=0` for this $r$-column construction; the API default still enables optional oversampling.
-
-First apply the residual target to the sampled directions and compute a reduced QR factorization:
-
-$$
-Y_h^{\mathrm{Euler}}\Omega
-=h(A_0\Omega+\Omega)
-=Q_1R_1,
-\qquad
-Q_1\in\mathbb{R}^{d\times r},\quad R_1\in\mathbb{R}^{r\times r}.
-$$
-
-The product $A_0\Omega$ is computed by JVPs. The orthonormal columns of $Q_1$ span the sampled residual outputs. The triangular factor $R_1$ is not needed further: the next transpose products recover the residual's coefficients in the chosen subspace.
-
-Apply the transpose target to $Q_1$ and compute a second reduced QR:
-
-$$
-(Y_h^{\mathrm{Euler}})^\top Q_1
-=h(A_0^\top Q_1+Q_1)
-=Q_2R_2,
-\qquad
-Q_2\in\mathbb{R}^{d\times r},\quad R_2\in\mathbb{R}^{r\times r}.
-$$
-
-Here $A_0^\top Q_1$ is computed by VJPs. The second QR reduces the remaining SVD to an $r\times r$ matrix:
-
-$$
-R_2=U_{\mathrm{SVD}}\Sigma_{\mathrm{SVD}}V_{\mathrm{SVD}}^\top.
-$$
-
-The columns of $U_{\mathrm{SVD}}$ and $V_{\mathrm{SVD}}$ are left and right singular vectors of $R_2$, and $\Sigma_{\mathrm{SVD}}$ contains its singular values. Thus
-
-$$
-(Y_h^{\mathrm{Euler}})^\top Q_1
-=Q_2U_{\mathrm{SVD}}\Sigma_{\mathrm{SVD}}V_{\mathrm{SVD}}^\top.
-$$
-
-Transpose this equality and multiply by $Q_1$. This gives the initial factors
+The first QR selects the sampled column subspace; the transpose product recovers its coefficients, and the second QR makes the SVD small. Transposing back gives the factors below, whose product is the projection of the Euler target onto that subspace. Thus initialization preserves $Y_0=0$ and produces factors at $t=h$ without forming a dense Jacobian. Advance the image to $x_h=z+h v_\theta(0,z)$.
 
 $$
 U_h=Q_1V_{\mathrm{SVD}},\qquad
@@ -272,143 +208,71 @@ S_h=\Sigma_{\mathrm{SVD}},\qquad
 V_h=Q_2U_{\mathrm{SVD}},
 $$
 
-with
-
 $$
 U_hS_hV_h^\top
-=Q_1R_2^\top Q_2^\top
 =Q_1Q_1^\top Y_h^{\mathrm{Euler}}
 \approx Y_h^{\mathrm{Euler}}.
 $$
 
-The singular-vector roles swap because the small SVD came from the transpose product. The approximation is the projection of the Euler target onto the sampled column subspace; it need not be the globally best rank-$r$ approximation. Both $U_h$ and $V_h$ have orthonormal columns, and $S_h$ is initially diagonal.
+### KSL steps
 
-This procedure uses two $d\times r$ QR factorizations and one $r\times r$ SVD. It never forms $A_0$ or $Y_h^{\mathrm{Euler}}$ as a dense $d\times d$ matrix. Advance the image to $x_h=z+h v_\theta(0,z)$ and start the subsequent factor updates from time $h$. No $\varepsilon I$ core is inserted at $t=0$ in this initialization.
+Let $h=1/N$, $t_n=nh$, and write $Y_{t_n}=U_nS_nV_n^\top$. For each remaining interval $[t_n,t_{n+1}]$, $n=1,\ldots,N-1$, perform K, S, and L in order. Each subproblem covers this same interval and takes the preceding stage's output as its initial value. With Euler, all three use $A_{t_n}$ at the current image.
 
-### Flow-time intervals
-
-For $N$ uniform flow steps, let $h=1/N$ and $t_n=nh$. The first interval $[0,h]$ uses the initialization above. Each remaining interval $[t_n,t_{n+1}]$ uses one complete K-S-L sequence. The image and factors share the same flow time.
-
-Each of the three split subproblems is integrated over the same interval $[t_n,t_{n+1}]$, taking the preceding subproblem's result as its initial value. Together they advance the approximation by $h$, not $3h$. In the Euler implementation, all three use the velocity Jacobian at $(t_n,x_{t_n})$, while their factor values change between stages. There is no additional factor-time subdivision here.
-
-For the formulas below, use local endpoint labels $0$ and $1$ for one such interval: $t_0=t_n$, $t_1=t_{n+1}$. These labels do not restart the global flow at zero. Let
+**K-step.** Hold $V_n$ fixed and evolve $K=US$:
 
 $$
-Y_0 = U_0 S_0 V_0^\top
+\begin{aligned}
+K(t_n)&=U_nS_n,\\
+\dot K&=F(t,KV_n^\top)V_n
+=\alpha_tA_tV_n+A_tK+V_n.
+\end{aligned}
 $$
 
-be the current low-rank residual at flow time $t_0$, and let $t_1=t_0+h$.
-
-Define
+QR at the endpoint gives
 
 $$
-F(t,Y)=A_t(\alpha_tI+Y)-\dot\alpha_tI.
+K(t_{n+1})=U_{n+1}\widehat S_{n+1}.
 $$
 
-### K-step
-
-Freeze $V=V_0$, set
+**S-step.** Hold $U_{n+1},V_n$ fixed and evolve the core:
 
 $$
-K(t_0)=U_0S_0,
+\begin{aligned}
+S(t_n)&=\widehat S_{n+1},\\
+\dot S&=-U_{n+1}^\top F(t,U_{n+1}SV_n^\top)V_n\\
+&=-\alpha_tU_{n+1}^\top A_tV_n
+-U_{n+1}^\top A_tU_{n+1}S-U_{n+1}^\top V_n.
+\end{aligned}
 $$
 
-and integrate
+Set $\widetilde S_n=S(t_{n+1})$.
+
+**L-step.** Hold $U_{n+1}$ fixed and evolve $L=VS^\top$:
 
 $$
-\dot K(t)=F(t,K(t)V_0^\top)V_0.
+\begin{aligned}
+L(t_n)&=V_n\widetilde S_n^\top,\\
+\dot L&=F(t,U_{n+1}L^\top)^\top U_{n+1}\\
+&=\alpha_tA_t^\top U_{n+1}
++LU_{n+1}^\top A_t^\top U_{n+1}+U_{n+1}.
+\end{aligned}
 $$
 
-Inserting $F$ and using $V_0^\top V_0=I$, this becomes
+QR at the endpoint gives the new right basis and core:
 
 $$
-\dot K(t)
-=A_t\big(\alpha_tV_0+K(t)V_0^\top V_0\big)-\dot\alpha_tV_0
-=\alpha_tA_tV_0+A_tK(t)-\dot\alpha_tV_0.
+L(t_{n+1})=V_{n+1}S_{n+1}^\top,\qquad
+Y_{t_{n+1}}=U_{n+1}S_{n+1}V_{n+1}^\top.
 $$
 
-Then QR factorize
+The current fast implementation additionally replaces the final core by the projected Euler target, including when enrichment is zero:
 
 $$
-K(t_1)=U_1\widehat S_1.
+S_{n+1}
+=U_{n+1}^\top\bigl[Y_{t_n}+hF(t_n,Y_{t_n})\bigr]V_{n+1}.
 $$
 
-### S-step
-
-Freeze $U=U_1$ and $V=V_0$, set
-
-$$
-S(t_0)=\widehat S_1,
-$$
-
-and integrate
-
-$$
-\dot S(t)
-= -U_1^\top F(t,U_1S(t)V_0^\top)V_0.
-$$
-
-Inserting $F$ and using $V_0^\top V_0=I$,
-
-$$
-\dot S(t)
-=-U_1^\top\Big[A_t\big(\alpha_tV_0+U_1S(t)\big)-\dot\alpha_tV_0\Big]
-=-\alpha_tU_1^\top A_tV_0-U_1^\top A_tU_1S(t)
-  +\dot\alpha_tU_1^\top V_0.
-$$
-
-Set
-
-$$
-\widetilde S_0=S(t_1).
-$$
-
-### L-step
-
-Freeze $U=U_1$, set
-
-$$
-L(t_0)=V_0\widetilde S_0^\top,
-$$
-
-and integrate
-
-$$
-\dot L(t)=F(t,U_1L(t)^\top)^\top U_1.
-$$
-
-Inserting $F$ and using $U_1^\top U_1=I$,
-
-$$
-\dot L(t)
-=\Big[A_t\big(\alpha_tI+U_1L(t)^\top\big)-\dot\alpha_tI\Big]^\top U_1
-=\alpha_tA_t^\top U_1+L(t)U_1^\top A_t^\top U_1
-  -\dot\alpha_tU_1.
-$$
-
-Then QR factorize
-
-$$
-L(t_1)=V_1S_1^\top.
-$$
-
-The updated residual is
-
-$$
-Y_1=U_1S_1V_1^\top.
-$$
-
-Only skinny QR factorizations of $d\times r$ matrices and small $r\times r$ algebra are required.
-
-### Core recomputation in the current fast implementation
-
-The K-S-L equations above define the plain projector-splitting update. After obtaining the new bases, the current fast implementation additionally replaces the core by
-
-$$
-S_1=U_1^\top\bigl[Y_0+hF(t_0,Y_0)\bigr]V_1.
-$$
-
-Here $Y_0=U_0S_0V_0^\top$ is the residual at the beginning of this local step. This replacement fits the full Euler target within the updated left and right subspaces, rather than keeping the core from the L-step QR. It is evaluated with skinny matrix products and also occurs when enrichment is zero. Thus the current fast implementation uses K-S-L basis updates followed by projected Euler core recomputation. Section 8 marks this additional operation explicitly.
+One approximation of $J_1^\top g_x$ requires one initialization interval and $N-1$ KSL cycles. The quantity $nh$ is flow time; $N=1/h$ is the number of intervals. Applying the terminal factors, $VS^\top U^\top g_x$, requires no further evolution.
 
 ## 7. DLR-D-Flow algorithm
 
@@ -461,7 +325,7 @@ This gives a D-Flow-like inverse solver, but replaces full Jacobian/SVD operatio
 
 ## 8. Pseudocode
 
-Use the analytical baseline $\alpha_t=1-t$, zero trace probes, exactly $r$ initialization directions, and one Euler step per split subproblem. The first interval initializes the factors as in Section 6; subsequent intervals use K-S-L. Repeat the initialization for every new source-gradient evaluation. The core-recomputation branch identifies the additional operation in the current fast implementation; omitting that branch gives the plain K-S-L update.
+Use $\alpha_t=1-t$, $r$ initialization directions, and one Euler step per split subproblem. Each source-gradient evaluation starts with the initialization in Section 6. The extra core-recomputation branch describes the current fast implementation.
 
 ```text
 Input:
@@ -947,14 +811,12 @@ The low-rank factors should be treated as an approximate gradient mechanism or a
 
 ## 15. Recommended first experiment
 
-Start with the scalar-baseline-plus-low-rank residual model used by the
-implementation:
+Start with the analytical-baseline-plus-low-rank residual model:
 
 $$
 J_t \approx \alpha_tI + U_tS_tV_t^\top,
 \qquad
-\frac{d}{dt}\log\alpha_t
-=\frac{1}{d}\operatorname{tr}(A_t).
+\alpha_t=1-t.
 $$
 
 Use a fixed small rank, for example $r=8,16,32$, and compare four quantities:
@@ -978,14 +840,12 @@ If this error is small while runtime decreases, the dynamic low-rank idea is hel
 
 ## 16. Refresh cost findings (2026-09-02, circles-64, CPU)
 
-Measured on the pretrained circles-64 model (15 Euler steps, 8 CPU threads),
-comparing ways to produce the terminal factors against autograd through the
-same discrete flow:
+Historical measurements on the pretrained circles-64 model (15 Euler steps, 8 CPU threads), comparing the implementations at that date against autograd through the same discrete flow:
 
 | refresh | time | grad rel. err | cosine |
 |---|---|---|---|
-| per-step evolution, r=8, 8 probes, 4 enrichment | 34.0 s | 0.055 | 0.9988 |
-| per-step evolution, r=4, 4 probes, 2 enrichment | 20.4 s | 0.076 | 0.9978 |
+| legacy per-step evolution, r=8, 4 enrichment | 34.0 s | 0.055 | 0.9988 |
+| legacy per-step evolution, r=4, 2 enrichment | 20.4 s | 0.076 | 0.9978 |
 | direct terminal sketch, r=8 (+6 oversampling)   | 16.7 s | 0.005 | 1.0000 |
 | direct terminal sketch, r=4 (+4 oversampling)   | 10.3 s | 0.009 | 1.0000 |
 
