@@ -216,63 +216,126 @@ $$
 
 ### KSL steps
 
-Let $h=1/N$, $t_n=nh$, and write $Y_{t_n}=U_nS_nV_n^\top$. For each remaining interval $[t_n,t_{n+1}]$, $n=1,\ldots,N-1$, perform K, S, and L in order. Each subproblem covers this same interval and takes the preceding stage's output as its initial value. With Euler, all three use $A_{t_n}$ at the current image.
-
-**K-step.** Hold $V_n$ fixed and evolve $K=US$:
+The Lubich-Oseledets projector-splitting integrator evolves $U,S,V$ by three substeps over the same factor interval $[t_0,t_1]$. Here $0$ and $1$ label this interval's endpoints. Let
 
 $$
-\begin{aligned}
-K(t_n)&=U_nS_n,\\
-\dot K&=F(t,KV_n^\top)V_n
-=\alpha_tA_tV_n+A_tK+V_n.
-\end{aligned}
+Y_0 = U_0 S_0 V_0^\top
 $$
 
-QR at the endpoint gives
+be the current low-rank residual at flow time $t_0$, and let $t_1=t_0+h$.
+
+Define
 
 $$
-K(t_{n+1})=U_{n+1}\widehat S_{n+1}.
+F(t,Y)=A_t(\alpha_tI+Y)-\dot\alpha_tI.
 $$
 
-**S-step.** Hold $U_{n+1},V_n$ fixed and evolve the core:
+#### K-step
+
+Freeze $V=V_0$, set
 
 $$
-\begin{aligned}
-S(t_n)&=\widehat S_{n+1},\\
-\dot S&=-U_{n+1}^\top F(t,U_{n+1}SV_n^\top)V_n\\
-&=-\alpha_tU_{n+1}^\top A_tV_n
--U_{n+1}^\top A_tU_{n+1}S-U_{n+1}^\top V_n.
-\end{aligned}
+K(t_0)=U_0S_0,
 $$
 
-Set $\widetilde S_n=S(t_{n+1})$.
-
-**L-step.** Hold $U_{n+1}$ fixed and evolve $L=VS^\top$:
+and integrate
 
 $$
-\begin{aligned}
-L(t_n)&=V_n\widetilde S_n^\top,\\
-\dot L&=F(t,U_{n+1}L^\top)^\top U_{n+1}\\
-&=\alpha_tA_t^\top U_{n+1}
-+LU_{n+1}^\top A_t^\top U_{n+1}+U_{n+1}.
-\end{aligned}
+\dot K(t)=F(t,K(t)V_0^\top)V_0.
 $$
 
-QR at the endpoint gives the new right basis and core:
+Inserting $F$ and using $V_0^\top V_0=I$, this becomes
 
 $$
-L(t_{n+1})=V_{n+1}S_{n+1}^\top,\qquad
-Y_{t_{n+1}}=U_{n+1}S_{n+1}V_{n+1}^\top.
+\dot K(t)
+=A_t\big(\alpha_tV_0+K(t)V_0^\top V_0\big)-\dot\alpha_tV_0
+=\alpha_tA_tV_0+A_tK(t)-\dot\alpha_tV_0.
 $$
 
-The current fast implementation additionally replaces the final core by the projected Euler target, including when enrichment is zero:
+Then QR factorize
 
 $$
-S_{n+1}
-=U_{n+1}^\top\bigl[Y_{t_n}+hF(t_n,Y_{t_n})\bigr]V_{n+1}.
+K(t_1)=Q_KR_K=U_1\widehat S_1,
+\qquad
+U_1=Q_K,\quad \widehat S_1=R_K.
 $$
 
-One approximation of $J_1^\top g_x$ requires one initialization interval and $N-1$ KSL cycles. The quantity $nh$ is flow time; $N=1/h$ is the number of intervals. Applying the terminal factors, $VS^\top U^\top g_x$, requires no further evolution.
+#### S-step
+
+Freeze $U=U_1$ and $V=V_0$, set
+
+$$
+S(t_0)=\widehat S_1,
+$$
+
+and integrate
+
+$$
+\dot S(t)
+= -U_1^\top F(t,U_1S(t)V_0^\top)V_0.
+$$
+
+Inserting $F$ and using $V_0^\top V_0=I$,
+
+$$
+\dot S(t)
+=-U_1^\top\Big[A_t\big(\alpha_tV_0+U_1S(t)\big)-\dot\alpha_tV_0\Big]
+=-\alpha_tU_1^\top A_tV_0-U_1^\top A_tU_1S(t)
+  +\dot\alpha_tU_1^\top V_0.
+$$
+
+Set
+
+$$
+\widetilde S_0=S(t_1).
+$$
+
+#### L-step
+
+Freeze $U=U_1$, set
+
+$$
+L(t_0)=V_0\widetilde S_0^\top,
+$$
+
+and integrate
+
+$$
+\dot L(t)=F(t,U_1L(t)^\top)^\top U_1.
+$$
+
+Inserting $F$ and using $U_1^\top U_1=I$,
+
+$$
+\dot L(t)
+=\Big[A_t\big(\alpha_tI+U_1L(t)^\top\big)-\dot\alpha_tI\Big]^\top U_1
+=\alpha_tA_t^\top U_1+L(t)U_1^\top A_t^\top U_1
+  -\dot\alpha_tU_1.
+$$
+
+Then QR factorize
+
+$$
+L(t_1)=Q_LR_L=V_1S_1^\top,
+\qquad
+V_1=Q_L,\quad S_1=R_L^\top.
+$$
+
+The updated residual is
+
+$$
+Y_1=U_1S_1V_1^\top.
+$$
+
+Only skinny QR factorizations of $d\times r$ matrices and small $r\times r$ algebra are required.
+
+The current fast implementation additionally replaces the L-step core by
+
+$$
+S_1=U_1^\top\bigl[Y_0+hF(t_0,Y_0)\bigr]V_1.
+$$
+
+The factor and image grids can be chosen separately, provided $A_t=\partial_xv_\theta(t,x_t)$ is evaluated along a consistent image trajectory. The current default and Section 8 use the same grid for both. With $N$ intervals, one gradient evaluation uses one initialization interval and $N-1$ KSL cycles; applying $VS^\top U^\top g_x$ then requires no further evolution.
 
 ## 7. DLR-D-Flow algorithm
 
