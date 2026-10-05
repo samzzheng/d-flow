@@ -222,7 +222,7 @@ $$
 Y_0 = U_0 S_0 V_0^\top
 $$
 
-be the current low-rank residual at flow time $t_0$, and let $t_1=t_0+h$.
+be the current low-rank residual at flow time $t_0$, and let $t_1=t_0+h$. Each subproblem below runs over $[t_0,t_1]$, with the preceding stage's output as its initial value at $t_0$. Together the three stages advance one interval of length $h$. The implementation uses one Euler step per subproblem.
 
 Define
 
@@ -241,7 +241,8 @@ $$
 and integrate
 
 $$
-\dot K(t)=F(t,K(t)V_0^\top)V_0.
+\dot K(t)=F(t,K(t)V_0^\top)V_0,
+\qquad t\in[t_0,t_1].
 $$
 
 Inserting $F$ and using $V_0^\top V_0=I$, this becomes
@@ -272,7 +273,8 @@ and integrate
 
 $$
 \dot S(t)
-= -U_1^\top F(t,U_1S(t)V_0^\top)V_0.
+= -U_1^\top F(t,U_1S(t)V_0^\top)V_0,
+\qquad t\in[t_0,t_1].
 $$
 
 Inserting $F$ and using $V_0^\top V_0=I$,
@@ -301,7 +303,8 @@ $$
 and integrate
 
 $$
-\dot L(t)=F(t,U_1L(t)^\top)^\top U_1.
+\dot L(t)=F(t,U_1L(t)^\top)^\top U_1,
+\qquad t\in[t_0,t_1].
 $$
 
 Inserting $F$ and using $U_1^\top U_1=I$,
@@ -329,11 +332,20 @@ $$
 
 Only skinny QR factorizations of $d\times r$ matrices and small $r\times r$ algebra are required.
 
-The current fast implementation additionally replaces the L-step core by
+The current fast implementation additionally fits the full Euler target within the fixed new bases $U_1,V_1$:
+
+$$
+S_1=\operatorname*{arg\,min}_S
+\frac12\left\|U_1SV_1^\top-\bigl[Y_0+hF(t_0,Y_0)\bigr]\right\|_F^2.
+$$
+
+Setting the derivative with respect to $S$ to zero and using $U_1^\top U_1=V_1^\top V_1=I$ gives
 
 $$
 S_1=U_1^\top\bigl[Y_0+hF(t_0,Y_0)\bigr]V_1.
 $$
+
+This is an additional least-squares core fit after KSL; plain KSL retains $S_1=R_L^\top$ from the L-step QR.
 
 The factor and image grids can be chosen separately, provided $A_t=\partial_xv_\theta(t,x_t)$ is evaluated along a consistent image trajectory. The current default and Section 8 use the same grid for both. With $N$ intervals, one gradient evaluation uses one initialization interval and $N-1$ KSL cycles; applying $VS^\top U^\top g_x$ then requires no further evolution.
 
