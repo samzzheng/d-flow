@@ -1,0 +1,8 @@
+# Experiments — 2026-10-05
+
+Times are local America/New_York; durations in HH:MM.
+
+| Time | Experiment | Motivation | What Tried / Evidence | Correctness | Timing | Merge decision |
+| --- | --- | --- | --- | --- | --- | --- |
+| 20:59 | Modal GPU probe for FM UNet training | The ch16 attention-free UNet is small and likely memory-bandwidth bound, so the cheaper-per-hour L4 need not be cheaper per model than A10G. | Timed the second training epoch of circles-250-n1 (b8 config, micro-batch 16, bf16, compiled) on each GPU type. L4 360 s/epoch, A10G 244 s/epoch: A10G is ~1.5x faster and slightly cheaper per model; L4's 20 h per 250px model is near Modal's 24 h limit. | Same train_fm_unet.py and arguments as the local sweep; probe runs wrote to container scratch only. | Probe ~00:10 per GPU (run in parallel). | Use A10G for the sweep. |
+| 21:02 | 24-model b8 FM UNet sweep on Modal | Methods need models for every resolution and circle count; 100 epochs left 96px n4 visibly unconverged, and two shared local GPUs would need days. | Launched `modal_train_fm.py::sweep`: resolutions 64–250 × circles 1–4, 200 epochs, batch 512, ch16, no attention, ch_mul depth for ~8x8 bottleneck. Regenerated all n2–n4 datasets with the repo seed rule 42+10·res+100·n (the earlier local 96/128 n2–n4 files used seed 42). Outputs go to `outputs/fm_unet/circles-<res>-noattn-ch16-b8-e200/n<n>`; jobs resume from the latest EMA checkpoint after preemption or timeout. Stopped the local 128-n4 run and 96-n4 resume it supersedes. | Resume reinitializes AdamW state (script limitation); any resume is recorded in each run's config.json. | Estimated ~14 h wall clock for 250px, ~140 A10G GPU-hours total. | Pending. |
