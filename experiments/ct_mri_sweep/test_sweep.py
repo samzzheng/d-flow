@@ -58,6 +58,7 @@ class SweepTests(unittest.TestCase):
                 stack.enter_context(patch.object(queue, "source_hashes", return_value={}))
                 stack.enter_context(patch.object(queue, "model_ready", return_value=ready))
                 stack.enter_context(patch.object(queue, "gpu_processes", return_value=occupancy))
+                stack.enter_context(patch.object(queue, "gpu_memory", return_value={0: (49140, 2), 1: (49140, 2)}))
                 stack.enter_context(patch.object(queue.time, "sleep", side_effect=KeyboardInterrupt))
                 stack.enter_context(patch.object(queue.signal, "signal"))
                 process = MagicMock(pid=777)
@@ -70,6 +71,54 @@ class SweepTests(unittest.TestCase):
                 if launches:
                     self.assertIn("cuda:1", launch.call_args.args[0])
                     process.send_signal.assert_called()
+
+    def test_shards_and_memory_packing(self) -> None:
+        self.settings.update(resolutions=[64, 128, 250], circles=[1, 2, 3], ct_angles=[10], mri_accelerations=[4])
+        self.settings["scheduling"] = {"samples_per_worker": 5, "gpu_headroom_mib": 2048,
+            "max_workers_per_gpu": 20, "worker_memory_mib": {"64": 3000, "128": 8000, "250": 30000}}
+        tasks = queue.tasks(self.settings)
+        self.assertEqual(len(tasks), 108)
+        self.assertEqual(len({(task.job.name, sample) for task in tasks for sample in range(task.start, task.stop)}), 540)
+        running = [tasks[0]]
+        remaining = tasks[1:]
+        while (task := queue.fitting_task(remaining, running, self.settings, 49140, 2)) is not None:
+            running.append(task)
+            remaining.remove(task)
+        self.assertEqual([task.job.resolution for task in running], [250, 128, 128])
+        self.assertLessEqual(sum(queue.memory_reservation(task, self.settings, 49140) for task in running), 49140-2048)
+        self.assertIsNone(queue.fitting_task(tasks, [], self.settings, 49140, 47000))
+
+    def test_scheduler_adds_gpu_zero_and_recognizes_all_own_workers(self) -> None:
+        self.settings["scheduling"] = {"samples_per_worker": 5, "gpu_headroom_mib": 2048,
+            "max_workers_per_gpu": 2, "worker_memory_mib": {str(r): 8000 for r in self.settings["resolutions"]}}
+        processes = [MagicMock(pid=pid) for pid in (777, 778, 779, 780)]
+        for process in processes:
+            process.poll.return_value = None
+        with tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+            out = Path(tmp)
+            (out / "manifest.json").write_text(json.dumps({"settings": self.settings,
+                "source_sha256": {}, "jobs": [{}] * 168}))
+            stack.enter_context(patch("sys.argv", ["queue", "run", "--out", tmp]))
+            stack.enter_context(patch.object(queue, "source_hashes", return_value={}))
+            stack.enter_context(patch.object(queue, "model_ready", return_value=True))
+            stack.enter_context(patch.object(queue, "gpu_processes", side_effect=[
+                {0: {111}, 1: set()}, {0: set(), 1: {777, 778}},
+                {0: {779, 780}, 1: {777, 778, 222}}]))
+            stack.enter_context(patch.object(queue, "gpu_memory", return_value={0: (20000, 2), 1: (20000, 2)}))
+            stack.enter_context(patch.object(queue.time, "sleep", side_effect=[None, None, KeyboardInterrupt]))
+            stack.enter_context(patch.object(queue.signal, "signal"))
+            launch = stack.enter_context(patch.object(queue.subprocess, "Popen", side_effect=processes))
+            with self.assertRaises(KeyboardInterrupt):
+                queue.main()
+            self.assertEqual(launch.call_count, 4)
+            self.assertEqual([call.args[0][call.args[0].index("--device") + 1]
+                              for call in launch.call_args_list], ["cuda:1", "cuda:1", "cuda:0", "cuda:0"])
+            records = [json.loads(line) for line in (out / "queue_history.jsonl").read_text().splitlines()]
+            self.assertEqual(len(records[0]["active"]), 2)
+            self.assertEqual(len(records[1]["active"]), 4)
+            self.assertEqual(records[1]["external_gpu_processes"], {"1": [], "0": []})
+            self.assertEqual(records[2]["external_gpu_processes"]["1"], [222])
+            self.assertEqual([p.send_signal.call_count for p in processes], [2, 2, 1, 1])
 
     def test_ct_linearity_adjoint_and_all_angles(self) -> None:
         generator = torch.Generator().manual_seed(3)

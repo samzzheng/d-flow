@@ -1,5 +1,41 @@
 # Paired CT/MRI sweep
 
+## Active reduced sweep (October 7)
+
+`config_100_steps.json` selects resolutions 64/128/250, circle counts 1/2/3,
+CT with 10 angles, Cartesian MRI at nominal 4x, and 30 paired samples:
+18 acquisitions, 540 comparisons, and 1,620 method runs. Each method gets
+**at most 100 optimizer attempts**, with the same LBFGS/Armijo settings below.
+Two failed searches still stop a run as `stalled`; reaching 100 is `step_limit`,
+not a claim of convergence. The earlier full-grid queue is paused.
+
+The queue divides acquisitions into disjoint five-sample workers and packs
+them onto GPU 1 using measured memory reservations for each resolution.
+GPU 0 joins automatically when no external CUDA processes remain. Every
+worker runs all three methods, including the uncheckpointed exact gradient;
+its reservation covers the largest tape, persistent DLR graphs, and optimizer
+state. A device margin and per-process allocator limit bound memory use.
+GPU memory use and scheduler decisions are saved in `queue_history.jsonl`.
+Sharing changes execution only: seeds, objective, gradient estimators, and
+optimization settings are unchanged. Allocation capacity does not guarantee
+linear throughput improvement with worker count.
+
+Single-worker memory checks and the six-case 100-update smoke study live in
+`outputs/ct_mri_smoke_20261007/`. The smoke study uses test image 0 with the
+three-circle model at each resolution, under both operators. It is separate
+from the 30-sample study. Inspect its late objective/image-error histories
+before interpreting 100 steps as sufficient for convergence.
+
+```sh
+.venv/bin/python -m experiments.ct_mri_sweep.queue init \
+  --out outputs/ct_mri_sweep_100steps_20261007 \
+  --config experiments/ct_mri_sweep/config_100_steps.json
+.venv/bin/python -m experiments.ct_mri_sweep.queue run \
+  --out outputs/ct_mri_sweep_100steps_20261007 --gpus 1 0 --poll-seconds 10
+```
+
+## Original larger grid
+
 Six resolutions (64, 96, 128, 160, 200, 250), four circle counts, four CT angle
 counts (10, 20, 23, 180), and three MRI accelerations (4, 8, 24) give 168
 acquisition configurations. Test images 0–29 give 5,040 paired cases and

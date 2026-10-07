@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import signal
 import statistics
@@ -69,7 +70,7 @@ def model_ready(job: Job, settings: Settings) -> bool:
 
 def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(".json.tmp")
+    temporary = path.with_suffix(f".{os.getpid()}.json.tmp")
     temporary.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
     temporary.replace(path)
 
@@ -226,9 +227,15 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--job", required=True)
     parser.add_argument("--device", default="cuda:1")
+    parser.add_argument("--sample-start", type=int, default=0)
+    parser.add_argument("--sample-stop", type=int)
+    parser.add_argument("--memory-fraction", type=float)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
     settings = manifest["settings"]
+    sample_stop = settings["samples"] if args.sample_stop is None else args.sample_stop
+    if not 0 <= args.sample_start < sample_stop <= settings["samples"]:
+        parser.error("Sample interval must lie inside the configured test subset")
     for name, expected in manifest["source_sha256"].items():
         if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != expected:
             raise ValueError(f"Source changed after queuing: {name}")
@@ -240,7 +247,8 @@ def main() -> None:
     torch.set_num_interop_threads(1)
     device = torch.device(args.device)
     torch.cuda.set_device(device)
-    torch.cuda.set_per_process_memory_fraction(execution["memory_fraction"], device)
+    torch.cuda.set_per_process_memory_fraction(
+        execution["memory_fraction"] if args.memory_fraction is None else args.memory_fraction, device)
     torch.backends.cudnn.allow_tf32 = execution["cudnn_tf32"]
     torch.backends.cuda.matmul.allow_tf32 = execution["matmul_tf32"]
     torch.backends.cudnn.benchmark = execution["cudnn_benchmark"]
@@ -273,7 +281,7 @@ def main() -> None:
     signal.signal(signal.SIGINT, stop)
     output = args.manifest.parent / job.name
     output.mkdir(exist_ok=True)
-    for sample in range(settings["samples"]):
+    for sample in range(args.sample_start, sample_stop):
         case = output / f"sample_{sample:03d}"
         case.mkdir(exist_ok=True)
         source_seed = settings["seed"] + 10000 * job.resolution + 100 * job.circles + sample
@@ -291,7 +299,7 @@ def main() -> None:
                     "operator": operator.metadata, "source_seed": source_seed, "noise_seed": noise_seed,
                     "dlr_seed": dlr_seed, "torch": str(torch.__version__),
                     "gpu": torch.cuda.get_device_name(device)}
-        if sample == 0:
+        if sample == args.sample_start:
             # Validate the fastest backend on this checkpoint before any reconstructions.
             with torch.no_grad():
                 canonical = euler_flow(model, initial, settings["flow_steps"])
@@ -305,12 +313,12 @@ def main() -> None:
             error = float((fast_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
             endpoint_error = float((fast_image - canonical).norm() / canonical.norm().clamp_min(1e-20))
             passed = math.isfinite(error) and error < 0.01 and math.isfinite(endpoint_error) and endpoint_error < 0.005 and alpha == 0
-            write_json(output / "backend_validation.json", {
+            write_json(output / f"backend_validation_{args.sample_start:03d}.json", {
                 "passed": passed, "gradient_relative_error_graph_vs_eager_dlr": error if math.isfinite(error) else None,
                 "endpoint_relative_error_fast_vs_native": endpoint_error if math.isfinite(endpoint_error) else None, "terminal_alpha": float(alpha),
                 "checkpoint_sha256": checkpoint_hash, "note": "Execution equivalence, not DLR vs exact gradient accuracy."})
             if not passed:
-                raise RuntimeError("Fast backend validation failed; see backend_validation.json")
+                raise RuntimeError("Fast backend validation failed; see backend_validation output")
             del fast_image, fast_factors, reference_factors, fast_gradient, reference_gradient, canonical, gx
         if not (case / "inputs.pt").exists():
             save_tensor(case / "inputs.pt", {"protocol": protocol, "truth": truth, "clean": clean,
@@ -334,11 +342,22 @@ def main() -> None:
                 break
         if interrupted[0]:
             return
+    shard = {
+        "sample_start": args.sample_start, "sample_stop": sample_stop,
+        "peak_allocated_mib": torch.cuda.max_memory_allocated(device) / 2**20,
+        "peak_reserved_mib": torch.cuda.max_memory_reserved(device) / 2**20}
+    if not all((output / f"sample_{sample:03d}" / f"{method.lower().replace('-', '_').replace(' ', '_')}.json").exists()
+               for sample in range(settings["samples"]) for method in METHODS):
+        write_json(output / f"shard_{args.sample_start:03d}_{sample_stop:03d}.json", shard)
+        return
     summaries = {}
     for method in METHODS:
         stem = method.lower().replace("-", "_").replace(" ", "_")
         records = [json.loads((output / f"sample_{sample:03d}" / f"{stem}.json").read_text())
                    for sample in range(settings["samples"])]
+        if any(record["status"] not in TERMINAL for record in records):
+            write_json(output / f"shard_{args.sample_start:03d}_{sample_stop:03d}.json", shard)
+            return
         errors = [record["history"][-1]["image_relative_l2"] for record in records]
         summaries[method] = {"mean_image_relative_l2": statistics.mean(errors),
                              "std_image_relative_l2": statistics.stdev(errors) if len(errors) > 1 else 0.0,
@@ -348,6 +367,7 @@ def main() -> None:
                              "statuses": {status: sum(record["status"] == status for record in records) for status in sorted(TERMINAL)}}
     write_json(output / "complete.json", {"job": asdict(job), "samples": settings["samples"],
                                           "methods": summaries, "checkpoint_sha256": checkpoint_hash})
+    write_json(output / f"shard_{args.sample_start:03d}_{sample_stop:03d}.json", shard)
 
 
 if __name__ == "__main__":

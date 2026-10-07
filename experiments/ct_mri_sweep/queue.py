@@ -6,7 +6,7 @@ python -m experiments.ct_mri_sweep.queue run --out outputs/ct_mri_sweep_20261007
 from __future__ import annotations
 
 import argparse
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 import fcntl
 import hashlib
@@ -21,6 +21,42 @@ import time
 from typing import Any
 
 from .run import ROOT, Job, Settings, jobs, model_ready, write_json
+
+
+@dataclass(frozen=True)
+class Task:
+    job: Job
+    start: int
+    stop: int
+
+    @property
+    def name(self) -> str:
+        return f"{self.job.name}_{self.start:03d}_{self.stop:03d}"
+
+    def marker(self, out: Path) -> Path:
+        return out / self.job.name / f"shard_{self.start:03d}_{self.stop:03d}.json"
+
+
+def tasks(settings: Settings) -> list[Task]:
+    width = settings.get("scheduling", {}).get("samples_per_worker", settings["samples"])
+    return [Task(job, start, min(start + width, settings["samples"]))
+            for job in jobs(settings) for start in range(0, settings["samples"], width)]
+
+
+def memory_reservation(task: Task, settings: Settings, total_mib: int) -> int:
+    schedule = settings.get("scheduling", {})
+    return schedule.get("worker_memory_mib", {}).get(
+        str(task.job.resolution), int(total_mib * settings["execution"]["memory_fraction"]) + 512)
+
+
+def fitting_task(remaining: list[Task], running: list[Task], settings: Settings,
+                 total_mib: int, used_mib: int) -> Task | None:
+    schedule = settings.get("scheduling", {})
+    if len(running) >= schedule.get("max_workers_per_gpu", 1):
+        return None
+    reserved = sum(memory_reservation(task, settings, total_mib) for task in running)
+    available = total_mib - schedule.get("gpu_headroom_mib", 2048) - max(reserved, used_mib)
+    return next((task for task in remaining if memory_reservation(task, settings, total_mib) <= available), None)
 
 
 def source_hashes() -> dict[str, str]:
@@ -46,7 +82,7 @@ def runtime_estimate(settings: Settings) -> Settings:
                                if key in {"dflow", "dlr", "forward_trial"}}
     cases_per_resolution = len(settings["circles"]) * (len(settings["ct_angles"]) + len(settings["mri_accelerations"])) * settings["samples"]
     scenarios = []
-    for updates in (100, 250, 500, 1000, settings["stopping"]["max_updates"]):
+    for updates in sorted({100, 250, 500, 1000, settings["stopping"]["max_updates"]}):
         for trials in (1, 2):
             seconds = cases_per_resolution * updates * sum(
                 value["dflow"] + value["dlr"] + 3 * trials * value["forward_trial"]
@@ -70,6 +106,13 @@ def gpu_processes() -> dict[int, set[int]]:
         uuid, pid = map(str.strip, row.split(","))
         result[ids[uuid]].add(int(pid))
     return result
+
+
+def gpu_memory() -> dict[int, tuple[int, int]]:
+    rows = subprocess.check_output(["nvidia-smi", "--query-gpu=index,memory.total,memory.used",
+                                    "--format=csv,noheader,nounits"], text=True)
+    return {index: (total, used) for index, total, used in
+            (map(int, row.split(",")) for row in rows.strip().splitlines())}
 
 
 def main() -> None:
@@ -105,7 +148,7 @@ def main() -> None:
                                  "dlr_refresh": "every gradient; fixed per-case initialization seed",
                                  "pflow_variant": "identity sensitivity proxy with shared LBFGS/Armijo, no shell projection",
                                  "measurement_noise": "Gaussian direction rescaled to exact relative norm; complex circular direction for MRI",
-                                 "queue": "all 24 training summaries complete before any job; one worker per idle GPU; pause if an external CUDA process appears",
+                                 "queue": "all selected training summaries complete; pack disjoint sample shards using measured per-resolution memory reservations; pause our workers on external CUDA occupancy",
                                  "checkpoint_selection": "terminal accepted iterate; no truth-based selection",
                                  "figures": "one PNG and PDF comparison for every paired sample, including all three methods"}}
         write_json(manifest_path, manifest)
@@ -130,7 +173,7 @@ def main() -> None:
 
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
-    active: dict[int, tuple[Job, subprocess.Popen[str]]] = {}
+    active: dict[str, tuple[int, Task, subprocess.Popen[str]]] = {}
     failures = json.loads((out / "queue_failures.json").read_text()) if (out / "queue_failures.json").exists() else {}
     log_directory = out / "logs"
     log_directory.mkdir(exist_ok=True)
@@ -138,14 +181,15 @@ def main() -> None:
     previous_status = None
     try:
         while not interrupted[0]:
-            for gpu, (job, process) in list(active.items()):
+            for name, (_, task, process) in list(active.items()):
                 code = process.poll()
                 if code is not None:
-                    del active[gpu]
+                    del active[name]
                     if code != 0:
-                        failures[job.name] = {"exit_code": code, "log": str(log_directory / f"{job.name}.log")}
+                        failures[name] = {"exit_code": code, "log": str(log_directory / f"{name}.log")}
                         write_json(out / "queue_failures.json", failures)
-            unfinished = [job for job in jobs(settings) if not (out / job.name / "complete.json").exists()]
+            unfinished = [task for task in tasks(settings) if not task.marker(out).exists()
+                          and not (out / task.job.name / "complete.json").exists()]
             if not unfinished:
                 status = "complete"
             elif source_hashes() != manifest["source_sha256"]:
@@ -153,36 +197,53 @@ def main() -> None:
             elif shutil.disk_usage(out).free < 20 * 2 ** 30:
                 status = "waiting_for_disk_space"
             else:
-                pending_models = sorted({f"r{job.resolution}_n{job.circles}" for job in unfinished if not model_ready(job, settings)})
+                pending_models = sorted({f"r{task.job.resolution}_n{task.job.circles}" for task in unfinished
+                                         if not model_ready(task.job, settings)})
                 status = "waiting_for_training" if pending_models else "running"
             external: dict[int, list[int]] = {}
+            memory: dict[int, tuple[int, int]] = {}
             if status == "running":
                 occupancy = gpu_processes()
+                memory = gpu_memory()
                 for gpu in args.gpus:
-                    own_pid = active[gpu][1].pid if gpu in active else None
-                    external[gpu] = sorted(occupancy[gpu] - ({own_pid} if own_pid else set()))
-                    if external[gpu] and gpu in active:
-                        active[gpu][1].send_signal(signal.SIGTERM)
-                    if external[gpu] or gpu in active:
+                    on_gpu = [(task, proc) for device, task, proc in active.values() if device == gpu]
+                    external[gpu] = sorted(occupancy[gpu] - {proc.pid for _, proc in on_gpu})
+                    if external[gpu]:
+                        for _, process in on_gpu:
+                            process.send_signal(signal.SIGTERM)
                         continue
-                    remaining = [job for job in unfinished if job.name not in failures
-                                 and job not in [entry[0] for entry in active.values()]]
-                    if not remaining:
-                        continue
-                    job = remaining[0]
-                    with (log_directory / f"{job.name}.log").open("a") as log:
-                        process = subprocess.Popen([
-                            sys.executable, "-m", "experiments.ct_mri_sweep.run", "--manifest", str(manifest_path),
-                            "--job", job.name, "--device", f"cuda:{gpu}"], cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, text=True)
-                    active[gpu] = (job, process)
+                    total, used = memory[gpu]
+                    while True:
+                        remaining = [task for task in unfinished if task.name not in failures and task.name not in active]
+                        running = [task for device, task, _ in active.values() if device == gpu]
+                        task = fitting_task(remaining, running, settings, total, used)
+                        if task is None:
+                            break
+                        # CUDA context memory sits outside PyTorch's allocator limit.
+                        fraction = min(settings["execution"]["memory_fraction"],
+                                       (memory_reservation(task, settings, total) - 512) / total)
+                        with (log_directory / f"{task.name}.log").open("a") as log:
+                            process = subprocess.Popen([
+                                sys.executable, "-m", "experiments.ct_mri_sweep.run", "--manifest", str(manifest_path),
+                                "--job", task.job.name, "--device", f"cuda:{gpu}",
+                                "--sample-start", str(task.start), "--sample-stop", str(task.stop),
+                                "--memory-fraction", str(fraction)], cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, text=True)
+                        active[task.name] = (gpu, task, process)
                 if not active:
-                    status = "failed_jobs_remaining" if all(job.name in failures for job in unfinished) else "waiting_for_gpus"
+                    status = "failed_jobs_remaining" if all(task.name in failures for task in unfinished) else "waiting_for_gpus"
             record = {"status": status, "updated_at": datetime.now().astimezone().isoformat(),
-                      "training_pending": pending_models, "completed_acquisitions": len(manifest["jobs"]) - len(unfinished),
+                      "training_pending": pending_models,
+                      "completed_acquisitions": sum((out / job.name / "complete.json").exists() for job in jobs(settings)),
                       "total_acquisitions": len(manifest["jobs"]), "gpus": args.gpus,
-                      "active": {gpu: {"job": job.name, "pid": proc.pid} for gpu, (job, proc) in active.items()},
-                      "external_gpu_processes": external, "failed_acquisitions": list(failures)}
+                      "completed_shards": len(tasks(settings)) - len(unfinished), "total_shards": len(tasks(settings)),
+                      "active": {name: {"gpu": gpu, "job": task.job.name, "samples": [task.start, task.stop], "pid": proc.pid,
+                                        "reserved_mib": memory_reservation(task, settings, memory[gpu][0]) if gpu in memory else None}
+                                 for name, (gpu, task, proc) in active.items()},
+                      "gpu_memory_total_used_mib": memory,
+                      "external_gpu_processes": external, "failed_shards": list(failures)}
             write_json(out / "queue_status.json", record)
+            with (out / "queue_history.jsonl").open("a") as history:
+                history.write(json.dumps(record) + "\n")
             if status != previous_status:
                 print(json.dumps(record), flush=True)
                 previous_status = status
@@ -190,10 +251,10 @@ def main() -> None:
                 break
             time.sleep(args.poll_seconds)
     finally:
-        for _, process in active.values():
+        for _, _, process in active.values():
             if process.poll() is None:
                 process.send_signal(signal.SIGTERM)
-        for _, process in active.values():
+        for _, _, process in active.values():
             process.wait()
         if interrupted[0]:
             write_json(out / "queue_status.json", {"status": "paused", "updated_at": datetime.now().astimezone().isoformat()})
