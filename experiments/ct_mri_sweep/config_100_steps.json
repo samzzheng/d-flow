@@ -65,11 +65,11 @@
   "scheduling": {
     "samples_per_worker": 5,
     "max_workers_per_gpu": 20,
-    "gpu_headroom_mib": 1536,
+    "gpu_headroom_mib": 1024,
     "worker_memory_mib": {
-      "64": 3072,
-      "128": 8704,
-      "250": 30720
+      "64": 2816,
+      "128": 7936,
+      "250": 29376
     }
   }
 }

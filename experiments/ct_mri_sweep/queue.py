@@ -108,13 +108,6 @@ def gpu_processes() -> dict[int, set[int]]:
     return result
 
 
-def gpu_memory() -> dict[int, tuple[int, int]]:
-    rows = subprocess.check_output(["nvidia-smi", "--query-gpu=index,memory.total,memory.used",
-                                    "--format=csv,noheader,nounits"], text=True)
-    return {index: (total, used) for index, total, used in
-            (map(int, row.split(",")) for row in rows.strip().splitlines())}
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("init", "run", "status"))
@@ -188,8 +181,7 @@ def main() -> None:
                     if code != 0:
                         failures[name] = {"exit_code": code, "log": str(log_directory / f"{name}.log")}
                         write_json(out / "queue_failures.json", failures)
-            unfinished = [task for task in tasks(settings) if not task.marker(out).exists()
-                          and not (out / task.job.name / "complete.json").exists()]
+            unfinished = [task for task in tasks(settings) if not task.marker(out).exists()]
             if not unfinished:
                 status = "complete"
             elif source_hashes() != manifest["source_sha256"]:
@@ -204,7 +196,10 @@ def main() -> None:
             memory: dict[int, tuple[int, int]] = {}
             if status == "running":
                 occupancy = gpu_processes()
-                memory = gpu_memory()
+                rows = subprocess.check_output(["nvidia-smi", "--query-gpu=index,memory.total,memory.used",
+                                                "--format=csv,noheader,nounits"], text=True)
+                memory = {index: (total, used) for index, total, used in
+                          (map(int, row.split(",")) for row in rows.strip().splitlines())}
                 for gpu in args.gpus:
                     on_gpu = [(task, proc) for device, task, proc in active.values() if device == gpu]
                     external[gpu] = sorted(occupancy[gpu] - {proc.pid for _, proc in on_gpu})
@@ -221,7 +216,7 @@ def main() -> None:
                             break
                         # CUDA context memory sits outside PyTorch's allocator limit.
                         fraction = min(settings["execution"]["memory_fraction"],
-                                       (memory_reservation(task, settings, total) - 512) / total)
+                                       (memory_reservation(task, settings, total) - 768) / total)
                         with (log_directory / f"{task.name}.log").open("a") as log:
                             process = subprocess.Popen([
                                 sys.executable, "-m", "experiments.ct_mri_sweep.run", "--manifest", str(manifest_path),

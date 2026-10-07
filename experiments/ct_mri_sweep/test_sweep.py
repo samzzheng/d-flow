@@ -58,7 +58,7 @@ class SweepTests(unittest.TestCase):
                 stack.enter_context(patch.object(queue, "source_hashes", return_value={}))
                 stack.enter_context(patch.object(queue, "model_ready", return_value=ready))
                 stack.enter_context(patch.object(queue, "gpu_processes", return_value=occupancy))
-                stack.enter_context(patch.object(queue, "gpu_memory", return_value={0: (49140, 2), 1: (49140, 2)}))
+                stack.enter_context(patch.object(queue.subprocess, "check_output", return_value="0, 49140, 2\n1, 49140, 2\n"))
                 stack.enter_context(patch.object(queue.time, "sleep", side_effect=KeyboardInterrupt))
                 stack.enter_context(patch.object(queue.signal, "signal"))
                 process = MagicMock(pid=777)
@@ -104,7 +104,7 @@ class SweepTests(unittest.TestCase):
             stack.enter_context(patch.object(queue, "gpu_processes", side_effect=[
                 {0: {111}, 1: set()}, {0: set(), 1: {777, 778}},
                 {0: {779, 780}, 1: {777, 778, 222}}]))
-            stack.enter_context(patch.object(queue, "gpu_memory", return_value={0: (20000, 2), 1: (20000, 2)}))
+            stack.enter_context(patch.object(queue.subprocess, "check_output", return_value="0, 20000, 2\n1, 20000, 2\n"))
             stack.enter_context(patch.object(queue.time, "sleep", side_effect=[None, None, KeyboardInterrupt]))
             stack.enter_context(patch.object(queue.signal, "signal"))
             launch = stack.enter_context(patch.object(queue.subprocess, "Popen", side_effect=processes))

@@ -26,6 +26,21 @@ three-circle model at each resolution, under both operators. It is separate
 from the 30-sample study. Inspect its late objective/image-error histories
 before interpreting 100 steps as sufficient for convergence.
 
+The completed smoke study **did not establish convergence within 100 updates**:
+rank-8 DLR stalled in five of six cases and reached the limit with 41.91% image
+error in the sixth. Exact D-Flow and P-Flow also had case-dependent failures.
+Full histories, paired figures, and the late-progress assessment are in
+`outputs/ct_mri_smoke_20261007/convergence100/report.md` and `convergence.pdf`.
+The requested sweep therefore remains a fixed-budget comparison with explicit
+failure counts, not a comparison of converged solutions.
+
+Capacity checks passed with 17 simultaneous 64px workers and six 128px workers,
+each exercising all three estimators. Peak aggregate VRAM was 40.8 and 44.7 GiB,
+respectively. The 250px worker is limited to one per device; the scheduler fills
+remaining capacity with smaller resolutions. Reservations are 2816/7936/29376
+MiB for 64/128/250, with a further 1024 MiB device margin and 768 MiB of each
+reservation set aside for allocations outside PyTorch's allocator.
+
 ```sh
 .venv/bin/python -m experiments.ct_mri_sweep.queue init \
   --out outputs/ct_mri_sweep_100steps_20261007 \
