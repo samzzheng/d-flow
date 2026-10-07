@@ -7,7 +7,11 @@ CT with 10 angles, Cartesian MRI at nominal 4x, and 30 paired samples:
 18 acquisitions, 540 comparisons, and 1,620 method runs. Each method gets
 **at most 100 optimizer attempts**, with the same LBFGS/Armijo settings below.
 Two failed searches still stop a run as `stalled`; reaching 100 is `step_limit`,
-not a claim of convergence. The earlier full-grid queue is paused.
+not a claim of convergence. Measurements are now **noiseless**, with observed
+`y = A(x_GT)` exactly. Both earlier noisy queues are paused and preserved;
+their 1% measurement noise was carried over from the previous study and was
+not the intended setting for this sweep. Their reconstruction results cannot
+be converted to noiseless results by replotting.
 
 The queue divides acquisitions into disjoint five-sample workers and packs
 them onto GPU 1 using measured memory reservations for each resolution.
@@ -20,13 +24,13 @@ Sharing changes execution only: seeds, objective, gradient estimators, and
 optimization settings are unchanged. Allocation capacity does not guarantee
 linear throughput improvement with worker count.
 
-Single-worker memory checks and the six-case 100-update smoke study live in
+Single-worker memory checks and the earlier **1%-noise** 100-update smoke study live in
 `outputs/ct_mri_smoke_20261007/`. The smoke study uses test image 0 with the
 three-circle model at each resolution, under both operators. It is separate
 from the 30-sample study. Inspect its late objective/image-error histories
 before interpreting 100 steps as sufficient for convergence.
 
-The completed smoke study **did not establish convergence within 100 updates**:
+That noisy smoke study **did not establish convergence within 100 updates**:
 rank-8 DLR stalled in five of six cases and reached the limit with 41.91% image
 error in the sixth. Exact D-Flow and P-Flow also had case-dependent failures.
 Full histories, paired figures, and the late-progress assessment are in
@@ -43,10 +47,10 @@ reservation set aside for allocations outside PyTorch's allocator.
 
 ```sh
 .venv/bin/python -m experiments.ct_mri_sweep.queue init \
-  --out outputs/ct_mri_sweep_100steps_20261007 \
+  --out outputs/ct_mri_sweep_100steps_noiseless_20261007 \
   --config experiments/ct_mri_sweep/config_100_steps.json
 .venv/bin/python -m experiments.ct_mri_sweep.queue run \
-  --out outputs/ct_mri_sweep_100steps_20261007 --gpus 1 0 --poll-seconds 10
+  --out outputs/ct_mri_sweep_100steps_noiseless_20261007 --gpus 1 0 --poll-seconds 10
 ```
 
 ## Original larger grid
@@ -92,9 +96,10 @@ directory. A failed worker is recorded and excluded from automatic retries.
   convergence. No noise-floor termination is used in this convergence study.
 - Source/noise/sketch/mask seeds are paired across methods. Test image indices
   and source seeds are also shared across acquisitions for each model.
-- Default noise is 1% relative norm: a Gaussian direction is rescaled so that
-  `||noise||/||clean||=0.01`. MRI uses complex noise on acquired coefficients only.
-  Noise and MRI mask choices are explicit in `config.json` and the manifest.
+- Default noise is zero in both configuration files; no random measurement
+  noise is drawn. Earlier immutable manifests retain their original 1% noise.
+  Explicit nonzero settings remain supported: a Gaussian direction is rescaled
+  to the requested relative norm, with complex MRI noise on acquired coefficients.
 
 CT uses equally spaced angles over `[0,180)` degrees, with the existing
 rotate-and-average linear operator. The 180-angle case is evaluated in chunks
@@ -138,12 +143,21 @@ Each sample directory contains paired inputs, one `.pt`/`.json` per method, and
 `comparison.png`/`comparison.pdf`. Figures are refreshed as each method finishes
 and contain all three final runs once complete: **5,040 complete comparisons**.
 Columns are GT, D-Flow, P-Flow, DLR D-Flow. Rows are images, clean-reference
-measurements, absolute image errors, and residuals against noisy observations.
+measurements, absolute image errors, residuals against observed measurements,
+and **relative image error / measurement residual versus optimization step**.
+All panels have the same square dimensions and aligned columns; colorbars have
+their own column. Absolute image-error and residual maps use `cmocean.cm.amp`.
 Each panel has a relative L2 percentage and each row shares its color limits.
 MRI measurement displays use log magnitude; errors use the original complex
 arrays. Method statuses and update counts are included. Histories retain the
 per-update errors and residuals. Acquisition summaries record final image error
 mean/std/median, update counts, elapsed time, and terminal status counts.
+
+Use `python -m experiments.ct_mri_sweep.replot <output-directory-or-sample>`
+to refresh saved PNG/PDF panels on the CPU. This uses the saved observations,
+reconstructions, and histories unchanged. Thus an old noisy GT residual remains
+1%, while the new noiseless GT residual is exactly zero. Curves stop at each
+method's actual final attempt, including early stalls; they share axis limits.
 
 ## Runtime estimate
 

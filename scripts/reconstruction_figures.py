@@ -7,7 +7,7 @@ log display transforms. Missing methods keep their column, marked unavailable.
 """
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 import cmocean
 import matplotlib.pyplot as plt
@@ -18,6 +18,7 @@ import torch
 
 METHODS = ("D-Flow", "P-Flow", "DLR D-Flow")
 PlotArray = NDArray[np.float64] | NDArray[np.complex128]
+History = Sequence[Mapping[str, float | int | None]]
 
 
 def _as_array(value: torch.Tensor) -> PlotArray:
@@ -34,14 +35,17 @@ def plot_reconstruction_comparison(
     reconstructions: Mapping[str, tuple[torch.Tensor, torch.Tensor]],
     *,
     observation: torch.Tensor | None = None,
+    histories: Mapping[str, History] | None = None,
     measurement_log: bool = False,
     title: str = "",
 ) -> Figure:
-    """Plot images, clean measurements, image errors, and measurement residuals.
+    """Plot four image/measurement rows and a fifth row of error histories.
 
-    The last row uses the noisy observation when supplied, otherwise clean GT.
+    The residual row uses the observation when supplied, otherwise clean GT.
     Its GT panel therefore displays the noise magnitude when noise is present.
-    Each row shares a color scale. No clipping or per-panel normalization occurs.
+    Histories contain step, image_relative_l2, and measurement_relative_l2_noisy
+    (the last key denotes residual against observed y, also when y is noiseless).
+    Each map row shares a color scale; curves share axes. No clipping occurs.
     Callers save and close the returned figure.
     """
     if set(reconstructions) - set(METHODS):
@@ -65,14 +69,18 @@ def plot_reconstruction_comparison(
     measurement_errors = [None if y is None else np.abs(y - measurement_gt)
                           for y in measurements]
     residuals = [None if y is None else np.abs(y - measured) for y in measurements]
-    reference_label = "observed y" if observation is not None else "clean GT"
+    reference_label = "clean GT" if np.array_equal(measured, measurement_gt) else "observed y"
     rows = (
         ("Image", images, image_errors, image_gt),
         ("Measurement (clean GT reference)", measurements, measurement_errors, measurement_gt),
         ("Absolute image error", image_errors, image_errors, image_gt),
         (f"Absolute measurement residual ({reference_label})", residuals, residuals, measured),
     )
-    fig, axes = plt.subplots(4, 4, figsize=(16, 13), layout="constrained")
+    fig, grid = plt.subplots(5, 5, figsize=(16, 20), layout="constrained",
+                            gridspec_kw={"width_ratios": [1, 1, 1, 1, .04]})
+    axes = grid[:, :4]
+    for axis in axes.flat:
+        axis.set_box_aspect(1)
     for row_index, (label, values, errors, reference) in enumerate(rows):
         displayed = [None if value is None else
                      np.abs(value) if np.iscomplexobj(value) else value for value in values]
@@ -97,11 +105,47 @@ def plot_reconstruction_comparison(
                 axis.text(0.5, 0.5, "Not available", ha="center", va="center", transform=axis.transAxes)
                 continue
             artist = axis.imshow(
-                value, cmap="magma" if row_index >= 2 else cmocean.cm.dense_r,
-                vmin=vmin, vmax=vmax, aspect="equal" if row_index in (0, 2) else "auto",
+                value, cmap=cmocean.cm.amp if row_index >= 2 else cmocean.cm.dense_r,
+                vmin=vmin, vmax=vmax, aspect="auto",
             )
         axes[row_index, 0].set_ylabel(label, fontsize=10)
-        fig.colorbar(artist, ax=axes[row_index, :].tolist(), shrink=0.8)
+        grid[row_index, 4].set_box_aspect(25)
+        fig.colorbar(artist, cax=grid[row_index, 4])
+    grid[4, 4].set_axis_off()
+
+    histories = {} if histories is None else histories
+    last_step = max((float(point["step"]) for history in histories.values() for point in history), default=1)
+    curve_max = max((100 * float(point[key]) for history in histories.values() for point in history
+                     for key in ("image_relative_l2", "measurement_relative_l2_noisy")), default=1)
+    for column, name in enumerate(("GT", *METHODS)):
+        axis = axes[4, column]
+        for errors, reference, label, color, style, key in (
+            (image_errors, image_gt, "Image error", cmocean.cm.amp(.9), "-", "image_relative_l2"),
+            (residuals, measured, "Measurement residual", cmocean.cm.amp(.5), "--", "measurement_relative_l2_noisy"),
+        ):
+            if column == 0:
+                norm = float(np.linalg.norm(reference))
+                if norm > 0:
+                    axis.axhline(100 * np.linalg.norm(errors[0]) / norm, color=color, linestyle=style, label=label)
+            elif name in reconstructions and histories.get(name):
+                history = histories[name]
+                axis.plot([point["step"] for point in history],
+                          [100 * float(point[key]) for point in history],
+                          color=color, linestyle=style, label=label)
+        percentages = ["n/a", "n/a"]
+        for index, (errors, reference) in enumerate(((image_errors, image_gt), (residuals, measured))):
+            norm = float(np.linalg.norm(reference))
+            if errors[column] is not None and norm > 0:
+                percentages[index] = f"{100 * np.linalg.norm(errors[column]) / norm:.2f}%"
+        axis.set_title(f"{name}\nImage L2 = {percentages[0]}\nResidual L2 = {percentages[1]}", fontsize=10)
+        if not axis.lines:
+            axis.text(.5, .5, "History not available", ha="center", va="center", transform=axis.transAxes)
+        else:
+            axis.legend(loc="upper right", fontsize=7)
+        axis.set(xlabel="Optimization step", xlim=(0, max(last_step, 1)), ylim=(0, max(curve_max * 1.05, 1)))
+        axis.tick_params(labelsize=8)
+        axis.grid(alpha=.2)
+    axes[4, 0].set_ylabel("Relative L2 error (%)", fontsize=10)
     fig.suptitle(title or "Reconstruction comparison", fontsize=14)
     display_note = "Measurement display: log(1 + magnitude). " if measurement_log else ""
     fig.supxlabel(

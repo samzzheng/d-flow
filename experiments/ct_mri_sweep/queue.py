@@ -140,7 +140,8 @@ def main() -> None:
                                  "initial_step_policy": "first_iteration_only", "armijo_progress": "strict_decrease_nonzero_step",
                                  "dlr_refresh": "every gradient; fixed per-case initialization seed",
                                  "pflow_variant": "identity sensitivity proxy with shared LBFGS/Armijo, no shell projection",
-                                 "measurement_noise": "Gaussian direction rescaled to exact relative norm; complex circular direction for MRI",
+                                 "measurement_noise": ("none; observed y equals clean A(x_GT) exactly" if settings["noise_relative"] == 0 else
+                                                       "Gaussian direction rescaled to exact relative norm; complex circular direction for MRI"),
                                  "queue": "all selected training summaries complete; pack disjoint sample shards using measured per-resolution memory reservations; pause our workers on external CUDA occupancy",
                                  "checkpoint_selection": "terminal accepted iterate; no truth-based selection",
                                  "figures": "one PNG and PDF comparison for every paired sample, including all three methods"}}

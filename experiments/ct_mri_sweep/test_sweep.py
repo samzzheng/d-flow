@@ -15,6 +15,9 @@ from p_flow import proxy_gradient
 from .operators import CT, MRI, noisy_measurement
 from .run import Evaluator, Job, jobs, model_ready, solve
 from . import queue
+from scripts.reconstruction_figures import METHODS, plot_reconstruction_comparison
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 class LinearVelocity(torch.nn.Module):
@@ -151,6 +154,47 @@ class SweepTests(unittest.TestCase):
                 expected = torch.fft.ifft2(torch.fft.ifftshift(operator.mask * residual, dim=(-2,-1)), norm="ortho").real
                 torch.testing.assert_close(proxy, expected)
                 torch.testing.assert_close(loss, .5 * residual.abs().square().sum())
+
+    def test_noiseless_measurements_bypass_sampling_and_have_zero_gt_residual(self) -> None:
+        truth = torch.randn(1, 1, 16, 16)
+        for operator in (CT(16, 10, torch.device("cpu")), MRI(16, 4, 5, torch.device("cpu"))):
+            clean = operator(truth)
+            with patch("torch.randn", side_effect=AssertionError("Zero noise must not sample")):
+                observed = noisy_measurement(clean, 0, 23, getattr(operator, "mask", None))
+            self.assertTrue(torch.equal(clean, observed))
+            fig = plot_reconstruction_comparison(truth, clean, {}, observation=observed)
+            try:
+                self.assertEqual(np.count_nonzero(fig.axes[15].images[0].get_array()), 0)
+                self.assertIn("0.00%", fig.axes[15].get_title())
+            finally:
+                plt.close(fig)
+
+    def test_aligned_panels_amp_and_complex_error_histories(self) -> None:
+        truth = torch.ones(1, 1, 16, 16)
+        for shape in ((1, 1, 10, 16), (1, 1, 16, 16)):
+            clean = torch.ones(shape, dtype=torch.complex64)
+            reconstruction = 1j * clean
+            history = [{"step": 0, "image_relative_l2": 1., "measurement_relative_l2_noisy": 2.},
+                       {"step": 7, "image_relative_l2": 0., "measurement_relative_l2_noisy": 2**.5}]
+            fig = plot_reconstruction_comparison(truth, clean, {name: (truth, reconstruction) for name in METHODS},
+                observation=clean, histories={name: history for name in METHODS})
+            try:
+                fig.canvas.draw()
+                axes = np.asarray(fig.axes, dtype=object).reshape(5, 5)
+                boxes = [[axis.get_window_extent() for axis in row[:4]] for row in axes]
+                np.testing.assert_allclose([box.width for row in boxes for box in row], boxes[0][0].width, atol=.1)
+                np.testing.assert_allclose([box.height for row in boxes for box in row], boxes[0][0].height, atol=.1)
+                for row in boxes[1:]:
+                    np.testing.assert_allclose([box.x0 for box in row], [box.x0 for box in boxes[0]], atol=.1)
+                for axis in axes[2:4, :4].flat:
+                    self.assertEqual(axis.images[0].get_cmap().name, "amp")
+                self.assertIn("141.42%", axes[1, 1].get_title())
+                np.testing.assert_allclose(axes[4, 1].lines[0].get_xdata(), [0, 7])
+                np.testing.assert_allclose(axes[4, 1].lines[1].get_ydata(), [200, 100 * 2**.5])
+                self.assertEqual(axes[4, 1].get_xlim(), axes[4, 3].get_xlim())
+                self.assertEqual(axes[4, 1].get_ylim(), axes[4, 3].get_ylim())
+            finally:
+                plt.close(fig)
 
     def test_full_rank_dlr_and_exact_gradient_match_euler_map(self) -> None:
         settings = self.settings

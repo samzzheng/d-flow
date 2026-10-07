@@ -20,7 +20,7 @@
   "samples": 30,
   "epoch": 200,
   "run_template": "outputs/fm_unet/circles-{resolution}-noattn-ch16-b8-e200/n{circles}",
-  "noise_relative": 0.01,
+  "noise_relative": 0.0,
   "flow_steps": 100,
   "seed": 20261007,
   "source_projection": false,

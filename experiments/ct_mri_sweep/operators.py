@@ -64,6 +64,8 @@ class MRI:
 def noisy_measurement(clean: torch.Tensor, relative_noise: float, seed: int,
                       mask: torch.Tensor | None = None) -> torch.Tensor:
     """Fix ||noise||/||clean|| exactly; MRI noise exists only on acquired samples."""
+    if relative_noise == 0:
+        return clean
     generator = torch.Generator().manual_seed(seed)
     noise = torch.randn(clean.shape, generator=generator, dtype=torch.float32)
     if clean.is_complex():

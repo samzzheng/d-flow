@@ -333,6 +333,7 @@ def main() -> None:
             fig = plot_reconstruction_comparison(truth, clean, {
                 name: (result["image"], result["measurement"]) for name, result in results.items()},
                 observation=observed, measurement_log=job.problem == "mri",
+                histories={name: result["history"] for name, result in results.items()},
                 title=f"{job.name} | test {sample} | {100*settings['noise_relative']:g}% noise | {settings['flow_steps']}-step Euler\n"
                       + "; ".join(f"{name}: {result['status']} ({len(result['history'])-1} updates)" for name, result in results.items()))
             for extension in ("png", "pdf"):
