@@ -13,6 +13,16 @@ ForwardOperator = Callable[[torch.Tensor], torch.Tensor]
 GradientEvaluation = tuple[torch.Tensor, torch.Tensor, torch.Tensor]
 
 
+def endpoint_gradient(endpoint: torch.Tensor, operator: ForwardOperator,
+                      measurement: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """Squared data misfit and identity-proxy gradient, also for complex data."""
+    with torch.enable_grad():
+        variable = endpoint.detach().requires_grad_(True)
+        loss = 0.5 * (operator(variable) - measurement).abs().square().sum()
+        gradient, = torch.autograd.grad(loss, variable)
+    return loss.detach(), gradient.detach()
+
+
 def proxy_gradient(model: torch.nn.Module, source: torch.Tensor,
                    operator: ForwardOperator, measurement: torch.Tensor,
                    n_steps: int = 100) -> GradientEvaluation:
@@ -23,10 +33,7 @@ def proxy_gradient(model: torch.nn.Module, source: torch.Tensor,
     """
     with torch.no_grad():
         endpoint = euler_flow(model, source, n_steps)
-    with torch.enable_grad():
-        endpoint = endpoint.detach().requires_grad_(True)
-        loss = 0.5 * (operator(endpoint) - measurement).square().sum()
-        gradient, = torch.autograd.grad(loss, endpoint)
+    loss, gradient = endpoint_gradient(endpoint, operator, measurement)
     return endpoint.detach(), loss.detach(), gradient.detach()
 
 

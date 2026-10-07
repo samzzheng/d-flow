@@ -1,0 +1,165 @@
+"""CPU checks for paired operators, complex gradients, and exact resumption."""
+from __future__ import annotations
+
+from contextlib import ExitStack
+import json
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import MagicMock, patch
+
+import torch
+
+from dlr_dflow import dlr_dflow as core
+from p_flow import proxy_gradient
+from .operators import CT, MRI, noisy_measurement
+from .run import Evaluator, Job, jobs, model_ready, solve
+from . import queue
+
+
+class LinearVelocity(torch.nn.Module):
+    def forward(self, image: torch.Tensor, time: torch.Tensor) -> torch.Tensor:
+        return 0.2 * image
+
+
+class SweepTests(unittest.TestCase):
+    def setUp(self) -> None:
+        torch.set_num_threads(1)
+        self.settings = json.loads(Path(__file__).with_name("config.json").read_text())
+
+    def test_complete_grid(self) -> None:
+        grid = jobs(self.settings)
+        self.assertEqual(len(grid), 168)
+        self.assertEqual(len({job.name for job in grid}), 168)
+        self.assertEqual(len(grid) * self.settings["samples"] * 3, 15120)
+
+    def test_training_gate_requires_summary_and_final_checkpoint(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, patch("experiments.ct_mri_sweep.run.ROOT", Path(tmp)):
+            job = Job(64, 1, "ct", 10)
+            run = Path(tmp) / self.settings["run_template"].format(resolution=64, circles=1)
+            run.mkdir(parents=True)
+            (run / "run_summary.json").write_text(json.dumps({"status": "complete", "epochs_completed": 200}))
+            self.assertFalse(model_ready(job, self.settings))
+            (run / "checkpoints").mkdir()
+            (run / "checkpoints/epoch_0200.pt").touch()
+            self.assertTrue(model_ready(job, self.settings))
+
+    def test_scheduler_waits_for_training_and_external_gpu_jobs(self) -> None:
+        for ready, occupancy, expected_status, launches in (
+            (False, {0: set(), 1: set()}, "waiting_for_training", 0),
+            (True, {0: {111}, 1: {222}}, "waiting_for_gpus", 0),
+            (True, {0: {111}, 1: set()}, "running", 1),
+        ):
+            with tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+                out = Path(tmp)
+                (out / "manifest.json").write_text(json.dumps({"settings": self.settings,
+                    "source_sha256": {}, "jobs": [{}] * 168}))
+                stack.enter_context(patch("sys.argv", ["queue", "run", "--out", tmp]))
+                stack.enter_context(patch.object(queue, "source_hashes", return_value={}))
+                stack.enter_context(patch.object(queue, "model_ready", return_value=ready))
+                stack.enter_context(patch.object(queue, "gpu_processes", return_value=occupancy))
+                stack.enter_context(patch.object(queue.time, "sleep", side_effect=KeyboardInterrupt))
+                stack.enter_context(patch.object(queue.signal, "signal"))
+                process = MagicMock(pid=777)
+                process.poll.return_value = None
+                launch = stack.enter_context(patch.object(queue.subprocess, "Popen", return_value=process))
+                with self.assertRaises(KeyboardInterrupt):
+                    queue.main()
+                self.assertEqual(json.loads((out / "queue_status.json").read_text())["status"], expected_status)
+                self.assertEqual(launch.call_count, launches)
+                if launches:
+                    self.assertIn("cuda:1", launch.call_args.args[0])
+                    process.send_signal.assert_called()
+
+    def test_ct_linearity_adjoint_and_all_angles(self) -> None:
+        generator = torch.Generator().manual_seed(3)
+        image, direction = [torch.randn(1, 1, 16, 16, generator=generator) for _ in range(2)]
+        for angles in (10, 20, 23, 180):
+            operator = CT(16, angles, torch.device("cpu"))
+            torch.testing.assert_close(operator(2 * image - direction), 2 * operator(image) - operator(direction), atol=5e-7, rtol=1e-5)
+            variable = image.clone().requires_grad_(True)
+            measurement = torch.randn(1, 1, angles, 16, generator=generator)
+            product = (operator(variable) * measurement).sum()
+            transpose, = torch.autograd.grad(product, variable)
+            torch.testing.assert_close((operator(direction) * measurement).sum(), (direction * transpose).sum(), atol=3e-6, rtol=1e-5)
+
+    def test_mri_sampling_noise_and_complex_gradient(self) -> None:
+        image = torch.randn(1, 1, 16, 16)
+        for pattern in ("cartesian", "points"):
+            for acceleration in (4, 8, 24):
+                operator = MRI(16, acceleration, 11, torch.device("cpu"), pattern)
+                duplicate = MRI(16, acceleration, 11, torch.device("cpu"), pattern)
+                self.assertTrue(torch.equal(operator.mask, duplicate.mask))
+                self.assertTrue(bool(operator.mask[0, 0, 8, 8]))
+                count = max(1, round((16 if pattern == "cartesian" else 256) / acceleration))
+                self.assertEqual(int(operator.mask.sum()), count * (16 if pattern == "cartesian" else 1))
+                clean = operator(image)
+                observed = noisy_measurement(clean, .01, 12, operator.mask)
+                self.assertEqual(int(observed[~operator.mask].count_nonzero()), 0)
+                self.assertAlmostEqual(float((observed-clean).norm() / clean.norm()), .01, places=6)
+                endpoint, loss, proxy = proxy_gradient(LinearVelocity(), image, operator, observed, 3)
+                residual = operator(endpoint) - observed
+                expected = torch.fft.ifft2(torch.fft.ifftshift(operator.mask * residual, dim=(-2,-1)), norm="ortho").real
+                torch.testing.assert_close(proxy, expected)
+                torch.testing.assert_close(loss, .5 * residual.abs().square().sum())
+
+    def test_full_rank_dlr_and_exact_gradient_match_euler_map(self) -> None:
+        settings = self.settings
+        settings["flow_steps"] = 3
+        settings["dlr"].update(rank=4, initialization_oversampling=0)
+        source = torch.randn(1, 1, 2, 2, dtype=torch.float64).requires_grad_(True)
+        operator = MRI(2, 1, 1, torch.device("cpu"))
+        observed = operator(torch.ones_like(source))
+        evaluator = Evaluator(LinearVelocity(), operator, observed, settings, 13)
+        exact = evaluator.gradient(source, "D-Flow")
+        with ExitStack() as stack:
+            for flag in ("HAND_JVP", "HAND_VJP", "SHARE_LINEARIZATION"):
+                stack.enter_context(patch.object(core, flag, False))
+            approximate = evaluator.gradient(source, "DLR D-Flow")
+        torch.testing.assert_close(approximate, exact, atol=1e-10, rtol=1e-10)
+        direction = torch.randn_like(source)
+        epsilon = 1e-5
+        finite_difference = (evaluator.objective(source.detach() + epsilon*direction) - evaluator.objective(source.detach() - epsilon*direction)) / (2*epsilon)
+        self.assertAlmostEqual(finite_difference, float((exact*direction).sum()), places=8)
+
+    def test_resume_preserves_lbfgs_schedule_and_trajectory(self) -> None:
+        settings = self.settings
+        settings["flow_steps"] = 3
+        settings["execution"]["checkpoint_every"] = 1
+        settings["stopping"].update(min_updates=4, max_updates=4, window=2)
+        initial = torch.tensor([3., 4., 2., 1.], dtype=torch.float64).reshape(1,1,2,2)
+        truth = torch.ones_like(initial)
+        operator = MRI(2, 1, 1, torch.device("cpu"))
+        clean = operator(truth)
+        for method in ("D-Flow", "P-Flow"):
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                evaluator = Evaluator(LinearVelocity(), operator, clean, settings, 0)
+                whole = solve(evaluator, method, initial, truth, clean, root / "whole.pt", {}, [False])
+                evaluator = Evaluator(LinearVelocity(), operator, clean, settings, 0)
+                interrupted = [False]
+                gradient = evaluator.gradient
+
+                def interrupt_after_two(source: torch.Tensor, name: str) -> torch.Tensor:
+                    result = gradient(source, name)
+                    interrupted[0] = evaluator.counts["gradients"] == 3
+                    return result
+
+                with patch.object(evaluator, "gradient", interrupt_after_two):
+                    paused = solve(evaluator, method, initial, truth, clean, root / "split.pt", {}, interrupted)
+                self.assertEqual(paused["status"], "paused")
+                self.assertEqual(paused["optimizer"]["step_attempts"], 2)
+                evaluator = Evaluator(LinearVelocity(), operator, clean, settings, 0)
+                resumed = solve(evaluator, method, initial, truth, clean, root / "split.pt", {}, [False])
+                torch.testing.assert_close(resumed["source"], whole["source"], rtol=0, atol=0)
+                self.assertEqual(resumed["optimizer"]["step_attempts"], 4)
+                self.assertEqual([row["phi"] for row in resumed["history"]], [row["phi"] for row in whole["history"]])
+                (root / "split.json").unlink()
+                evaluator = Evaluator(LinearVelocity(), operator, clean, settings, 0)
+                solve(evaluator, method, initial, truth, clean, root / "split.pt", {}, [False])
+                self.assertEqual(json.loads((root / "split.json").read_text())["status"], "step_limit")
+                self.assertEqual(evaluator.counts["gradients"], 0)
+
+
+if __name__ == "__main__":
+    unittest.main()
