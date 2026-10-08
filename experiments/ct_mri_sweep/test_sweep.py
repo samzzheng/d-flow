@@ -218,14 +218,17 @@ class SweepTests(unittest.TestCase):
     def test_resume_preserves_lbfgs_schedule_and_trajectory(self) -> None:
         settings = self.settings
         settings["flow_steps"] = 3
+        settings["dlr"].update(rank=2, initialization_oversampling=0)
         settings["execution"]["checkpoint_every"] = 1
         settings["stopping"].update(min_updates=4, max_updates=4, window=2)
         initial = torch.tensor([3., 4., 2., 1.], dtype=torch.float64).reshape(1,1,2,2)
         truth = torch.ones_like(initial)
         operator = MRI(2, 1, 1, torch.device("cpu"))
         clean = operator(truth)
-        for method in ("D-Flow", "P-Flow"):
-            with tempfile.TemporaryDirectory() as tmp:
+        for method in METHODS:
+            with tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+                for flag in ("HAND_JVP", "HAND_VJP", "SHARE_LINEARIZATION"):
+                    stack.enter_context(patch.object(core, flag, False))
                 root = Path(tmp)
                 evaluator = Evaluator(LinearVelocity(), operator, clean, settings, 0)
                 whole = solve(evaluator, method, initial, truth, clean, root / "whole.pt", {}, [False])
@@ -247,11 +250,35 @@ class SweepTests(unittest.TestCase):
                 torch.testing.assert_close(resumed["source"], whole["source"], rtol=0, atol=0)
                 self.assertEqual(resumed["optimizer"]["step_attempts"], 4)
                 self.assertEqual([row["phi"] for row in resumed["history"]], [row["phi"] for row in whole["history"]])
+                self.assertEqual(resumed["optimizer"]["backtracking"], "geometric")
+                if method == "DLR D-Flow":
+                    torch.testing.assert_close(resumed["previous_v"], whole["previous_v"], rtol=0, atol=0)
+                    self.assertEqual(resumed["evaluations"]["gradients"], whole["evaluations"]["gradients"])
                 (root / "split.json").unlink()
                 evaluator = Evaluator(LinearVelocity(), operator, clean, settings, 0)
                 solve(evaluator, method, initial, truth, clean, root / "split.pt", {}, [False])
                 self.assertEqual(json.loads((root / "split.json").read_text())["status"], "step_limit")
                 self.assertEqual(evaluator.counts["gradients"], 0)
+
+    def test_previous_basis_seeds_only_the_next_gradient(self) -> None:
+        settings = self.settings
+        settings["flow_steps"] = 3
+        settings["dlr"].update(rank=2, initialization_oversampling=0)
+        source = torch.randn(1, 1, 2, 2, dtype=torch.float64)
+        operator = MRI(2, 1, 1, torch.device("cpu"))
+        evaluator = Evaluator(LinearVelocity(), operator, operator(torch.ones_like(source)), settings, 13)
+        with ExitStack() as stack:
+            for flag in ("HAND_JVP", "HAND_VJP", "SHARE_LINEARIZATION"):
+                stack.enter_context(patch.object(core, flag, False))
+            evolve = stack.enter_context(patch("experiments.ct_mri_sweep.run.sensitivity_factors", wraps=core.sensitivity_factors))
+            evaluator.gradient(source, "DLR D-Flow")
+            self.assertIsNone(evolve.call_args.kwargs["seed_basis"])
+            previous = evaluator.previous_v.clone()
+            evaluator.objective(source + .01)
+            torch.testing.assert_close(evaluator.previous_v, previous, rtol=0, atol=0)
+            evaluator.gradient(source + .01, "DLR D-Flow")
+            torch.testing.assert_close(evolve.call_args.kwargs["seed_basis"], previous, rtol=0, atol=0)
+            self.assertEqual(evolve.call_count, 2)
 
 
 if __name__ == "__main__":

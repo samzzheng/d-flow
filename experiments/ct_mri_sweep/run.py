@@ -111,6 +111,7 @@ class Evaluator:
         self.image: torch.Tensor | None = None
         self.value = 0.0
         self.counts = {"forward_objectives": 0, "gradients": 0}
+        self.previous_v: torch.Tensor | None = None
 
     def objective(self, source: torch.Tensor) -> float:
         with torch.no_grad():
@@ -134,10 +135,14 @@ class Evaluator:
             if method == "DLR D-Flow":
                 _, factors, alpha = sensitivity_factors(
                     self.model, source.detach(), self.settings["flow_steps"],
-                    **self.settings["dlr"], seed=self.seed, products=self.products)
+                    **self.settings["dlr"], seed=self.seed, products=self.products,
+                    seed_basis=self.previous_v)
                 if alpha != 0.0:
                     raise FloatingPointError("Terminal analytical alpha must be exactly zero")
                 gradient = approx_source_gradient(factors, gradient, alpha)
+                if self.settings.get("dlr_reuse_previous_v", False):
+                    # Graph outputs may be overwritten on the next evaluation.
+                    self.previous_v = factors[2].detach().clone()
         if not torch.isfinite(gradient).all() or not math.isfinite(self.value):
             raise FloatingPointError("Nonfinite objective or gradient")
         return gradient.detach()
@@ -166,6 +171,7 @@ def solve(evaluator: Evaluator, method: str, initial: torch.Tensor, truth: torch
             setattr(optimizer, name, tensor_tree(value, source.device))
         history, prior_seconds = saved["history"], saved["elapsed_seconds"]
         evaluator.counts = saved["evaluations"]
+        evaluator.previous_v = tensor_tree(saved.get("previous_v"), source.device)
     started = time.monotonic()
 
     def closure() -> torch.Tensor:
@@ -212,6 +218,7 @@ def solve(evaluator: Evaluator, method: str, initial: torch.Tensor, truth: torch
             saved = {"protocol": protocol, "method": method, "status": status,
                      "source": source.detach(), "image": evaluator.image,
                      "measurement": evaluator.operator(evaluator.image).detach(),
+                     "previous_v": evaluator.previous_v,
                      "optimizer": {key: value for key, value in vars(optimizer).items() if key not in {"source", "objective"}},
                      "history": history, "evaluations": evaluator.counts,
                      "elapsed_seconds": prior_seconds + time.monotonic() - started}
@@ -313,8 +320,23 @@ def main() -> None:
             error = float((fast_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
             endpoint_error = float((fast_image - canonical).norm() / canonical.norm().clamp_min(1e-20))
             passed = math.isfinite(error) and error < 0.01 and math.isfinite(endpoint_error) and endpoint_error < 0.005 and alpha == 0
+            seeded_error = None
+            if settings.get("dlr_reuse_previous_v", False):
+                seed_basis = fast_factors[2].detach().clone()
+                _, seeded_fast, seeded_alpha = sensitivity_factors(
+                    model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed,
+                    products=products, seed_basis=seed_basis)
+                _, seeded_reference, _ = sensitivity_factors(
+                    model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed,
+                    seed_basis=seed_basis)
+                seeded_gradient = approx_source_gradient(seeded_fast, gx, seeded_alpha)
+                reference_gradient = approx_source_gradient(seeded_reference, gx, seeded_alpha)
+                seeded_error = float((seeded_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
+                passed = passed and math.isfinite(seeded_error) and seeded_error < 0.01 and seeded_alpha == 0
+                del seed_basis, seeded_fast, seeded_reference, seeded_gradient
             write_json(output / f"backend_validation_{args.sample_start:03d}.json", {
                 "passed": passed, "gradient_relative_error_graph_vs_eager_dlr": error if math.isfinite(error) else None,
+                "seeded_gradient_relative_error_graph_vs_eager_dlr": seeded_error if seeded_error is not None and math.isfinite(seeded_error) else None,
                 "endpoint_relative_error_fast_vs_native": endpoint_error if math.isfinite(endpoint_error) else None, "terminal_alpha": float(alpha),
                 "checkpoint_sha256": checkpoint_hash, "note": "Execution equivalence, not DLR vs exact gradient accuracy."})
             if not passed:

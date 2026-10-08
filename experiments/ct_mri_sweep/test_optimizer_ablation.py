@@ -12,7 +12,9 @@ from .optimizer_ablation import ExperimentalArmijo, VARIANTS
 
 class OptimizerChecks(unittest.TestCase):
     def test_baseline_matches_production_and_resume(self) -> None:
-        for projected in (False, True):
+        for projected, backtracking in ((False, "interpolation"), (True, "interpolation"),
+                                        (False, "geometric"), (True, "geometric")):
+            variant = "geometric" if backtracking == "geometric" else "baseline"
             initial = torch.linspace(-1, 1, 12).reshape(1, -1)
             trajectories = []
             for experimental in (False, True):
@@ -28,14 +30,15 @@ class OptimizerChecks(unittest.TestCase):
                     source.grad = diagonal * source.detach()
                     return source.new_tensor(objective(source.detach()))
 
-                optimizer = (ExperimentalArmijo(source, objective, "baseline", project=projected, step_cap=.2)
-                             if experimental else ArmijoLBFGS(source, objective, project=projected, step_cap=.2))
+                optimizer = (ExperimentalArmijo(source, objective, variant, project=projected, step_cap=.2)
+                             if experimental else ArmijoLBFGS(source, objective, project=projected, step_cap=.2,
+                                                              backtracking=backtracking))
                 trajectory = []
                 for step in range(40):
                     if experimental and step == 20:
                         state = deepcopy({key: value for key, value in vars(optimizer).items()
                                           if key not in {"source", "objective"}})
-                        optimizer = ExperimentalArmijo(source, objective, "baseline", project=projected, step_cap=.2)
+                        optimizer = ExperimentalArmijo(source, objective, variant, project=projected, step_cap=.2)
                         for key, value in state.items():
                             setattr(optimizer, key, value)
                     optimizer.step(closure)

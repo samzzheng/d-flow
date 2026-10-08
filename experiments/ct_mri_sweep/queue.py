@@ -137,8 +137,11 @@ def main() -> None:
                               "method_runs": len(jobs(settings)) * settings["samples"] * 3},
                     "protocol": {"objective": "0.5 * ||A G(z) - y||^2; float64 sum, float32 models/sources",
                                  "optimizer": "same p_flow.armijo.ArmijoLBFGS instance type and parameters for all methods",
+                                 "backtracking": settings["optimizer"].get("backtracking", "geometric"),
                                  "initial_step_policy": "first_iteration_only", "armijo_progress": "strict_decrease_nonzero_step",
-                                 "dlr_refresh": "every gradient; fixed per-case initialization seed",
+                                 "dlr_refresh": ("every gradient; previous terminal V seeds the next initial sketch; remaining random columns keep the fixed per-case seed"
+                                                 if settings.get("dlr_reuse_previous_v", False) else
+                                                 "every gradient; fixed per-case initialization seed"),
                                  "pflow_variant": "identity sensitivity proxy with shared LBFGS/Armijo, no shell projection",
                                  "measurement_noise": ("none; observed y equals clean A(x_GT) exactly" if settings["noise_relative"] == 0 else
                                                        "Gaussian direction rescaled to exact relative norm; complex circular direction for MRI"),

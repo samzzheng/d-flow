@@ -1,6 +1,19 @@
 # Paired CT/MRI sweep
 
-## Active reduced sweep (October 7)
+## Active reduced sweep (October 8 restart)
+
+The active output directory is `outputs/ct_mri_sweep_geometric_v_20261008`.
+All three methods now use geometric Armijo backtracking (halve rejected rates),
+with history 100 and the existing curvature-pair rule. DLR replaces eight of
+the width-16 initialization sketch columns with its previous terminal right
+basis, retaining eight random columns. Its first gradient is entirely random;
+every gradient still evolves fresh factors from flow time zero. The basis is
+saved with optimizer checkpoints and restored on resume.
+
+This sweep restarts from the original paired sources and noiseless observations.
+The October 7 results and the interrupted CPU optimizer pilot are preserved in
+their original directories. Their checkpoints must not be resumed under this
+changed protocol. The new queue uses **GPU 1 only**; GPU 0 remains excluded.
 
 `config_100_steps.json` selects resolutions 64/128/250, circle counts 1/2/3,
 CT with 10 angles, Cartesian MRI at nominal 4x, and 30 paired samples:
@@ -15,8 +28,7 @@ be converted to noiseless results by replotting.
 
 The queue divides acquisitions into disjoint five-sample workers and packs
 them onto GPU 1 using measured memory reservations for each resolution.
-GPU 0 joins automatically when no external CUDA processes remain. Every
-worker runs all three methods, including the uncheckpointed exact gradient;
+Every worker runs all three methods, including the uncheckpointed exact gradient;
 its reservation covers the largest tape, persistent DLR graphs, and optimizer
 state. A device margin and per-process allocator limit bound memory use.
 GPU memory use and scheduler decisions are saved in `queue_history.jsonl`.
@@ -47,10 +59,10 @@ reservation set aside for allocations outside PyTorch's allocator.
 
 ```sh
 .venv/bin/python -m experiments.ct_mri_sweep.queue init \
-  --out outputs/ct_mri_sweep_100steps_noiseless_20261007 \
+  --out outputs/ct_mri_sweep_geometric_v_20261008 \
   --config experiments/ct_mri_sweep/config_100_steps.json
 .venv/bin/python -m experiments.ct_mri_sweep.queue run \
-  --out outputs/ct_mri_sweep_100steps_noiseless_20261007 --gpus 1 0 --poll-seconds 10
+  --out outputs/ct_mri_sweep_geometric_v_20261008 --gpus 1 --poll-seconds 10
 ```
 
 ## Original larger grid
@@ -76,6 +88,7 @@ directory. A failed worker is recorded and excluded from automatic retries.
   projection, truth-based stopping, or truth-based checkpoint selection.
 - Identical LBFGS/Armijo implementation for all methods: learning rate 1,
   history 100, `c1=1e-4`, at most 30 trials, displacement cap `0.01 sqrt(d)`.
+  Rejected trial rates are halved geometrically.
   L1 initial scaling is used only on the first attempted update, including
   across restarts. Trials must strictly lower the canonical native Euler
   objective. P-Flow/DLR use their approximate gradients for the Armijo slope.
@@ -86,6 +99,8 @@ directory. A failed worker is recorded and excluded from automatic retries.
 - Fastest recorded DLR execution profile: rank 8, analytical alpha `1-t`,
   explicit `trace_probes=0`, terminal alpha exactly zero, no enrichment,
   initialization oversampling 8, stride 1, fresh factors at every gradient.
+  Previous terminal right vectors seed eight sketch columns after the first
+  gradient, with the other eight columns retaining their fixed random seed.
   Shared hand-written products, fused normalization/primal kernels, specialized
   algebra, full-step CUDA graphs, 6/4 derivative chunks, no DLR checkpointing.
 - Accepted native Euler endpoints are cached for P-Flow/DLR terminal gradients;

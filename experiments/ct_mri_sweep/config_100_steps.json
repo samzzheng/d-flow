@@ -29,7 +29,8 @@
     "history_size": 100,
     "max_ls": 30,
     "c1": 0.0001,
-    "step_cap": 0.01
+    "step_cap": 0.01,
+    "backtracking": "geometric"
   },
   "stopping": {
     "min_updates": 100,
@@ -38,6 +39,7 @@
     "plateau_relative": 0.001,
     "failed_searches": 2
   },
+  "dlr_reuse_previous_v": true,
   "dlr": {
     "rank": 8,
     "trace_probes": 0,

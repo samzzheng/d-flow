@@ -8,7 +8,7 @@ this experiment keeps a standalone adapter and leaves production scripts alone.
 from __future__ import annotations
 
 import math
-from typing import Callable
+from typing import Callable, Literal
 
 import torch
 
@@ -33,10 +33,14 @@ class ArmijoLBFGS:
 
     def __init__(self, source: torch.Tensor, objective: Objective, lr: float = 1.,
                  history_size: int = 100, max_ls: int = 30, c1: float = 1e-4,
-                 step_cap: float = 0., project: bool = True) -> None:
+                 step_cap: float = 0., project: bool = True,
+                 backtracking: Literal["geometric", "interpolation"] = "geometric") -> None:
+        if backtracking not in {"geometric", "interpolation"}:
+            raise ValueError(f"Unknown Armijo backtracking policy: {backtracking}")
         self.source, self.objective = source, objective
         self.lr, self.history_size, self.max_ls, self.c1 = lr, history_size, max_ls, c1
         self.step_cap, self.project = step_cap, project
+        self.backtracking = backtracking
         self.S: list[torch.Tensor] = []
         self.Y: list[torch.Tensor] = []
         self.state: dict[str, bool] = {}
@@ -101,9 +105,12 @@ class ArmijoLBFGS:
             if math.isfinite(value) and value < f and value - f <= self.c1 * rate * slope:
                 accepted = True
                 break
-            denominator = 2 * (value - f - slope * rate)
-            interpolated = -slope * rate * rate / denominator if math.isfinite(value) and denominator > 0 else .1 * rate
-            rate = min(max(interpolated, .1 * rate), .5 * rate)
+            if self.backtracking == "geometric":
+                rate *= .5
+            else:
+                denominator = 2 * (value - f - slope * rate)
+                interpolated = -slope * rate * rate / denominator if math.isfinite(value) and denominator > 0 else .1 * rate
+                rate = min(max(interpolated, .1 * rate), .5 * rate)
         if not accepted:
             self.S, self.Y = [], []
             self.failed_searches += 1
