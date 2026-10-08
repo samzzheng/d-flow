@@ -53,8 +53,9 @@ failure counts, not a comparison of converged solutions.
 Capacity checks passed with 17 simultaneous 64px workers and six 128px workers,
 each exercising all three estimators. Peak aggregate VRAM was 40.8 and 44.7 GiB,
 respectively. The 250px worker is limited to one per device; the scheduler fills
-remaining capacity with smaller resolutions. Reservations are 2816/7936/29376
-MiB for 64/128/250, with a further 1024 MiB device margin and 768 MiB of each
+remaining capacity with smaller resolutions. The October 8 restart increases
+reservations to 2816/8448/30720 MiB for 64/128/250 after measuring the new
+worker's peaks, with a further 1024 MiB device margin and 768 MiB of each
 reservation set aside for allocations outside PyTorch's allocator.
 
 ```sh
