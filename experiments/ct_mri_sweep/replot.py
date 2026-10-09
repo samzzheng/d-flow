@@ -11,7 +11,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import torch
 
-from scripts.reconstruction_figures import METHODS, plot_reconstruction_comparison
+from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
 from .run import Settings
 
 
@@ -29,6 +29,7 @@ def replot(case: Path) -> None:
         name: (value["image"], value["measurement"]) for name, value in results.items()},
         observation=inputs["observed"], histories={name: value["history"] for name, value in results.items()},
         measurement_log=inputs["protocol"]["job"]["problem"] == "mri",
+        residual_vmax=RESIDUAL_VMAX[inputs["protocol"]["job"]["problem"]],
         title=f"{case.parent.name} | test {inputs['protocol']['sample']} | {100*settings['noise_relative']:g}% noise | {settings['flow_steps']}-step Euler\n"
               + "; ".join(f"{name}: {value['status']} ({len(value['history'])-1} updates)" for name, value in results.items()))
     for extension in ("png", "pdf"):

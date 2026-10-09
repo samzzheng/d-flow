@@ -20,7 +20,7 @@ import torch
 
 from dlr_dflow.api import load_flow_model
 from dlr_dflow.implementation import enriched, tangent_unet
-from scripts.reconstruction_figures import plot_reconstruction_comparison
+from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 from .operators import CT, MRI
 from .optimizer_ablation import ExperimentalArmijo, VARIANTS
 from .queue import source_hashes
@@ -143,6 +143,7 @@ def run_case(root: Path, output: Path, case: str, variant: str, max_steps: int) 
     figure = plot_reconstruction_comparison(
         inputs["truth"], inputs["clean"], {"DLR D-Flow": (evaluator.image, operator(evaluator.image))},
         observation=inputs["observed"], histories={"DLR D-Flow": history}, measurement_log=job["problem"] == "mri",
+        residual_vmax=RESIDUAL_VMAX[job["problem"]],
         title=f"{case} | CPU {variant} | {status} | rank 8 | 100 Euler steps\nDLR optimizer ablation; D-Flow/P-Flow unavailable")
     figure.savefig(destination / "comparison.png", dpi=100)
     plt.close(figure)

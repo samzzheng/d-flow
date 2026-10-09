@@ -179,6 +179,12 @@ and **relative image error / measurement residual versus optimization step**.
 All panels have the same square dimensions and aligned columns; colorbars have
 their own column. Absolute image-error and residual maps use `cmocean.cm.amp`.
 Each panel has a relative L2 percentage and each row shares its color limits.
+Absolute measurement residual heatmaps use fixed linear limits across samples,
+resolutions, circle counts, and methods: **0–1 for CT, 0–25 for MRI**. These limits
+are defined in `scripts/reconstruction_figures.py` and are independent of each
+figure's residual maximum. An upper colorbar triangle marks values above the
+limit; metrics still use the complete original arrays. The image-error heatmaps
+and error-versus-iteration axes retain their existing per-figure scaling.
 MRI measurement displays use log magnitude; errors use the original complex
 arrays. Method statuses and update counts are included. Histories retain the
 per-update errors and residuals. Acquisition summaries record final image error
@@ -189,6 +195,12 @@ to refresh saved PNG/PDF panels on the CPU. This uses the saved observations,
 reconstructions, and histories unchanged. Thus an old noisy GT residual remains
 1%, while the new noiseless GT residual is exactly zero. Curves stop at each
 method's actual final attempt, including early stalls; they share axis limits.
+
+For the active FP32 sweep, `source_review.json` records the reviewed plotting
+change and the source-check plumbing needed to apply it. The original manifest
+and checkpoint protocol hashes stay unchanged, allowing saved optimizer states
+to resume. Both the queue and workers validate the explicitly reviewed hashes;
+all other source hashes remain those from the original manifest.
 
 ## Runtime estimate
 

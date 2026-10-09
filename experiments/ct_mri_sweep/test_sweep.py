@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from contextlib import ExitStack
+import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -13,9 +14,9 @@ import torch
 from dlr_dflow import dlr_dflow as core
 from p_flow import proxy_gradient
 from .operators import CT, MRI, noisy_measurement
-from .run import Evaluator, Job, jobs, model_ready, solve
+from .run import Evaluator, Job, jobs, model_ready, reviewed_source_hashes, solve
 from . import queue
-from scripts.reconstruction_figures import METHODS, plot_reconstruction_comparison
+from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -46,6 +47,30 @@ class SweepTests(unittest.TestCase):
             (run / "checkpoints").mkdir()
             (run / "checkpoints/epoch_0200.pt").touch()
             self.assertTrue(model_ready(job, self.settings))
+
+    def test_source_review_preserves_manifest_and_unreviewed_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "manifest.json"
+            manifest = {"source_sha256": {"plot.py": "old", "algorithm.py": "unchanged"}}
+            original = json.dumps(manifest).encode()
+            path.write_bytes(original)
+            self.assertEqual(reviewed_source_hashes(path, manifest), manifest["source_sha256"])
+            review = {"manifest_sha256": hashlib.sha256(original).hexdigest(),
+                      "changes": {"plot.py": {"before": "old", "after": "new"}}}
+            review_path = path.with_name("source_review.json")
+            review_path.write_text(json.dumps(review))
+            self.assertEqual(reviewed_source_hashes(path, manifest),
+                             {"plot.py": "new", "algorithm.py": "unchanged"})
+            self.assertEqual(path.read_bytes(), original)
+            self.assertEqual(manifest["source_sha256"]["plot.py"], "old")
+            review["changes"]["plot.py"]["before"] = "incorrect"
+            review_path.write_text(json.dumps(review))
+            with self.assertRaisesRegex(ValueError, "baseline mismatch"):
+                reviewed_source_hashes(path, manifest)
+            review["manifest_sha256"] = "different"
+            review_path.write_text(json.dumps(review))
+            with self.assertRaisesRegex(ValueError, "different manifest"):
+                reviewed_source_hashes(path, manifest)
 
     def test_scheduler_waits_for_training_and_external_gpu_jobs(self) -> None:
         for ready, occupancy, expected_status, launches in (
@@ -195,6 +220,25 @@ class SweepTests(unittest.TestCase):
                 self.assertEqual(axes[4, 1].get_ylim(), axes[4, 3].get_ylim())
             finally:
                 plt.close(fig)
+
+    def test_fixed_residual_scales_preserve_complex_errors_and_mark_overflow(self) -> None:
+        truth = torch.ones(1, 1, 8, 8)
+        clean = torch.ones_like(truth, dtype=torch.complex64)
+        for problem, limit in RESIDUAL_VMAX.items():
+            for amplitude in (.01, 2 * limit):
+                predicted = clean + 1j * amplitude
+                fig = plot_reconstruction_comparison(truth, clean, {"DLR D-Flow": (truth, predicted)},
+                    measurement_log=problem == "mri", residual_vmax=limit)
+                try:
+                    residual_axis = fig.axes[18]
+                    artist = residual_axis.images[0]
+                    self.assertEqual(artist.get_clim(), (0, limit))
+                    np.testing.assert_allclose(artist.get_array(), amplitude)
+                    self.assertIn(f"{100 * amplitude:.2f}%", residual_axis.get_title())
+                    np.testing.assert_allclose(fig.axes[19].get_yticks(), np.linspace(0, limit, 6))
+                    self.assertEqual(artist.colorbar.extend, "max" if amplitude > limit else "neither")
+                finally:
+                    plt.close(fig)
 
     def test_full_rank_dlr_and_exact_gradient_match_euler_map(self) -> None:
         settings = self.settings

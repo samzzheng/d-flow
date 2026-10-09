@@ -26,7 +26,7 @@ from dlr_dflow.api import approx_source_gradient, load_flow_model, sensitivity_f
 from dlr_dflow.implementation import enriched, tangent_unet
 from p_flow import endpoint_gradient
 from p_flow.armijo import ArmijoLBFGS
-from scripts.reconstruction_figures import plot_reconstruction_comparison
+from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 from .operators import CT, MRI
 from .run import Evaluator, metrics, save_tensor, write_json
 
@@ -190,6 +190,7 @@ def run_case(snapshot_path: Path, output: Path, case: str,
     fig = plot_reconstruction_comparison(
         inputs["truth"], inputs["clean"], {"DLR D-Flow": (evaluator.image, operator(evaluator.image))},
         observation=inputs["observed"], histories={"DLR D-Flow": history}, measurement_log=job["problem"] == "mri",
+        residual_vmax=RESIDUAL_VMAX[job["problem"]],
         title=f"{case} | CPU continuation: {variant} | {status}\n100 Euler steps; D-Flow and P-Flow unavailable in this paired continuation")
     fig.savefig(destination / "comparison.png", dpi=100)
     plt.close(fig)

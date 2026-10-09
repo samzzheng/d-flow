@@ -25,7 +25,7 @@ from dlr_dflow.implementation.graphed_products import GraphedAProducts
 from p_flow import endpoint_gradient
 from p_flow.armijo import ArmijoLBFGS
 from sampler.ode_samplers import euler_flow
-from scripts.reconstruction_figures import METHODS, plot_reconstruction_comparison
+from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
 from .operators import CT, MRI, noisy_measurement
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -73,6 +73,21 @@ def write_json(path: Path, value: Any) -> None:
     temporary = path.with_suffix(f".{os.getpid()}.json.tmp")
     temporary.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
     temporary.replace(path)
+
+
+def reviewed_source_hashes(manifest_path: Path, manifest: Settings) -> dict[str, str]:
+    """Apply an explicit source review without changing checkpoint protocol IDs."""
+    expected = dict(manifest["source_sha256"])
+    review_path = manifest_path.with_name("source_review.json")
+    if review_path.exists():
+        review = json.loads(review_path.read_text())
+        if review["manifest_sha256"] != hashlib.sha256(manifest_path.read_bytes()).hexdigest():
+            raise ValueError("Source review belongs to a different manifest")
+        for name, change in review["changes"].items():
+            if expected.get(name) != change["before"]:
+                raise ValueError(f"Source review baseline mismatch: {name}")
+            expected[name] = change["after"]
+    return expected
 
 
 def tensor_tree(value: Any, device: str | torch.device) -> Any:
@@ -243,7 +258,7 @@ def main() -> None:
     sample_stop = settings["samples"] if args.sample_stop is None else args.sample_stop
     if not 0 <= args.sample_start < sample_stop <= settings["samples"]:
         parser.error("Sample interval must lie inside the configured test subset")
-    for name, expected in manifest["source_sha256"].items():
+    for name, expected in reviewed_source_hashes(args.manifest, manifest).items():
         if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != expected:
             raise ValueError(f"Source changed after queuing: {name}")
     job = next(job for job in jobs(settings) if job.name == args.job)
@@ -355,6 +370,7 @@ def main() -> None:
             fig = plot_reconstruction_comparison(truth, clean, {
                 name: (result["image"], result["measurement"]) for name, result in results.items()},
                 observation=observed, measurement_log=job.problem == "mri",
+                residual_vmax=RESIDUAL_VMAX[job.problem],
                 histories={name: result["history"] for name, result in results.items()},
                 title=f"{job.name} | test {sample} | {100*settings['noise_relative']:g}% noise | {settings['flow_steps']}-step Euler\n"
                       + "; ".join(f"{name}: {result['status']} ({len(result['history'])-1} updates)" for name, result in results.items()))

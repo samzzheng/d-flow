@@ -20,7 +20,7 @@ import sys
 import time
 from typing import Any
 
-from .run import ROOT, Job, Settings, jobs, model_ready, write_json
+from .run import ROOT, Job, Settings, jobs, model_ready, reviewed_source_hashes, write_json
 
 
 @dataclass(frozen=True)
@@ -188,7 +188,7 @@ def main() -> None:
             unfinished = [task for task in tasks(settings) if not task.marker(out).exists()]
             if not unfinished:
                 status = "complete"
-            elif source_hashes() != manifest["source_sha256"]:
+            elif source_hashes() != reviewed_source_hashes(manifest_path, manifest):
                 status = "waiting_for_source_review"
             elif shutil.disk_usage(out).free < 20 * 2 ** 30:
                 status = "waiting_for_disk_space"
