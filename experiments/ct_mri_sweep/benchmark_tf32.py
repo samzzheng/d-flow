@@ -27,6 +27,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--skip-exact", action="store_true")
+    parser.add_argument("--components", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
@@ -37,7 +38,7 @@ def main() -> None:
     torch.backends.cudnn.benchmark = False
     enriched.SPECIALIZE_ZERO_ENRICHMENT = True
     enriched.SKIP_UNTRUNCATED_SVD = True
-    tangent_unet.GN_STATS_MODE = "manual"
+    tangent_unet.GN_STATS_MODE = "native" if args.resolution <= 96 else "manual"
     tangent_unet.GN_ACTION_BACKEND = "triton"
     tangent_unet.GN_PRIMAL_BACKEND = "full"
     root = Path("outputs/ct_mri_sweep_geometric_v_20261008")
@@ -57,6 +58,9 @@ def main() -> None:
     methods = ["objective", "P-Flow", "DLR D-Flow"]
     if not args.skip_exact:
         methods.insert(2, "D-Flow")
+    if args.components:
+        methods.append("DLR cached endpoint")
+    cached_image: torch.Tensor | None = None
 
     def evaluate(method: str, provider: GraphedAProducts) -> torch.Tensor:
         if method == "D-Flow":
@@ -65,11 +69,11 @@ def main() -> None:
             gradient, = torch.autograd.grad(loss, source)
             return gradient.detach()
         with torch.no_grad():
-            image = euler_flow(model, source, 100)
+            image = cached_image if method == "DLR cached endpoint" else euler_flow(model, source, 100)
             if method == "objective":
                 return .5 * (operator(image) - observed).abs().square().sum(dtype=torch.float64)
         _, gradient = endpoint_gradient(image, operator, observed)
-        if method == "DLR D-Flow":
+        if method in {"DLR D-Flow", "DLR cached endpoint"}:
             _, factors, alpha = sensitivity_factors(model, source.detach(), 100,
                 **settings["dlr"], seed=saved["protocol"]["dlr_seed"], seed_basis=seed_basis, products=provider)
             assert alpha == 0
@@ -80,15 +84,18 @@ def main() -> None:
         "resolution": args.resolution, "circles": 2, "flow_steps": 100, "input_case": str(case),
         "device": str(device), "gpu": torch.cuda.get_device_name(device),
         "torch": str(torch.__version__), "dlr": settings["dlr"],
+        "groupnorm_statistics": tangent_unet.GN_STATS_MODE,
         "inputs_sha256": hashlib.sha256((case / "inputs.pt").read_bytes()).hexdigest(),
         "checkpoint_sha256": hashlib.sha256((model_dir / "checkpoints/epoch_0200.pt").read_bytes()).hexdigest(),
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "block_order": [True, False, False, True], "repeats_per_block": args.repeats,
-        "measurement": "synchronized wall seconds; each gradient includes its forward evaluation; no optimizer or line search",
+        "measurement": "synchronized wall seconds; full gradients include forward evaluation; cached-endpoint DLR excludes the canonical forward already done by accepted line search; no optimizer or line search",
         "contention": "Existing GPU1 sweep workers remain active; balanced order reduces but cannot remove contention effects.",
         "records": records}
     for block, flag in enumerate(result["block_order"]):
         torch.backends.cudnn.allow_tf32 = flag
+        with torch.no_grad():
+            cached_image = euler_flow(model, source, 100)
         if flag not in products:
             products[flag] = GraphedAProducts(model, source, share_linearization=True, full_step_graphs=True,
                 max_jvp_columns=20, max_vjp_columns=16, max_step_jvp_columns=6, max_step_vjp_columns=4)
