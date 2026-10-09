@@ -1,8 +1,22 @@
 # Paired CT/MRI sweep
 
-## Active reduced sweep (October 8 restart)
+## Active full-FP32 sweep (October 9 restart)
 
-The active output directory is `outputs/ct_mri_sweep_geometric_v_20261008`.
+The active output directory is `outputs/ct_mri_sweep_fp32_20261009`.
+`config_fp32.json` reproduces the October8 settings with exactly one change:
+convolution TF32 is disabled. Matrix-multiply TF32 remains disabled. Models,
+sources and derivatives use float32; objective accumulation uses float64.
+The previous queue in `outputs/ct_mri_sweep_geometric_v_20261008` was
+checkpointed and paused, preserving its completed and partial results.
+The FP32 run starts from the original paired sources with fresh optimizer
+states and CUDA graphs; it does not resume TF32 optimizer states.
+Experimental singular-value damping is not enabled.
+
+The FP32 preflight at64 CT/128 MRI/250 CT passed all nine three-update method
+runs and graph/eager checks, concurrently peaking at39222MiB. These validate
+execution and capacity, not convergence. Evidence:
+`outputs/ct_mri_fp32_smoke_20261009` and the new sweep's `preflight.json`.
+
 All three methods now use geometric Armijo backtracking (halve rejected rates),
 with history 100 and the existing curvature-pair rule. DLR replaces eight of
 the width-16 initialization sketch columns with its previous terminal right
@@ -15,7 +29,7 @@ The October 7 results and the interrupted CPU optimizer pilot are preserved in
 their original directories. Their checkpoints must not be resumed under this
 changed protocol. The new queue uses **GPU 1 only**; GPU 0 remains excluded.
 
-`config_100_steps.json` selects resolutions 64/128/250, circle counts 1/2/3,
+`config_fp32.json` selects resolutions 64/128/250, circle counts 1/2/3,
 CT with 10 angles, Cartesian MRI at nominal 4x, and 30 paired samples:
 18 acquisitions, 540 comparisons, and 1,620 method runs. Each method gets
 **at most 100 optimizer attempts**, with the same LBFGS/Armijo settings below.
@@ -60,10 +74,10 @@ reservation set aside for allocations outside PyTorch's allocator.
 
 ```sh
 .venv/bin/python -m experiments.ct_mri_sweep.queue init \
-  --out outputs/ct_mri_sweep_geometric_v_20261008 \
-  --config experiments/ct_mri_sweep/config_100_steps.json
+  --out outputs/ct_mri_sweep_fp32_20261009 \
+  --config experiments/ct_mri_sweep/config_fp32.json
 .venv/bin/python -m experiments.ct_mri_sweep.queue run \
-  --out outputs/ct_mri_sweep_geometric_v_20261008 --gpus 1 --poll-seconds 10
+  --out outputs/ct_mri_sweep_fp32_20261009 --gpus 1 --poll-seconds 10
 ```
 
 ## Original larger grid
