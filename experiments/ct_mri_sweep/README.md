@@ -27,8 +27,8 @@ saved with optimizer checkpoints and restored on resume.
 This sweep restarts from the original paired sources and noiseless observations.
 The October 7 results and the interrupted CPU optimizer pilot are preserved in
 their original directories. Their checkpoints must not be resumed under this
-changed protocol. The FP32 queue now uses **GPUs 1 and 0**, following the
-October 9 authorization to add GPU 0. Existing FP32 checkpoints are resumed.
+changed protocol. The FP32 queue now uses **GPU 1 only**, following the
+October 9 request to free GPU 0. Existing FP32 checkpoints are resumed.
 
 `config_fp32.json` selects resolutions 64/128/250, circle counts 1/2/3,
 CT with 10 angles, Cartesian MRI at nominal 4x, and 30 paired samples:
@@ -42,7 +42,7 @@ not the intended setting for this sweep. Their reconstruction results cannot
 be converted to noiseless results by replotting.
 
 The queue divides acquisitions into disjoint five-sample workers and packs
-them onto both GPUs using measured memory reservations for each resolution.
+them onto GPU 1 using measured memory reservations for each resolution.
 Every worker runs all three methods, including the uncheckpointed exact gradient;
 its reservation covers the largest tape, persistent DLR graphs, and optimizer
 state. A device margin and per-process allocator limit bound memory use.
@@ -78,7 +78,7 @@ reservation set aside for allocations outside PyTorch's allocator.
   --out outputs/ct_mri_sweep_fp32_20261009 \
   --config experiments/ct_mri_sweep/config_fp32.json
 .venv/bin/python -m experiments.ct_mri_sweep.queue run \
-  --out outputs/ct_mri_sweep_fp32_20261009 --gpus 1 0 --poll-seconds 10
+  --out outputs/ct_mri_sweep_fp32_20261009 --gpus 1 --poll-seconds 10
 ```
 
 ## Original larger grid
