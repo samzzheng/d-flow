@@ -1,6 +1,6 @@
 # DLR failure investigation — 2026-10-08
 
-The completed diagnostics identify a reproducible numerical-consistency problem at two selected failed sources. They do **not** establish that low rank is intrinsically inaccurate, that TF32 explains every failed reconstruction, or that disabling TF32 improves final population accuracy. Four longer CPU continuations are running to test recovery and spectral reweighting.
+The completed diagnostics identify a reproducible numerical-consistency problem at two selected failed sources. They do **not** establish that low rank is intrinsically inaccurate, that TF32 explains every failed reconstruction, or that disabling TF32 improves final population accuracy. All four CPU continuations have finished: spectral damping rescued the selected MRI case, but neither variant recovered the selected CT case. These are two selected-source recovery tests, not population evidence.
 
 ## Protocol and scope
 
@@ -73,7 +73,20 @@ Plot/table: `factor_accuracy.png`, `factor_accuracy.csv`; full reference tensors
 
 Four CPU continuations compare unchanged rank-8 DLR against the lower-median cap on CT008 and MRI003. They start at identical saved GPU sources/V, recompute the native CPU32 map and fresh optimizer, and use up to 100 attempts with a two-failure stop. The cap uses `torch.median()` (lower middle at rank 8). Early statistical-median preflight output was archived separately and excluded. These are recovery tests from selected failures, not fresh-start population comparisons.
 
-Driver PID at launch: 109536, four low-priority one-thread workers. Initial factor passes suggest roughly 2.5–3 hours plus searches if all 100 attempts complete; stalls shorten this. Progress and per-attempt source/V/gradient/optimizer archives: `outputs/dlr_failure_tests_20261008/continuations/`. The driver produces `report.md`, `convergence.png` and standard reconstruction panels when runs finish. As of 17:13 only the first few updates have completed; no final-accuracy conclusion is available.
+All four continuations completed by 19:30; results verified at 23:47. Driver PID109536 has exited. Per-attempt source/V/gradient/optimizer archives, `report.md`, `convergence.png` and standard reconstruction panels are in `outputs/dlr_failure_tests_20261008/continuations/`.
+
+| Case | Variant | Final image error | Final clean measurement residual | Attempts / accepted updates | Stop |
+| --- | --- | ---: | ---: | ---: | --- |
+| CT n3/008 | Unchanged DLR | 79.295% | 41.838% | 100 / 100 | Attempt limit |
+| CT n3/008 | Median cap | 78.887% | 41.440% | 14 / 12 | Two consecutive failed searches |
+| MRI n2/003 | Unchanged DLR | 119.369% | 118.070% | 100 / 100 | Attempt limit |
+| MRI n2/003 | Median cap | **1.377%** | **1.053%** | 100 / 95 | Attempt limit |
+
+The paired native-CPU initial errors were 87.179% (CT) and 119.319% (MRI). The damped MRI trajectory reached below5% image error at attempt70 and below2% at76, after a long plateau around15%. Its retrospectively best image error was1.367% at83; the table reports the final checkpoint, not ground-truth-based checkpoint selection. The undamped trajectory remained above119% throughout. This demonstrates an image-accuracy rescue in this selected MRI continuation, beyond merely an objective decrease.
+
+CT improved only marginally: at the common14-attempt prefix, unchanged/capped errors were79.303%/78.887%. The unchanged run then reached79.295% at100, while the capped run remained stopped. Neither is a successful reconstruction.
+
+Both variants share the exact same source-checkpoint hash, settings, acquisition, model and initial native-CPU objective; only terminal singular-value weighting differs. All objective histories are nonincreasing. The comparison supports a damping benefit for this specific MRI case on the consistent CPU map, not a GPU TF32-on rescue or an average benefit over datasets. Rank, factor evolution and derivative-product counts per gradient remain unchanged; no speed-equivalence claim is established. Next evidence should be paired fresh-start and recovery trials across more MRI/CT samples before changing defaults.
 
 ## Correctness and reproduction
 
@@ -89,9 +102,9 @@ CUDA_VISIBLE_DEVICES='' .venv/bin/python -m experiments.ct_mri_sweep.failure_pre
   --output outputs/dlr_failure_tests_20261008/gpu \
   --case r128_n2_mri4/sample_003 --tf32 off --factor-tests \
   --directions exact refreshed_v8 spectral_cap
-# Refresh plots and inspect the already-running continuation results.
+# Refresh plots and inspect the completed continuation results.
 .venv/bin/python -m experiments.ct_mri_sweep.failure_report
 .venv/bin/python -m experiments.ct_mri_sweep.failure_continuation --report-only
 ```
 
-No default algorithm change is recommended from two local GPU failure probes alone. The priority is testing consistent precision over complete reconstructions and assessing whether spectral damping helps image accuracy, while preserving a paired baseline.
+Keep spectral damping experimental: one completed MRI recovery is promising, while the CT recovery failed. Prioritize paired multi-sample tests under consistent precision before changing the default algorithm.
