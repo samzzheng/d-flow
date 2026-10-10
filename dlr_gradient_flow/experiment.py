@@ -178,6 +178,7 @@ def main() -> None:
     for mode in args.modes:
         destination = args.out / mode
         destination.mkdir(exist_ok=True)
+        write_json(destination / "protocol.json", {**record, "mode": mode, "methods": {}})
         source = initial.detach().clone().requires_grad_(True)
         evaluator = TransportEvaluator(model, operator, observed, settings, protocol["dlr_seed"],
             products, mode, args.refresh_every)
