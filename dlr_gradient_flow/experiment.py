@@ -30,9 +30,10 @@ class TransportEvaluator(Evaluator):
 
     def __init__(self, model: torch.nn.Module, operator: CT | MRI, observed: torch.Tensor,
                  settings: Record, seed: int, products: GraphedAProducts,
-                 mode: str, refresh_every: int = 5) -> None:
+                 mode: str, refresh_every: int = 5, correct_refresh: bool = False) -> None:
         super().__init__(model, operator, observed, settings, seed, products)
         self.mode, self.refresh_every = mode, refresh_every
+        self.correct_refresh = correct_refresh
         self.factors: Factors | None = None
         self.factor_source: torch.Tensor | None = None
         self.age = 0
@@ -57,6 +58,10 @@ class TransportEvaluator(Evaluator):
                     seed=self.seed, products=self.products, seed_basis=self.previous_v)
                 assert alpha == 0
                 self.age, kind = 0, "fresh"
+                if self.mode == "secant" and self.correct_refresh:
+                    endpoint, factors = secant_factors(self.model, source.detach(), factors,
+                        self.settings["flow_steps"], products=self.products)
+                    kind = "fresh+secant"
                 endpoint_error = float((endpoint - self.image).norm() / self.image.norm().clamp_min(1e-20))
             elif self.mode == "secant":
                 endpoint, factors = secant_factors(self.model, source.detach(), self.factors,
@@ -96,6 +101,8 @@ def main() -> None:
     parser.add_argument("--optimizer", choices=("gd", "lbfgs"), default="lbfgs")
     parser.add_argument("--steps", type=int, default=100)
     parser.add_argument("--refresh-every", type=int, default=5)
+    parser.add_argument("--correct-refresh", action="store_true",
+                        help="Apply endpoint correction to secant initialization and every fresh refresh")
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--product-jvp-columns", type=int, default=20)
@@ -139,6 +146,7 @@ def main() -> None:
     record: Record = {"task": args.task, "case": args.case, "device": str(device),
         "settings": settings, "optimizer": args.optimizer, "max_attempts": args.steps,
         "refresh_every": args.refresh_every, "source_protocol": protocol,
+        "correct_refresh": args.correct_refresh,
         "product_columns": {"jvp": args.product_jvp_columns, "vjp": args.product_vjp_columns},
         "torch": str(torch.__version__), "tf32": False,
         "inputs_sha256": hashlib.sha256((case / "inputs.pt").read_bytes()).hexdigest(),
@@ -163,7 +171,7 @@ def main() -> None:
             measurements = []
             for repeat in range(args.repeats + 1):
                 evaluator = TransportEvaluator(model, operator, observed, settings, protocol["dlr_seed"],
-                    products, mode, args.refresh_every)
+                    products, mode, args.refresh_every, args.correct_refresh)
                 evaluator.factors = tuple(value.clone() for value in seed_factors)
                 evaluator.factor_source = initial.clone()
                 evaluator.previous_v = seed_factors[2].clone()
@@ -185,7 +193,7 @@ def main() -> None:
         write_json(destination / "protocol.json", {**record, "mode": mode, "methods": {}})
         source = initial.detach().clone().requires_grad_(True)
         evaluator = TransportEvaluator(model, operator, observed, settings, protocol["dlr_seed"],
-            products, mode, args.refresh_every)
+            products, mode, args.refresh_every, args.correct_refresh)
         options = {**settings["optimizer"], "project": False,
                    "step_cap": settings["optimizer"]["step_cap"] * math.sqrt(source.numel())}
         if args.optimizer == "gd":
