@@ -132,11 +132,11 @@ weighting. Armijo acceptance verifies objective improvement, not image accuracy.
 ## GPU pilot, October 10
 
 The [paired report](../outputs/dlr_gradient_flow_20261010/report/report.md) includes
-four64px CT/MRI cases, up to100 optimizer attempts, and isolated64/128/250px
+four 64×64 CT/MRI cases, up to 100 optimizer attempts, and isolated 64/128/250px
 gradient timings. Pure Jacobian-secant transport improved both MRI cases over
 fresh DLR but was worse on one CT case. The corrected endpoint variant was
-faster at64/128px than uncheckpointed D-Flow, with mixed reconstruction accuracy;
-neither variant beat its gradient time at250px. Literal second-derivative
+faster at 64/128px than uncheckpointed D-Flow, with mixed reconstruction accuracy;
+neither variant beat its gradient time at 250px. Literal second-derivative
 transport was much slower. These results support further experiments, not a
 production default change. See the [dated log](../experiments/experiments-2026-10-10.md)
 for the refresh follow-up, gradient diagnostics, and limitations.
