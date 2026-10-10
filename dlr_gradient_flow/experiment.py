@@ -19,6 +19,7 @@ from experiments.ct_mri_sweep.run import Evaluator, metrics, save_tensor, write_
 from p_flow import endpoint_gradient
 from p_flow.armijo import ArmijoLBFGS
 from .secant import secant_factors
+from .secant_transport import secant_transport_factors
 from .transport import transport_factors
 
 Record = dict[str, Any]
@@ -61,6 +62,10 @@ class TransportEvaluator(Evaluator):
                 endpoint, factors = secant_factors(self.model, source.detach(), self.factors,
                     self.settings["flow_steps"], products=self.products)
                 endpoint_error = float((endpoint - self.image).norm() / self.image.norm().clamp_min(1e-20))
+            elif self.mode == "secant_transport":
+                endpoint, factors = secant_transport_factors(self.model, self.factor_source,
+                    source.detach(), self.factors, self.settings["flow_steps"], products=self.products)
+                endpoint_error = float((endpoint - self.image).norm() / self.image.norm().clamp_min(1e-20))
             else:
                 factors = transport_factors(self.model, self.factor_source,
                     source.detach() - self.factor_source, self.factors, self.settings["flow_steps"],
@@ -87,7 +92,7 @@ def main() -> None:
     parser.add_argument("--root", type=Path, default=Path("outputs/ct_mri_sweep_fp32_20261009"))
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--modes", nargs="+", default=["exact", "fresh", "secant"],
-                        choices=("exact", "proxy", "fresh", "secant", "transport", "finite_difference"))
+                        choices=("exact", "proxy", "fresh", "secant", "secant_transport", "transport", "finite_difference"))
     parser.add_argument("--optimizer", choices=("gd", "lbfgs"), default="lbfgs")
     parser.add_argument("--steps", type=int, default=100)
     parser.add_argument("--refresh-every", type=int, default=5)
