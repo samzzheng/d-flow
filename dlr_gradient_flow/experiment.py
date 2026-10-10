@@ -98,6 +98,8 @@ def main() -> None:
     parser.add_argument("--refresh-every", type=int, default=5)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--repeats", type=int, default=3)
+    parser.add_argument("--product-jvp-columns", type=int, default=20)
+    parser.add_argument("--product-vjp-columns", type=int, default=16)
     parser.add_argument("--displacement", type=float, default=.001,
                         help="Benchmark source displacement norm divided by sqrt(d)")
     args = parser.parse_args()
@@ -131,11 +133,13 @@ def main() -> None:
     enriched.SPECIALIZE_ZERO_ENRICHMENT = True
     enriched.SKIP_UNTRUNCATED_SVD = True
     products = GraphedAProducts(model, initial, share_linearization=True, full_step_graphs=True,
-        max_jvp_columns=20, max_vjp_columns=16, max_step_jvp_columns=6, max_step_vjp_columns=4)
+        max_jvp_columns=args.product_jvp_columns, max_vjp_columns=args.product_vjp_columns,
+        max_step_jvp_columns=6, max_step_vjp_columns=4)
     args.out.mkdir(parents=True, exist_ok=True)
     record: Record = {"task": args.task, "case": args.case, "device": str(device),
         "settings": settings, "optimizer": args.optimizer, "max_attempts": args.steps,
         "refresh_every": args.refresh_every, "source_protocol": protocol,
+        "product_columns": {"jvp": args.product_jvp_columns, "vjp": args.product_vjp_columns},
         "torch": str(torch.__version__), "tf32": False,
         "inputs_sha256": hashlib.sha256((case / "inputs.pt").read_bytes()).hexdigest(),
         "source_sha256": {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
