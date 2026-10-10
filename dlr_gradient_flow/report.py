@@ -185,7 +185,7 @@ def main() -> None:
                                    if row["origin"] == "rerun"
                                    and row["status"] not in {"step_limit", "stalled", "converged"}],
                "selection_note":
-               "First two samples per selected acquisition form a small pilot, not a population estimate. "
+               "The selected samples form a small paired pilot, not a population estimate. "
                "Best image errors are retrospective selections from recorded histories; "
                "their own residuals are paired, but figures always use final saved iterates.",
                "benchmark_scope": "Synchronized cached-objective gradient wall time. "
@@ -204,6 +204,8 @@ def main() -> None:
              f"Paired input, source/acquisition protocol, and checkpoint hashes passed for {len(pairing)} cases.", "",
              "Final metrics use original arrays from a single saved checkpoint. Runs may stop after "
              "two failed searches before their attempt limit; accepted updates are reported separately.", "",
+             "Baseline rows use the saved sweep; rerun rows use this study. Per-method `protocol.json` "
+             "files record refresh frequency, refresh correction, optimizer, and derivative batch widths.", "",
              "Convergence plots and companion controls prefer a new exact/proxy/fresh rerun when present; "
              "baseline panels preserve historical results. Reconstruction wall times are omitted: "
              "accuracy workers share a GPU and can pause for isolated benchmarks.", "",
