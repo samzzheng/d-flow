@@ -50,7 +50,7 @@ def save_panels(destination: Path, inputs: Record, records: dict[str, Record],
             axis.set_title(axis.get_title().replace("DLR D-Flow", LABELS[experimental_mode]))
         figure.supxlabel(figure.get_supxlabel() + "\n"
                          f"Experimental fourth column: {LABELS[experimental_mode]}; "
-                         "other columns retain their D-Flow / P-Flow baselines.", fontsize=9)
+                         "other columns retain the D-Flow / P-Flow controls.", fontsize=9)
     for extension in ("png", "pdf"):
         figure.savefig(destination.with_suffix(f".{extension}"), dpi=140)
     plt.close(figure)
@@ -69,7 +69,7 @@ def main() -> None:
     rows: list[Record] = []
     pairing: list[Record] = []
     pending: list[str] = []
-    for protocol_path in sorted((args.root / "recon").rglob("protocol.json")):
+    for protocol_path in sorted((args.root / "recon").glob("*/*/protocol.json")):
         protocol = json.loads(protocol_path.read_text())
         case = protocol["case"]
         input_path = args.baseline / case / "inputs.pt"
@@ -101,6 +101,14 @@ def main() -> None:
             state = torch.load(path, map_location="cpu", weights_only=True)
             if state["case"] != case or state["mode"] != mode:
                 raise ValueError(f"Reconstruction case/mode mismatch: {path}")
+            mode_protocol_path = path.parent / "protocol.json"
+            if mode_protocol_path.exists():
+                mode_protocol = json.loads(mode_protocol_path.read_text())
+                if any(mode_protocol[key] != protocol[key]
+                       for key in ("case", "inputs_sha256", "source_protocol", "settings")):
+                    raise ValueError(f"Per-method input/checkpoint/settings mismatch: {mode_protocol_path}")
+                if mode_protocol.get("mode", mode) != mode or mode_protocol["optimizer"] != state["optimizer"]:
+                    raise ValueError(f"Per-method mode/optimizer mismatch: {mode_protocol_path}")
             # Use one atomic state snapshot for image, measurement, and history;
             # result.json can be replaced just before the next state snapshot.
             reruns[mode] = state
@@ -135,7 +143,8 @@ def main() -> None:
                     f"{case} | paired FP32 baselines | final saved iterates")
         for mode, record in reruns.items():
             if mode not in BASELINE_FILES:
-                companion = {**baseline, "fresh": record}
+                companion = {**baseline, **{key: value for key, value in reruns.items()
+                                           if key in {"exact", "proxy"}}, "fresh": record}
                 save_panels(case_output / mode, inputs, companion, problem,
                             f"{case} | {LABELS[mode]} | final saved iterates",
                             experimental_mode=mode)
@@ -195,6 +204,9 @@ def main() -> None:
              f"Paired input, source/acquisition protocol, and checkpoint hashes passed for {len(pairing)} cases.", "",
              "Final metrics use original arrays from a single saved checkpoint. Runs may stop after "
              "two failed searches before their attempt limit; accepted updates are reported separately.", "",
+             "Convergence plots and companion controls prefer a new exact/proxy/fresh rerun when present; "
+             "baseline panels preserve historical results. Reconstruction wall times are omitted: "
+             "accuracy workers share a GPU and can pause for isolated benchmarks.", "",
              "| Case | Method | Origin | Status | Attempts / accepted | Image L2 % | Residual % |",
              "|---|---|---|---|---:|---:|---:|"]
     for row in rows:
@@ -205,11 +217,13 @@ def main() -> None:
     lines += ["", "## Fixed-source gradient benchmarks", "", summary["benchmark_scope"], "",
               "These are local gradient-accuracy measurements, not reconstruction success rates. "
               "Gradient errors are measured against the native 100-step Euler gradient at the same source.", "",
-              "| Case | Method | Median seconds | Gradient error % | Repeats |",
-              "|---|---|---:|---:|---:|"]
+              "| Case | Method | Source displacement norm | Median seconds | Gradient error % | Repeats | File |",
+              "|---|---|---:|---:|---:|---:|---|"]
     for row in benchmarks:
-        lines.append(f"| {row['case']} | {row['method']} | {row['gradient_seconds_median']:.4f} | "
-                     f"{row['relative_gradient_error_percent_median']:.4f} | {row['n']} |")
+        lines.append(f"| {row['case']} | {row['method']} | {row['displacement_norm']:.6g} | "
+                     f"{row['gradient_seconds_median']:.4f} | "
+                     f"{row['relative_gradient_error_percent_median']:.4f} | {row['n']} | "
+                     f"{Path(row['file']).parent.name}/benchmark.json |")
     lines += ["", "Figures use fixed measurement-residual color scales: CT 0–1, MRI 0–25, `amp`. "
               "Companion figures explicitly replace only the fourth column with the named experimental method. "
               "CSV/JSON include retrospective best-image metrics and residuals at those same iterates."]
