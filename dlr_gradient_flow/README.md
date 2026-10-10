@@ -80,6 +80,13 @@ scaling, and displacement cap \(0.01\sqrt d\). The default optimizer is L-BFGS.
 Transport variants default to a fresh DLR solve every five gradient evaluations
 (one fresh solve followed by four transported evaluations); `fresh` recomputes
 every time. The factor basis may otherwise miss new sensitivity directions.
+The original pilot uses `--refresh-every 5` with `correct_refresh=false`.
+An optional follow-up uses `--modes secant --refresh-every 20 --correct-refresh`:
+endpoint correction follows initialization and every fresh refresh, avoiding
+alternation between fresh-DLR and corrected-endpoint gradient estimators.
+This flag only affects `secant`; it does not guarantee valid L-BFGS curvature.
+`--product-jvp-columns 20 --product-vjp-columns 16` configure ordinary derivative
+batch widths; fresh DLR's complete-step graph widths remain 6/4.
 
 ```sh
 .venv/bin/python -m dlr_gradient_flow.experiment benchmark \
