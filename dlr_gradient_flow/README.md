@@ -1,8 +1,8 @@
 # DLR Gradient Flow
 
 An isolated implementation of sensitivity transport from
-[Section 11](../dlr_dflow/notes/dlr_dflow_notes-1789586570539.md), with a separate
-endpoint correction variant for testing speed and accuracy. Production DLR
+[Section 11](../dlr_dflow/notes/dlr_dflow_notes-1789586570539.md), with pure-secant
+and endpoint-correction variants for testing speed and accuracy. Production DLR
 D-Flow and the running CT/MRI sweep are unchanged.
 
 ## Literal sensitivity transport
@@ -37,6 +37,21 @@ All terminal gradients are \(VS^\top U^\top g_x\). Initialization uses the
 existing fast DLR solver with analytical \(\alpha_t=1-t\); \(\alpha_1=0\)
 exactly, so there is no terminal identity contribution.
 
+## Pure Jacobian-secant transport
+
+`secant_transport_factors(model, old_source, new_source, factors, n_steps=100,
+products=None)` returns the new Euler endpoint and factors. It uses
+\[
+\Delta=J(z_{\rm new})-J(z_{\rm old})
+=\int_0^1 D_zJ(z_{\rm old}+s\delta)[\delta],ds
+=W+O(\|\delta\|^2)
+\]
+in place of \(W\) in the same frozen K/S/L step. Four first-derivative passes
+compute \(\Delta V\) and \(\Delta^\top U_+\). This agrees with literal Section 11
+transport to first order, without Hessian products. It retains old factor error;
+zero source movement preserves the factors exactly. At full rank the result is
+\(U_{\rm old}S_{\rm old}V_{\rm old}^\top+\Delta\), not necessarily \(J(z_{\rm new})\).
+
 ## Corrected endpoint variant
 
 `secant_factors(model, source, factors, n_steps=100, products=None)` returns
@@ -69,28 +84,34 @@ every time. The factor basis may otherwise miss new sensitivity directions.
 ```sh
 .venv/bin/python -m dlr_gradient_flow.experiment benchmark \
   --case r64_n1_ct10/sample_000 --device cuda:0 \
-  --modes exact fresh transport secant --repeats 1 \
+  --modes exact fresh transport secant_transport secant --repeats 1 \
   --out outputs/dlr_gradient_flow_benchmark
 
 .venv/bin/python -m dlr_gradient_flow.experiment reconstruct \
   --case r64_n1_ct10/sample_000 --device cuda:0 \
-  --modes exact proxy fresh secant --optimizer lbfgs \
+  --modes exact proxy fresh secant_transport secant --optimizer lbfgs \
   --steps 100 --refresh-every 5 --out outputs/dlr_gradient_flow_reconstruction
 
-.venv/bin/python -m unittest dlr_gradient_flow.test_transport -v
+.venv/bin/python -m unittest dlr_gradient_flow.test_transport \
+  dlr_gradient_flow.test_secant_transport -v
 ```
 
 Here `exact`, `proxy`, and `fresh` denote D-Flow, P-Flow, and freshly recomputed
 DLR. Outputs include input/code hashes, settings, gradient diagnostics, histories,
 sources, factors, and optimizer states. `--steps` limits optimizer attempts;
-two consecutive failed searches can stop a run earlier.
+two consecutive failed searches can stop a run earlier. Thus `--steps 100` means
+at most 100 attempts, with accepted updates reported separately. `report.py`
+distinguishes saved sweep controls (`baseline`) from new runs (`rerun`) after
+checking paired inputs and checkpoint hashes. Experimental fourth columns are
+explicitly labeled; saved D-Flow/P-Flow controls are not presented as fresh reruns.
 
 ## Cost and limitations
 
 At rank \(r\), literal transport requires a directional trajectory and forward
-and reverse passes involving second derivatives on \(r\) columns. The corrected
-variant uses \(N\) local batched JVPs and \(N\) local batched VJPs, plus two
-terminal thin QRs costing \(O(dr^2)\). Both retain \(O(Nd+dr)\) state/factor
+and reverse passes involving second derivatives on \(r\) columns. Pure secant
+uses \(2N\) local batched JVPs and \(2N\) local batched VJPs; corrected endpoint
+iteration uses \(N\) of each. Both use two thin QRs costing \(O(dr^2)\).
+All variants retain \(O(Nd+dr)\) state/factor
 storage plus model-dependent local derivative workspace; local tapes are
 recomputed rather than retained across the full flow. GPU graph storage is extra.
 These counts do not guarantee a speedup over the existing specialized DLR solver.
@@ -98,5 +119,5 @@ These counts do not guarantee a speedup over the existing specialized DLR solver
 Neither approximate gradient automatically decreases the true objective:
 descent requires positive alignment with \(J^\top g_x\), after any optimizer
 transformation. Low rank can omit essential directions, literal transport can
-accumulate error, and both variants can preserve excessive leading-direction
+accumulate error, and all variants can preserve excessive leading-direction
 weighting. Armijo acceptance verifies objective improvement, not image accuracy.
