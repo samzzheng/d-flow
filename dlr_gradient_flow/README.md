@@ -43,7 +43,7 @@ exactly, so there is no terminal identity contribution.
 products=None)` returns the new Euler endpoint and factors. It uses
 \[
 \Delta=J(z_{\rm new})-J(z_{\rm old})
-=\int_0^1 D_zJ(z_{\rm old}+s\delta)[\delta],ds
+=\int_0^1 D_zJ(z_{\rm old}+s\delta)[\delta]\,ds
 =W+O(\|\delta\|^2)
 \]
 in place of \(W\) in the same frozen K/S/L step. Four first-derivative passes
