@@ -65,6 +65,8 @@ class TransportEvaluator(Evaluator):
                 factors = transport_factors(self.model, self.factor_source,
                     source.detach() - self.factor_source, self.factors, self.settings["flow_steps"],
                     backend="exact" if self.mode == "transport" else "finite_difference", difference_step=1.)
+            if endpoint_error is not None and (not math.isfinite(endpoint_error) or endpoint_error > .005):
+                raise FloatingPointError(f"Derivative backend endpoint mismatch: {endpoint_error}")
             self.factors = tuple(value.detach().clone() for value in factors)
             self.factor_source = source.detach().clone()
             self.previous_v = self.factors[2]
@@ -108,6 +110,9 @@ def main() -> None:
     protocol = inputs["protocol"]
     job = protocol["job"]
     model_dir = Path(settings["run_template"].format(**job))
+    checkpoint = model_dir / f"checkpoints/epoch_{settings['epoch']:04d}.pt"
+    if hashlib.sha256(checkpoint.read_bytes()).hexdigest() != protocol["checkpoint_sha256"]:
+        raise ValueError("Model checkpoint differs from the paired input protocol")
     model, _ = load_flow_model(job["resolution"], job["circles"], settings["epoch"], str(device), model_dir)
     operator = (CT(job["resolution"], job["level"], device) if job["problem"] == "ct" else
                 MRI(job["resolution"], job["level"], protocol["operator"]["mask_seed"], device))
