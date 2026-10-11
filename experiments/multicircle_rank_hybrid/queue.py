@@ -72,7 +72,12 @@ def main() -> None:
                                   "command": [sys.executable, "-m", "experiments.multicircle_rank_hybrid.hybrid",
                                   "--root", str(args.root), "--output", str(args.output / "hybrid"),
                                   "--case", case, "--device", "cuda:0", "--memory-fraction", str(memory / 49140)]})
-    write_json(args.output / "plan.json", {"tasks": tasks, "unavailable_models": unavailable,
+    cancelled = []
+    if (args.output / "cancel_hybrid.json").exists():
+        cancelled = [task["name"] for task in tasks if task["kind"] == "hybrid"
+                     and not Path(task["output"]).exists()]
+        tasks = [task for task in tasks if task["kind"] != "hybrid"]
+    write_json(args.output / "plan.json", {"tasks": tasks, "cancelled_hybrid": cancelled, "unavailable_models": unavailable,
                                            "missing_paired_inputs": missing_inputs, "gpu": 0})
     pending, completed, failed = [], [], []
     for task in tasks:
@@ -120,7 +125,8 @@ def main() -> None:
         write_json(args.output / "queue_status.json", {
             "updated": datetime.now().astimezone().isoformat(), "pid": os.getpid(), "gpu": 0,
             "status": "paused" if stopped[0] else "running" if pending or active else "finished",
-            "completed": completed, "failed": failed, "pending": [task["name"] for task in pending],
+            "completed": completed, "failed": failed, "cancelled_hybrid": cancelled,
+            "pending": [task["name"] for task in pending],
             "active": {name: {"pid": process.pid, "kind": task["kind"], "reserved_mib": task["memory_mib"]}
                        for name, (process, task, _) in active.items()}})
         if pending or active:
