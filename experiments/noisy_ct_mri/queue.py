@@ -66,6 +66,8 @@ def main() -> None:
     # Admission alternates between the large comparison and the rank study.
     ordered = [out / "comparison/manifest.json", *(out / f"rank_{rank}/manifest.json" for rank in (2, 4, 8, 12, 16))]
     assert set(ordered) == set(manifests)
+    cancelled = ordered[1:] if (out / "cancel_rank_sweep.json").exists() else []
+    ordered = [path for path in ordered if path not in cancelled]
     legacy_lock = None
     if args.continue_manifest:
         legacy = args.continue_manifest.resolve()
@@ -98,6 +100,7 @@ def main() -> None:
     smoke_markers = [task.marker(path.parent) for path in smoke_manifests
                      for task in tasks(json.loads(path.read_text())["settings"])]
     write_json(out / "scheduler_plan.json", {"manifests": list(map(str, ordered)),
+               "cancelled_manifests": list(map(str, cancelled)),
                "gpu0_guard_process_starts": guards, "gpus": args.gpus,
                "shared_controllers": shared,
                "tasks": len(pending), "memory_margin_mib": 1536,
@@ -185,6 +188,7 @@ def main() -> None:
                            for name, (gpu, work, proc) in active.items()}, "pending": len(pending),
                 "completed_this_session": completed, "failed": failed, "gpu0_guards": list(guards),
                 "shared_controllers": shared,
+                "cancelled_manifests": list(map(str, cancelled)),
                 "preflight_passed": preflight_passed,
                 "external": external, "memory_total_used_mib": memory})
             if pending or active:
