@@ -8,11 +8,59 @@ import unittest
 import torch
 
 from p_flow.armijo import ArmijoLBFGS
-from .hybrid import AlternatingLBFGS, SCHEDULES
+from .hybrid import AlternatingLBFGS, SCHEDULES, solve
 from .ranks import spectrum
 
 
 class StudyTests(unittest.TestCase):
+    def test_resume_preserves_schedule_basis_and_optimizer(self) -> None:
+        class QuadraticEvaluator:
+            def __init__(self, interrupted: list[bool], pause_at: int = 0) -> None:
+                self.settings = {"optimizer": {"lr": .5, "max_ls": 10}, "stopping": {"max_updates": 8}}
+                self.observed = torch.ones(1, 1, 2, 2, dtype=torch.float64)
+                self.source = self.image = None
+                self.previous_v = None
+                self.value = 0.
+                self.counts = {"gradients": 0, "forward_objectives": 0}
+                self.interrupted, self.pause_at = interrupted, pause_at
+
+            def operator(self, image: torch.Tensor) -> torch.Tensor:
+                return image
+
+            def objective(self, source: torch.Tensor) -> float:
+                self.source = source.detach().clone()
+                self.image = self.source.clone()
+                self.value = float(.5 * (source - self.observed).square().sum())
+                self.counts["forward_objectives"] += 1
+                return self.value
+
+            def gradient(self, source: torch.Tensor, method: str) -> torch.Tensor:
+                self.objective(source)
+                self.counts["gradients"] += 1
+                if self.pause_at == self.counts["gradients"]:
+                    self.interrupted[0] = True
+                if method == "DLR D-Flow":
+                    self.previous_v = source.detach().reshape(-1, 1).clone()
+                return (source.detach() - self.observed) * (1. if method == "P-Flow" else 2.)
+
+        inputs = {"initial": torch.full((1, 1, 2, 2), 3., dtype=torch.float64),
+                  **{key: torch.ones(1, 1, 2, 2, dtype=torch.float64) for key in ("truth", "clean", "observed")}}
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder)
+            interrupted = [False]
+            uninterrupted = solve(QuadraticEvaluator(interrupted), "p3_dlr1", inputs,
+                                  path / "full.pt", {}, interrupted)
+            paused = solve(QuadraticEvaluator(interrupted, pause_at=4), "p3_dlr1", inputs,
+                           path / "resumed.pt", {}, interrupted)
+            self.assertEqual(paused["status"], "paused")
+            interrupted[0] = False
+            resumed = solve(QuadraticEvaluator(interrupted), "p3_dlr1", inputs,
+                            path / "resumed.pt", {}, interrupted)
+        torch.testing.assert_close(resumed["source"], uninterrupted["source"], rtol=0, atol=0)
+        torch.testing.assert_close(resumed["previous_v"], uninterrupted["previous_v"], rtol=0, atol=0)
+        self.assertEqual(resumed["history"], uninterrupted["history"])
+        self.assertEqual(resumed["optimizer"]["step_attempts"], 8)
+
     def test_rank_reference_matches_dense_svd(self) -> None:
         torch.manual_seed(4)
         left = torch.linalg.qr(torch.randn(24, 24, dtype=torch.float64))[0]
