@@ -52,6 +52,10 @@ class NoiseStudyTests(unittest.TestCase):
         self.assertIs(choose([large, small], [old], 49140, 1000), small)
         self.assertIsNone(choose([large], [old], 49140, 1000))
         self.assertIsNone(choose([small], [], 49140, 47000))
+        # Idle companion workers can grow to their full reservations later.
+        self.assertIsNone(choose([large], [], 49140, 1000, shared_mib=37800))
+        self.assertIs(choose([small], [], 49140, 1000, shared_mib=37800), small)
+        self.assertIsNone(choose([small], [small, small], 49140, 1000, shared_mib=37800))
 
 
 if __name__ == "__main__":

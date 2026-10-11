@@ -37,8 +37,9 @@ class Work:
         return self.task.marker(self.manifest.parent)
 
 
-def choose(pending: list[Work], running: list[Work], total: int, used: int) -> Work | None:
-    reserved = sum(memory_reservation(work.task, work.settings, total) for work in running)
+def choose(pending: list[Work], running: list[Work], total: int, used: int,
+           shared_mib: int = 0) -> Work | None:
+    reserved = shared_mib + sum(memory_reservation(work.task, work.settings, total) for work in running)
     available = total - 1536 - max(used, reserved)
     return next((work for work in pending
                  if memory_reservation(work.task, work.settings, total) <= available), None)
@@ -52,6 +53,9 @@ def main() -> None:
     parser.add_argument("--gpu0-guard-pids", type=int, nargs="*", default=[])
     parser.add_argument("--gpus", type=int, nargs="+", default=[1, 0])
     parser.add_argument("--max-workers", type=int, default=12)
+    parser.add_argument("--shared-controller", type=int, nargs=3, action="append", default=[],
+                        metavar=("GPU", "PID", "MIB"),
+                        help="Reserve memory for a named controller and permit its direct GPU children")
     args = parser.parse_args()
     out = args.out.resolve()
     lock = (out / "queue.lock").open("w")
@@ -89,10 +93,13 @@ def main() -> None:
                for group in groups if index < len(group)]
     guards = {pid: Path(f"/proc/{pid}/stat").read_text().split()[21]
               for pid in args.gpu0_guard_pids if Path(f"/proc/{pid}/stat").exists()}
+    shared = {pid: (gpu, mib, Path(f"/proc/{pid}/stat").read_text().split()[21])
+              for gpu, pid, mib in args.shared_controller}
     smoke_markers = [task.marker(path.parent) for path in smoke_manifests
                      for task in tasks(json.loads(path.read_text())["settings"])]
     write_json(out / "scheduler_plan.json", {"manifests": list(map(str, ordered)),
                "gpu0_guard_process_starts": guards, "gpus": args.gpus,
+               "shared_controllers": shared,
                "tasks": len(pending), "memory_margin_mib": 1536,
                "legacy_continues_from_checkpoints": bool(args.continue_manifest)})
     active: dict[str, tuple[int, Work, subprocess.Popen[bytes]]] = {}
@@ -132,11 +139,19 @@ def main() -> None:
                       (map(int, row.split(",")) for row in rows.strip().splitlines())}
             guards = {pid: start for pid, start in guards.items() if Path(f"/proc/{pid}/stat").exists()
                       and Path(f"/proc/{pid}/stat").read_text().split()[21] == start}
+            shared = {pid: entry for pid, entry in shared.items() if Path(f"/proc/{pid}/stat").exists()
+                      and Path(f"/proc/{pid}/stat").read_text().split()[21] == entry[2]
+                      and Path(f"/proc/{pid}/stat").read_text().split()[2] != "Z"}
             external = {}
             preflight_passed = all(path.exists() for path in smoke_markers)
             for gpu in args.gpus:
                 own = [(work, proc) for device, work, proc in active.values() if device == gpu]
-                external[gpu] = sorted(occupancy[gpu] - {proc.pid for _, proc in own})
+                shared_pids = {pid for pid, (device, _, _) in shared.items() if device == gpu}
+                for pid in tuple(shared_pids):
+                    children = Path(f"/proc/{pid}/task/{pid}/children")
+                    if children.exists():
+                        shared_pids.update(map(int, children.read_text().split()))
+                external[gpu] = sorted(occupancy[gpu] - {proc.pid for _, proc in own} - shared_pids)
                 if external[gpu]:
                     for _, proc in own:
                         proc.terminate()
@@ -148,7 +163,8 @@ def main() -> None:
                                 and (preflight_passed or work.manifest.parent.parent != out)]
                     running = [work for device, work, _ in active.values() if device == gpu]
                     total, used = memory[gpu]
-                    work = choose(eligible, running, total, used)
+                    shared_mib = sum(mib for device, mib, _ in shared.values() if device == gpu)
+                    work = choose(eligible, running, total, used, shared_mib)
                     if work is None:
                         break
                     reservation = memory_reservation(work.task, work.settings, total)
@@ -168,6 +184,7 @@ def main() -> None:
                            "reserved_mib": memory_reservation(work.task, work.settings, memory[gpu][0])}
                            for name, (gpu, work, proc) in active.items()}, "pending": len(pending),
                 "completed_this_session": completed, "failed": failed, "gpu0_guards": list(guards),
+                "shared_controllers": shared,
                 "preflight_passed": preflight_passed,
                 "external": external, "memory_total_used_mib": memory})
             if pending or active:
