@@ -36,6 +36,19 @@ reserved per worker; both smoke jobs must finish before production admission.
 Noise, source draws and MRI masks are paired across methods. Noise magnitude
 is 1% of the clean measurement norm, including only acquired MRI coefficients.
 
+Queue a frozen sweep after another completes with:
+
+```sh
+.venv/bin/python -m experiments.five_step_pilot.after \
+  --out outputs/five_step_noise005_20261012 \
+  --after outputs/five_step_noise001_20261011
+```
+
+The 5%-noise sweep uses all six resolutions and 30 samples (1,080 method runs).
+The dependency launcher uses no GPU. It requires every production shard marker
+and a finished prerequisite controller without failures before starting the
+new controller. A paused or failed prerequisite keeps the next sweep waiting.
+
 Invoke with `.venv/bin/python -m experiments.five_step_pilot.run ...`.
 The output root contains `queue_status.json`, `summary.json` and `report.md`.
 Refresh partial results with `report --out DIR`. Each production case saves
