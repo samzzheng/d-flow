@@ -15,10 +15,26 @@ or enrichment, initialization oversampling8, and previous-V initialization.
 Reconstruction code is reused unchanged from `experiments.ct_mri_sweep.run`.
 
 `run init --out DIR` freezes manifests and source hashes. `run run --out DIR`
-first runs two-update CT/MRI smoke jobs at 250px, then admits the production
-cases sequentially on physical GPU1. Named `--shared-controller PID MIB`
+first runs two-update CT/MRI smoke jobs at the largest requested resolution,
+then admits production cases on physical GPU1. Named `--shared-controller PID MIB`
 reservations account for other studies' possible memory growth. Unknown
 GPU1 occupants pause the worker. GPU0 is never used.
+
+For the 30-sample noisy extension, initialize a separate output directory:
+
+```sh
+.venv/bin/python -m experiments.five_step_pilot.run init \
+  --out outputs/five_step_noise001_20261011 \
+  --resolutions 64 160 250 --samples 30 --noise-relative .01 --max-workers 4
+.venv/bin/python -m experiments.five_step_pilot.run run \
+  --out outputs/five_step_noise001_20261011
+```
+
+This queues 180 paired CT/MRI cases (540 method runs), interleaving samples,
+resolutions and acquisitions. Up to four workers share GPU1 with 9,216MiB
+reserved per worker; both smoke jobs must finish before production admission.
+Noise, source draws and MRI masks are paired across methods. Noise magnitude
+is 1% of the clean measurement norm, including only acquired MRI coefficients.
 
 Invoke with `.venv/bin/python -m experiments.five_step_pilot.run ...`.
 The output root contains `queue_status.json`, `summary.json` and `report.md`.
