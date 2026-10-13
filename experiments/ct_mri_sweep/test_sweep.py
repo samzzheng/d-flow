@@ -223,7 +223,7 @@ class SweepTests(unittest.TestCase):
             finally:
                 plt.close(fig)
 
-    def test_image_training_scale_marks_extremes_without_clipping_metrics(self) -> None:
+    def test_image_training_scale_saturates_display_without_clipping_metrics(self) -> None:
         truth = torch.ones(1, 1, 2, 2)
         image = torch.tensor([[[[-.2, 0.], [.5, 1.4]]]])
         fig = plot_reconstruction_comparison(truth, truth, {"DLR D-Flow": (image, image)})
@@ -235,8 +235,8 @@ class SweepTests(unittest.TestCase):
             np.testing.assert_allclose(artist.get_array(), image.squeeze().numpy())
             self.assertIn(f"{expected:.2f}%", axis.get_title())
             self.assertIn("Range [-0.2, 1.4]", axis.get_title())
-            self.assertFalse(np.array_equal(artist.get_cmap()(-1.), artist.get_cmap()(0.)))
-            self.assertFalse(np.array_equal(artist.get_cmap()(2.), artist.get_cmap()(1.)))
+            np.testing.assert_array_equal(artist.get_cmap()(-1.), artist.get_cmap()(0.))
+            np.testing.assert_array_equal(artist.get_cmap()(2.), artist.get_cmap()(1.))
             self.assertEqual(fig.axes[4]._colorbar.extend, "both")
             self.assertEqual(fig.axes[0].images[0].get_clim(), (0., 1.))
         finally:

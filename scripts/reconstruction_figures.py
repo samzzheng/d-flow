@@ -50,7 +50,7 @@ def plot_reconstruction_comparison(
     Absolute measurement residuals use a fixed 0..residual_vmax amp scale.
     Pass RESIDUAL_VMAX["mri"] for MRI. Values above the scale are indicated by
     the colorbar extension; arrays and metrics remain unchanged. Images use
-    the training range 0..1 with distinct under/over colors and raw min/max
+    the training range 0..1 with saturated endpoint colors and raw min/max
     labels. Other map rows share per-figure scales; curves share axes within
     the figure. The GT history panel is omitted.
     Callers save and close the returned figure.
@@ -88,9 +88,6 @@ def plot_reconstruction_comparison(
     fig, grid = plt.subplots(5, 5, figsize=(16, 20), layout="constrained",
                             gridspec_kw={"width_ratios": [1, 1, 1, 1, .04]})
     axes = grid[:, :4]
-    image_cmap = cmocean.cm.dense_r.copy()
-    image_cmap.set_under("#16324f")
-    image_cmap.set_over("#f59e0b")
     for axis in axes.flat:
         axis.set_box_aspect(1)
     for row_index, (label, values, errors, reference) in enumerate(rows):
@@ -125,7 +122,7 @@ def plot_reconstruction_comparison(
                 axis.set_title(f"{name}\nRelative L2 = {percentage}\n"
                                f"Range [{value.min():.3g}, {value.max():.3g}]", fontsize=10)
             artist = axis.imshow(
-                value, cmap=cmocean.cm.amp if row_index >= 2 else image_cmap if row_index == 0 else cmocean.cm.dense_r,
+                value, cmap=cmocean.cm.amp if row_index >= 2 else cmocean.cm.dense_r,
                 vmin=vmin, vmax=vmax, aspect="auto", interpolation="nearest",
             )
         axes[row_index, 0].set_ylabel(label, fontsize=10)
@@ -171,7 +168,7 @@ def plot_reconstruction_comparison(
     fig.suptitle(title or "Reconstruction comparison", fontsize=14)
     display_note = "Measurement display: log(1 + magnitude). " if measurement_log else ""
     fig.supxlabel(
-        "Images: fixed [0,1] training scale; dark blue <0, amber >1; titles show raw range.\n"
+        "Images: fixed [0,1] training scale; out-of-range colors saturate at endpoints; titles show raw range.\n"
         + display_note + "Metrics use original arrays; complex panels display magnitude. "
         f"Absolute measurement residual scale: 0–{residual_vmax:g} (fixed); "
         "upper colorbar triangle marks values above the scale.", fontsize=9,
