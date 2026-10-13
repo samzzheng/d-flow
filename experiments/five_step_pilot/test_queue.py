@@ -90,28 +90,41 @@ class QueueTests(unittest.TestCase):
                 marker = task.marker(root / "smoke")
                 marker.parent.mkdir(parents=True, exist_ok=True)
                 marker.write_text("{}")
-        process = MagicMock(pid=12345)
-        process.poll.return_value = None
-        with ExitStack() as stack:
-            stack.enter_context(patch("sys.argv", ["pilot", "run", "--out", str(out),
-                                                   "--additional-out", str(additional)]))
-            stack.enter_context(patch("experiments.five_step_pilot.run.model_ready",
-                                      side_effect=lambda job, settings: (job.resolution, job.circles) != (64, 1)))
-            stack.enter_context(patch("experiments.five_step_pilot.run.gpu_processes", return_value={1: set()}))
-            stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.check_output", return_value="49140, 2"))
-            launch = stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.Popen", return_value=process))
-            stack.enter_context(patch("experiments.five_step_pilot.run.signal.signal"))
-            stack.enter_context(patch("experiments.five_step_pilot.run.time.sleep", side_effect=KeyboardInterrupt))
-            with self.assertRaises(KeyboardInterrupt):
-                main()
-        self.assertEqual(launch.call_count, 4)
-        self.assertEqual({Path(call.args[0][call.args[0].index("--manifest") + 1]).parents[1]
-                          for call in launch.call_args_list}, {out, additional})
-        self.assertTrue(all(not call.args[0][call.args[0].index("--job") + 1].startswith("r64_n1_")
-                            for call in launch.call_args_list))
-        status = json.loads((out / "queue_status.json").read_text())
-        self.assertEqual(status["training_pending"], ["r64_n1"])
-        self.assertEqual(sum("/r64_n1_" in name for name in status["pending"]), 120)
+        for selection in ([], ["--run-circles", "1", "--priority-out", str(additional)]):
+            if selection:
+                for root in (out, additional):
+                    for task in tasks(smoke):
+                        if task.job.circles != 1:
+                            task.marker(root / "smoke").unlink()
+            process = MagicMock(pid=12345)
+            process.poll.return_value = None
+            with ExitStack() as stack:
+                stack.enter_context(patch("sys.argv", ["pilot", "run", "--out", str(out),
+                                                       "--additional-out", str(additional), *selection]))
+                stack.enter_context(patch("experiments.five_step_pilot.run.model_ready",
+                                          side_effect=lambda job, settings: (job.resolution, job.circles) != (64, 1)))
+                stack.enter_context(patch("experiments.five_step_pilot.run.gpu_processes", return_value={1: set()}))
+                stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.check_output", return_value="49140, 2"))
+                launch = stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.Popen", return_value=process))
+                stack.enter_context(patch("experiments.five_step_pilot.run.signal.signal"))
+                stack.enter_context(patch("experiments.five_step_pilot.run.time.sleep", side_effect=KeyboardInterrupt))
+                with self.assertRaises(KeyboardInterrupt):
+                    main()
+            self.assertEqual(launch.call_count, 4)
+            self.assertEqual({Path(call.args[0][call.args[0].index("--manifest") + 1]).parents[1]
+                              for call in launch.call_args_list}, {out, additional})
+            self.assertTrue(all(not call.args[0][call.args[0].index("--job") + 1].startswith("r64_n1_")
+                                for call in launch.call_args_list))
+            status = json.loads((out / "queue_status.json").read_text())
+            self.assertEqual(status["training_pending"], ["r64_n1"])
+            self.assertEqual(sum("/r64_n1_" in name for name in status["pending"]), 120)
+            if selection:
+                commands = [call.args[0] for call in launch.call_args_list]
+                self.assertTrue(all("_n1_" in command[command.index("--job") + 1] for command in commands))
+                self.assertEqual(sum(Path(command[command.index("--manifest") + 1]).parents[1] == additional
+                                     for command in commands), 1)
+                self.assertTrue(all("_n1_" in name for name in status["pending"]))
+                self.assertTrue(status["preflight_passed"])
 
 
 if __name__ == "__main__":

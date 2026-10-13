@@ -70,6 +70,10 @@ def main() -> None:
                         help="Run additional frozen sweeps under the same GPU admission controller")
     parser.add_argument("--resolutions", type=int, nargs="+", default=[64, 96, 128, 160, 200, 250])
     parser.add_argument("--circles", type=int, nargs="+", default=[1])
+    parser.add_argument("--run-circles", type=int, nargs="+",
+                        help="Admit only these circle counts from frozen manifests")
+    parser.add_argument("--priority-out", type=Path,
+                        help="Give this sweep the next free slot when it has no active worker")
     parser.add_argument("--samples", type=int, default=1)
     parser.add_argument("--noise-relative", type=float, default=0.0)
     parser.add_argument("--max-workers", type=int, default=1, help="Frozen at initialization")
@@ -113,6 +117,9 @@ def main() -> None:
         report(out)
         return
     outputs = [out, *map(Path.resolve, args.additional_out)]
+    priority_out = args.priority_out.resolve() if args.priority_out else None
+    if priority_out is not None and priority_out not in outputs:
+        parser.error("--priority-out must be one of the managed output directories")
     locks = []
     for root in outputs:
         lock = (root / "queue.lock").open("w")
@@ -129,9 +136,11 @@ def main() -> None:
                 raise ValueError(f"Source changed: {name}")
         pending.extend(Work(path, task, manifest["settings"], False)
                        for task in sorted(tasks(manifest["settings"]), key=lambda task: (task.start, task.job.resolution, task.job.problem))
-                       if not task.marker(path.parent).exists())
+                       if (args.run_circles is None or task.job.circles in args.run_circles)
+                       and not task.marker(path.parent).exists())
         if path.parent.name == "smoke":
-            smoke_markers.extend(task.marker(path.parent) for task in tasks(manifest["settings"]))
+            smoke_markers.extend(task.marker(path.parent) for task in tasks(manifest["settings"])
+                                 if args.run_circles is None or task.job.circles in args.run_circles)
     pending.sort(key=lambda work: (work.task.start, work.task.job.resolution,
                                   work.task.job.circles, work.task.job.problem,
                                   outputs.index(work.manifest.parent.parent)))
@@ -187,6 +196,9 @@ def main() -> None:
                 while len(active) < max_workers:
                     eligible = [work for work in pending if work.task.job not in training_pending
                                 and (preflight_passed or work.manifest.parent.name == "smoke")]
+                    if priority_out is not None:
+                        priority_active = any(work.manifest.parent.parent == priority_out for work, _ in active.values())
+                        eligible.sort(key=lambda work: (work.manifest.parent.parent == priority_out) == priority_active)
                     work = choose(eligible, [work for work, _ in active.values()], total, used,
                                   sum(mib for mib, _ in shared.values()))
                     if work is None:
@@ -208,6 +220,7 @@ def main() -> None:
                 "pending": [work.name for work in pending], "failures": failures,
                 "training_pending": sorted({f"r{job.resolution}_n{job.circles}" for job in training_pending}),
                 "outputs": list(map(str, outputs)),
+                "run_circles": args.run_circles, "priority_out": str(priority_out) if priority_out else None,
                 "shared_controllers": shared, "external": sorted(external), "memory_total_used_mib": [total, used]})
             if pending or active:
                 time.sleep(5)

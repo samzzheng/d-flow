@@ -56,6 +56,11 @@ Use `--additional-out DIR ...` with `run` or the dependency launcher to share
 one admission controller across frozen noise sweeps. It interleaves the sweeps,
 enforces a common smoke barrier, and holds each sweep's queue lock. Live queue
 status and logs reside in the primary `--out`; each sweep retains its report.
+For a temporary focus without modifying frozen manifests, `run --run-circles 1`
+admits only single-circle jobs and checks only their smoke markers. With
+`--priority-out DIR`, that managed sweep receives the next free slot whenever
+it has no active worker; other sweeps use the remaining slots. If either side
+runs out of eligible work, all available slots can serve the other side.
 The dependency launcher uses no GPU. It requires every production shard marker
 and a finished prerequisite controller without failures before starting the
 new controller. A paused or failed prerequisite keeps the next sweep waiting.
