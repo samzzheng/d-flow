@@ -45,6 +45,17 @@ Queue a frozen sweep after another completes with:
 ```
 
 The 5%-noise sweep uses all six resolutions and 30 samples (1,080 method runs).
+Use `--circles 1 2 4` at initialization for a sweep over those circle counts.
+With all six resolutions and 30 samples, this gives 1,080 paired cases and
+3,240 method runs. The smoke stage checks CT and MRI at the largest resolution
+for every requested circle count before production begins.
+Untrained models remain in the queue, listed under `training_pending`, until
+their epoch-200 completion record and checkpoint are available. Ready models
+can proceed once the smoke stage passes; this queue does not launch training.
+Use `--additional-out DIR ...` with `run` or the dependency launcher to share
+one admission controller across frozen noise sweeps. It interleaves the sweeps,
+enforces a common smoke barrier, and holds each sweep's queue lock. Live queue
+status and logs reside in the primary `--out`; each sweep retains its report.
 The dependency launcher uses no GPU. It requires every production shard marker
 and a finished prerequisite controller without failures before starting the
 new controller. A paused or failed prerequisite keeps the next sweep waiting.
@@ -52,8 +63,8 @@ new controller. A paused or failed prerequisite keeps the next sweep waiting.
 Invoke with `.venv/bin/python -m experiments.five_step_pilot.run ...`.
 The output root contains `queue_status.json`, `summary.json` and `report.md`.
 Refresh partial results with `report --out DIR`. Each production case saves
-paired inputs, resumable optimizer/source states and a five-row comparison
-figure at `production/r{resolution}_n1_{acquisition}/sample_000/comparison.png`
+paired inputs, resumable optimizer/source states and a two-row comparison
+figure at `production/r{resolution}_n{circles}_{acquisition}/sample_000/comparison.png`
 (also PDF). Smoke results remain separate from production.
 
 Five Euler steps change the generator; increasing the optimization budget

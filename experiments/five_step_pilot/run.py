@@ -1,4 +1,4 @@
-"""Freeze, run and summarize single-circle five-step experiments."""
+"""Freeze, run and summarize five-step circle experiments."""
 from __future__ import annotations
 
 import argparse
@@ -28,7 +28,8 @@ def report(out: Path) -> None:
     total_runs = len(jobs(settings)) * settings["samples"] * 3
     lines = ["# Five-step Euler pilot", "",
              f"{100*settings['noise_relative']:g}% relative measurement noise; CT10 and Cartesian MRI4; "
-             f"{settings['samples']} single-circle test samples at each resolution. "
+             f"{settings['samples']} test samples per acquisition at each resolution and "
+             f"circle count in {settings['circles']}. "
              "Shared LBFGS/geometric Armijo, FP32, up to 1,000 attempts; two consecutive failed "
              "line searches stop a method. A step limit does not certify convergence. "
              "DLR uses rank8, analytical alpha=1-t, no trace probes/enrichment and previous V.", "",
@@ -56,7 +57,7 @@ def report(out: Path) -> None:
     complete = sum(row["status"] in TERMINAL for row in rows)
     lines += ["", f"Terminal method runs: {complete}/{total_runs}. Running rows are provisional.", "",
               "Each production acquisition saves `sample_NNN/comparison.png` and `.pdf`, "
-              "including image/residual panels and error versus optimizer attempts."]
+              "including images and clean-reference measurements."]
     (out / "report.md").write_text("\n".join(lines) + "\n")
     write_json(out / "summary.json", {"terminal_runs": complete, "total_runs": total_runs, "rows": rows})
 
@@ -65,7 +66,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("init", "run", "report"))
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--additional-out", type=Path, nargs="*", default=[],
+                        help="Run additional frozen sweeps under the same GPU admission controller")
     parser.add_argument("--resolutions", type=int, nargs="+", default=[64, 96, 128, 160, 200, 250])
+    parser.add_argument("--circles", type=int, nargs="+", default=[1])
     parser.add_argument("--samples", type=int, default=1)
     parser.add_argument("--noise-relative", type=float, default=0.0)
     parser.add_argument("--max-workers", type=int, default=1, help="Frozen at initialization")
@@ -77,7 +81,7 @@ def main() -> None:
         settings = json.loads((ROOT / "experiments/ct_mri_sweep/config_fp32.json").read_text())
         if args.samples < 1 or args.max_workers < 1 or not 0 <= args.noise_relative < 1:
             parser.error("Require positive sample/worker counts and noise in [0, 1)")
-        settings.update(resolutions=args.resolutions, circles=[1], samples=args.samples,
+        settings.update(resolutions=args.resolutions, circles=args.circles, samples=args.samples,
                         flow_steps=5, noise_relative=args.noise_relative)
         settings["stopping"].update(min_updates=1000, max_updates=1000)
         settings["scheduling"].update(samples_per_worker=1, max_workers_per_gpu=args.max_workers,
@@ -94,8 +98,6 @@ def main() -> None:
                 current.update(resolutions=[max(args.resolutions)], samples=1)
                 current["stopping"].update(min_updates=2, max_updates=2, window=1)
                 current["execution"]["checkpoint_every"] = 1
-            if not all(model_ready(job, current) for job in jobs(current)):
-                raise RuntimeError("A requested single-circle model is not trained")
             write_json(path, {"created_at": datetime.now().astimezone().isoformat(), "settings": current,
                 "source_sha256": hashes, "jobs": list(map(asdict, jobs(current))),
                 "git_head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
@@ -110,14 +112,17 @@ def main() -> None:
     if args.mode == "report":
         report(out)
         return
-    lock = (out / "queue.lock").open("w")
-    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    lock.write(str(os.getpid()))
-    lock.flush()
+    outputs = [out, *map(Path.resolve, args.additional_out)]
+    locks = []
+    for root in outputs:
+        lock = (root / "queue.lock").open("w")
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        lock.write(str(os.getpid()))
+        lock.flush()
+        locks.append(lock)
     pending = []
     smoke_markers = []
-    for stage in ("smoke", "production"):
-        path = out / stage / "manifest.json"
+    for path in (root / stage / "manifest.json" for root in outputs for stage in ("smoke", "production")):
         manifest = json.loads(path.read_text())
         for name, digest in reviewed_source_hashes(path, manifest).items():
             if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != digest:
@@ -125,8 +130,11 @@ def main() -> None:
         pending.extend(Work(path, task, manifest["settings"], False)
                        for task in sorted(tasks(manifest["settings"]), key=lambda task: (task.start, task.job.resolution, task.job.problem))
                        if not task.marker(path.parent).exists())
-        if stage == "smoke":
-            smoke_markers = [task.marker(path.parent) for task in tasks(manifest["settings"])]
+        if path.parent.name == "smoke":
+            smoke_markers.extend(task.marker(path.parent) for task in tasks(manifest["settings"]))
+    pending.sort(key=lambda work: (work.task.start, work.task.job.resolution,
+                                  work.task.job.circles, work.task.job.problem,
+                                  outputs.index(work.manifest.parent.parent)))
     max_workers = manifest["settings"]["scheduling"]["max_workers_per_gpu"]
     shared = {pid: (mib, Path(f"/proc/{pid}/stat").read_text().split()[21])
               for pid, mib in args.shared_controller}
@@ -153,7 +161,7 @@ def main() -> None:
                     write_json(out / "failures.json", failures)
                 elif not work.marker.exists():
                     pending.insert(0, work)
-                report(out)
+                report(work.manifest.parent.parent)
             if any("/smoke/" in name for name in failures):
                 raise RuntimeError("Preflight failed; production remains blocked")
             pending = [work for work in pending if work.name not in failures]
@@ -173,9 +181,12 @@ def main() -> None:
                 for _, process in active.values():
                     process.terminate()
             preflight_passed = all(path.exists() for path in smoke_markers)
+            training_pending = {work.task.job for work in pending
+                                if not model_ready(work.task.job, work.settings)}
             if pending and not external and shutil.disk_usage(out).free > 20 * 2**30:
                 while len(active) < max_workers:
-                    eligible = [work for work in pending if preflight_passed or work.manifest.parent.name == "smoke"]
+                    eligible = [work for work in pending if work.task.job not in training_pending
+                                and (preflight_passed or work.manifest.parent.name == "smoke")]
                     work = choose(eligible, [work for work, _ in active.values()], total, used,
                                   sum(mib for mib, _ in shared.values()))
                     if work is None:
@@ -195,6 +206,8 @@ def main() -> None:
                 "active": {name: {"pid": process.pid, "reserved_mib": 9216}
                            for name, (_, process) in active.items()}, "preflight_passed": preflight_passed,
                 "pending": [work.name for work in pending], "failures": failures,
+                "training_pending": sorted({f"r{job.resolution}_n{job.circles}" for job in training_pending}),
+                "outputs": list(map(str, outputs)),
                 "shared_controllers": shared, "external": sorted(external), "memory_total_used_mib": [total, used]})
             if pending or active:
                 time.sleep(5)
@@ -206,8 +219,10 @@ def main() -> None:
             process.wait()
         if stopped[0]:
             write_json(out / "queue_status.json", {"status": "paused", "pid": os.getpid(), "gpu": 1})
-        report(out)
-        lock.close()
+        for root in outputs:
+            report(root)
+        for lock in locks:
+            lock.close()
 
 
 if __name__ == "__main__":

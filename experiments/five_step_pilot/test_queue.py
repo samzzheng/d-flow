@@ -73,6 +73,46 @@ class QueueTests(unittest.TestCase):
                     self.assertEqual(len(commands), 2)
                     self.assertTrue(all("/smoke/" in command[command.index("--manifest") + 1] for command in commands))
 
+    def test_multicircle_grid_keeps_untrained_models_pending(self) -> None:
+        out = self.out / "multicircle"
+        additional = self.out / "additional"
+        for root, noise in ((out, ".2"), (additional, ".01")):
+            with patch("sys.argv", ["pilot", "init", "--out", str(root), "--circles", "1", "2", "4",
+                                    "--samples", "30", "--noise-relative", noise, "--max-workers", "4"]):
+                main()
+        settings = json.loads((out / "production/manifest.json").read_text())["settings"]
+        self.assertEqual(len(tasks(settings)), 1080)
+        self.assertEqual(json.loads((out / "summary.json").read_text())["total_runs"], 3240)
+        smoke = json.loads((out / "smoke/manifest.json").read_text())["settings"]
+        self.assertEqual(len(tasks(smoke)), 6)
+        for root in (out, additional):
+            for task in tasks(smoke):
+                marker = task.marker(root / "smoke")
+                marker.parent.mkdir(parents=True, exist_ok=True)
+                marker.write_text("{}")
+        process = MagicMock(pid=12345)
+        process.poll.return_value = None
+        with ExitStack() as stack:
+            stack.enter_context(patch("sys.argv", ["pilot", "run", "--out", str(out),
+                                                   "--additional-out", str(additional)]))
+            stack.enter_context(patch("experiments.five_step_pilot.run.model_ready",
+                                      side_effect=lambda job, settings: (job.resolution, job.circles) != (64, 1)))
+            stack.enter_context(patch("experiments.five_step_pilot.run.gpu_processes", return_value={1: set()}))
+            stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.check_output", return_value="49140, 2"))
+            launch = stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.Popen", return_value=process))
+            stack.enter_context(patch("experiments.five_step_pilot.run.signal.signal"))
+            stack.enter_context(patch("experiments.five_step_pilot.run.time.sleep", side_effect=KeyboardInterrupt))
+            with self.assertRaises(KeyboardInterrupt):
+                main()
+        self.assertEqual(launch.call_count, 4)
+        self.assertEqual({Path(call.args[0][call.args[0].index("--manifest") + 1]).parents[1]
+                          for call in launch.call_args_list}, {out, additional})
+        self.assertTrue(all(not call.args[0][call.args[0].index("--job") + 1].startswith("r64_n1_")
+                            for call in launch.call_args_list))
+        status = json.loads((out / "queue_status.json").read_text())
+        self.assertEqual(status["training_pending"], ["r64_n1"])
+        self.assertEqual(sum("/r64_n1_" in name for name in status["pending"]), 120)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -21,6 +21,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--after", type=Path, required=True)
+    parser.add_argument("--additional-out", type=Path, nargs="*", default=[])
     args = parser.parse_args()
     out, prerequisite = args.out.resolve(), args.after.resolve()
     manifest_path = prerequisite / "production/manifest.json"
@@ -50,7 +51,8 @@ def main() -> None:
                 "prerequisite": str(prerequisite), "completed_shards": completed,
                 "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest()})
             lock.close()
-            os.execv(sys.executable, [sys.executable, "-m", "experiments.five_step_pilot.run", "run", "--out", str(out)])
+            os.execv(sys.executable, [sys.executable, "-m", "experiments.five_step_pilot.run", "run", "--out", str(out),
+                                     *(["--additional-out", *map(str, args.additional_out)] if args.additional_out else [])])
         time.sleep(30)
     write_json(out / "queue_status.json", {"status": "paused", "pid": os.getpid(), "gpu": 1,
                                           "prerequisite": str(prerequisite)})
