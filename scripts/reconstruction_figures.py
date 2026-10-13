@@ -18,6 +18,7 @@ import torch
 
 METHODS = ("D-Flow", "P-Flow", "DLR D-Flow")
 RESIDUAL_VMAX = {"ct": 1.0, "mri": 25.0}
+MEASUREMENT_VMAX = {"linear": 1.0, "log_magnitude": 5.0}
 PlotArray = NDArray[np.float64] | NDArray[np.complex128]
 History = Sequence[Mapping[str, float | int | None]]
 
@@ -44,6 +45,8 @@ def plot_reconstruction_comparison(
     """Plot images and clean-reference measurements for all methods.
 
     Images use the fixed training range 0..1 with saturated endpoint colors.
+    Measurements use fixed display limits: 0..1 for linear CT, 0..5 for
+    log(1 + magnitude) MRI. Out-of-range values use endpoint colors.
     Metrics use original arrays before any display transform. Observation,
     histories and residual_vmax remain accepted for existing callers, but their
     diagnostic rows are no longer displayed. Callers save and close the figure.
@@ -80,13 +83,9 @@ def plot_reconstruction_comparison(
         if row_index == 1 and measurement_log:
             displayed = [None if value is None else np.log1p(np.abs(value))
                          for value in displayed]
-        present = [value for value in displayed if value is not None]
-        vmin = min(float(value.min()) for value in present)
-        vmax = max(float(value.max()) for value in present)
-        if row_index == 0:
-            vmin, vmax = 0.0, 1.0
-        if vmax == vmin:
-            vmax = vmin + 1.0
+        vmin = 0.0
+        vmax = 1.0 if row_index == 0 else MEASUREMENT_VMAX[
+            "log_magnitude" if measurement_log else "linear"]
         reference_norm = float(np.linalg.norm(reference))
         for column, (name, value, error) in enumerate(zip(("GT", *METHODS), displayed, errors)):
             axis = axes[row_index, column]
@@ -105,11 +104,9 @@ def plot_reconstruction_comparison(
             )
         axes[row_index, 0].set_ylabel(label, fontsize=10)
         grid[row_index, 4].set_box_aspect(25)
-        colorbar = fig.colorbar(artist, cax=grid[row_index, 4],
-                               extend="both" if row_index == 0 else "neither")
-        if row_index == 0:
-            colorbar.set_ticks(np.linspace(0, 1, 6))
+        colorbar = fig.colorbar(artist, cax=grid[row_index, 4], extend="both")
+        colorbar.set_ticks(np.linspace(vmin, vmax, 6))
     fig.suptitle(title or "Reconstruction comparison", fontsize=14)
     if measurement_log:
-        axes[1, 0].set_ylabel("Measurement (clean GT; log magnitude)", fontsize=10)
+        axes[1, 0].set_ylabel("Measurement (clean GT; log(1 + magnitude))", fontsize=10)
     return fig

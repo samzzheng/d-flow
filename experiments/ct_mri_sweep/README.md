@@ -184,7 +184,10 @@ are omitted. Saved histories and numerical results remain unchanged.
 The image row uses the training `dense_r` colormap with fixed limits `[0,1]`;
 values outside that interval use the nearest endpoint color. MRI measurements
 use log magnitude; errors use the original complex arrays before display
-transforms. Measurement color limits are shared across methods in each figure.
+transforms. Measurement color limits and ticks are fixed across all figures:
+CT uses 0–1 in raw projection units; MRI uses 0–5 in `log(1 + magnitude)` units.
+Measurements beyond these display limits use endpoint colors, without changing
+saved arrays or relative L2 errors.
 
 Use `python -m experiments.ct_mri_sweep.replot <output-directory-or-sample>`
 to refresh saved PNG/PDF panels on the CPU from original saved arrays.

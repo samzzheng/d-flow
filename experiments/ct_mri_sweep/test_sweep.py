@@ -196,13 +196,13 @@ class SweepTests(unittest.TestCase):
 
     def test_aligned_two_rows_and_complex_measurement_errors(self) -> None:
         truth = torch.ones(1, 1, 16, 16)
-        for shape in ((1, 1, 10, 16), (1, 1, 16, 16)):
+        for shape, measurement_log in (((1, 1, 10, 16), False), ((1, 1, 16, 16), True)):
             clean = torch.ones(shape, dtype=torch.complex64)
             reconstruction = 1j * clean
             history = [{"step": 0, "image_relative_l2": 1., "measurement_relative_l2_noisy": 2.},
                        {"step": 7, "image_relative_l2": 0., "measurement_relative_l2_noisy": 2**.5}]
             fig = plot_reconstruction_comparison(truth, clean, {name: (truth, reconstruction) for name in METHODS},
-                observation=clean, histories={name: history for name in METHODS})
+                observation=clean, histories={name: history for name in METHODS}, measurement_log=measurement_log)
             try:
                 fig.canvas.draw()
                 self.assertEqual(len(fig.axes), 10)
@@ -214,7 +214,13 @@ class SweepTests(unittest.TestCase):
                     np.testing.assert_allclose([box.x0 for box in row], [box.x0 for box in boxes[0]], atol=.1)
                 self.assertIn("141.42%", axes[1, 1].get_title())
                 self.assertEqual(axes[0, 0].get_ylabel(), "Image")
-                self.assertEqual(axes[1, 0].get_ylabel(), "Measurement (clean GT reference)")
+                limit = 5. if measurement_log else 1.
+                for axis in axes[1, :4]:
+                    self.assertEqual(axis.images[0].get_clim(), (0., limit))
+                    np.testing.assert_allclose(axis.images[0].get_array(), np.log(2.) if measurement_log else 1.)
+                np.testing.assert_allclose(axes[1, 4].get_yticks(), np.linspace(0, limit, 6))
+                self.assertEqual(axes[1, 0].get_ylabel(),
+                    "Measurement (clean GT; log(1 + magnitude))" if measurement_log else "Measurement (clean GT reference)")
             finally:
                 plt.close(fig)
 
