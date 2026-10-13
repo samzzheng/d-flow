@@ -41,28 +41,16 @@ def plot_reconstruction_comparison(
     residual_vmax: float = RESIDUAL_VMAX["ct"],
     title: str = "",
 ) -> Figure:
-    """Plot four image/measurement rows and a fifth row of error histories.
+    """Plot images and clean-reference measurements for all methods.
 
-    The residual row uses the observation when supplied, otherwise clean GT.
-    Its GT panel therefore displays the noise magnitude when noise is present.
-    Histories contain step, image_relative_l2, and measurement_relative_l2_noisy
-    (the last key denotes residual against observed y, also when y is noiseless).
-    Absolute measurement residuals use a fixed 0..residual_vmax amp scale.
-    Pass RESIDUAL_VMAX["mri"] for MRI. Values above the scale are indicated by
-    the colorbar extension; arrays and metrics remain unchanged. Images use
-    the training range 0..1 with saturated endpoint colors and raw min/max
-    labels. Other map rows share per-figure scales; curves share axes within
-    the figure. The GT history panel is omitted.
-    Callers save and close the returned figure.
+    Images use the fixed training range 0..1 with saturated endpoint colors.
+    Metrics use original arrays before any display transform. Observation,
+    histories and residual_vmax remain accepted for existing callers, but their
+    diagnostic rows are no longer displayed. Callers save and close the figure.
     """
     if set(reconstructions) - set(METHODS):
         raise ValueError(f"Method labels must be drawn from {METHODS}.")
-    if not np.isfinite(residual_vmax) or residual_vmax <= 0:
-        raise ValueError("The fixed residual color limit must be finite and positive.")
     image_gt, measurement_gt = map(_as_array, (truth, clean_measurement))
-    measured = measurement_gt if observation is None else _as_array(observation)
-    if measured.shape != measurement_gt.shape:
-        raise ValueError("Clean and observed measurements must have matching shapes.")
     images: list[PlotArray | None] = [image_gt]
     measurements: list[PlotArray | None] = [measurement_gt]
     for name in METHODS:
@@ -77,15 +65,11 @@ def plot_reconstruction_comparison(
     image_errors = [None if x is None else np.abs(x - image_gt) for x in images]
     measurement_errors = [None if y is None else np.abs(y - measurement_gt)
                           for y in measurements]
-    residuals = [None if y is None else np.abs(y - measured) for y in measurements]
-    reference_label = "clean GT" if np.array_equal(measured, measurement_gt) else "observed y"
     rows = (
         ("Image", images, image_errors, image_gt),
         ("Measurement (clean GT reference)", measurements, measurement_errors, measurement_gt),
-        ("Absolute image error", image_errors, image_errors, image_gt),
-        (f"Absolute measurement residual ({reference_label})", residuals, residuals, measured),
     )
-    fig, grid = plt.subplots(5, 5, figsize=(16, 20), layout="constrained",
+    fig, grid = plt.subplots(2, 5, figsize=(16, 8), layout="constrained",
                             gridspec_kw={"width_ratios": [1, 1, 1, 1, .04]})
     axes = grid[:, :4]
     for axis in axes.flat:
@@ -97,13 +81,10 @@ def plot_reconstruction_comparison(
             displayed = [None if value is None else np.log1p(np.abs(value))
                          for value in displayed]
         present = [value for value in displayed if value is not None]
-        vmin = 0.0 if row_index >= 2 else min(float(value.min()) for value in present)
+        vmin = min(float(value.min()) for value in present)
         vmax = max(float(value.max()) for value in present)
-        overflow = row_index == 3 and vmax > residual_vmax
         if row_index == 0:
             vmin, vmax = 0.0, 1.0
-        if row_index == 3:
-            vmax = residual_vmax
         if vmax == vmin:
             vmax = vmin + 1.0
         reference_norm = float(np.linalg.norm(reference))
@@ -118,59 +99,17 @@ def plot_reconstruction_comparison(
             if value is None:
                 axis.text(0.5, 0.5, "Not available", ha="center", va="center", transform=axis.transAxes)
                 continue
-            if row_index == 0:
-                axis.set_title(f"{name}\nRelative L2 = {percentage}\n"
-                               f"Range [{value.min():.3g}, {value.max():.3g}]", fontsize=10)
             artist = axis.imshow(
-                value, cmap=cmocean.cm.amp if row_index >= 2 else cmocean.cm.dense_r,
+                value, cmap=cmocean.cm.dense_r,
                 vmin=vmin, vmax=vmax, aspect="auto", interpolation="nearest",
             )
         axes[row_index, 0].set_ylabel(label, fontsize=10)
         grid[row_index, 4].set_box_aspect(25)
         colorbar = fig.colorbar(artist, cax=grid[row_index, 4],
-                               extend="both" if row_index == 0 else "max" if overflow else "neither")
+                               extend="both" if row_index == 0 else "neither")
         if row_index == 0:
             colorbar.set_ticks(np.linspace(0, 1, 6))
-        if row_index == 3:
-            colorbar.set_ticks(np.linspace(0, residual_vmax, 6))
-    grid[4, 4].set_axis_off()
-
-    histories = {} if histories is None else histories
-    last_step = max((float(point["step"]) for history in histories.values() for point in history), default=1)
-    curve_max = max((100 * float(point[key]) for history in histories.values() for point in history
-                     for key in ("image_relative_l2", "measurement_relative_l2_noisy")), default=1)
-    axes[4, 0].remove()
-    for column, name in enumerate(METHODS, start=1):
-        axis = axes[4, column]
-        for label, color, style, key in (
-            ("Image error", cmocean.cm.amp(.9), "-", "image_relative_l2"),
-            ("Measurement residual", cmocean.cm.amp(.5), "--", "measurement_relative_l2_noisy"),
-        ):
-            if name in reconstructions and histories.get(name):
-                history = histories[name]
-                axis.plot([point["step"] for point in history],
-                          [100 * float(point[key]) for point in history],
-                          color=color, linestyle=style, label=label)
-        percentages = ["n/a", "n/a"]
-        for index, (errors, reference) in enumerate(((image_errors, image_gt), (residuals, measured))):
-            norm = float(np.linalg.norm(reference))
-            if errors[column] is not None and norm > 0:
-                percentages[index] = f"{100 * np.linalg.norm(errors[column]) / norm:.2f}%"
-        axis.set_title(f"{name}\nImage L2 = {percentages[0]}\nResidual L2 = {percentages[1]}", fontsize=10)
-        if not axis.lines:
-            axis.text(.5, .5, "History not available", ha="center", va="center", transform=axis.transAxes)
-        else:
-            axis.legend(loc="upper right", fontsize=7)
-        axis.set(xlabel="Optimizer attempt", xlim=(0, max(last_step, 1)), ylim=(0, max(curve_max * 1.05, 1)))
-        axis.tick_params(labelsize=8)
-        axis.grid(alpha=.2)
-    axes[4, 1].set_ylabel("Relative L2 error (%)", fontsize=10)
     fig.suptitle(title or "Reconstruction comparison", fontsize=14)
-    display_note = "Measurement display: log(1 + magnitude). " if measurement_log else ""
-    fig.supxlabel(
-        "Images: fixed [0,1] training scale; out-of-range colors saturate at endpoints; titles show raw range.\n"
-        + display_note + "Metrics use original arrays; complex panels display magnitude. "
-        f"Absolute measurement residual scale: 0–{residual_vmax:g} (fixed); "
-        "upper colorbar triangle marks values above the scale.", fontsize=9,
-    )
+    if measurement_log:
+        axes[1, 0].set_ylabel("Measurement (clean GT; log magnitude)", fontsize=10)
     return fig

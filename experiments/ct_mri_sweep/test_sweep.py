@@ -189,12 +189,12 @@ class SweepTests(unittest.TestCase):
             self.assertTrue(torch.equal(clean, observed))
             fig = plot_reconstruction_comparison(truth, clean, {}, observation=observed)
             try:
-                self.assertEqual(np.count_nonzero(fig.axes[15].images[0].get_array()), 0)
-                self.assertIn("0.00%", fig.axes[15].get_title())
+                np.testing.assert_allclose(fig.axes[5].images[0].get_array(), clean.abs().squeeze().numpy() if clean.is_complex() else clean.squeeze().numpy())
+                self.assertIn("0.00%", fig.axes[5].get_title())
             finally:
                 plt.close(fig)
 
-    def test_aligned_panels_amp_and_complex_error_histories(self) -> None:
+    def test_aligned_two_rows_and_complex_measurement_errors(self) -> None:
         truth = torch.ones(1, 1, 16, 16)
         for shape in ((1, 1, 10, 16), (1, 1, 16, 16)):
             clean = torch.ones(shape, dtype=torch.complex64)
@@ -205,21 +205,16 @@ class SweepTests(unittest.TestCase):
                 observation=clean, histories={name: history for name in METHODS})
             try:
                 fig.canvas.draw()
-                self.assertEqual(len(fig.axes), 24)
-                axes = np.asarray([*fig.axes[:20], None, *fig.axes[20:]], dtype=object).reshape(5, 5)
-                boxes = [[axis.get_window_extent() for axis in row[:4]] for row in axes[:4]]
+                self.assertEqual(len(fig.axes), 10)
+                axes = np.asarray(fig.axes, dtype=object).reshape(2, 5)
+                boxes = [[axis.get_window_extent() for axis in row[:4]] for row in axes]
                 np.testing.assert_allclose([box.width for row in boxes for box in row], boxes[0][0].width, atol=.1)
                 np.testing.assert_allclose([box.height for row in boxes for box in row], boxes[0][0].height, atol=.1)
                 for row in boxes[1:]:
                     np.testing.assert_allclose([box.x0 for box in row], [box.x0 for box in boxes[0]], atol=.1)
-                for axis in axes[2:4, :4].flat:
-                    self.assertEqual(axis.images[0].get_cmap().name, "amp")
                 self.assertIn("141.42%", axes[1, 1].get_title())
-                np.testing.assert_allclose(axes[4, 1].lines[0].get_xdata(), [0, 7])
-                np.testing.assert_allclose(axes[4, 1].lines[1].get_ydata(), [200, 100 * 2**.5])
-                self.assertEqual(axes[4, 1].get_xlim(), axes[4, 3].get_xlim())
-                self.assertEqual(axes[4, 1].get_ylim(), axes[4, 3].get_ylim())
-                self.assertEqual(axes[4, 1].get_xlabel(), "Optimizer attempt")
+                self.assertEqual(axes[0, 0].get_ylabel(), "Image")
+                self.assertEqual(axes[1, 0].get_ylabel(), "Measurement (clean GT reference)")
             finally:
                 plt.close(fig)
 
@@ -234,32 +229,12 @@ class SweepTests(unittest.TestCase):
             self.assertEqual(artist.get_clim(), (0., 1.))
             np.testing.assert_allclose(artist.get_array(), image.squeeze().numpy())
             self.assertIn(f"{expected:.2f}%", axis.get_title())
-            self.assertIn("Range [-0.2, 1.4]", axis.get_title())
             np.testing.assert_array_equal(artist.get_cmap()(-1.), artist.get_cmap()(0.))
             np.testing.assert_array_equal(artist.get_cmap()(2.), artist.get_cmap()(1.))
             self.assertEqual(fig.axes[4]._colorbar.extend, "both")
             self.assertEqual(fig.axes[0].images[0].get_clim(), (0., 1.))
         finally:
             plt.close(fig)
-
-    def test_fixed_residual_scales_preserve_complex_errors_and_mark_overflow(self) -> None:
-        truth = torch.ones(1, 1, 8, 8)
-        clean = torch.ones_like(truth, dtype=torch.complex64)
-        for problem, limit in RESIDUAL_VMAX.items():
-            for amplitude in (.01, 2 * limit):
-                predicted = clean + 1j * amplitude
-                fig = plot_reconstruction_comparison(truth, clean, {"DLR D-Flow": (truth, predicted)},
-                    measurement_log=problem == "mri", residual_vmax=limit)
-                try:
-                    residual_axis = fig.axes[18]
-                    artist = residual_axis.images[0]
-                    self.assertEqual(artist.get_clim(), (0, limit))
-                    np.testing.assert_allclose(artist.get_array(), amplitude)
-                    self.assertIn(f"{100 * amplitude:.2f}%", residual_axis.get_title())
-                    np.testing.assert_allclose(fig.axes[19].get_yticks(), np.linspace(0, limit, 6))
-                    self.assertEqual(artist.colorbar.extend, "max" if amplitude > limit else "neither")
-                finally:
-                    plt.close(fig)
 
     def test_full_rank_dlr_and_exact_gradient_match_euler_map(self) -> None:
         settings = self.settings

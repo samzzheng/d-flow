@@ -372,8 +372,8 @@ def main() -> None:
                 observation=observed, measurement_log=job.problem == "mri",
                 residual_vmax=RESIDUAL_VMAX[job.problem],
                 histories={name: result["history"] for name, result in results.items()},
-                title=f"{job.name} | test {sample} | {100*settings['noise_relative']:g}% noise | {settings['flow_steps']}-step Euler\n"
-                      + "; ".join(f"{name}: {result['status']} ({len(result['history'])-1} attempts)" for name, result in results.items()))
+                title=f"Resolution: {job.resolution}$^2$, Inverse Problem: {job.problem.upper()}, "
+                      f"Noise Level {100*settings['noise_relative']:g}%, Sample: {sample}")
             for extension in ("png", "pdf"):
                 fig.savefig(case / f"comparison.{extension}", dpi=140)
             plt.close(fig)

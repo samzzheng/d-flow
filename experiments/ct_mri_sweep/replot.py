@@ -30,8 +30,9 @@ def replot(case: Path) -> None:
         observation=inputs["observed"], histories={name: value["history"] for name, value in results.items()},
         measurement_log=inputs["protocol"]["job"]["problem"] == "mri",
         residual_vmax=RESIDUAL_VMAX[inputs["protocol"]["job"]["problem"]],
-        title=f"{case.parent.name} | test {inputs['protocol']['sample']} | {100*settings['noise_relative']:g}% noise | {settings['flow_steps']}-step Euler\n"
-              + "; ".join(f"{name}: {value['status']} ({len(value['history'])-1} attempts)" for name, value in results.items()))
+        title=f"Resolution: {inputs['truth'].shape[-1]}$^2$, "
+              f"Inverse Problem: {inputs['protocol']['job']['problem'].upper()}, "
+              f"Noise Level {100*settings['noise_relative']:g}%, Sample: {inputs['protocol']['sample']}")
     for extension in ("png", "pdf"):
         fig.savefig(case / f"comparison.{extension}", dpi=140)
     plt.close(fig)

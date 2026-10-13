@@ -173,36 +173,21 @@ checks validate execution agreement, not DLR approximation accuracy.
 Each sample directory contains paired inputs, one `.pt`/`.json` per method, and
 `comparison.png`/`comparison.pdf`. Figures are refreshed as each method finishes
 and contain all three final runs once complete: **5,040 complete comparisons**.
-Columns are GT, D-Flow, P-Flow, DLR D-Flow. Rows are images, clean-reference
-measurements, absolute image errors, residuals against observed measurements,
-and **relative image error / measurement residual versus optimization step**.
+Columns are GT, D-Flow, P-Flow, DLR D-Flow.
 All panels have the same square dimensions and aligned columns; colorbars have
-their own column. Absolute image-error and residual maps use `cmocean.cm.amp`.
-Each panel has a relative L2 percentage and each row shares its color limits.
-Absolute measurement residual heatmaps use fixed linear limits across samples,
-resolutions, circle counts, and methods: **0–1 for CT, 0–25 for MRI**. These limits
-are defined in `scripts/reconstruction_figures.py` and are independent of each
-figure's residual maximum. An upper colorbar triangle marks values above the
-limit; metrics still use the complete original arrays. The image-error heatmaps
-and error-versus-iteration axes retain their existing per-figure scaling.
-MRI measurement displays use log magnitude; errors use the original complex
-arrays. Method statuses and update counts are included. Histories retain the
-per-update errors and residuals. Acquisition summaries record final image error
-mean/std/median, update counts, elapsed time, and terminal status counts.
+their own column. Figures contain only two rows: images and forward measurements
+against the clean GT reference. Each panel retains its relative L2 percentage.
+The title contains only resolution, inverse problem, noise level and sample.
+Error heatmaps, residual maps, history plots, solver statuses and range labels
+are omitted. Saved histories and numerical results remain unchanged.
+
+The image row uses the training `dense_r` colormap with fixed limits `[0,1]`;
+values outside that interval use the nearest endpoint color. MRI measurements
+use log magnitude; errors use the original complex arrays before display
+transforms. Measurement color limits are shared across methods in each figure.
 
 Use `python -m experiments.ct_mri_sweep.replot <output-directory-or-sample>`
-to refresh saved PNG/PDF panels on the CPU. This uses the saved observations,
-reconstructions, and histories unchanged. Thus an old noisy GT residual remains
-1%, while the new noiseless GT residual is exactly zero. Curves stop at each
-method's actual final attempt, including early stalls; they share axis limits.
-
-The image row uses the training `dense_r` colormap with fixed limits `[0,1]`.
-Values outside that interval use the nearest endpoint color, avoiding abrupt
-color changes for small excursions. Titles show each image's actual range;
-error maps, metrics, and saved arrays retain the original values. The bottom-left
-GT history panel is omitted, and history axes
-are labeled optimizer attempts (rejected attempts are included). The fourth
-row remains `abs(A(x_hat) - y)`; its GT panel displays the measurement noise.
+to refresh saved PNG/PDF panels on the CPU from original saved arrays.
 
 For the active FP32 sweep, `source_review.json` records the reviewed plotting
 change and the source-check plumbing needed to apply it. The original manifest
