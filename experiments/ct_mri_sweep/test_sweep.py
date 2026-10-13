@@ -205,8 +205,9 @@ class SweepTests(unittest.TestCase):
                 observation=clean, histories={name: history for name in METHODS})
             try:
                 fig.canvas.draw()
-                axes = np.asarray(fig.axes, dtype=object).reshape(5, 5)
-                boxes = [[axis.get_window_extent() for axis in row[:4]] for row in axes]
+                self.assertEqual(len(fig.axes), 24)
+                axes = np.asarray([*fig.axes[:20], None, *fig.axes[20:]], dtype=object).reshape(5, 5)
+                boxes = [[axis.get_window_extent() for axis in row[:4]] for row in axes[:4]]
                 np.testing.assert_allclose([box.width for row in boxes for box in row], boxes[0][0].width, atol=.1)
                 np.testing.assert_allclose([box.height for row in boxes for box in row], boxes[0][0].height, atol=.1)
                 for row in boxes[1:]:
@@ -218,8 +219,28 @@ class SweepTests(unittest.TestCase):
                 np.testing.assert_allclose(axes[4, 1].lines[1].get_ydata(), [200, 100 * 2**.5])
                 self.assertEqual(axes[4, 1].get_xlim(), axes[4, 3].get_xlim())
                 self.assertEqual(axes[4, 1].get_ylim(), axes[4, 3].get_ylim())
+                self.assertEqual(axes[4, 1].get_xlabel(), "Optimizer attempt")
             finally:
                 plt.close(fig)
+
+    def test_image_training_scale_marks_extremes_without_clipping_metrics(self) -> None:
+        truth = torch.ones(1, 1, 2, 2)
+        image = torch.tensor([[[[-.2, 0.], [.5, 1.4]]]])
+        fig = plot_reconstruction_comparison(truth, truth, {"DLR D-Flow": (image, image)})
+        try:
+            expected = 100 * float((image - truth).double().norm() / truth.double().norm())
+            axis = fig.axes[3]
+            artist = axis.images[0]
+            self.assertEqual(artist.get_clim(), (0., 1.))
+            np.testing.assert_allclose(artist.get_array(), image.squeeze().numpy())
+            self.assertIn(f"{expected:.2f}%", axis.get_title())
+            self.assertIn("Range [-0.2, 1.4]", axis.get_title())
+            self.assertFalse(np.array_equal(artist.get_cmap()(-1.), artist.get_cmap()(0.)))
+            self.assertFalse(np.array_equal(artist.get_cmap()(2.), artist.get_cmap()(1.)))
+            self.assertEqual(fig.axes[4]._colorbar.extend, "both")
+            self.assertEqual(fig.axes[0].images[0].get_clim(), (0., 1.))
+        finally:
+            plt.close(fig)
 
     def test_fixed_residual_scales_preserve_complex_errors_and_mark_overflow(self) -> None:
         truth = torch.ones(1, 1, 8, 8)

@@ -196,6 +196,13 @@ reconstructions, and histories unchanged. Thus an old noisy GT residual remains
 1%, while the new noiseless GT residual is exactly zero. Curves stop at each
 method's actual final attempt, including early stalls; they share axis limits.
 
+The image row uses the training `dense_r` colormap with fixed limits `[0,1]`.
+Dark-blue under-range pixels and amber over-range pixels expose values outside
+that interval; titles show each image's actual range. Metrics and saved arrays
+are not clipped. The bottom-left GT history panel is omitted, and history axes
+are labeled optimizer attempts (rejected attempts are included). The fourth
+row remains `abs(A(x_hat) - y)`; its GT panel displays the measurement noise.
+
 For the active FP32 sweep, `source_review.json` records the reviewed plotting
 change and the source-check plumbing needed to apply it. The original manifest
 and checkpoint protocol hashes stay unchanged, allowing saved optimizer states

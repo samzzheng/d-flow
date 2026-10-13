@@ -18,7 +18,7 @@ import time
 from typing import Any
 
 from experiments.ct_mri_sweep.queue import gpu_processes, source_hashes, tasks
-from experiments.ct_mri_sweep.run import ROOT, TERMINAL, jobs, model_ready, write_json
+from experiments.ct_mri_sweep.run import ROOT, TERMINAL, jobs, model_ready, reviewed_source_hashes, write_json
 from experiments.noisy_ct_mri.queue import Work, choose
 
 
@@ -119,7 +119,7 @@ def main() -> None:
     for stage in ("smoke", "production"):
         path = out / stage / "manifest.json"
         manifest = json.loads(path.read_text())
-        for name, digest in manifest["source_sha256"].items():
+        for name, digest in reviewed_source_hashes(path, manifest).items():
             if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != digest:
                 raise ValueError(f"Source changed: {name}")
         pending.extend(Work(path, task, manifest["settings"], False)

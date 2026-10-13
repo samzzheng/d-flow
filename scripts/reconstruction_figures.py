@@ -49,8 +49,10 @@ def plot_reconstruction_comparison(
     (the last key denotes residual against observed y, also when y is noiseless).
     Absolute measurement residuals use a fixed 0..residual_vmax amp scale.
     Pass RESIDUAL_VMAX["mri"] for MRI. Values above the scale are indicated by
-    the colorbar extension; arrays and metrics remain unchanged. Other map rows
-    share per-figure color scales; curves share axes within the figure.
+    the colorbar extension; arrays and metrics remain unchanged. Images use
+    the training range 0..1 with distinct under/over colors and raw min/max
+    labels. Other map rows share per-figure scales; curves share axes within
+    the figure. The GT history panel is omitted.
     Callers save and close the returned figure.
     """
     if set(reconstructions) - set(METHODS):
@@ -86,6 +88,9 @@ def plot_reconstruction_comparison(
     fig, grid = plt.subplots(5, 5, figsize=(16, 20), layout="constrained",
                             gridspec_kw={"width_ratios": [1, 1, 1, 1, .04]})
     axes = grid[:, :4]
+    image_cmap = cmocean.cm.dense_r.copy()
+    image_cmap.set_under("#16324f")
+    image_cmap.set_over("#f59e0b")
     for axis in axes.flat:
         axis.set_box_aspect(1)
     for row_index, (label, values, errors, reference) in enumerate(rows):
@@ -98,6 +103,8 @@ def plot_reconstruction_comparison(
         vmin = 0.0 if row_index >= 2 else min(float(value.min()) for value in present)
         vmax = max(float(value.max()) for value in present)
         overflow = row_index == 3 and vmax > residual_vmax
+        if row_index == 0:
+            vmin, vmax = 0.0, 1.0
         if row_index == 3:
             vmax = residual_vmax
         if vmax == vmin:
@@ -114,14 +121,19 @@ def plot_reconstruction_comparison(
             if value is None:
                 axis.text(0.5, 0.5, "Not available", ha="center", va="center", transform=axis.transAxes)
                 continue
+            if row_index == 0:
+                axis.set_title(f"{name}\nRelative L2 = {percentage}\n"
+                               f"Range [{value.min():.3g}, {value.max():.3g}]", fontsize=10)
             artist = axis.imshow(
-                value, cmap=cmocean.cm.amp if row_index >= 2 else cmocean.cm.dense_r,
-                vmin=vmin, vmax=vmax, aspect="auto",
+                value, cmap=cmocean.cm.amp if row_index >= 2 else image_cmap if row_index == 0 else cmocean.cm.dense_r,
+                vmin=vmin, vmax=vmax, aspect="auto", interpolation="nearest",
             )
         axes[row_index, 0].set_ylabel(label, fontsize=10)
         grid[row_index, 4].set_box_aspect(25)
         colorbar = fig.colorbar(artist, cax=grid[row_index, 4],
-                               extend="max" if overflow else "neither")
+                               extend="both" if row_index == 0 else "max" if overflow else "neither")
+        if row_index == 0:
+            colorbar.set_ticks(np.linspace(0, 1, 6))
         if row_index == 3:
             colorbar.set_ticks(np.linspace(0, residual_vmax, 6))
     grid[4, 4].set_axis_off()
@@ -130,17 +142,14 @@ def plot_reconstruction_comparison(
     last_step = max((float(point["step"]) for history in histories.values() for point in history), default=1)
     curve_max = max((100 * float(point[key]) for history in histories.values() for point in history
                      for key in ("image_relative_l2", "measurement_relative_l2_noisy")), default=1)
-    for column, name in enumerate(("GT", *METHODS)):
+    axes[4, 0].remove()
+    for column, name in enumerate(METHODS, start=1):
         axis = axes[4, column]
-        for errors, reference, label, color, style, key in (
-            (image_errors, image_gt, "Image error", cmocean.cm.amp(.9), "-", "image_relative_l2"),
-            (residuals, measured, "Measurement residual", cmocean.cm.amp(.5), "--", "measurement_relative_l2_noisy"),
+        for label, color, style, key in (
+            ("Image error", cmocean.cm.amp(.9), "-", "image_relative_l2"),
+            ("Measurement residual", cmocean.cm.amp(.5), "--", "measurement_relative_l2_noisy"),
         ):
-            if column == 0:
-                norm = float(np.linalg.norm(reference))
-                if norm > 0:
-                    axis.axhline(100 * np.linalg.norm(errors[0]) / norm, color=color, linestyle=style, label=label)
-            elif name in reconstructions and histories.get(name):
+            if name in reconstructions and histories.get(name):
                 history = histories[name]
                 axis.plot([point["step"] for point in history],
                           [100 * float(point[key]) for point in history],
@@ -155,14 +164,15 @@ def plot_reconstruction_comparison(
             axis.text(.5, .5, "History not available", ha="center", va="center", transform=axis.transAxes)
         else:
             axis.legend(loc="upper right", fontsize=7)
-        axis.set(xlabel="Optimization step", xlim=(0, max(last_step, 1)), ylim=(0, max(curve_max * 1.05, 1)))
+        axis.set(xlabel="Optimizer attempt", xlim=(0, max(last_step, 1)), ylim=(0, max(curve_max * 1.05, 1)))
         axis.tick_params(labelsize=8)
         axis.grid(alpha=.2)
-    axes[4, 0].set_ylabel("Relative L2 error (%)", fontsize=10)
+    axes[4, 1].set_ylabel("Relative L2 error (%)", fontsize=10)
     fig.suptitle(title or "Reconstruction comparison", fontsize=14)
     display_note = "Measurement display: log(1 + magnitude). " if measurement_log else ""
     fig.supxlabel(
-        display_note + "Metrics use original arrays; complex panels display magnitude. "
+        "Images: fixed [0,1] training scale; dark blue <0, amber >1; titles show raw range.\n"
+        + display_note + "Metrics use original arrays; complex panels display magnitude. "
         f"Absolute measurement residual scale: 0–{residual_vmax:g} (fixed); "
         "upper colorbar triangle marks values above the scale.", fontsize=9,
     )
