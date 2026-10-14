@@ -88,7 +88,8 @@ details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
 .card figcaption{margin:0 0 12px;color:var(--ink)}.card img{margin-top:12px}
 .empty{padding:12px 16px;background:var(--soft);color:var(--muted)}
 .results-table .method{text-align:center}.results-table td,.results-table th{white-space:nowrap}
-.results-table .noise-start td{border-top:2px solid var(--line)}
+.results-table .lowest{background:#e5e7eb;font-weight:700}
+.results-table .highest{background:#fee2e2;color:#991b1b;font-weight:700}
 button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid var(--line);border-radius:5px;padding:8px 12px;cursor:pointer}
 @media(max-width:850px){.card{padding:6px}.card figcaption{font-size:12px}}
 @media print{button{display:none}main{max-width:none;padding:0}details{break-inside:avoid}figure{break-inside:avoid}}
@@ -96,11 +97,14 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
     title = f"Single Circle Noise Test ({args.date.strftime('%B %d, %Y')})"
     mathjax_config = r'''<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"local"}};</script>'''
     mathjax_script = '<script defer src="vendor/node_modules/mathjax/es5/tex-svg.js"></script>'
+    gallery_controls = ('<p><button type="button" onclick="document.querySelectorAll(\'details.gallery\').forEach(d=>d.open=true)">Expand all</button> '
+                        '<button type="button" onclick="document.querySelectorAll(\'details.gallery\').forEach(d=>d.open=false)">Collapse all</button></p>')
     html = [f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">'
             f'<title>{title}</title>{mathjax_config}{mathjax_script}<style>{style}</style></head><body><main>',
             f'<h1>{title}</h1>',
             '<p class="subtitle">Completed single-circle study · 1,440 paired cases · 4,320 reconstructions</p>',
+            gallery_controls,
             '<h2 id="setup">1. Inverse problems and protocol</h2>',
             r'<ul><li><strong>CT:</strong> 10 equally spaced parallel-beam projection angles over \([0,\pi)\).</li>'
             r'<li><strong>MRI:</strong> single-coil Fourier measurements with variable-density Cartesian sampling at nominal \(4\times\) acceleration.</li>'
@@ -116,31 +120,35 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
             '<h2 id="results">2. Best, median and worst relative image error</h2>',
             r'<p>Image error (%): \(100\|\hat{x}-x_{\mathrm{GT}}\|_2/\|x_{\mathrm{GT}}\|_2\). '
             'Each row summarizes 30 final reconstructions at one resolution and noise level. '
-            'Best/median/worst are computed separately for each method; lowest values across methods are bold.</p>']
+            'Best/median/worst are computed separately for each method. Within each row, '
+            'grey marks the lowest best and median errors; red marks the highest worst error.</p>']
     for problem in ("ct", "mri"):
         acquisition_title = "CT · 10 angles" if problem == "ct" else r"MRI · \(4\times\) acceleration"
-        html.append(f'<section><h3>{acquisition_title}</h3>'
-                    '<table class="results-table"><thead><tr><th rowspan="2">Noise</th><th rowspan="2">Resolution</th>'
-                    + ''.join(f'<th class="method" colspan="3">{method}</th>' for method in METHODS)
-                    + '</tr><tr>' + '<th>Best (%)</th><th>Median (%)</th><th>Worst (%)</th>' * 3
-                    + '</tr></thead><tbody>')
+        html.append(f'<section><h3>{acquisition_title}</h3>')
         for noise in NOISES:
+            html.append(f'<h4>{noise}% noise</h4>'
+                        f'<table class="results-table" data-problem="{problem}" data-noise="{noise}">'
+                        '<thead><tr><th rowspan="2">Resolution</th>'
+                        + ''.join(f'<th class="method" colspan="3">{method}</th>' for method in METHODS)
+                        + '</tr><tr>' + '<th>Best (%)</th><th>Median (%)</th><th>Worst (%)</th>' * 3
+                        + '</tr></thead><tbody>')
             for resolution in RESOLUTIONS:
                 subset = [case for case in cases if (case.problem, case.noise, case.resolution) == (problem, noise, resolution)]
                 assert len(subset) == 30
                 errors = [[case.errors[index] for case in subset] for index in range(3)]
                 values = [(min(items), statistics.median(items), max(items)) for items in errors]
-                lowest = list(map(min, zip(*values)))
-                cells = [f'<td>{"<strong>" if value == lowest[index] else ""}{value:.2f}'
-                         f'{"</strong>" if value == lowest[index] else ""}</td>'
+                highlights = [min(items) if index < 2 else max(items)
+                              for index, items in enumerate(zip(*values))]
+                cells = [f'<td class="{("lowest" if index < 2 else "highest") if value == highlights[index] else ""}">{value:.2f}</td>'
                          for method_values in values for index, value in enumerate(method_values)]
-                row_class = ' class="noise-start"' if resolution == RESOLUTIONS[0] else ''
-                html.append(rf'<tr{row_class}><td>{noise}%</td><td>\({resolution}^2\)</td>{"".join(cells)}</tr>')
-        html.append('</tbody></table></section>')
+                html.append(rf'<tr><td>\({resolution}^2\)</td>{"".join(cells)}</tr>')
+            html.append('</tbody></table>')
+        html.append('</section>')
     html += ['<h2 id="representatives">3. Best, median and worst by DLR image error</h2>',
              '<p>Within each resolution, noise level and inverse problem: DLR ranks 1, 15 and 30 of 30 samples '
              '(best, lower median and worst). All methods show the same case at their final iterate.</p>',
-             r'<p class="small">Fixed display scales; errors use original arrays. Measurement errors reference clean \(A(x_{\mathrm{GT}})\).</p>']
+             r'<p class="small">Fixed display scales; errors use original arrays. Measurement errors reference clean \(A(x_{\mathrm{GT}})\).</p>',
+             gallery_controls]
     selections = []
     for noise in NOISES:
         html.append(f'<details class="gallery"><summary>{noise}% noise · best / median / worst</summary>')
@@ -162,9 +170,7 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
     html += ['<h2 id="gaps">4. Cases with the largest DLR advantage over D-Flow</h2>',
              r'<p>At 5%, 10% and 20% noise, show the three largest positive gaps \(\Delta=e_{\mathrm{D\text{-}Flow}}-e_{\mathrm{DLR}}\) '
              r'(percentage points), with DLR image error \(\leq10\%\), per resolution and inverse problem. '
-             'This selection does not filter the tables above.</p>',
-             '<button type="button" onclick="document.querySelectorAll(\'details.gallery\').forEach(d=>d.open=true)">Expand all examples</button> '
-             '<button type="button" onclick="document.querySelectorAll(\'details.gallery\').forEach(d=>d.open=false)">Collapse all examples</button>']
+             r'\(x/30\) counts cases meeting both conditions. This selection does not filter the tables above.</p>']
     for noise in (5, 10, 20):
         html.append(f'<details class="gallery"><summary>{noise}% noise · DLR advantage by resolution</summary>')
         for resolution in RESOLUTIONS:
