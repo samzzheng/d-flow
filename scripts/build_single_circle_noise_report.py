@@ -87,9 +87,10 @@ summary{cursor:pointer;padding:15px 0;font-weight:650;line-height:1.5}
 details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
 .card figcaption{margin:0 0 12px;color:var(--ink)}.card img{margin-top:12px}
 .empty{padding:12px 16px;background:var(--soft);color:var(--muted)}
-.tables{display:grid;grid-template-columns:1fr 1fr;gap:28px}.tables h3{margin-top:0}
+.results-table .method{text-align:center}.results-table td,.results-table th{white-space:nowrap}
+.results-table .noise-start td{border-top:2px solid var(--line)}
 button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid var(--line);border-radius:5px;padding:8px 12px;cursor:pointer}
-@media(max-width:850px){.tables{grid-template-columns:1fr}.card{padding:6px}.card figcaption{font-size:12px}}
+@media(max-width:850px){.card{padding:6px}.card figcaption{font-size:12px}}
 @media print{button{display:none}main{max-width:none;padding:0}details{break-inside:avoid}figure{break-inside:avoid}}
 """
     title = f"Single Circle Noise Test ({args.date.strftime('%B %d, %Y')})"
@@ -103,27 +104,40 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
             '<h2 id="setup">1. Inverse problems and protocol</h2>',
             r'<ul><li><strong>CT:</strong> 10 equally spaced parallel-beam projection angles over \([0,\pi)\).</li>'
             r'<li><strong>MRI:</strong> single-coil Fourier measurements with variable-density Cartesian sampling at nominal \(4\times\) acceleration.</li>'
-            r'<li><strong>Noise:</strong> Gaussian, with \(\|\varepsilon\|_2/\|A(x_{\mathrm{GT}})\|_2\) equal to 1%, 5%, 10% or 20%; complex noise on acquired MRI coefficients.</li>'
+            '<li><strong>Noise:</strong> 1/5/10/20%.</li>'
             r'<li><strong>Resolutions:</strong> \(64^2,96^2,128^2,160^2,200^2,250^2\).</li>'
             '<li><strong>Samples:</strong> 30 per resolution, inverse problem and noise level; paired across methods.</li>'
-            '<li><strong>Settings:</strong> non-attention flow-matching UNets, 5 Euler steps, LBFGS with learning rate 1, '
-            r'DLR rank \(r=8\), no additional regularization.</li></ul>',
-            '<h2 id="results">2. Median relative image error</h2>',
+            '<li><strong>Models:</strong> non-attention flow-matching UNets.</li>'
+            '<li><strong>Euler steps:</strong> 5.</li>'
+            '<li><strong>Optimizer:</strong> LBFGS.</li>'
+            '<li><strong>Learning rate:</strong> 1.</li>'
+            r'<li><strong>DLR rank:</strong> \(r=8\).</li>'
+            '<li><strong>Regularization:</strong> none.</li></ul>',
+            '<h2 id="results">2. Best, median and worst relative image error</h2>',
             r'<p>Image error (%): \(100\|\hat{x}-x_{\mathrm{GT}}\|_2/\|x_{\mathrm{GT}}\|_2\). '
-            'Medians include all 180 final reconstructions per row, pooled across resolutions. Best median in bold.</p><div class="tables">']
+            'Each row summarizes 30 final reconstructions at one resolution and noise level. '
+            'Best/median/worst are computed separately for each method; lowest values across methods are bold.</p>']
     for problem in ("ct", "mri"):
         acquisition_title = "CT · 10 angles" if problem == "ct" else r"MRI · \(4\times\) acceleration"
         html.append(f'<section><h3>{acquisition_title}</h3>'
-                    '<table><thead><tr><th>Noise</th><th>D-Flow</th><th>P-Flow</th><th>DLR D-Flow</th></tr></thead><tbody>')
+                    '<table class="results-table"><thead><tr><th rowspan="2">Noise</th><th rowspan="2">Resolution</th>'
+                    + ''.join(f'<th class="method" colspan="3">{method}</th>' for method in METHODS)
+                    + '</tr><tr>' + '<th>Best (%)</th><th>Median (%)</th><th>Worst (%)</th>' * 3
+                    + '</tr></thead><tbody>')
         for noise in NOISES:
-            subset = [case for case in cases if case.problem == problem and case.noise == noise]
-            medians = [statistics.median(case.errors[index] for case in subset) for index in range(3)]
-            cells = [f'<td>{"<strong>" if value == min(medians) else ""}{value:.2f}%'
-                     f'{"</strong>" if value == min(medians) else ""}</td>' for value in medians]
-            html.append(f'<tr><td>{noise}%</td>{"".join(cells)}</tr>')
+            for resolution in RESOLUTIONS:
+                subset = [case for case in cases if (case.problem, case.noise, case.resolution) == (problem, noise, resolution)]
+                assert len(subset) == 30
+                errors = [[case.errors[index] for case in subset] for index in range(3)]
+                values = [(min(items), statistics.median(items), max(items)) for items in errors]
+                lowest = list(map(min, zip(*values)))
+                cells = [f'<td>{"<strong>" if value == lowest[index] else ""}{value:.2f}'
+                         f'{"</strong>" if value == lowest[index] else ""}</td>'
+                         for method_values in values for index, value in enumerate(method_values)]
+                row_class = ' class="noise-start"' if resolution == RESOLUTIONS[0] else ''
+                html.append(rf'<tr{row_class}><td>{noise}%</td><td>\({resolution}^2\)</td>{"".join(cells)}</tr>')
         html.append('</tbody></table></section>')
-    html += ['</div>',
-             '<h2 id="representatives">3. Best, median and worst by DLR image error</h2>',
+    html += ['<h2 id="representatives">3. Best, median and worst by DLR image error</h2>',
              '<p>Within each resolution, noise level and inverse problem: DLR ranks 1, 15 and 30 of 30 samples '
              '(best, lower median and worst). All methods show the same case at their final iterate.</p>',
              r'<p class="small">Fixed display scales; errors use original arrays. Measurement errors reference clean \(A(x_{\mathrm{GT}})\).</p>']
