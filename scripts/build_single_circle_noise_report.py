@@ -28,8 +28,6 @@ class Case:
     resolution: int
     sample: int
     errors: tuple[float, ...]
-    statuses: tuple[str, ...]
-    attempts: tuple[int, ...]
     source: Path
 
     @property
@@ -45,13 +43,11 @@ def panel(case: Case, label: str, assets: Path) -> str:
     target = assets / f"{case.name}.png"
     if not target.exists():
         shutil.copyfile(case.source / "comparison.png", target)
-    title = f"{label} · {case.problem.upper()} · {case.resolution}² · Sample {case.sample}"
+    title = rf"{label} · {case.problem.upper()} · \({case.resolution}^2\) · Sample {case.sample}"
     metrics = " · ".join(f"{name}: <strong>{value:.2f}%</strong>"
                          for name, value in zip(METHODS, case.errors))
-    stopping = "; ".join(f"{name}: {status.replace('_', ' ')} at attempt {attempt}"
-                         for name, status, attempt in zip(METHODS, case.statuses, case.attempts))
     return (f'<figure class="card"><figcaption><strong>{escape(title)}</strong><br>{metrics}'
-            f'<br><span class="small">{escape(stopping)}</span></figcaption>'
+            '</figcaption>'
             f'<img src="{assets.name}/{target.name}" loading="lazy" width="2240" height="1120" '
             f'alt="{escape(title)}; paired GT, D-Flow, P-Flow and DLR images and measurements"></figure>')
 
@@ -76,8 +72,6 @@ def main() -> None:
         acquisition = "ct10" if problem == "ct" else "mri4"
         cases.append(Case(noise, problem, resolution, sample,
             tuple(float(records[method]["image_percent"]) for method in METHODS),
-            tuple(records[method]["status"] for method in METHODS),
-            tuple(int(records[method]["attempts"]) for method in METHODS),
             roots[noise] / "production" / f"r{resolution}_n1_{acquisition}" / f"sample_{sample:03d}"))
     assert len(cases) == 1440
     args.out.mkdir(parents=True, exist_ok=True)
@@ -87,7 +81,7 @@ def main() -> None:
     previous = (args.out / "dlr_dflow_report_2026-09-16.html").read_text()
     style = re.search(r"<style>(.*?)</style>", previous, flags=re.S).group(1)
     style += """
-nav{display:flex;gap:18px;flex-wrap:wrap;margin:20px 0}a{color:var(--accent)}
+a{color:var(--accent)}
 details{border:1px solid var(--line);border-radius:8px;margin:12px 0;padding:0 16px}
 summary{cursor:pointer;padding:15px 0;font-weight:650;line-height:1.5}
 details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
@@ -96,41 +90,30 @@ details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
 .tables{display:grid;grid-template-columns:1fr 1fr;gap:28px}.tables h3{margin-top:0}
 button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid var(--line);border-radius:5px;padding:8px 12px;cursor:pointer}
 @media(max-width:850px){.tables{grid-template-columns:1fr}.card{padding:6px}.card figcaption{font-size:12px}}
-@media print{nav,button{display:none}main{max-width:none;padding:0}details{break-inside:avoid}figure{break-inside:avoid}}
+@media print{button{display:none}main{max-width:none;padding:0}details{break-inside:avoid}figure{break-inside:avoid}}
 """
     title = f"Single Circle Noise Test ({args.date.strftime('%B %d, %Y')})"
+    mathjax_config = r'''<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"local"}};</script>'''
+    mathjax_script = '<script defer src="vendor/node_modules/mathjax/es5/tex-svg.js"></script>'
     html = [f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">'
-            f'<title>{title}</title><style>{style}</style></head><body><main>',
+            f'<title>{title}</title>{mathjax_config}{mathjax_script}<style>{style}</style></head><body><main>',
             f'<h1>{title}</h1>',
             '<p class="subtitle">Completed single-circle study · 1,440 paired cases · 4,320 reconstructions</p>',
-            '<div class="note interpretation"><strong>DLR retains low typical reconstruction error as measurement noise increases.</strong> '
-            'From 1% to 20% noise, its median image error rises from 1.91% to 5.94% for CT and from 2.04% to 2.40% for MRI. '
-            'The median advantage over D-Flow and P-Flow is clearest at high noise. '
-            'D-Flow remains best for MRI at 1% noise; this is not a uniform advantage on every sample.</div>',
-            '<nav><a href="#setup">Setup</a><a href="#results">Median results</a>'
-            '<a href="#representatives">Best / median / worst</a><a href="#gaps">Largest DLR advantages</a></nav>',
             '<h2 id="setup">1. Inverse problems and protocol</h2>',
-            '<p><strong>CT:</strong> sparse parallel-beam projections at 10 uniformly spaced angles over [0°, 180°), '
-            'using a rotate-and-average Radon operator. <strong>MRI:</strong> single-coil, zero-phase circle phantoms '
-            'with a centered orthonormal Fourier transform and variable-density Cartesian sampling at nominal 4× acceleration '
-            '(approximately one quarter of phase-encoding lines, including DC).</p>',
-            '<p><strong>Measurements:</strong> y = A(x<sub>GT</sub>) + ε, with ‖ε‖₂ / ‖A(x<sub>GT</sub>)‖₂ '
-            'equal to 1%, 5%, 10%, or 20%. Gaussian noise is normalized to the specified norm; MRI noise is complex '
-            'and added only at acquired coefficients. Truths, masks, initial sources and noise seeds are paired across methods and noise levels.</p>',
-            '<p><strong>Shared settings:</strong> resolutions 64², 96², 128², 160², 200², 250²; 30 samples per acquisition/resolution/noise level; '
-            'epoch-200 non-attention flow-matching UNets; <strong>5 Euler steps</strong>; FP32; '
-            'LBFGS (learning rate 1, history 100) with Armijo geometric halving (c₁ = 10⁻⁴, at most 30 trials), '
-            'first-attempt initial scaling, and source displacement cap 0.01√d. '
-            'Up to 1,000 optimizer attempts, stopping after two failed searches. '
-            'DLR uses the fast rank-8 configuration, α(t) = 1 − t, zero enrichment and previous-V sketch reuse. '
-            'All methods minimize ½‖A(G(z)) − y‖₂² without source projection, image clipping or extra regularization.</p>',
+            r'<ul><li><strong>CT:</strong> 10 equally spaced parallel-beam projection angles over \([0,\pi)\).</li>'
+            r'<li><strong>MRI:</strong> single-coil Fourier measurements with variable-density Cartesian sampling at nominal \(4\times\) acceleration.</li>'
+            r'<li><strong>Noise:</strong> Gaussian, with \(\|\varepsilon\|_2/\|A(x_{\mathrm{GT}})\|_2\) equal to 1%, 5%, 10% or 20%; complex noise on acquired MRI coefficients.</li>'
+            r'<li><strong>Resolutions:</strong> \(64^2,96^2,128^2,160^2,200^2,250^2\).</li>'
+            '<li><strong>Samples:</strong> 30 per resolution, inverse problem and noise level; paired across methods.</li>'
+            '<li><strong>Settings:</strong> non-attention flow-matching UNets, 5 Euler steps, LBFGS with learning rate 1, '
+            r'DLR rank \(r=8\), no additional regularization.</li></ul>',
             '<h2 id="results">2. Median relative image error</h2>',
-            '<p>100 × ‖x̂ − x<sub>GT</sub>‖₂ / ‖x<sub>GT</sub>‖₂, from the <strong>final saved iterate</strong>. '
-            'Each entry pools 180 samples (30 at each resolution); lower is better. All outcomes are included. '
-            'Bold indicates the lowest median within a row.</p><div class="tables">']
+            r'<p>Image error (%): \(100\|\hat{x}-x_{\mathrm{GT}}\|_2/\|x_{\mathrm{GT}}\|_2\). '
+            'Medians include all 180 final reconstructions per row, pooled across resolutions. Best median in bold.</p><div class="tables">']
     for problem in ("ct", "mri"):
-        html.append(f'<section><h3>{"CT · 10 angles" if problem == "ct" else "MRI · 4× acceleration"}</h3>'
+        acquisition_title = "CT · 10 angles" if problem == "ct" else r"MRI · \(4\times\) acceleration"
+        html.append(f'<section><h3>{acquisition_title}</h3>'
                     '<table><thead><tr><th>Noise</th><th>D-Flow</th><th>P-Flow</th><th>DLR D-Flow</th></tr></thead><tbody>')
         for noise in NOISES:
             subset = [case for case in cases if case.problem == problem and case.noise == noise]
@@ -139,43 +122,39 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
                      f'{"</strong>" if value == min(medians) else ""}</td>' for value in medians]
             html.append(f'<tr><td>{noise}%</td>{"".join(cells)}</tr>')
         html.append('</tbody></table></section>')
-    html += ['</div><p class="small">Medians describe typical performance, not reliability on every sample. '
-             'Large-error outcomes remain included and are shown below; their cause has not been established as optimizer failure. '
-             'A stalled line search is not proof of convergence. The methods also stop at different attempts, '
-             'so these results do not isolate low-rank regularization from optimization and stopping effects.</p>',
+    html += ['</div>',
              '<h2 id="representatives">3. Best, median and worst by DLR image error</h2>',
-             '<p>For each noise level and inverse problem, rank all 180 final DLR reconstructions across resolutions. '
-             'Show the best, the lower of the two central samples (rank 90/180), and the worst, with all methods on that same case. '
-             'The median representative need not equal the table median. Sample selection is retrospective; checkpoint selection is always final.</p>',
-             '<p class="small">Panels reuse the shared reconstruction figures: GT, D-Flow, P-Flow, DLR D-Flow. '
-             'Images use a fixed [0,1] display scale; CT measurements use [0,1] and MRI log(1 + magnitude) uses [0,5]. '
-             'Display saturation does not affect errors. Measurement errors compare with clean A(x<sub>GT</sub>), not noisy y.</p>']
+             '<p>Within each resolution, noise level and inverse problem: DLR ranks 1, 15 and 30 of 30 samples '
+             '(best, lower median and worst). All methods show the same case at their final iterate.</p>',
+             r'<p class="small">Fixed display scales; errors use original arrays. Measurement errors reference clean \(A(x_{\mathrm{GT}})\).</p>']
     selections = []
     for noise in NOISES:
         html.append(f'<details class="gallery"><summary>{noise}% noise · best / median / worst</summary>')
-        for problem in ("ct", "mri"):
-            ordered = sorted((case for case in cases if case.noise == noise and case.problem == problem),
-                             key=lambda case: (case.errors[2], case.resolution, case.sample))
-            html.append(f'<details class="gallery"><summary>{problem.upper()} · 180 cases</summary>')
-            for label, position in (("Best", 0), ("Median representative", 89), ("Worst", 179)):
-                case = ordered[position]
-                html.append(panel(case, label, assets))
-                selections.append({"section": "representatives", "label": label, "case": case.name,
-                                   "rank": position + 1, "source": str(case.source)})
+        for resolution in RESOLUTIONS:
+            html.append(rf'<details class="gallery"><summary>Resolution: \({resolution}^2\)</summary>')
+            for problem in ("ct", "mri"):
+                ordered = sorted((case for case in cases if (case.noise, case.resolution, case.problem) == (noise, resolution, problem)),
+                                 key=lambda case: (case.errors[2], case.sample))
+                assert len(ordered) == 30
+                html.append(f'<details class="gallery"><summary>{problem.upper()} · 30 cases</summary>')
+                for label, position in (("Best", 0), ("Median representative", 14), ("Worst", 29)):
+                    case = ordered[position]
+                    html.append(panel(case, label, assets))
+                    selections.append({"section": "representatives", "label": label, "case": case.name,
+                                       "rank": position + 1, "source": str(case.source)})
+                html.append('</details>')
             html.append('</details>')
         html.append('</details>')
     html += ['<h2 id="gaps">4. Cases with the largest DLR advantage over D-Flow</h2>',
-             '<p>For each noise level, resolution and inverse problem, show the three largest positive gaps '
-             '<strong>Δ = D-Flow error − DLR error</strong> (percentage points), among cases with DLR image error ≤10%. '
-             'This explicit gallery cutoff identifies relatively accurate DLR reconstructions; it does not filter the summary tables. '
-             'Positive gaps can be small at low noise. Missing qualifying examples are marked rather than replaced with DLR losses. '
-             'These selected examples illustrate differences, not their frequency.</p>',
+             r'<p>At 5%, 10% and 20% noise, show the three largest positive gaps \(\Delta=e_{\mathrm{D\text{-}Flow}}-e_{\mathrm{DLR}}\) '
+             r'(percentage points), with DLR image error \(\leq10\%\), per resolution and inverse problem. '
+             'This selection does not filter the tables above.</p>',
              '<button type="button" onclick="document.querySelectorAll(\'details.gallery\').forEach(d=>d.open=true)">Expand all examples</button> '
              '<button type="button" onclick="document.querySelectorAll(\'details.gallery\').forEach(d=>d.open=false)">Collapse all examples</button>']
-    for noise in NOISES:
+    for noise in (5, 10, 20):
         html.append(f'<details class="gallery"><summary>{noise}% noise · DLR advantage by resolution</summary>')
         for resolution in RESOLUTIONS:
-            html.append(f'<details class="gallery"><summary>Resolution: {resolution}²</summary>')
+            html.append(rf'<details class="gallery"><summary>Resolution: \({resolution}^2\)</summary>')
             for problem in ("ct", "mri"):
                 subset = [case for case in cases if (case.noise, case.resolution, case.problem) == (noise, resolution, problem)]
                 assert len(subset) == 30
@@ -186,23 +165,23 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
                 for index in range(3):
                     if index < len(ordered):
                         case = ordered[index]
-                        label = f"Example {index + 1} · Δ = {case.gap:.2f} percentage points"
+                        label = rf"Example {index + 1} · \(\Delta = {case.gap:.2f}\) percentage points"
                         html.append(panel(case, label, assets))
                         selections.append({"section": "advantages", "label": label, "case": case.name,
                                            "gap_percentage_points": case.gap, "source": str(case.source)})
                     else:
                         html.append(f'<p class="empty">Example {index + 1}: unavailable — '
-                                    'no additional case has DLR error ≤10% and lower error than D-Flow.</p>')
+                                    r'no additional case has DLR error \(\leq10\%\) and lower error than D-Flow.</p>')
                 html.append('</details>')
             html.append('</details>')
         html.append('</details>')
-    html += ['<p class="small">Provenance: completed single-circle audit, 14 October 2026. '
-             'The accompanying selection manifest records the source directory for every example; '
-             'all 4,320 final metric records are retained in the report assets.</p>', '</main></body></html>']
+    html += ['</main></body></html>']
     document = '\n'.join(html)
     (args.out / f"{stem}.html").write_text(document)
-    standalone = document
-    for path in sorted(assets.glob('*.png')):
+    mathjax_bundle = (args.out / 'vendor/node_modules/mathjax/es5/tex-svg.js').read_text()
+    standalone = document.replace(mathjax_script, '<script>' + mathjax_bundle.replace('</script', r'<\/script') + '</script>')
+    for name in sorted({item['case'] for item in selections}):
+        path = assets / f'{name}.png'
         encoded = base64.b64encode(path.read_bytes()).decode('ascii')
         standalone = standalone.replace(f'src="{assets.name}/{path.name}"', f'src="data:image/png;base64,{encoded}"')
     (args.out / f"{stem}_standalone.html").write_text(standalone)
@@ -210,7 +189,8 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
     shutil.copyfile(args.data / 'summary.json', assets / 'summary.json')
     metadata = {"title": title, "data": str(args.data), "run_count": len(cases) * 3,
                 "runs_sha256": hashlib.sha256((args.data / 'runs.csv').read_bytes()).hexdigest(),
-                "gallery_rule": "DLR <=10%, positive D-Flow minus DLR gap; top 3 per noise/resolution/problem",
+                "representative_rule": "DLR ranks 1/15/30 within each noise/resolution/problem",
+                "gallery_rule": "Noise 5/10/20%; DLR <=10%, positive D-Flow minus DLR gap; top 3 per noise/resolution/problem",
                 "selections": selections}
     (assets / 'selection_manifest.json').write_text(json.dumps(metadata, indent=2) + '\n')
     print(json.dumps({"report": str(args.out / f'{stem}.html'), "selections": len(selections),
