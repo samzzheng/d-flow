@@ -97,14 +97,13 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
     title = f"Single Circle Noise Test ({args.date.strftime('%B %d, %Y')})"
     mathjax_config = r'''<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"local"}};</script>'''
     mathjax_script = '<script defer src="vendor/node_modules/mathjax/es5/tex-svg.js"></script>'
-    gallery_controls = ('<p><button type="button" onclick="document.querySelectorAll(\'details.gallery\').forEach(d=>d.open=true)">Expand all</button> '
-                        '<button type="button" onclick="document.querySelectorAll(\'details.gallery\').forEach(d=>d.open=false)">Collapse all</button></p>')
+    gallery_controls = ('<p><button type="button" onclick="this.closest(\'section\').querySelectorAll(\'details.gallery\').forEach(d=>d.open=true)">Expand all</button> '
+                        '<button type="button" onclick="this.closest(\'section\').querySelectorAll(\'details.gallery\').forEach(d=>d.open=false)">Collapse all</button></p>')
     html = [f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">'
             f'<title>{title}</title>{mathjax_config}{mathjax_script}<style>{style}</style></head><body><main>',
             f'<h1>{title}</h1>',
             '<p class="subtitle">Completed single-circle study · 1,440 paired cases · 4,320 reconstructions</p>',
-            gallery_controls,
             '<h2 id="setup">1. Inverse problems and protocol</h2>',
             r'<ul><li><strong>CT:</strong> 10 equally spaced parallel-beam projection angles over \([0,\pi)\).</li>'
             r'<li><strong>MRI:</strong> single-coil Fourier measurements with variable-density Cartesian sampling at nominal \(4\times\) acceleration.</li>'
@@ -144,7 +143,7 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
                 html.append(rf'<tr><td>\({resolution}^2\)</td>{"".join(cells)}</tr>')
             html.append('</tbody></table>')
         html.append('</section>')
-    html += ['<h2 id="representatives">3. Best, median and worst by DLR image error</h2>',
+    html += ['<section id="representatives"><h2>3. Best, median and worst by DLR image error</h2>',
              '<p>Within each resolution, noise level and inverse problem: DLR ranks 1, 15 and 30 of 30 samples '
              '(best, lower median and worst). All methods show the same case at their final iterate.</p>',
              r'<p class="small">Fixed display scales; errors use original arrays. Measurement errors reference clean \(A(x_{\mathrm{GT}})\).</p>',
@@ -167,10 +166,11 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
                 html.append('</details>')
             html.append('</details>')
         html.append('</details>')
-    html += ['<h2 id="gaps">4. Cases with the largest DLR advantage over D-Flow</h2>',
+    html += ['</section><section id="gaps"><h2>4. Cases with the largest DLR advantage over D-Flow</h2>',
              r'<p>At 5%, 10% and 20% noise, show the three largest positive gaps \(\Delta=e_{\mathrm{D\text{-}Flow}}-e_{\mathrm{DLR}}\) '
              r'(percentage points), with DLR image error \(\leq10\%\), per resolution and inverse problem. '
-             r'\(x/30\) counts cases meeting both conditions. This selection does not filter the tables above.</p>']
+             r'\(x/30\) counts cases meeting both conditions. This selection does not filter the tables above.</p>',
+             gallery_controls]
     for noise in (5, 10, 20):
         html.append(f'<details class="gallery"><summary>{noise}% noise · DLR advantage by resolution</summary>')
         for resolution in RESOLUTIONS:
@@ -195,7 +195,7 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
                 html.append('</details>')
             html.append('</details>')
         html.append('</details>')
-    html += ['</main></body></html>']
+    html += ['</section></main></body></html>']
     document = '\n'.join(html)
     (args.out / f"{stem}.html").write_text(document)
     mathjax_bundle = (args.out / 'vendor/node_modules/mathjax/es5/tex-svg.js').read_text()
