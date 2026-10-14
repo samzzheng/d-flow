@@ -89,6 +89,7 @@ details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
 .empty{padding:12px 16px;background:var(--soft);color:var(--muted)}
 .results-table .method{text-align:center}.results-table td,.results-table th{white-space:nowrap}
 .results-table .lowest{background:#e5e7eb;font-weight:700}
+.results-table .best{background:#dcfce7;color:#166534;font-weight:700}
 .results-table .highest{background:#fee2e2;color:#991b1b;font-weight:700}
 button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid var(--line);border-radius:5px;padding:8px 12px;cursor:pointer}
 @media(max-width:850px){.card{padding:6px}.card figcaption{font-size:12px}}
@@ -120,7 +121,7 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
             r'<p>Image error (%): \(100\|\hat{x}-x_{\mathrm{GT}}\|_2/\|x_{\mathrm{GT}}\|_2\). '
             'Each row summarizes 30 final reconstructions at one resolution and noise level. '
             'Best/median/worst are computed separately for each method. Within each row, '
-            'grey marks the lowest best and median errors; red marks the highest worst error.</p>']
+            'green marks the lowest best error, grey the lowest median, and red the highest worst error.</p>']
     for problem in ("ct", "mri"):
         acquisition_title = "CT · 10 angles" if problem == "ct" else r"MRI · \(4\times\) acceleration"
         html.append(f'<section><h3>{acquisition_title}</h3>')
@@ -138,7 +139,7 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
                 values = [(min(items), statistics.median(items), max(items)) for items in errors]
                 highlights = [min(items) if index < 2 else max(items)
                               for index, items in enumerate(zip(*values))]
-                cells = [f'<td class="{("lowest" if index < 2 else "highest") if value == highlights[index] else ""}">{value:.2f}</td>'
+                cells = [f'<td class="{("best", "lowest", "highest")[index] if value == highlights[index] else ""}">{value:.2f}</td>'
                          for method_values in values for index, value in enumerate(method_values)]
                 html.append(rf'<tr><td>\({resolution}^2\)</td>{"".join(cells)}</tr>')
             html.append('</tbody></table>')
