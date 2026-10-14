@@ -91,9 +91,25 @@ details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
 .results-table .lowest{background:#e5e7eb;font-weight:700}
 .results-table .best{background:#dcfce7;color:#166534;font-weight:700}
 .results-table .highest{background:#fee2e2;color:#991b1b;font-weight:700}
+.print-context{display:none}
 button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid var(--line);border-radius:5px;padding:8px 12px;cursor:pointer}
 @media(max-width:850px){.card{padding:6px}.card figcaption{font-size:12px}}
-@media print{button{display:none}main{max-width:none;padding:0}details{break-inside:avoid}figure{break-inside:avoid}}
+@page{size:A4;margin:10mm}
+@media print{
+body{font-size:10pt;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+button{display:none}main{max-width:none;padding:0}
+h1{font-size:21pt}h2{font-size:15pt;margin:7mm 0 3mm}h3{font-size:12pt;margin:4mm 0 2mm}
+h4{font-size:10pt;margin:3mm 0 1mm}p,ul{line-height:1.35;margin:2mm 0}
+table{display:table;font-size:8pt;margin:2mm 0 4mm}th,td{padding:1.5mm 1mm}
+thead{display:table-header-group}tr{break-inside:avoid}
+details{break-inside:auto;border:0;margin:0;padding:0}
+summary,details[open]>summary{padding:1mm 0;margin:0;border:0;font-size:9pt;break-after:avoid}
+details.case-group{break-inside:avoid;margin:2mm 0}
+.print-context{display:inline}
+.card{box-sizing:border-box;width:140mm;max-width:100%;padding:1.5mm;margin:2mm auto;break-inside:avoid}
+.card figcaption{font-size:7.5pt;line-height:1.2;margin:0 0 1mm}
+.card img{margin:0}.small{font-size:8pt}
+}
 """
     title = f"Single Circle Noise Test ({args.date.strftime('%B %d, %Y')})"
     mathjax_config = r'''<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"local"}};</script>'''
@@ -158,7 +174,8 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
                 ordered = sorted((case for case in cases if (case.noise, case.resolution, case.problem) == (noise, resolution, problem)),
                                  key=lambda case: (case.errors[2], case.sample))
                 assert len(ordered) == 30
-                html.append(f'<details class="gallery"><summary>{problem.upper()} · 30 cases</summary>')
+                html.append(f'<details class="gallery case-group"><summary>{problem.upper()} · 30 cases'
+                            f'<span class="print-context"> · {noise}% noise</span></summary>')
                 for label, position in (("Best", 0), ("Median representative", 14), ("Worst", 29)):
                     case = ordered[position]
                     html.append(panel(case, label, assets))
@@ -181,8 +198,9 @@ button{font:inherit;background:var(--soft);color:var(--accent);border:1px solid 
                 assert len(subset) == 30
                 ordered = sorted((case for case in subset if case.gap > 0 and case.errors[2] <= 10),
                                  key=lambda case: (-case.gap, case.sample))
-                html.append(f'<details class="gallery"><summary>{problem.upper()} · '
-                            f'{len(ordered)}/30 qualifying cases · showing {min(3, len(ordered))}</summary>')
+                html.append(f'<details class="gallery case-group"><summary>{problem.upper()} · '
+                            f'{len(ordered)}/30 qualifying cases · showing {min(3, len(ordered))}'
+                            f'<span class="print-context"> · {noise}% noise</span></summary>')
                 for index in range(3):
                     if index < len(ordered):
                         case = ordered[index]
