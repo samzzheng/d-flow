@@ -3,6 +3,8 @@
 Run: .venv/bin/python -m dataset.separated_shapes
 Coordinates use [-1, 1]^2; arrays use image[row=y, column=x]. Output is
 binary uint8 (0/1), without antialiasing. No dataset splits are created.
+Lengths are resolution independent: a domain length l spans l*resolution/2
+pixels, so increasing resolution preserves shape proportions. Default: 64x64.
 """
 
 import argparse
@@ -85,7 +87,7 @@ def sample_geometry(
     ) for shape, center in zip(shapes, centers)]
 
 
-def rasterize(shapes: list[Shape], resolution: int = 256) -> BinaryImage:
+def rasterize(shapes: list[Shape], resolution: int = 64) -> BinaryImage:
     """Evaluate actual filled shapes at pixel centers, not bounding disks."""
     if resolution < 1:
         raise ValueError("resolution must be positive")
@@ -110,7 +112,7 @@ def rasterize(shapes: list[Shape], resolution: int = 256) -> BinaryImage:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--samples", type=int, default=12)
-    parser.add_argument("--resolution", type=int, default=256)
+    parser.add_argument("--resolution", type=int, default=64)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--max-attempts", type=int, default=10_000)
     parser.add_argument("--output", type=Path, default=Path("outputs/separated_shapes_preview"))
