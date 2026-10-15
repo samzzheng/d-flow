@@ -11,8 +11,8 @@ from dataset.separated_shapes import rasterize, sample_geometry
 
 class SeparatedShapesSplitTests(unittest.TestCase):
     def test_grayscale_coverage_survives_storage_and_duplicate_detection(self) -> None:
-        images, _ = generate_batch((42, 2, 64, 8))
-        expected = rasterize(sample_geometry(42), 64, supersample=8)
+        images, _ = generate_batch((42, 2, 64))
+        expected = rasterize(sample_geometry(42), 64)
         np.testing.assert_allclose(images[0, 0].astype(float) / 255, expected, atol=0.5 / 255)
         self.assertTrue(np.any((images > 0) & (images < 255)))
         # Equal support with distinct coverage must not count as a duplicate.

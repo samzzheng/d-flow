@@ -27,6 +27,10 @@ def main() -> None:
     data_path = root / "data/separated-shapes-64.pt"
     if not data_path.exists():
         parser.error(f"Missing dataset: {data_path}")
+    dataset = torch.load(data_path, weights_only=True, mmap=True, map_location="cpu")
+    if dataset.get("metadata", {}).get("supersample") != 8:
+        parser.error("Separated-shape training requires the regenerated 8x8 antialiased dataset")
+    del dataset
     args.out_dir.mkdir(parents=True, exist_ok=False)
     random.seed(args.seed)
     np.random.seed(args.seed)

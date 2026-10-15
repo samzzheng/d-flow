@@ -2,8 +2,8 @@
 
 Run: .venv/bin/python -m dataset.separated_shapes
 Coordinates use [-1, 1]^2; arrays use image[row=y, column=x]. Output is
-binary uint8 (0/1) by default; --supersample 8 estimates pixel coverage as
-float32 in [0, 1] using 8x8 subpixels. No dataset splits are created.
+float32 pixel coverage in [0, 1], always antialiased using 8x8 subpixels.
+No dataset splits are created.
 Lengths are resolution independent: a domain length l spans l*resolution/2
 pixels, so increasing resolution preserves shape proportions. Default: 64x64.
 """
@@ -21,6 +21,7 @@ Point = tuple[float, float]
 Vertices = tuple[Point, Point, Point]
 BinaryImage = NDArray[np.uint8]
 CoverageImage = NDArray[np.float32]
+SUPERSAMPLE = 8
 
 
 @dataclass(frozen=True)
@@ -89,17 +90,18 @@ def sample_geometry(
     ) for shape, center in zip(shapes, centers)]
 
 
-def rasterize(
-    shapes: list[Shape], resolution: int = 64, supersample: int = 1,
-) -> BinaryImage | CoverageImage:
-    """Sample actual filled shapes; optionally average subpixel coverage."""
-    if resolution < 1 or supersample < 1:
-        raise ValueError("resolution and supersample must be positive")
-    if supersample > 1:
-        fine = rasterize(shapes, resolution * supersample)
-        return fine.reshape(resolution, supersample, resolution, supersample).mean(
-            axis=(1, 3), dtype=np.float32,
-        )
+def rasterize(shapes: list[Shape], resolution: int = 64) -> CoverageImage:
+    """Always estimate pixel coverage with an 8x8 subpixel grid."""
+    if resolution < 1:
+        raise ValueError("resolution must be positive")
+    fine = _rasterize_binary(shapes, resolution * SUPERSAMPLE)
+    return fine.reshape(resolution, SUPERSAMPLE, resolution, SUPERSAMPLE).mean(
+        axis=(1, 3), dtype=np.float32,
+    )
+
+
+def _rasterize_binary(shapes: list[Shape], resolution: int) -> BinaryImage:
+    """Internal indicator evaluations used for subpixel quadrature."""
     coordinates = -1.0 + 2.0 * (np.arange(resolution) + 0.5) / resolution
     x, y = np.meshgrid(coordinates, coordinates, indexing="xy")
     image = np.zeros((resolution, resolution), dtype=np.uint8)
@@ -122,14 +124,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--samples", type=int, default=12)
     parser.add_argument("--resolution", type=int, default=64)
-    parser.add_argument("--supersample", type=int, default=1,
-                        help="Subpixels per axis for antialiasing; 1 retains binary rasterization")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--max-attempts", type=int, default=10_000)
     parser.add_argument("--output", type=Path, default=Path("outputs/separated_shapes_preview"))
     args = parser.parse_args()
-    if min(args.samples, args.resolution, args.max_attempts, args.supersample) < 1 or args.seed < 0:
-        parser.error("samples, resolution, max-attempts and supersample must be positive; seed must be nonnegative")
+    if min(args.samples, args.resolution, args.max_attempts) < 1 or args.seed < 0:
+        parser.error("samples, resolution and max-attempts must be positive; seed must be nonnegative")
 
     import matplotlib
 
@@ -138,16 +138,15 @@ def main() -> None:
 
     seeds = list(range(args.seed, args.seed + args.samples))
     geometries = [sample_geometry(seed, max_attempts=args.max_attempts) for seed in seeds]
-    images = np.stack([rasterize(shapes, args.resolution, args.supersample) for shapes in geometries])
+    images = np.stack([rasterize(shapes, args.resolution) for shapes in geometries])
     args.output.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(args.output / "samples.npz", images=images[:, None], seeds=seeds)
     metadata = {
         "specification": "separated_shapes_dataset.pdf",
         "resolution": args.resolution, "domain": [[-1, 1], [-1, 1]],
         "separation": 0.05, "max_attempts": args.max_attempts,
-        "storage": ("uint8 binary 0/1" if args.supersample == 1 else "float32 coverage [0,1]")
-                   + ", (sample, channel, row=y, column=x)",
-        "supersample": args.supersample,
+        "storage": "float32 coverage [0,1], (sample, channel, row=y, column=x)",
+        "supersample": SUPERSAMPLE,
         "pixel_centers": "-1 + 2*(index + 0.5)/resolution; display origin=lower",
         "numpy_version": np.__version__, "rng": "default_rng/PCG64",
         "samples": [{"index": i, "seed": seed, "count": len(shapes),
@@ -166,7 +165,7 @@ def main() -> None:
             ax.imshow(images[i], cmap="gray", vmin=0, vmax=1, origin="lower",
                       interpolation="nearest", extent=(-1, 1, -1, 1))
             ax.set_title(f"Sample {i} · N = {len(geometries[i])} · seed {seeds[i]}", fontsize=10)
-    rendering = "binary" if args.supersample == 1 else f"{args.supersample}×{args.supersample} subpixel coverage"
+    rendering = f"{SUPERSAMPLE}×{SUPERSAMPLE} subpixel coverage"
     fig.suptitle(f"Separated circles and triangles · {args.resolution} × {args.resolution} · {rendering}")
     fig.savefig(args.output / "preview.png", dpi=160)
     plt.close(fig)

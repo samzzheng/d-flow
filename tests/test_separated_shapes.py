@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import numpy as np
 
-from dataset.separated_shapes import Shape, rasterize, sample_geometry
+from dataset.separated_shapes import Shape, _rasterize_binary, rasterize, sample_geometry
 
 
 class SeparatedShapesTests(unittest.TestCase):
@@ -60,20 +60,21 @@ class SeparatedShapesTests(unittest.TestCase):
         disk = Shape("disk", (0.25, -0.25), 0.26, radius=0.26)
         expected = np.zeros((4, 4), dtype=np.uint8)
         expected[1, 2] = 1
-        np.testing.assert_array_equal(rasterize([disk], 4), expected)
+        np.testing.assert_array_equal(_rasterize_binary([disk], 4), expected)
         triangle = Shape("triangle", (0.0, 0.0), np.sqrt(2),
                          vertices=((-1.0, -1.0), (1.0, -1.0), (-1.0, 1.0)))
         # Interior is x + y <= 0, including its diagonal boundary.
         expected = (np.indices((4, 4)).sum(axis=0) <= 3).astype(np.uint8)
-        np.testing.assert_array_equal(rasterize([triangle], 4), expected)
+        np.testing.assert_array_equal(_rasterize_binary([triangle], 4), expected)
 
     def test_seed_reproducibility_and_raster_area(self) -> None:
         for seed in range(20):
             shapes = sample_geometry(seed)
             self.assertEqual(shapes, sample_geometry(seed))
             image = rasterize(shapes)
-            self.assertEqual(image.dtype, np.uint8)
-            self.assertEqual(set(np.unique(image)), {0, 1})
+            self.assertEqual(image.dtype, np.float32)
+            self.assertEqual((image.min(), image.max()), (0, 1))
+            self.assertTrue(np.any((image > 0) & (image < 1)))
             area, perimeter = 0.0, 0.0
             for shape in shapes:
                 if shape.kind == "disk":
@@ -94,8 +95,8 @@ class SeparatedShapesTests(unittest.TestCase):
                          vertices=((-1.0, -1.0), (1.0, -1.0), (-1.0, 1.0)))
         indices = np.indices((4, 4)).sum(axis=0)
         expected = np.where(indices < 3, 1.0, np.where(indices == 3, 0.5, 0.0))
-        coarse = rasterize([triangle], 4, supersample=8)
-        refined = rasterize([triangle], 4, supersample=32)
+        coarse = rasterize([triangle], 4)
+        refined = rasterize([triangle], 16).reshape(4, 4, 4, 4).mean(axis=(1, 3))
         self.assertEqual(coarse.dtype, np.float32)
         # Subpixel centers on the edge are included, with error at most 1/(2s).
         np.testing.assert_allclose(coarse, expected, atol=1 / 16)
@@ -103,7 +104,7 @@ class SeparatedShapesTests(unittest.TestCase):
         self.assertLess(np.linalg.norm(refined - expected), np.linalg.norm(coarse - expected))
         for seed in range(10):
             shapes = sample_geometry(seed)
-            coverage = rasterize(shapes, 64, supersample=8)
+            coverage = rasterize(shapes, 64)
             self.assertTrue(np.all((coverage >= 0) & (coverage <= 1)))
             self.assertTrue(np.any((coverage > 0) & (coverage < 1)))
             self.assertEqual(shapes, sample_geometry(seed))
