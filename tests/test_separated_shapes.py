@@ -88,6 +88,26 @@ class SeparatedShapesTests(unittest.TestCase):
             pixel_width = 2 / image.shape[0]
             self.assertLess(abs(image.sum() * pixel_width**2 - area), perimeter * pixel_width)
 
+    def test_antialiasing_preserves_interiors_and_estimates_pixel_coverage(self) -> None:
+        # The line x+y=0 cuts each diagonal pixel exactly in half.
+        triangle = Shape("triangle", (0.0, 0.0), np.sqrt(2),
+                         vertices=((-1.0, -1.0), (1.0, -1.0), (-1.0, 1.0)))
+        indices = np.indices((4, 4)).sum(axis=0)
+        expected = np.where(indices < 3, 1.0, np.where(indices == 3, 0.5, 0.0))
+        coarse = rasterize([triangle], 4, supersample=8)
+        refined = rasterize([triangle], 4, supersample=32)
+        self.assertEqual(coarse.dtype, np.float32)
+        # Subpixel centers on the edge are included, with error at most 1/(2s).
+        np.testing.assert_allclose(coarse, expected, atol=1 / 16)
+        np.testing.assert_allclose(refined, expected, atol=1 / 64)
+        self.assertLess(np.linalg.norm(refined - expected), np.linalg.norm(coarse - expected))
+        for seed in range(10):
+            shapes = sample_geometry(seed)
+            coverage = rasterize(shapes, 64, supersample=8)
+            self.assertTrue(np.all((coverage >= 0) & (coverage <= 1)))
+            self.assertTrue(np.any((coverage > 0) & (coverage < 1)))
+            self.assertEqual(shapes, sample_geometry(seed))
+
 
 if __name__ == "__main__":
     unittest.main()

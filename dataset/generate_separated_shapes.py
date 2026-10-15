@@ -2,7 +2,8 @@
 
 Run: .venv/bin/python -m dataset.generate_separated_shapes
 Unlike the preview NPZ, uint8 training tensors encode foreground as 255 so
-the existing training loader recovers binary float images in [0, 1].
+the existing training loader recovers float images in [0, 1]. Optional
+--supersample 8 stores antialiased boundary coverage in the same encoding.
 """
 
 import argparse
@@ -21,18 +22,18 @@ from numpy.typing import NDArray
 from dataset.separated_shapes import rasterize, sample_geometry
 
 
-BatchJob = tuple[int, int, int]
+BatchJob = tuple[int, int, int, int]
 BatchResult = tuple[NDArray[np.uint8], list[str]]
 
 
 def generate_batch(job: BatchJob) -> BatchResult:
     """Top-level worker function required by the multiprocessing pool."""
-    first_seed, count, resolution = job
+    first_seed, count, resolution, supersample = job
     images = np.empty((count, 1, resolution, resolution), dtype=np.uint8)
     records: list[str] = []
     for index, seed in enumerate(range(first_seed, first_seed + count)):
         shapes = sample_geometry(seed)
-        images[index, 0] = rasterize(shapes, resolution) * 255
+        images[index, 0] = np.rint(rasterize(shapes, resolution, supersample) * 255).astype(np.uint8)
         records.append(json.dumps({"seed": seed, "count": len(shapes),
                                    "shapes": list(map(asdict, shapes))}, separators=(",", ":")))
     return images, records
@@ -57,8 +58,7 @@ def separate_duplicate_images(
         hashes[name] = []
         for start in range(0, len(images), 1024):
             block = images[start:start + 1024]
-            packed = np.packbits(block.reshape(len(block), -1), axis=1)
-            for local, image in enumerate(packed):
+            for local, image in enumerate(block):
                 digest = hashlib.sha256(image.tobytes()).digest()
                 location = (name, start + local)
                 owner = owners.setdefault(digest, location)
@@ -87,12 +87,13 @@ def main() -> None:
     parser.add_argument("--val", type=int, default=10_000)
     parser.add_argument("--test", type=int, default=10_000)
     parser.add_argument("--resolution", type=int, default=64)
+    parser.add_argument("--supersample", type=int, default=1)
     parser.add_argument("--seed", type=int, default=202610150000)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--output", type=Path, default=Path("data/separated-shapes-64.pt"))
     args = parser.parse_args()
-    if min(args.train, args.val, args.test, args.resolution, args.workers) < 1 or args.seed < 0:
-        parser.error("split sizes, resolution, and workers must be positive; seed must be nonnegative")
+    if min(args.train, args.val, args.test, args.resolution, args.workers, args.supersample) < 1 or args.seed < 0:
+        parser.error("split sizes, resolution, workers and supersample must be positive; seed must be nonnegative")
     geometry_path = args.output.with_suffix(".geometry.jsonl")
     summary_path = args.output.with_suffix(".json")
     for path in (args.output, geometry_path, summary_path):
@@ -113,8 +114,9 @@ def main() -> None:
         "disk_radius_range": [0.10, 0.20], "triangle_side_range": [0.20, 0.30],
         "triangle_orientation_range": [0.0, 2.0 * np.pi],
         "placement": "Joint uniform center rejection with fixed shape parameters; enclosing disks",
-        "rasterization": "Binary pixel centers; row=y, column=x; no antialiasing",
-        "storage": "uint8 0/255, NCHW; divide by 255 to obtain binary 0/1",
+        "rasterization": "Pixel-center sampling" if args.supersample == 1 else "Mean subpixel coverage",
+        "supersample": args.supersample,
+        "storage": "uint8 [0,255], NCHW, row=y, column=x; divide by 255 to obtain [0,1]",
         "geometry_file": geometry_path.name,
         "geometry_order": "One JSON line per sample, train then val then test, in tensor order",
         "seed": args.seed, "initial_split_seed_ranges": {}, "rng": "default_rng/PCG64",
@@ -131,7 +133,7 @@ def main() -> None:
         for name, count in split_sizes.items():
             images = np.empty((count, 1, args.resolution, args.resolution), dtype=np.uint8)
             metadata["initial_split_seed_ranges"][name] = [first_seed, first_seed + count - 1]
-            jobs = ((first_seed + offset, min(256, count - offset), args.resolution)
+            jobs = ((first_seed + offset, min(256, count - offset), args.resolution, args.supersample)
                     for offset in range(0, count, 256))
             offset = 0
             for batch, records in pool.imap(generate_batch, jobs):
