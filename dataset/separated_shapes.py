@@ -103,20 +103,27 @@ def rasterize(shapes: list[Shape], resolution: int = 64) -> CoverageImage:
 def _rasterize_binary(shapes: list[Shape], resolution: int) -> BinaryImage:
     """Internal indicator evaluations used for subpixel quadrature."""
     coordinates = -1.0 + 2.0 * (np.arange(resolution) + 0.5) / resolution
-    x, y = np.meshgrid(coordinates, coordinates, indexing="xy")
     image = np.zeros((resolution, resolution), dtype=np.uint8)
     for shape in shapes:
+        # Only evaluate the enclosing box; coordinates remain exactly those of
+        # the full subpixel grid, preserving the previous coverage values.
+        lower = np.array(shape.center) - shape.enclosing_radius
+        upper = np.array(shape.center) + shape.enclosing_radius
+        x0, y0 = np.searchsorted(coordinates, lower, side="left")
+        x1, y1 = np.searchsorted(coordinates, upper, side="right")
+        x = coordinates[None, x0:x1]
+        y = coordinates[y0:y1, None]
         if shape.kind == "disk":
             mask = (x - shape.center[0]) ** 2 + (y - shape.center[1]) ** 2 <= shape.radius ** 2
         else:
             vertices = np.array(shape.vertices)
             # Construction gives counterclockwise vertices. Interior points lie
             # on the left of every directed edge, including the boundary.
-            mask = np.ones_like(image, dtype=bool)
+            mask = np.ones((y1 - y0, x1 - x0), dtype=bool)
             for start, end in zip(vertices, np.roll(vertices, -1, axis=0)):
                 edge = end - start
                 mask &= edge[0] * (y - start[1]) - edge[1] * (x - start[0]) >= 0.0
-        image[mask] = 1
+        image[y0:y1, x0:x1][mask] = 1
     return image
 
 

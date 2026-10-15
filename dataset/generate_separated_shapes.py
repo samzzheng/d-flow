@@ -89,8 +89,9 @@ def main() -> None:
     parser.add_argument("--resolution", type=int, default=64)
     parser.add_argument("--seed", type=int, default=202610150000)
     parser.add_argument("--workers", type=int, default=4)
-    parser.add_argument("--output", type=Path, default=Path("data/separated-shapes-64.pt"))
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    args.output = args.output or Path(f"data/separated-shapes-{args.resolution}.pt")
     if min(args.train, args.val, args.test, args.resolution, args.workers) < 1 or args.seed < 0:
         parser.error("split sizes, resolution and workers must be positive; seed must be nonnegative")
     geometry_path = args.output.with_suffix(".geometry.jsonl")

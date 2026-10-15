@@ -9,6 +9,27 @@ from dataset.separated_shapes import Shape, _rasterize_binary, rasterize, sample
 
 
 class SeparatedShapesTests(unittest.TestCase):
+    def test_enclosing_box_rendering_matches_full_grid_at_all_resolutions(self) -> None:
+        for resolution in (64, 96, 128, 160, 200, 250):
+            fine_resolution = resolution * 8
+            coordinates = -1.0 + 2.0 * (np.arange(fine_resolution) + 0.5) / fine_resolution
+            x, y = np.meshgrid(coordinates, coordinates, indexing="xy")
+            for seed in range(42, 48):
+                shapes = sample_geometry(seed)
+                reference = np.zeros((fine_resolution, fine_resolution), dtype=np.uint8)
+                for shape in shapes:
+                    if shape.kind == "disk":
+                        inside = (x - shape.center[0])**2 + (y - shape.center[1])**2 <= shape.radius**2
+                    else:
+                        vertices = np.array(shape.vertices)
+                        inside = np.ones_like(reference, dtype=bool)
+                        for start, end in zip(vertices, np.roll(vertices, -1, axis=0)):
+                            edge = end - start
+                            inside &= edge[0]*(y-start[1]) - edge[1]*(x-start[0]) >= 0
+                    reference[inside] = 1
+                expected = reference.reshape(resolution, 8, resolution, 8).mean(axis=(1, 3), dtype=np.float32)
+                np.testing.assert_array_equal(rasterize(shapes, resolution), expected)
+
     def test_continuous_constraints_and_triangle_construction(self) -> None:
         counts: set[int] = set()
         kinds: set[str] = set()
