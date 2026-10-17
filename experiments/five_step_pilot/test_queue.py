@@ -124,6 +124,24 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(launch.call_count, 2)
         self.assertTrue(all(call.args[0][2] == "experiments.noisy_ct_mri.rank_worker" for call in launch.call_args_list))
 
+    def test_higher_rank_subset_preserves_baseline_fingerprint_population(self) -> None:
+        out = self.out / "rank64"
+        with patch("sys.argv", ["pilot", "init", "--out", str(out), "--resolutions", "64", "160", "250",
+                                "--samples", "30", "--sample-limit", "5", "--noise-relative", ".01",
+                                "--max-workers", "4", "--rank", "64", "--dlr-only", "--baseline-out", str(self.out)]):
+            main()
+        manifest = json.loads((out / "production/manifest.json").read_text())
+        settings = manifest["settings"]
+        self.assertEqual(settings["samples"], 30)
+        self.assertEqual(settings["dlr"]["rank"], 64)
+        self.assertEqual(manifest["protocol"]["samples"], list(range(5)))
+        self.assertEqual(len(tasks(settings)), 30)
+        self.assertEqual({task.start for task in tasks(settings)}, set(range(5)))
+        self.assertEqual(json.loads((out / "summary.json").read_text())["total_runs"], 30)
+        smoke = json.loads((out / "smoke/manifest.json").read_text())
+        self.assertEqual(smoke["protocol"]["samples"], [0])
+        self.assertEqual(len(tasks(smoke["settings"])), 2)
+
     def test_multicircle_grid_keeps_untrained_models_pending(self) -> None:
         out = self.out / "multicircle"
         additional = self.out / "additional"

@@ -16,6 +16,7 @@ from p_flow import proxy_gradient
 from .operators import CT, MRI, noisy_measurement
 from .run import Evaluator, Job, jobs, model_ready, reviewed_source_hashes, solve
 from . import queue
+from .validation import ChunkedEagerProducts
 from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
 import matplotlib.pyplot as plt
 import numpy as np
@@ -36,6 +37,25 @@ class SweepTests(unittest.TestCase):
         self.assertEqual(len(grid), 168)
         self.assertEqual(len({job.name for job in grid}), 168)
         self.assertEqual(len(grid) * self.settings["samples"] * 3, 15120)
+
+    def test_chunked_eager_validation_preserves_factors_and_reuse(self) -> None:
+        from dlr_dflow.api import sensitivity_factors, approx_source_gradient
+        model = LinearVelocity()
+        source = torch.randn(1, 1, 8, 8, dtype=torch.float64)
+        gx = torch.randn_like(source)
+        with patch.object(core, "HAND_JVP", False), patch.object(core, "HAND_VJP", False):
+            basis = None
+            for _ in range(2):
+                expected = sensitivity_factors(model, source, 5, rank=32, trace_probes=0,
+                    enrichment_probes=0, initialization_oversampling=8, seed=3, seed_basis=basis)
+                actual = sensitivity_factors(model, source, 5, rank=32, trace_probes=0,
+                    enrichment_probes=0, initialization_oversampling=8, seed=3, seed_basis=basis,
+                    products=ChunkedEagerProducts(model, columns=3))
+                torch.testing.assert_close(actual[0], expected[0])
+                torch.testing.assert_close(approx_source_gradient(actual[1], gx, actual[2]),
+                                           approx_source_gradient(expected[1], gx, expected[2]))
+                self.assertEqual(actual[2], 0)
+                basis = expected[1][2]
 
     def test_training_gate_requires_summary_and_final_checkpoint(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, patch("experiments.ct_mri_sweep.run.ROOT", Path(tmp)):

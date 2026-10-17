@@ -39,8 +39,9 @@ class Task:
 
 def tasks(settings: Settings) -> list[Task]:
     width = settings.get("scheduling", {}).get("samples_per_worker", settings["samples"])
-    return [Task(job, start, min(start + width, settings["samples"]))
-            for job in jobs(settings) for start in range(0, settings["samples"], width)]
+    count = min(settings["samples"], settings.get("scheduling", {}).get("sample_limit", settings["samples"]))
+    return [Task(job, start, min(start + width, count))
+            for job in jobs(settings) for start in range(0, count, width)]
 
 
 def memory_reservation(task: Task, settings: Settings, total_mib: int) -> int:
@@ -60,7 +61,7 @@ def fitting_task(remaining: list[Task], running: list[Task], settings: Settings,
 
 
 def source_hashes() -> dict[str, str]:
-    paths = [*(ROOT / "experiments/ct_mri_sweep" / name for name in ("__init__.py", "run.py", "queue.py", "operators.py")),
+    paths = [*(ROOT / "experiments/ct_mri_sweep" / name for name in ("__init__.py", "run.py", "queue.py", "operators.py", "validation.py")),
              *(ROOT / "p_flow" / name for name in ("__init__.py", "p_flow.py", "armijo.py")),
              *Path(ROOT / "dlr_dflow").glob("*.py"),
              *Path(ROOT / "dlr_dflow/implementation").glob("*.py"),

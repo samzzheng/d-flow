@@ -27,6 +27,7 @@ from p_flow.armijo import ArmijoLBFGS
 from sampler.ode_samplers import euler_flow
 from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
 from .operators import CT, MRI, noisy_measurement
+from .validation import ChunkedEagerProducts
 
 ROOT = Path(__file__).resolve().parents[2]
 Settings = dict[str, Any]
@@ -331,8 +332,9 @@ def main() -> None:
             _, gx = endpoint_gradient(canonical, operator, observed)
             fast_image, fast_factors, alpha = sensitivity_factors(
                 model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed, products=products)
+            reference_products = ChunkedEagerProducts(model) if settings["dlr"]["rank"] > 16 else None
             _, reference_factors, _ = sensitivity_factors(
-                model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed)
+                model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed, products=reference_products)
             fast_gradient = approx_source_gradient(fast_factors, gx, alpha)
             reference_gradient = approx_source_gradient(reference_factors, gx, alpha)
             error = float((fast_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
@@ -346,7 +348,7 @@ def main() -> None:
                     products=products, seed_basis=seed_basis)
                 _, seeded_reference, _ = sensitivity_factors(
                     model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed,
-                    seed_basis=seed_basis)
+                    seed_basis=seed_basis, products=reference_products)
                 seeded_gradient = approx_source_gradient(seeded_fast, gx, seeded_alpha)
                 reference_gradient = approx_source_gradient(seeded_reference, gx, seeded_alpha)
                 seeded_error = float((seeded_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
@@ -359,7 +361,7 @@ def main() -> None:
                 "checkpoint_sha256": checkpoint_hash, "note": "Execution equivalence, not DLR vs exact gradient accuracy."})
             if not passed:
                 raise RuntimeError("Fast backend validation failed; see backend_validation output")
-            del fast_image, fast_factors, reference_factors, fast_gradient, reference_gradient, canonical, gx
+            del fast_image, fast_factors, reference_factors, fast_gradient, reference_gradient, reference_products, canonical, gx
         if not (case / "inputs.pt").exists():
             save_tensor(case / "inputs.pt", {"protocol": protocol, "truth": truth, "clean": clean,
                                             "observed": observed, "initial": initial, "mask": getattr(operator, "mask", None)})
