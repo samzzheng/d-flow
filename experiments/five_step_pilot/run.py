@@ -25,14 +25,15 @@ from experiments.noisy_ct_mri.queue import Work, choose
 def report(out: Path) -> None:
     manifest = json.loads((out / "production/manifest.json").read_text())
     settings = manifest["settings"]
-    total_runs = len(jobs(settings)) * settings["samples"] * 3
+    methods = manifest["protocol"]["methods"]
+    total_runs = len(jobs(settings)) * settings["samples"] * len(methods)
     population = settings.get("dataset_label", f"circle count in {settings['circles']}")
     lines = ["# Five-step Euler pilot", "",
              f"{100*settings['noise_relative']:g}% relative measurement noise; CT10 and Cartesian MRI4; "
              f"{settings['samples']} test samples per acquisition at each resolution; {population}. "
              "Shared LBFGS/geometric Armijo, FP32, up to 1,000 attempts; two consecutive failed "
              "line searches stop a method. A step limit does not certify convergence. "
-             "DLR uses rank8, analytical alpha=1-t, no trace probes/enrichment and previous V.", "",
+             f"DLR uses rank {settings['dlr']['rank']}, analytical alpha=1-t, no trace probes/enrichment and previous V.", "",
              "Final saved checkpoints, not retrospective best-image selection. "
              "Five-step Euler changes the generator being optimized; more optimizer steps "
              "do not remove its time-discretization error.", "",
@@ -41,6 +42,8 @@ def report(out: Path) -> None:
     rows = []
     for job in sorted(jobs(manifest["settings"]), key=lambda job: (job.resolution, job.problem)):
         for method, stem in (("D-Flow", "d_flow"), ("P-Flow", "p_flow"), ("DLR D-Flow", "dlr_d_flow")):
+            if method not in methods:
+                continue
             for sample in range(settings["samples"]):
                 path = out / "production" / job.name / f"sample_{sample:03d}" / f"{stem}.json"
                 if not path.exists():
@@ -58,6 +61,22 @@ def report(out: Path) -> None:
     lines += ["", f"Terminal method runs: {complete}/{total_runs}. Running rows are provisional.", "",
               "Each production acquisition saves `sample_NNN/comparison.png` and `.pdf`, "
               "including images and clean-reference measurements."]
+    if settings.get("baseline_out"):
+        baseline = Path(settings["baseline_out"])
+        paired = []
+        for row in rows:
+            path = baseline / "production" / row["case"] / f"sample_{row['sample']:03d}" / "dlr_d_flow.json"
+            if row["status"] not in TERMINAL or not path.exists():
+                continue
+            old = json.loads(path.read_text())
+            if old["status"] in TERMINAL:
+                paired.append({"case": row["case"], "sample": row["sample"],
+                               "rank8_image_percent": 100 * old["history"][-1]["image_relative_l2"],
+                               "rank16_image_percent": row["image_percent"]})
+        write_json(out / "paired_rank_comparison.json", paired)
+        lines += ["", f"Original D/P controls and rank-8 results: {baseline}. Completed rank pairs: {len(paired)}.", "",
+                  "| Paired case | Rank 8 image error % | Rank 16 image error % |", "| --- | ---: | ---: |",
+                  *[f"| {row['case']}/sample_{row['sample']:03d} | {row['rank8_image_percent']:.4f} | {row['rank16_image_percent']:.4f} |" for row in paired]]
     (out / "report.md").write_text("\n".join(lines) + "\n")
     write_json(out / "summary.json", {"terminal_runs": complete, "total_runs": total_runs, "rows": rows})
 
@@ -78,6 +97,9 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=1)
     parser.add_argument("--noise-relative", type=float, default=0.0)
     parser.add_argument("--max-workers", type=int, default=1, help="Frozen at initialization")
+    parser.add_argument("--rank", type=int, default=8)
+    parser.add_argument("--dlr-only", action="store_true")
+    parser.add_argument("--baseline-out", type=Path)
     parser.add_argument("--shared-controller", type=int, nargs=2, action="append", default=[],
                         metavar=("PID", "MIB"))
     args = parser.parse_args()
@@ -93,9 +115,23 @@ def main() -> None:
                             dataset_template="data/separated-shapes-{resolution}.pt",
                             run_template="outputs/fm_unet/separated-shapes-{resolution}-noattn-ch16-b8-e200")
         settings["stopping"].update(min_updates=1000, max_updates=1000)
+        if args.rank < 1:
+            parser.error("Rank must be positive")
+        settings["dlr"]["rank"] = args.rank
+        if args.baseline_out:
+            if not args.dlr_only or args.rank != 16:
+                parser.error("The paired baseline comparison requires --dlr-only --rank 16")
+            baseline_settings = json.loads((args.baseline_out / "production/manifest.json").read_text())["settings"]
+            expected = deepcopy(baseline_settings)
+            expected["dlr"]["rank"] = args.rank
+            if any(settings[key] != value for key, value in expected.items() if key != "scheduling"):
+                parser.error("Baseline settings differ beyond the DLR rank")
+            settings["baseline_out"] = str(args.baseline_out.resolve())
         settings["scheduling"].update(samples_per_worker=1, max_workers_per_gpu=args.max_workers,
             worker_memory_mib={str(resolution): 9216 for resolution in settings["resolutions"]})
         hashes = source_hashes()
+        rank_worker = ROOT / "experiments/noisy_ct_mri/rank_worker.py"
+        hashes[str(rank_worker.relative_to(ROOT))] = hashlib.sha256(rank_worker.read_bytes()).hexdigest()
         hashes.update({str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
                        for path in [*Path(__file__).parent.glob("*.py"), ROOT / "experiments/noisy_ct_mri/queue.py"]})
         for stage in ("smoke", "production"):
@@ -114,7 +150,7 @@ def main() -> None:
                 "source_sha256": hashes, "jobs": list(map(asdict, jobs(current))),
                 "git_head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                 "protocol": {"smoke_only": stage == "smoke", "samples": list(range(current["samples"])),
-                    "methods": ["D-Flow", "P-Flow", "DLR D-Flow"], "gpu": 1,
+                    "methods": ["DLR D-Flow"] if args.dlr_only else ["D-Flow", "P-Flow", "DLR D-Flow"], "gpu": 1,
                     "pairing": "Same truth, acquisition mask and source seeds across methods; fresh optimizer states",
                     "stopping": "Up to 1000 attempts; preserve two-failed-search stop; no plateau stop before budget",
                     "noise": "Gaussian noise scaled to requested relative norm; complex on acquired MRI coefficients; zero means y=A(x_GT)",
@@ -211,8 +247,11 @@ def main() -> None:
                                   sum(mib for mib, _ in shared.values()))
                     if work is None:
                         break
+                    worker = "experiments.ct_mri_sweep.run"
+                    if json.loads(work.manifest.read_text())["protocol"]["methods"] == ["DLR D-Flow"]:
+                        worker = "experiments.noisy_ct_mri.rank_worker"
                     with (out / "logs" / (work.name.replace("/", "_") + ".log")).open("ab") as log:
-                        process = subprocess.Popen([sys.executable, "-m", "experiments.ct_mri_sweep.run",
+                        process = subprocess.Popen([sys.executable, "-m", worker,
                             "--manifest", str(work.manifest), "--job", work.task.job.name, "--device", "cuda:1",
                             "--sample-start", str(work.task.start), "--sample-stop", str(work.task.stop),
                             "--memory-fraction", str((9216 - 768) / total)],

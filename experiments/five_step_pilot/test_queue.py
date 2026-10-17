@@ -96,6 +96,34 @@ class QueueTests(unittest.TestCase):
                     self.assertEqual(len(commands), 2)
                     self.assertTrue(all("/smoke/" in command[command.index("--manifest") + 1] for command in commands))
 
+    def test_rank16_only_preserves_baseline_and_selects_dlr_worker(self) -> None:
+        out = self.out / "rank16"
+        with patch("sys.argv", ["pilot", "init", "--out", str(out), "--resolutions", "64", "160", "250",
+                                "--samples", "30", "--noise-relative", ".01", "--max-workers", "4",
+                                "--rank", "16", "--dlr-only", "--baseline-out", str(self.out)]):
+            main()
+        baseline = json.loads((self.out / "production/manifest.json").read_text())["settings"]
+        manifest = json.loads((out / "production/manifest.json").read_text())
+        settings = manifest["settings"]
+        expected = {**settings, "dlr": {**settings["dlr"], "rank": 8}}
+        del expected["baseline_out"]
+        self.assertEqual(expected, baseline)
+        self.assertEqual(manifest["protocol"]["methods"], ["DLR D-Flow"])
+        self.assertEqual(json.loads((out / "summary.json").read_text())["total_runs"], 180)
+        process = MagicMock(pid=12345)
+        process.poll.return_value = None
+        with ExitStack() as stack:
+            stack.enter_context(patch("sys.argv", ["pilot", "run", "--out", str(out)]))
+            stack.enter_context(patch("experiments.five_step_pilot.run.gpu_processes", return_value={1: set()}))
+            stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.check_output", return_value="49140, 2"))
+            launch = stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.Popen", return_value=process))
+            stack.enter_context(patch("experiments.five_step_pilot.run.signal.signal"))
+            stack.enter_context(patch("experiments.five_step_pilot.run.time.sleep", side_effect=KeyboardInterrupt))
+            with self.assertRaises(KeyboardInterrupt):
+                main()
+        self.assertEqual(launch.call_count, 2)
+        self.assertTrue(all(call.args[0][2] == "experiments.noisy_ct_mri.rank_worker" for call in launch.call_args_list))
+
     def test_multicircle_grid_keeps_untrained_models_pending(self) -> None:
         out = self.out / "multicircle"
         additional = self.out / "additional"

@@ -366,6 +366,19 @@ def main() -> None:
         # Rotate execution order without changing fixed figure columns or seeds.
         order = METHODS[sample % 3:] + METHODS[:sample % 3]
         results = {}
+        if settings.get("baseline_out") and not manifest["protocol"]["smoke_only"]:
+            baseline_case = Path(settings["baseline_out"]) / "production" / job.name / case.name
+            for method, stem in (("D-Flow", "d_flow"), ("P-Flow", "p_flow")):
+                control_path = baseline_case / f"{stem}.pt"
+                if not control_path.exists():
+                    continue
+                control = torch.load(control_path, map_location="cpu", weights_only=True)
+                if control["status"] not in TERMINAL:
+                    continue
+                if any(control["protocol"][key] != value for key, value in protocol.items()
+                       if key != "manifest_sha256"):
+                    raise ValueError(f"Unpaired control: {control_path}")
+                results[method] = control
         for method in order:
             evaluator = Evaluator(model, operator, observed, settings, dlr_seed, products)
             path = case / (method.lower().replace("-", "_").replace(" ", "_") + ".pt")
