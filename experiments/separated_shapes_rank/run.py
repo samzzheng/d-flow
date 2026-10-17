@@ -69,8 +69,18 @@ def worker(case: Path, stage: str, out: Path, device: str) -> None:
                 "native_graph_vs_full_map_relative_errors": errors,
                 "final_image_relative_l2": saved["history"][-1]["image_relative_l2"],
                 "definition": "J = derivative of the full discrete Euler map with respect to source; not the objective Hessian"}
-    result = spectrum(products.apply, products.transpose, source, out / "spectrum.json",
-                      [32, 64, 128], 3, 32, protocol["source_seed"] + 72000000, metadata)
+    paired_initial = out.parent / f"r{resolution}_ct10_initial" / "spectrum.json"
+    result = None
+    if stage == "initial" and protocol["operator"]["kind"] == "mri" and paired_initial.exists():
+        candidate = json.loads(paired_initial.read_text())
+        if (candidate["status"] != "running" and candidate["source_sha256"] == metadata["source_sha256"]
+                and candidate["protocol"]["checkpoint_sha256"] == checkpoint_hash
+                and candidate["flow_steps"] == steps):
+            result = {**candidate, **metadata, "reused_identical_source_spectrum": str(paired_initial)}
+            write_json(out / "spectrum.json", result)
+    if result is None:
+        result = spectrum(products.apply, products.transpose, source, out / "spectrum.json",
+                          [32, 64, 128], 3, 32, protocol["source_seed"] + 72000000, metadata)
     operator_info = protocol["operator"]
     operator = (CT(resolution, operator_info["angle_count"], torch.device(device))
                 if operator_info["kind"] == "ct" else
@@ -132,8 +142,9 @@ def report(out: Path) -> None:
         gradient_path = path.with_name("gradient.json")
         gradient = json.loads(gradient_path.read_text())["latest"]["ranks"]["8"] if gradient_path.exists() else None
         error = f"{100 * gradient['relative_gradient_error']:.2f}" if gradient and gradient["relative_gradient_error"] is not None else "pending"
-        lines.append(f"| {path.parent.name} | {' | '.join(map(str, ranks))} | {energy:.3f} | {error} | {gradient['reference_converged'] if gradient else 'pending'} | {result['status']} |")
-    lines.extend(["", "Only one paired sample per resolution: this is a diagnostic pilot, not a dataset-wide rank estimate. No intermediate optimization sources were saved by the original sweep. All sources used here are snapshotted alongside the results."])
+        lines.append(f"| {path.parent.name} | {' | '.join(map(str, ranks))} | {energy:.6f} | {error} | {gradient['reference_converged'] if gradient else 'pending'} | {result['status']} |")
+    lines.extend(["", "Only one paired sample per resolution: this is a diagnostic pilot, not a dataset-wide rank estimate. No intermediate optimization sources were saved by the original sweep. All sources used here are snapshotted alongside the results.", "",
+                  "The overall spectral status requires the stricter 99.99% cutoff to resolve; a 99% rank estimate may still be available. Tail sampling uncertainty and individual triplet residuals are in spectrum.json. Large relative gradient errors near convergence can correspond to tiny absolute differences; exact gradient norms are saved in gradient.json. Neither spectral truncation error nor a single final-source diagnostic proves the cause of a reconstruction failure."])
     (out / "report.md").write_text("\n".join(lines) + "\n")
     axes[0].set(xlabel="Singular value index", ylabel="Singular value / largest")
     axes[1].set(xlabel="Truncation rank", ylabel="Estimated captured squared-singular-value energy", ylim=(0, 1.01))
