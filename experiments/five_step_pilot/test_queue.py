@@ -37,6 +37,29 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(settings["noise_relative"], .01)
         self.assertEqual(json.loads((self.out / "summary.json").read_text())["total_runs"], 540)
 
+    def test_separated_shapes_use_mixed_models_and_full_paired_grid(self) -> None:
+        out = self.out / "shapes"
+        with patch("sys.argv", ["pilot", "init", "--out", str(out),
+                                "--dataset", "separated_shapes", "--samples", "30", "--max-workers", "4"]):
+            main()
+        manifest = json.loads((out / "production/manifest.json").read_text())
+        settings = manifest["settings"]
+        grid = tasks(settings)
+        self.assertEqual(len(grid), 360)
+        self.assertEqual(len({task.job.name for task in grid}), 12)
+        self.assertTrue(all("_shapes_" in task.job.name for task in grid))
+        self.assertEqual(settings["dataset_template"].format(resolution=96), "data/separated-shapes-96.pt")
+        self.assertEqual(settings["flow_steps"], 5)
+        self.assertEqual(settings["noise_relative"], 0)
+        self.assertEqual(settings["stopping"]["max_updates"], 1000)
+        baseline = json.loads((self.out / "production/manifest.json").read_text())["settings"]
+        self.assertEqual(settings["optimizer"], baseline["optimizer"])
+        self.assertEqual(settings["dlr"], baseline["dlr"])
+        self.assertEqual(json.loads((out / "summary.json").read_text())["total_runs"], 1080)
+        smoke = json.loads((out / "smoke/manifest.json").read_text())["settings"]
+        self.assertEqual(smoke["resolutions"], [64, 250])
+        self.assertEqual(len(tasks(smoke)), 4)
+
     def test_smoke_barrier_and_nonzero_sample_arguments(self) -> None:
         for smoke_complete in (False, True):
             with self.subTest(smoke_complete=smoke_complete):

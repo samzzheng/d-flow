@@ -26,10 +26,10 @@ def report(out: Path) -> None:
     manifest = json.loads((out / "production/manifest.json").read_text())
     settings = manifest["settings"]
     total_runs = len(jobs(settings)) * settings["samples"] * 3
+    population = settings.get("dataset_label", f"circle count in {settings['circles']}")
     lines = ["# Five-step Euler pilot", "",
              f"{100*settings['noise_relative']:g}% relative measurement noise; CT10 and Cartesian MRI4; "
-             f"{settings['samples']} test samples per acquisition at each resolution and "
-             f"circle count in {settings['circles']}. "
+             f"{settings['samples']} test samples per acquisition at each resolution; {population}. "
              "Shared LBFGS/geometric Armijo, FP32, up to 1,000 attempts; two consecutive failed "
              "line searches stop a method. A step limit does not certify convergence. "
              "DLR uses rank8, analytical alpha=1-t, no trace probes/enrichment and previous V.", "",
@@ -70,6 +70,7 @@ def main() -> None:
                         help="Run additional frozen sweeps under the same GPU admission controller")
     parser.add_argument("--resolutions", type=int, nargs="+", default=[64, 96, 128, 160, 200, 250])
     parser.add_argument("--circles", type=int, nargs="+", default=[1])
+    parser.add_argument("--dataset", choices=("circles", "separated_shapes"), default="circles")
     parser.add_argument("--run-circles", type=int, nargs="+",
                         help="Admit only these circle counts from frozen manifests")
     parser.add_argument("--priority-out", type=Path,
@@ -87,6 +88,10 @@ def main() -> None:
             parser.error("Require positive sample/worker counts and noise in [0, 1)")
         settings.update(resolutions=args.resolutions, circles=args.circles, samples=args.samples,
                         flow_steps=5, noise_relative=args.noise_relative)
+        if args.dataset == "separated_shapes":
+            settings.update(circles=[0], dataset_label="separated shapes: 1–4 circles/triangles",
+                            dataset_template="data/separated-shapes-{resolution}.pt",
+                            run_template="outputs/fm_unet/separated-shapes-{resolution}-noattn-ch16-b8-e200")
         settings["stopping"].update(min_updates=1000, max_updates=1000)
         settings["scheduling"].update(samples_per_worker=1, max_workers_per_gpu=args.max_workers,
             worker_memory_mib={str(resolution): 9216 for resolution in settings["resolutions"]})
@@ -99,7 +104,10 @@ def main() -> None:
                 raise FileExistsError(path)
             current = deepcopy(settings)
             if stage == "smoke":
-                current.update(resolutions=[max(args.resolutions)], samples=1)
+                resolutions = [max(args.resolutions)]
+                if args.dataset == "separated_shapes":
+                    resolutions = sorted({min(args.resolutions), max(args.resolutions)})
+                current.update(resolutions=resolutions, samples=1)
                 current["stopping"].update(min_updates=2, max_updates=2, window=1)
                 current["execution"]["checkpoint_every"] = 1
             write_json(path, {"created_at": datetime.now().astimezone().isoformat(), "settings": current,

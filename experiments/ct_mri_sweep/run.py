@@ -42,6 +42,8 @@ class Job:
 
     @property
     def name(self) -> str:
+        if self.circles == 0:  # Mixed-count separated-shapes dataset, not zero circles.
+            return f"r{self.resolution}_shapes_{self.problem}{self.level}"
         return f"r{self.resolution}_n{self.circles}_{self.problem}{self.level}"
 
 
@@ -276,7 +278,8 @@ def main() -> None:
     torch.backends.cudnn.benchmark = execution["cudnn_benchmark"]
     run = model_directory(job, settings)
     architecture = json.loads((run / "config.json").read_text())
-    data = torch.load(ROOT / f"data/circles-{job.resolution}-n{job.circles}.pt",
+    dataset_template = settings.get("dataset_template", "data/circles-{resolution}-n{circles}.pt")
+    data = torch.load(ROOT / dataset_template.format(**asdict(job)),
                       map_location="cpu", weights_only=True, mmap=True)
     if data["metadata"] != architecture["dataset_metadata"]:
         raise ValueError("Local evaluation dataset metadata differs from training dataset")
