@@ -128,12 +128,14 @@ class QueueTests(unittest.TestCase):
         out = self.out / "rank64"
         with patch("sys.argv", ["pilot", "init", "--out", str(out), "--resolutions", "64", "160", "250",
                                 "--samples", "30", "--sample-limit", "5", "--noise-relative", ".01",
-                                "--max-workers", "4", "--rank", "64", "--dlr-only", "--baseline-out", str(self.out)]):
+                                "--max-workers", "4", "--rank", "64", "--dlr-only", "--baseline-out", str(self.out),
+                                "--worker-memory-mib", "16384"]):
             main()
         manifest = json.loads((out / "production/manifest.json").read_text())
         settings = manifest["settings"]
         self.assertEqual(settings["samples"], 30)
         self.assertEqual(settings["dlr"]["rank"], 64)
+        self.assertEqual(set(settings["scheduling"]["worker_memory_mib"].values()), {16384})
         self.assertEqual(manifest["protocol"]["samples"], list(range(5)))
         self.assertEqual(len(tasks(settings)), 30)
         self.assertEqual({task.start for task in tasks(settings)}, set(range(5)))
@@ -141,6 +143,20 @@ class QueueTests(unittest.TestCase):
         smoke = json.loads((out / "smoke/manifest.json").read_text())
         self.assertEqual(smoke["protocol"]["samples"], [0])
         self.assertEqual(len(tasks(smoke["settings"])), 2)
+        process = MagicMock(pid=12345)
+        process.poll.return_value = None
+        with ExitStack() as stack:
+            stack.enter_context(patch("sys.argv", ["pilot", "run", "--out", str(out)]))
+            stack.enter_context(patch("experiments.five_step_pilot.run.gpu_processes", return_value={1: set()}))
+            stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.check_output", return_value="49140, 2"))
+            launch = stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.Popen", return_value=process))
+            stack.enter_context(patch("experiments.five_step_pilot.run.signal.signal"))
+            stack.enter_context(patch("experiments.five_step_pilot.run.time.sleep", side_effect=KeyboardInterrupt))
+            with self.assertRaises(KeyboardInterrupt):
+                main()
+        for call in launch.call_args_list:
+            command = call.args[0]
+            self.assertAlmostEqual(float(command[command.index("--memory-fraction") + 1]), (16384 - 768) / 49140)
 
     def test_multicircle_grid_keeps_untrained_models_pending(self) -> None:
         out = self.out / "multicircle"

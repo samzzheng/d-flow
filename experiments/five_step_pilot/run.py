@@ -17,7 +17,7 @@ import sys
 import time
 from typing import Any
 
-from experiments.ct_mri_sweep.queue import gpu_processes, source_hashes, tasks
+from experiments.ct_mri_sweep.queue import gpu_processes, memory_reservation, source_hashes, tasks
 from experiments.ct_mri_sweep.run import ROOT, TERMINAL, jobs, model_ready, reviewed_source_hashes, write_json
 from experiments.noisy_ct_mri.queue import Work, choose
 
@@ -105,6 +105,8 @@ def main() -> None:
                         help="Evaluate a prefix while retaining the baseline test-subset fingerprint")
     parser.add_argument("--noise-relative", type=float, default=0.0)
     parser.add_argument("--max-workers", type=int, default=1, help="Frozen at initialization")
+    parser.add_argument("--worker-memory-mib", type=int, default=9216,
+                        help="GPU reservation per worker, including 768 MiB non-allocator headroom")
     parser.add_argument("--rank", type=int, default=8)
     parser.add_argument("--dlr-only", action="store_true")
     parser.add_argument("--baseline-out", type=Path)
@@ -115,8 +117,8 @@ def main() -> None:
     out = args.out.resolve()
     if args.mode == "init":
         settings = json.loads((ROOT / "experiments/ct_mri_sweep/config_fp32.json").read_text())
-        if args.samples < 1 or args.max_workers < 1 or not 0 <= args.noise_relative < 1:
-            parser.error("Require positive sample/worker counts and noise in [0, 1)")
+        if args.samples < 1 or args.max_workers < 1 or args.worker_memory_mib <= 768 or not 0 <= args.noise_relative < 1:
+            parser.error("Require positive sample/worker counts, memory above 768 MiB and noise in [0, 1)")
         settings.update(resolutions=args.resolutions, circles=args.circles, samples=args.samples,
                         flow_steps=5, noise_relative=args.noise_relative)
         if args.dataset == "separated_shapes":
@@ -137,7 +139,7 @@ def main() -> None:
                 parser.error("Baseline settings differ beyond the DLR rank")
             settings["baseline_out"] = str(args.baseline_out.resolve())
         settings["scheduling"].update(samples_per_worker=1, max_workers_per_gpu=args.max_workers,
-            worker_memory_mib={str(resolution): 9216 for resolution in settings["resolutions"]})
+            worker_memory_mib={str(resolution): args.worker_memory_mib for resolution in settings["resolutions"]})
         if args.sample_limit is not None:
             if not 1 <= args.sample_limit <= args.samples:
                 parser.error("Sample limit must lie between 1 and --samples")
@@ -271,7 +273,7 @@ def main() -> None:
                         process = subprocess.Popen([sys.executable, "-m", worker,
                             "--manifest", str(work.manifest), "--job", work.task.job.name, "--device", "cuda:1",
                             "--sample-start", str(work.task.start), "--sample-stop", str(work.task.stop),
-                            "--memory-fraction", str((9216 - 768) / total)],
+                            "--memory-fraction", str((memory_reservation(work.task, work.settings, total) - 768) / total)],
                             cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
                             env={**os.environ, "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2", "OPENBLAS_NUM_THREADS": "1"})
                     active[work.name] = (work, process)
@@ -279,8 +281,8 @@ def main() -> None:
             write_json(out / "queue_status.json", {"pid": os.getpid(), "gpu": 1,
                 "updated_at": datetime.now().astimezone().isoformat(),
                 "status": "running" if active else "waiting" if pending else "finished",
-                "active": {name: {"pid": process.pid, "reserved_mib": 9216}
-                           for name, (_, process) in active.items()}, "preflight_passed": preflight_passed,
+                "active": {name: {"pid": process.pid, "reserved_mib": memory_reservation(work.task, work.settings, total)}
+                           for name, (work, process) in active.items()}, "preflight_passed": preflight_passed,
                 "pending": [work.name for work in pending], "failures": failures,
                 "training_pending": sorted({f"r{job.resolution}_n{job.circles}" for job in training_pending}),
                 "outputs": list(map(str, outputs)),
