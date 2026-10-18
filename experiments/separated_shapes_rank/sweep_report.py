@@ -18,7 +18,7 @@ def report(root: Path) -> None:
     plan = json.loads((root / "plan.json").read_text())
     ranks = list(map(int, plan["rank_roots"]))
     lines = ["# Noiseless separated-shapes rank sweep", "",
-             "Five paired samples (0–4) per resolution and inverse problem. CT10 / Cartesian MRI4×; five Euler steps; unchanged LBFGS and geometric Armijo, up to 1,000 attempts with the existing safeguards. Analytical alpha=1-t, FP32, no added regularization. Ranks 8/16 reuse the existing runs; ranks 32/64/128 are new.", "",
+             "Five paired samples (0–4) per resolution and inverse problem. CT10 / Cartesian MRI4×; five Euler steps; unchanged LBFGS and geometric Armijo, up to 1,000 attempts with the existing safeguards. Analytical alpha=1-t, FP32, no added regularization. Rank-specific source directories and reused runs are recorded in plan.json.", "",
              "Medians below use only samples completed at every rank in that row. Pending runs are not counted as failures. Image and measurement metrics use final checkpoints. Rank selection on these five samples is exploratory and needs confirmation on other samples. A winner at the largest tested rank does not establish a sufficient rank.", "",
              "| Resolution / problem | Common samples | " + " | ".join(f"Rank {rank} image error %" for rank in ranks) + " | D-Flow % | P-Flow % |",
              "| --- | ---: | " + " | ".join(["---:"] * (len(ranks) + 2)) + " |"]
