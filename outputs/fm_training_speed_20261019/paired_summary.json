@@ -1,0 +1,146 @@
+{
+  "timing_scope": "512-image update: GPU gather/normalization, forward/backward, AdamW, EMA, loss collection; excludes validation/checkpoints/plots",
+  "rounds": "AB/BA order, 5 rounds x 8 updates per variant, discard first, median remaining 4",
+  "resolutions": [
+    {
+      "resolution": 64,
+      "micro_batch": 512,
+      "effective_batch": 512,
+      "native_seconds": 0.03293927342747338,
+      "graph_seconds": 0.03155745193362236,
+      "rounds": [
+        [
+          0.03330522874603048,
+          0.03261687251506373,
+          0.032766136224381626,
+          0.03311241063056514
+        ],
+        [
+          0.031559591356199235,
+          0.031555312511045486,
+          0.031633040867745876,
+          0.031510730215813965
+        ]
+      ],
+      "peak_reserved_mib": 5010.0,
+      "reduction_percent": 4.1950576016606895
+    },
+    {
+      "resolution": 96,
+      "micro_batch": 128,
+      "effective_batch": 512,
+      "native_seconds": 0.07531097700120881,
+      "graph_seconds": 0.06986896324087866,
+      "rounds": [
+        [
+          0.07671931653749198,
+          0.07527225924422964,
+          0.07534969475818798,
+          0.07503952470142394
+        ],
+        [
+          0.07048745237989351,
+          0.06981141085270792,
+          0.06978677137522027,
+          0.06992651562904939
+        ]
+      ],
+      "peak_reserved_mib": 3240.0,
+      "reduction_percent": 7.226056515297641
+    },
+    {
+      "resolution": 128,
+      "micro_batch": 128,
+      "effective_batch": 512,
+      "native_seconds": 0.12603009131271392,
+      "graph_seconds": 0.1233321386098396,
+      "rounds": [
+        [
+          0.12660974933532998,
+          0.12590668350458145,
+          0.12604796764208004,
+          0.1260122149833478
+        ],
+        [
+          0.12319119047606364,
+          0.12332218425581232,
+          0.12334209296386689,
+          0.12334392446791753
+        ]
+      ],
+      "peak_reserved_mib": 5420.0,
+      "reduction_percent": 2.1407210569894697
+    },
+    {
+      "resolution": 160,
+      "micro_batch": 64,
+      "effective_batch": 512,
+      "native_seconds": 0.19489911623531953,
+      "graph_seconds": 0.1884885421313811,
+      "rounds": [
+        [
+          0.19580812263302505,
+          0.19452469563111663,
+          0.19503620534669608,
+          0.19476202712394297
+        ],
+        [
+          0.18804065266158432,
+          0.18847646948415786,
+          0.18850061477860436,
+          0.18856076523661613
+        ]
+      ],
+      "peak_reserved_mib": 5136.0,
+      "reduction_percent": 3.289175563114588
+    },
+    {
+      "resolution": 200,
+      "micro_batch": 32,
+      "effective_batch": 512,
+      "native_seconds": 0.30943806329742074,
+      "graph_seconds": 0.29650587518699467,
+      "rounds": [
+        [
+          0.30942322086775675,
+          0.3092824236373417,
+          0.3095636526122689,
+          0.3094529057270847
+        ],
+        [
+          0.2957952878787182,
+          0.2963784181047231,
+          0.29663333226926625,
+          0.29697744332952425
+        ]
+      ],
+      "peak_reserved_mib": 4870.0,
+      "reduction_percent": 4.179249305214306
+    },
+    {
+      "resolution": 250,
+      "micro_batch": 32,
+      "effective_batch": 512,
+      "native_seconds": 0.4941864118736703,
+      "graph_seconds": 0.4794018531392794,
+      "rounds": [
+        [
+          0.49385532963788137,
+          0.4931311182444915,
+          0.4945174941094592,
+          0.49485218490008265
+        ],
+        [
+          0.47812180942855775,
+          0.478942517132964,
+          0.47986118914559484,
+          0.4807084311032668
+        ]
+      ],
+      "peak_reserved_mib": 7714.0,
+      "reduction_percent": 2.991696732076532
+    }
+  ],
+  "all_24_training_only_hours_before": 64.37976095327434,
+  "all_24_training_only_hours_after": 62.10030748819312
+}

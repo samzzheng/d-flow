@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "resolution": 250,
+  "epochs": 2,
+  "train_samples": 600,
+  "updates": 4,
+  "comparison": "bitwise full training state, RNG, optimizer, EMA and loss history",
+  "graph_resumed_after_epoch": 1,
+  "sample_steps_for_smoke_only": 2
+}

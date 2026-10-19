@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-19T16:13:47.879686-04:00",
+  "queue_pid": 2377096,
+  "trainer_pid": 2377187,
+  "epoch": 76,
+  "updates": 7144,
+  "epoch_budget": 500,
+  "jobs": 24,
+  "device": "cuda:1",
+  "checks": "full state resumed at epoch 71, progressing with finite losses, source hashes match, all 24 jobs preserve calibrated microbatches and 500 epochs, production sampling 100 steps, old processes exited",
+  "train_loss": 0.029637477915496268,
+  "val_loss": 0.03350824676454067
+}

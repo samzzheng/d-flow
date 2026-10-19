@@ -627,11 +627,12 @@
     }
   ],
   "source_sha256": {
-    "train_fm_unet.py": "36004aba8767f63621a2d0fcde65713ec3f20fb775e9e47ba111462300c17876",
-    "scripts/train_small_circle_models.py": "6f0d325bc76f886883172462a5e905e5d73a7698518508a54f593538cf7e4c2c",
+    "train_fm_unet.py": "f838c328110e8aa8a6d007ba674419386a0e6babdfcbfda979f72ffb73366d03",
+    "scripts/train_small_circle_models.py": "e3e10a9ff71820104a797d3e443e7ff353075f4101797f070921fc811b96111b",
     "models/unet/default.py": "d77a723293c19108c865049c3b94b4b7ac151efbd91b899b7c6c782559c4f64c",
     "models/unet/unet.py": "fb9d630e0b592c4b79309303854d5033aa600240ca7f39933eb2bba94b4958cc",
-    "sampler/ode_samplers.py": "7738267d43ed8dfd7b3b3fcb4b3d677fb8c3f163d298f744b3e5a951724e6594"
+    "sampler/ode_samplers.py": "7738267d43ed8dfd7b3b3fcb4b3d677fb8c3f163d298f744b3e5a951724e6594",
+    "training/fm_acceleration.py": "60419178398fc9742b9843f613186b87449c3b60f8e68a114cf906e7c23cbda8"
   },
   "budget_change": {
     "from": 1000,
@@ -645,5 +646,30 @@
         "updates": 3290
       }
     ]
-  }
+  },
+  "execution_changes": [
+    {
+      "at": "2026-10-19T16:13:06.456813-04:00",
+      "commit": "f9a766f",
+      "change": "Native CUDA graph microbatches enabled; BF16 and optimizer unchanged; 500 epochs retained",
+      "resume_epoch": 71,
+      "updates": 6674,
+      "checkpoint_sha256": "00bc1c0e3f1f067d2b4dbefd42668da6d3b3eebf06c828e942049f1a6aeb60cb",
+      "previous_source_sha256": {
+        "train_fm_unet.py": "36004aba8767f63621a2d0fcde65713ec3f20fb775e9e47ba111462300c17876",
+        "scripts/train_small_circle_models.py": "6f0d325bc76f886883172462a5e905e5d73a7698518508a54f593538cf7e4c2c",
+        "models/unet/default.py": "d77a723293c19108c865049c3b94b4b7ac151efbd91b899b7c6c782559c4f64c",
+        "models/unet/unet.py": "fb9d630e0b592c4b79309303854d5033aa600240ca7f39933eb2bba94b4958cc",
+        "sampler/ode_samplers.py": "7738267d43ed8dfd7b3b3fcb4b3d677fb8c3f163d298f744b3e5a951724e6594"
+      },
+      "source_sha256": {
+        "train_fm_unet.py": "f838c328110e8aa8a6d007ba674419386a0e6babdfcbfda979f72ffb73366d03",
+        "scripts/train_small_circle_models.py": "e3e10a9ff71820104a797d3e443e7ff353075f4101797f070921fc811b96111b",
+        "models/unet/default.py": "d77a723293c19108c865049c3b94b4b7ac151efbd91b899b7c6c782559c4f64c",
+        "models/unet/unet.py": "fb9d630e0b592c4b79309303854d5033aa600240ca7f39933eb2bba94b4958cc",
+        "sampler/ode_samplers.py": "7738267d43ed8dfd7b3b3fcb4b3d677fb8c3f163d298f744b3e5a951724e6594",
+        "training/fm_acceleration.py": "60419178398fc9742b9843f613186b87449c3b60f8e68a114cf906e7c23cbda8"
+      }
+    }
+  ]
 }
