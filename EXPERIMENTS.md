@@ -20,6 +20,7 @@ Detailed experiment rows belong in the dated logs.
 | 2026-10-16 | [Experiments](experiments/experiments-2026-10-16.md) |
 | 2026-10-17 | [Experiments](experiments/experiments-2026-10-17.md) |
 | 2026-10-18 | [Experiments](experiments/experiments-2026-10-18.md) |
+| 2026-10-19 | [Experiments](experiments/experiments-2026-10-19.md) |
 
 Dated log header:
 
