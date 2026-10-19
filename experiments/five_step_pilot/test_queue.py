@@ -261,6 +261,57 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(ready.call_count, 2)  # Once per model per tick, not once per sample.
         self.assertTrue(report_finished.is_set())
 
+    def test_sample_groups_are_disjoint_and_recover_only_unfinished_members(self) -> None:
+        for exit_code, workers in ((0, 2), (1, 2), (None, 4)):
+            out = self.out / f"group_{exit_code}"
+            for stage in ("smoke", "production"):
+                root = out / stage
+                root.mkdir(parents=True)
+                manifest = json.loads((self.out / stage / "manifest.json").read_text())
+                manifest["settings"]["scheduling"]["max_workers_per_gpu"] = workers
+                (root / "manifest.json").write_text(json.dumps(manifest))
+                for task in tasks(manifest["settings"]):
+                    if stage == "production" and task.job.name == "r64_n1_ct10" and task.start < 6:
+                        continue
+                    marker = task.marker(root)
+                    marker.parent.mkdir(parents=True, exist_ok=True)
+                    marker.write_text("{}")
+            first, second, third, fourth = [MagicMock(pid=pid) for pid in (12345, 12346, 12347, 12348)]
+            first.poll.return_value = exit_code
+            first.returncode = exit_code
+            second.poll.return_value = third.poll.return_value = fourth.poll.return_value = None
+            commands = []
+
+            def launch(command: list[str], **kwargs: object) -> MagicMock:
+                commands.append(command)
+                if len(commands) == 1:
+                    # Sample 0 finished; sample 1 paused or failed; sample 2 was not attempted.
+                    marker = out / "production/r64_n1_ct10/shard_000_001.json"
+                    marker.write_text("{}")
+                return (first, second, third, fourth)[len(commands) - 1]
+
+            with ExitStack() as stack:
+                stack.enter_context(patch("sys.argv", ["pilot", "run", "--out", str(out), "--samples-per-process", "3"]))
+                stack.enter_context(patch("experiments.five_step_pilot.run.gpu_processes", return_value={1: set()}))
+                stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.check_output", return_value="49140, 2"))
+                stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.Popen", side_effect=launch))
+                stack.enter_context(patch("experiments.five_step_pilot.run.signal.signal"))
+                stack.enter_context(patch("experiments.five_step_pilot.run.time.sleep",
+                                          side_effect=[KeyboardInterrupt] if exit_code is None else [None, KeyboardInterrupt]))
+                stack.enter_context(patch("experiments.five_step_pilot.run.model_ready", return_value=True))
+                stack.enter_context(patch("experiments.five_step_pilot.run.report"))
+                with self.assertRaises(KeyboardInterrupt):
+                    main()
+            ranges = [(int(command[command.index("--sample-start") + 1]),
+                       int(command[command.index("--sample-stop") + 1])) for command in commands]
+            self.assertEqual(ranges, [(0, 1), (1, 2), (2, 4), (4, 6)] if exit_code is None else
+                             [(0, 3), (3, 6), (2 if exit_code else 1, 3)])
+            status = json.loads((out / "queue_status.json").read_text())
+            self.assertEqual(len(status["failures"]), exit_code or 0)
+            if exit_code:
+                self.assertTrue(next(iter(status["failures"])).endswith("r64_n1_ct10_001_002"))
+            self.assertEqual(status["pending"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

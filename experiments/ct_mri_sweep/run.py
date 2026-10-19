@@ -364,6 +364,8 @@ def main() -> None:
                 "sources": source_hashes, "torch": str(torch.__version__),
                 "cuda": torch.version.cuda, "cudnn": torch.backends.cudnn.version(),
                 "gpu": protocol["gpu"],
+                "deterministic": torch.are_deterministic_algorithms_enabled(),
+                "cudnn_deterministic": torch.backends.cudnn.deterministic,
             }, sort_keys=True).encode()).hexdigest()
             cache_path = output / "backend_validation_cache.json"
             validation_started = time.monotonic()
@@ -412,11 +414,11 @@ def main() -> None:
                         raise RuntimeError("Fast backend validation failed; see backend_validation output")
                     del fast_image, fast_factors, reference_factors, fast_gradient, reference_gradient, reference_products, canonical, gx
                     write_json(cache_path, validation)
-            write_json(output / f"backend_validation_{args.sample_start:03d}.json", {
-                **validation, "reused": reused,
-                "calibration_seconds": time.monotonic() - validation_started,
-                "reference_path": str(cache_path),
-            })
+        write_json(output / f"backend_validation_{sample:03d}.json", {
+            **validation, "reused": reused if sample == args.sample_start else True,
+            "calibration_seconds": time.monotonic() - validation_started if sample == args.sample_start else 0.0,
+            "reference_path": str(cache_path),
+        })
         if not (case / "inputs.pt").exists():
             save_tensor(case / "inputs.pt", {"protocol": protocol, "truth": truth, "clean": clean,
                                             "observed": observed, "initial": initial, "mask": getattr(operator, "mask", None)})
@@ -454,6 +456,12 @@ def main() -> None:
         plt.close(fig)
         if interrupted[0]:
             return
+        write_json(output / f"shard_{sample:03d}_{sample + 1:03d}.json", {
+            "sample_start": sample, "sample_stop": sample + 1,
+            "peak_allocated_mib": torch.cuda.max_memory_allocated(device) / 2**20,
+            "peak_reserved_mib": torch.cuda.max_memory_reserved(device) / 2**20,
+            "memory_scope": "worker lifetime through this sample",
+        })
     shard = {
         "sample_start": args.sample_start, "sample_stop": sample_stop,
         "peak_allocated_mib": torch.cuda.max_memory_allocated(device) / 2**20,

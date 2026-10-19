@@ -18,7 +18,7 @@ import sys
 import time
 from typing import Any
 
-from experiments.ct_mri_sweep.queue import gpu_processes, memory_reservation, source_hashes, tasks
+from experiments.ct_mri_sweep.queue import Task, gpu_processes, memory_reservation, source_hashes, tasks
 from experiments.ct_mri_sweep.run import ROOT, TERMINAL, jobs, model_directory, model_ready, reviewed_source_hashes, write_json
 from experiments.noisy_ct_mri.queue import Work, choose
 
@@ -106,6 +106,10 @@ def main() -> None:
                         help="Evaluate a prefix while retaining the baseline test-subset fingerprint")
     parser.add_argument("--noise-relative", type=float, default=0.0)
     parser.add_argument("--max-workers", type=int, default=1, help="Frozen at initialization")
+    parser.add_argument("--samples-per-process", type=int, default=3,
+                        help="Reuse model/graphs across this many consecutive independent samples; shards stay separate")
+    parser.add_argument("--poll-seconds", type=float, default=1.,
+                        help="Admission/status interval, shortened for small reconstruction jobs")
     parser.add_argument("--worker-memory-mib", type=int, default=9216,
                         help="GPU reservation per worker, including 768 MiB non-allocator headroom")
     parser.add_argument("--rank", type=int, default=8)
@@ -115,6 +119,10 @@ def main() -> None:
     parser.add_argument("--shared-controller", type=int, nargs=2, action="append", default=[],
                         metavar=("PID", "MIB"))
     args = parser.parse_args()
+    if args.samples_per_process < 1:
+        parser.error("--samples-per-process must be positive")
+    if not 0 < args.poll_seconds <= 60:
+        parser.error("--poll-seconds must lie in (0, 60]")
     out = args.out.resolve()
     if args.mode == "init":
         settings = json.loads((ROOT / "experiments/ct_mri_sweep/config_fp32.json").read_text())
@@ -239,11 +247,18 @@ def main() -> None:
                     continue
                 del active[name]
                 terminating.discard(process.pid)
+                width = work.settings["scheduling"]["samples_per_worker"]
+                unfinished = [Work(work.manifest,
+                    Task(work.task.job, start, min(start + width, work.task.stop)), work.settings, work.rank_only)
+                    for start in range(work.task.start, work.task.stop, width)]
+                unfinished = [item for item in unfinished if not item.marker.exists()]
                 if process.returncode != 0:
-                    failures[work.name] = process.returncode
+                    # Only the first unfinished sample was attempted. Later members
+                    # remain eligible; already completed sample markers are retained.
+                    failed = unfinished.pop(0) if unfinished else work
+                    failures[failed.name] = process.returncode
                     write_json(out / "failures.json", failures)
-                elif not work.marker.exists():
-                    pending.insert(0, work)
+                pending[0:0] = unfinished
                 dirty_reports.add(work.manifest.parent.parent)
             if any("/smoke/" in name for name in failures):
                 raise RuntimeError("Preflight failed; production remains blocked")
@@ -287,6 +302,20 @@ def main() -> None:
                                   sum(mib for mib, _ in shared.values()))
                     if work is None:
                         break
+                    # Keep enough independent work to fill the remaining slots
+                    # instead of serializing the tail of a study into one batch.
+                    batch_limit = min(args.samples_per_process, max(1, len(eligible) // (max_workers - len(active))))
+                    members = [work]
+                    while members[-1].task.stop - work.task.start < batch_limit:
+                        following = next((item for item in pending
+                            if item.manifest == work.manifest and item.task.job == work.task.job
+                            and item.task.start == members[-1].task.stop
+                            and item.task.stop - work.task.start <= batch_limit), None)
+                        if following is None:
+                            break
+                        members.append(following)
+                    work = Work(work.manifest, Task(work.task.job, work.task.start, members[-1].task.stop),
+                                work.settings, work.rank_only)
                     worker = worker_modules[work.manifest]
                     with (out / "logs" / (work.name.replace("/", "_") + ".log")).open("ab") as log:
                         process = subprocess.Popen([sys.executable, "-m", worker,
@@ -296,7 +325,8 @@ def main() -> None:
                             cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
                             env={**os.environ, "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2", "OPENBLAS_NUM_THREADS": "1"})
                     active[work.name] = (work, process)
-                    pending.remove(work)
+                    for member in members:
+                        pending.remove(member)
             if reporting is not None and reporting.done():
                 reporting.result()
                 reporting = None
@@ -312,10 +342,12 @@ def main() -> None:
                 "pending": [work.name for work in pending], "failures": failures,
                 "training_pending": sorted({f"r{job.resolution}_n{job.circles}" for job in training_pending}),
                 "outputs": list(map(str, outputs)),
+                "samples_per_process": args.samples_per_process,
+                "poll_seconds": args.poll_seconds,
                 "run_circles": args.run_circles, "priority_out": str(priority_out) if priority_out else None,
                 "shared_controllers": shared, "external": sorted(external), "memory_total_used_mib": [total, used]})
             if pending or active:
-                time.sleep(5)
+                time.sleep(args.poll_seconds)
     finally:
         for _, process in active.values():
             if process.poll() is None and process.pid not in terminating:
