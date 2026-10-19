@@ -51,3 +51,10 @@ Migration checks and the two-epoch standard-trainer smoke are under
 `outputs/tiny_circles_20261019/`. Smoke state is separate from production.
 Matching FM loss or unconditional samples does not establish matching inverse
 reconstruction accuracy; a later paired CT/MRI comparison is still needed.
+
+The same architecture is also tested on separated-shapes-64 using
+`python scripts/train_separated_shapes.py --small-model --device cuda:1`.
+Its default 1,000-epoch output is
+`outputs/fm_unet/separated-shapes-64-noattn-ch4-e1000/`.
+After training, `scripts/compare_small_fm_models.py` produces paired held-out
+FM loss comparisons and raw/generated sample panels against the existing large model.

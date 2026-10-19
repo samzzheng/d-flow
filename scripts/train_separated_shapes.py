@@ -26,12 +26,18 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=20261015)
     parser.add_argument("--resolution", type=int, choices=TRAINING_LAYOUT, default=64)
     parser.add_argument("--out-dir", type=Path)
+    parser.add_argument("--small-model", action="store_true", help="22,037-parameter capacity pilot")
+    parser.add_argument("--epochs", type=int)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     os.chdir(root)
     sys.path.insert(0, str(root))
     data_path = root / f"data/separated-shapes-{args.resolution}.pt"
-    out_dir = args.out_dir or Path(f"outputs/fm_unet/separated-shapes-{args.resolution}-noattn-ch16-b8-e200")
+    epochs = args.epochs or (1000 if args.small_model else 200)
+    if args.small_model and args.resolution != 64:
+        parser.error("The small-model pilot currently targets resolution 64")
+    name = f"separated-shapes-{args.resolution}-noattn-ch4-e{epochs}" if args.small_model else f"separated-shapes-{args.resolution}-noattn-ch16-b8-e{epochs}"
+    out_dir = args.out_dir or Path("outputs/fm_unet") / name
     if not data_path.exists():
         parser.error(f"Missing dataset: {data_path}")
     dataset = torch.load(data_path, weights_only=True, mmap=True, map_location="cpu")
@@ -41,19 +47,38 @@ def main() -> None:
         if tuple(dataset[name].shape) != (count, 1, args.resolution, args.resolution):
             parser.error(f"Unexpected {name} split shape: {dataset[name].shape}")
     del dataset
-    out_dir.mkdir(parents=True, exist_ok=False)
+    checkpoint = out_dir / "checkpoints/training_state.pt"
+    resume_epoch = 0
+    if args.small_model and checkpoint.exists():
+        resume_epoch = int(torch.load(checkpoint, weights_only=True, map_location="cpu", mmap=True)["epoch"])
+        config = json.loads((out_dir / "config.json").read_text())
+        if config["epochs"] != epochs or Path(config["data"]).resolve() != data_path.resolve():
+            parser.error("Resume settings do not match the existing run")
+        if resume_epoch >= epochs:
+            parser.error("Training has already reached the requested epoch count")
+    else:
+        out_dir.mkdir(parents=True, exist_ok=False)
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     levels, micro_batch = TRAINING_LAYOUT[args.resolution]
+    if args.small_model:
+        levels, micro_batch = 3, 512
+        torch.backends.cudnn.benchmark = True
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
     command = [
         "train_fm_unet.py", "--data", str(data_path), "--out-dir", str(out_dir),
-        "--device", args.device, "--epochs", "200", "--batch", "512", "--micro-batch", str(micro_batch),
+        "--device", args.device, "--epochs", str(epochs), "--batch", "512", "--micro-batch", str(micro_batch),
         "--lr", "0.0002", "--wd", "0.0001", "--ema-decay", "0.999", "--t-alpha", "1",
-        "--sample-steps", "100", "--ch", "16", "--ch-mul", ",".join(map(str, [1] + [2] * (levels - 1))),
-        "--att-channels", ",".join(["0"] * levels), "--groups", "4", "--no-mid-attn",
-        "--num-workers", "2", "--threads", "4", "--compile",
+        "--sample-steps", "100", "--ch", "4" if args.small_model else "16", "--ch-mul", ",".join(map(str, [1] + [2] * (levels - 1))),
+        "--att-channels", ",".join(["0"] * levels), "--groups", "2" if args.small_model else "4", "--no-mid-attn",
+        "--num-workers", "0" if args.small_model else "2", "--threads", "4", "--no-compile" if args.small_model else "--compile",
     ]
+    if args.small_model:
+        command.extend(["--gpu-resident", "--channels-last", "--fused-adam", "--save-training-state"])
+    if resume_epoch:
+        command.extend(["--resume-training-state", str(checkpoint), "--start-epoch", str(resume_epoch)])
     with data_path.open("rb") as dataset_file:
         dataset_sha256 = hashlib.file_digest(dataset_file, "sha256").hexdigest()
     launch = {
@@ -68,6 +93,9 @@ def main() -> None:
     print(json.dumps(launch, indent=2), flush=True)
     sys.argv = command
     runpy.run_path(str(root / command[0]), run_name="__main__")
+    if args.small_model and (out_dir / "run_summary.json").exists():
+        from scripts.compare_small_fm_models import compare_models
+        compare_models(root / "outputs/fm_unet/separated-shapes-64-noattn-ch16-b8-e200", out_dir, args.device)
 
 
 if __name__ == "__main__":
