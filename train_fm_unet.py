@@ -339,6 +339,8 @@ def main():
     pa.add_argument("--micro-batch", type=int, default=None,
                     help="Forward/backward chunk size; defaults by image size")
     pa.add_argument("--compile", action=argparse.BooleanOptionalAction, default=True)
+    pa.add_argument("--graph-microbatches", action="store_true",
+                    help="Replay native CUDA forward/backward for each microbatch shape")
     pa.add_argument("--gpu-resident", action="store_true", help="Keep compact dataset splits on the selected GPU")
     pa.add_argument("--channels-last", action="store_true")
     pa.add_argument("--fused-adam", action="store_true")
@@ -398,6 +400,8 @@ def main():
     device = args.device if args.device else ("cuda" if torch.cuda.is_available() else "cpu")
     if args.gpu_resident and not device.startswith("cuda"):
         pa.error("--gpu-resident requires a CUDA device")
+    if args.graph_microbatches and (not device.startswith("cuda") or args.compile):
+        pa.error("--graph-microbatches requires CUDA and --no-compile")
     if device.startswith("cuda"):
         torch.cuda.set_device(device)
     if args.threads is not None:
@@ -502,6 +506,13 @@ def main():
         with config_path.open("w") as f:
             json.dump(config, f, indent=2)
 
+    config_path = out_dir / "config.json"
+    config = json.loads(config_path.read_text())
+    config["execution"] = {"graph_microbatches": args.graph_microbatches,
+                           "compile": args.compile, "channels_last": args.channels_last,
+                           "fused_adam": args.fused_adam, "gpu_resident": args.gpu_resident}
+    config_path.write_text(json.dumps(config, indent=2))
+
     if args.compile:
         print("Compiling model (first epoch will be slow) …")
         model = torch.compile(model)
@@ -546,6 +557,10 @@ def main():
         torch.set_rng_state(training_state["cpu_rng"].cpu())
         if device.startswith("cuda"):
             torch.cuda.set_rng_state(training_state["cuda_rng"].cpu(), device)
+    graphed_loss = None
+    if args.graph_microbatches:
+        from training.fm_acceleration import GraphedMicrobatches
+        graphed_loss = GraphedMicrobatches(model, fm_loss, device, args.t_alpha)
     stop_requested = False
 
     def request_stop(signum: int, frame: FrameType | None) -> None:
@@ -567,10 +582,10 @@ def main():
             x1 = normalize_images(x1.to(device, non_blocking=True))
             if args.channels_last:
                 x1 = x1.contiguous(memory_format=torch.channels_last)
-            optimizer.zero_grad(set_to_none=True)
+            optimizer.zero_grad(set_to_none=not args.graph_microbatches)
             with autocast_context(device):
-                loss = batch_fm_loss(model, x1, device, micro_batch, backward=True,
-                                     t_alpha=args.t_alpha)
+                loss = graphed_loss(x1, micro_batch) if graphed_loss is not None else batch_fm_loss(
+                    model, x1, device, micro_batch, backward=True, t_alpha=args.t_alpha)
             optimizer.step()
             ema_model.update_parameters(model)
             batch_losses.append(loss)
