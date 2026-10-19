@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import Future, ThreadPoolExecutor
 from copy import deepcopy
 from dataclasses import asdict
 from datetime import datetime
@@ -18,7 +19,7 @@ import time
 from typing import Any
 
 from experiments.ct_mri_sweep.queue import gpu_processes, memory_reservation, source_hashes, tasks
-from experiments.ct_mri_sweep.run import ROOT, TERMINAL, jobs, model_ready, reviewed_source_hashes, write_json
+from experiments.ct_mri_sweep.run import ROOT, TERMINAL, jobs, model_directory, model_ready, reviewed_source_hashes, write_json
 from experiments.noisy_ct_mri.queue import Work, choose
 
 
@@ -192,8 +193,12 @@ def main() -> None:
         locks.append(lock)
     pending = []
     smoke_markers = []
+    worker_modules = {}
     for path in (root / stage / "manifest.json" for root in outputs for stage in ("smoke", "production")):
         manifest = json.loads(path.read_text())
+        worker_modules[path] = ("experiments.noisy_ct_mri.rank_worker"
+                                if manifest["protocol"]["methods"] == ["DLR D-Flow"]
+                                else "experiments.ct_mri_sweep.run")
         for name, digest in reviewed_source_hashes(path, manifest).items():
             if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != digest:
                 raise ValueError(f"Source changed: {name}")
@@ -220,6 +225,11 @@ def main() -> None:
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
     (out / "logs").mkdir(exist_ok=True)
+    # One reporting thread serializes matplotlib use while admission stays responsive.
+    reporter = ThreadPoolExecutor(max_workers=1, thread_name_prefix="sweep-report")
+    reporting: Future[None] | None = None
+    dirty_reports: set[Path] = set()
+    terminating: set[int] = set()
     try:
         while pending or active:
             if stopped[0]:
@@ -228,12 +238,13 @@ def main() -> None:
                 if process.poll() is None:
                     continue
                 del active[name]
+                terminating.discard(process.pid)
                 if process.returncode != 0:
                     failures[work.name] = process.returncode
                     write_json(out / "failures.json", failures)
                 elif not work.marker.exists():
                     pending.insert(0, work)
-                report(work.manifest.parent.parent)
+                dirty_reports.add(work.manifest.parent.parent)
             if any("/smoke/" in name for name in failures):
                 raise RuntimeError("Preflight failed; production remains blocked")
             pending = [work for work in pending if work.name not in failures]
@@ -251,13 +262,23 @@ def main() -> None:
                 "--query-gpu=memory.total,memory.used", "--format=csv,noheader,nounits"], text=True).strip().split(","))
             if external and active:
                 for _, process in active.values():
-                    process.terminate()
+                    if process.pid not in terminating:
+                        process.terminate()
+                        terminating.add(process.pid)
             preflight_passed = all(path.exists() for path in smoke_markers)
-            training_pending = {work.task.job for work in pending
-                                if not model_ready(work.task.job, work.settings)}
+            readiness: dict[tuple[Path, int], bool] = {}
+            training_pending = set()
+            unready_work = set()
+            for work in pending:
+                key = (model_directory(work.task.job, work.settings), work.settings["epoch"])
+                if key not in readiness:
+                    readiness[key] = model_ready(work.task.job, work.settings)
+                if not readiness[key]:
+                    training_pending.add(work.task.job)
+                    unready_work.add(work.name)
             if pending and not external and shutil.disk_usage(out).free > 20 * 2**30:
                 while len(active) < max_workers:
-                    eligible = [work for work in pending if work.task.job not in training_pending
+                    eligible = [work for work in pending if work.name not in unready_work
                                 and (preflight_passed or work.manifest.parent.name == "smoke")]
                     if priority_out is not None:
                         priority_active = any(work.manifest.parent.parent == priority_out for work, _ in active.values())
@@ -266,9 +287,7 @@ def main() -> None:
                                   sum(mib for mib, _ in shared.values()))
                     if work is None:
                         break
-                    worker = "experiments.ct_mri_sweep.run"
-                    if json.loads(work.manifest.read_text())["protocol"]["methods"] == ["DLR D-Flow"]:
-                        worker = "experiments.noisy_ct_mri.rank_worker"
+                    worker = worker_modules[work.manifest]
                     with (out / "logs" / (work.name.replace("/", "_") + ".log")).open("ab") as log:
                         process = subprocess.Popen([sys.executable, "-m", worker,
                             "--manifest", str(work.manifest), "--job", work.task.job.name, "--device", "cuda:1",
@@ -278,6 +297,13 @@ def main() -> None:
                             env={**os.environ, "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2", "OPENBLAS_NUM_THREADS": "1"})
                     active[work.name] = (work, process)
                     pending.remove(work)
+            if reporting is not None and reporting.done():
+                reporting.result()
+                reporting = None
+            if reporting is None and dirty_reports:
+                root = min(dirty_reports)
+                dirty_reports.remove(root)
+                reporting = reporter.submit(report, root)
             write_json(out / "queue_status.json", {"pid": os.getpid(), "gpu": 1,
                 "updated_at": datetime.now().astimezone().isoformat(),
                 "status": "running" if active else "waiting" if pending else "finished",
@@ -292,13 +318,17 @@ def main() -> None:
                 time.sleep(5)
     finally:
         for _, process in active.values():
-            if process.poll() is None:
+            if process.poll() is None and process.pid not in terminating:
                 process.terminate()
         for _, process in active.values():
             process.wait()
         if stopped[0]:
             write_json(out / "queue_status.json", {"status": "paused", "pid": os.getpid(), "gpu": 1})
-        for root in outputs:
+        reporter.shutdown(wait=True)
+        if reporting is not None:
+            reporting.result()
+        dirty_reports.update(work.manifest.parent.parent for work, _ in active.values())
+        for root in sorted(dirty_reports):
             report(root)
         for lock in locks:
             lock.close()

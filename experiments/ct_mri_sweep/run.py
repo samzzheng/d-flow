@@ -103,19 +103,27 @@ def tensor_tree(value: Any, device: str | torch.device) -> Any:
     return value
 
 
-def save_tensor(path: Path, value: Any) -> None:
+def save_tensor(path: Path, value: Any) -> Any:
+    value = tensor_tree(value, "cpu")
     temporary = path.with_suffix(".pt.tmp")
-    torch.save(tensor_tree(value, "cpu"), temporary)
+    torch.save(value, temporary)
     temporary.replace(path)
+    return value
 
 
 def metrics(image: torch.Tensor, predicted: torch.Tensor, truth: torch.Tensor,
-            clean: torch.Tensor, observed: torch.Tensor) -> Settings:
-    noise_norm = float((observed - clean).norm())
-    return {"image_relative_l2": float((image - truth).norm() / truth.norm()),
-            "measurement_relative_l2_clean": float((predicted - clean).norm() / clean.norm()),
-            "measurement_relative_l2_noisy": float((predicted - observed).norm() / observed.norm()),
-            "residual_over_noise": float((predicted - observed).norm()) / noise_norm if noise_norm else None}
+            clean: torch.Tensor, observed: torch.Tensor,
+            reference_norms: torch.Tensor | None = None) -> Settings:
+    if reference_norms is None:
+        reference_norms = torch.stack((truth.norm(), clean.norm(), observed.norm(), (observed - clean).norm()))
+    errors = torch.stack(((image - truth).norm(), (predicted - clean).norm(), (predicted - observed).norm()))
+    # Transfer together rather than synchronizing the GPU for every scalar.
+    image_error, clean_error, observed_error, residual_norm, noise_norm = torch.cat(
+        (errors / reference_norms[:3], errors[2:], reference_norms[3:])).tolist()
+    return {"image_relative_l2": image_error,
+            "measurement_relative_l2_clean": clean_error,
+            "measurement_relative_l2_noisy": observed_error,
+            "residual_over_noise": residual_norm / noise_norm if noise_norm else None}
 
 
 class Evaluator:
@@ -127,15 +135,26 @@ class Evaluator:
         self.settings, self.seed, self.products = settings, seed, products
         self.source: torch.Tensor | None = None
         self.image: torch.Tensor | None = None
+        self.measurement: torch.Tensor | None = None
         self.value = 0.0
         self.counts = {"forward_objectives": 0, "gradients": 0}
         self.previous_v: torch.Tensor | None = None
+        self.method: str | None = None
+        self.objective_loss: torch.Tensor | None = None
+        self.objective_source: torch.Tensor | None = None
 
     def objective(self, source: torch.Tensor) -> float:
-        with torch.no_grad():
-            self.image = euler_flow(self.model, source, self.settings["flow_steps"])
-            residual = self.operator(self.image) - self.observed
-            self.value = float(0.5 * residual.abs().square().sum(dtype=torch.float64))
+        # Release a rejected trial's graph before allocating its replacement.
+        self.objective_loss = self.objective_source = None
+        with torch.set_grad_enabled(self.method == "D-Flow"):
+            variable = source.detach().requires_grad_(self.method == "D-Flow")
+            image = euler_flow(self.model, variable, self.settings["flow_steps"])
+            measurement = self.operator(image)
+            loss = 0.5 * (measurement - self.observed).abs().square().sum(dtype=torch.float64)
+            self.image, self.measurement = image.detach(), measurement.detach()
+            self.value = float(loss.detach())
+            if self.method == "D-Flow":
+                self.objective_loss, self.objective_source = loss, variable
         self.source = source.detach().clone()
         self.counts["forward_objectives"] += 1
         return self.value
@@ -145,9 +164,13 @@ class Evaluator:
             self.objective(source.detach())
         self.counts["gradients"] += 1
         if method == "D-Flow":
-            image = euler_flow(self.model, source, self.settings["flow_steps"])
-            loss = 0.5 * (self.operator(image) - self.observed).abs().square().sum(dtype=torch.float64)
-            gradient, = torch.autograd.grad(loss, source)
+            if self.objective_loss is not None:
+                gradient, = torch.autograd.grad(self.objective_loss, self.objective_source)
+                self.objective_loss = self.objective_source = None
+            else:
+                image = euler_flow(self.model, source, self.settings["flow_steps"])
+                loss = 0.5 * (self.operator(image) - self.observed).abs().square().sum(dtype=torch.float64)
+                gradient, = torch.autograd.grad(loss, source)
         else:
             _, gradient = endpoint_gradient(self.image, self.operator, self.observed)
             if method == "DLR D-Flow":
@@ -169,6 +192,7 @@ class Evaluator:
 def solve(evaluator: Evaluator, method: str, initial: torch.Tensor, truth: torch.Tensor,
           clean: torch.Tensor, path: Path, protocol: Settings, interrupted: list[bool]) -> Settings:
     settings = evaluator.settings
+    evaluator.method = method
     source = initial.detach().clone().requires_grad_(True)
     optimizer = ArmijoLBFGS(source, evaluator.objective, **{
         **settings["optimizer"], "step_cap": settings["optimizer"]["step_cap"] * math.sqrt(source.numel()),
@@ -197,9 +221,11 @@ def solve(evaluator: Evaluator, method: str, initial: torch.Tensor, truth: torch
         return source.new_tensor(evaluator.value, dtype=torch.float64)
 
     evaluator.objective(source.detach())
+    reference_norms = torch.stack((truth.norm(), clean.norm(), evaluator.observed.norm(),
+                                   (evaluator.observed - clean).norm()))
     if not history:
         history.append({"step": 0, "phi": evaluator.value, "elapsed_seconds": prior_seconds,
-                        **metrics(evaluator.image, evaluator.operator(evaluator.image), truth, clean, evaluator.observed)})
+                        **metrics(evaluator.image, evaluator.measurement, truth, clean, evaluator.observed, reference_norms)})
     status = "running"
     while status == "running":
         if interrupted[0]:
@@ -220,7 +246,7 @@ def solve(evaluator: Evaluator, method: str, initial: torch.Tensor, truth: torch
                             "source_step_norm": displacement,
                             "line_search_trials": optimizer.last_function_evaluations,
                             "elapsed_seconds": prior_seconds + time.monotonic() - started,
-                            **metrics(evaluator.image, evaluator.operator(evaluator.image), truth, clean, evaluator.observed)})
+                            **metrics(evaluator.image, evaluator.measurement, truth, clean, evaluator.observed, reference_norms)})
             stopping = settings["stopping"]
             if optimizer.consecutive_failures >= stopping["failed_searches"]:
                 status = "stalled"
@@ -235,16 +261,17 @@ def solve(evaluator: Evaluator, method: str, initial: torch.Tensor, truth: torch
         if status != "running" or optimizer.step_attempts % settings["execution"]["checkpoint_every"] == 0:
             saved = {"protocol": protocol, "method": method, "status": status,
                      "source": source.detach(), "image": evaluator.image,
-                     "measurement": evaluator.operator(evaluator.image).detach(),
+                     "measurement": evaluator.measurement,
                      "previous_v": evaluator.previous_v,
                      "optimizer": {key: value for key, value in vars(optimizer).items() if key not in {"source", "objective"}},
                      "history": history, "evaluations": evaluator.counts,
                      "elapsed_seconds": prior_seconds + time.monotonic() - started}
-            save_tensor(path, saved)
+            saved = save_tensor(path, saved)
             summary = {key: saved[key] for key in ("protocol", "method", "status", "history", "evaluations", "elapsed_seconds")}
             write_json(path.with_suffix(".json"), summary)
             print(f"{path.parent.name} {method} step={optimizer.step_attempts} {status} image={100*history[-1]['image_relative_l2']:.3f}%", flush=True)
-    return tensor_tree(saved, "cpu")
+    evaluator.objective_loss = evaluator.objective_source = None
+    return saved
 
 
 def main() -> None:
@@ -385,18 +412,18 @@ def main() -> None:
             evaluator = Evaluator(model, operator, observed, settings, dlr_seed, products)
             path = case / (method.lower().replace("-", "_").replace(" ", "_") + ".pt")
             results[method] = solve(evaluator, method, initial, truth, clean, path, protocol, interrupted)
-            fig = plot_reconstruction_comparison(truth, clean, {
-                name: (result["image"], result["measurement"]) for name, result in results.items()},
-                observation=observed, measurement_log=job.problem == "mri",
-                residual_vmax=RESIDUAL_VMAX[job.problem],
-                histories={name: result["history"] for name, result in results.items()},
-                title=f"Resolution: {job.resolution}$^2$, Inverse Problem: {job.problem.upper()}, "
-                      f"Noise Level {100*settings['noise_relative']:g}%, Sample: {sample}")
-            for extension in ("png", "pdf"):
-                fig.savefig(case / f"comparison.{extension}", dpi=140)
-            plt.close(fig)
             if interrupted[0]:
                 break
+        fig = plot_reconstruction_comparison(truth, clean, {
+            name: (result["image"], result["measurement"]) for name, result in results.items()},
+            observation=observed, measurement_log=job.problem == "mri",
+            residual_vmax=RESIDUAL_VMAX[job.problem],
+            histories={name: result["history"] for name, result in results.items()},
+            title=f"Resolution: {job.resolution}$^2$, Inverse Problem: {job.problem.upper()}, "
+                  f"Noise Level {100*settings['noise_relative']:g}%, Sample: {sample}")
+        for extension in ("png", "pdf"):
+            fig.savefig(case / f"comparison.{extension}", dpi=140)
+        plt.close(fig)
         if interrupted[0]:
             return
     shard = {

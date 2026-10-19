@@ -5,6 +5,7 @@ from contextlib import ExitStack
 import json
 from pathlib import Path
 import tempfile
+import threading
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -210,6 +211,55 @@ class QueueTests(unittest.TestCase):
                                      for command in commands), 1)
                 self.assertTrue(all("_n1_" in name for name in status["pending"]))
                 self.assertTrue(status["preflight_passed"])
+
+    def test_replacement_admitted_before_reporting_and_readiness_deduplicated(self) -> None:
+        for stage in ("smoke", "production"):
+            manifest_path = self.out / stage / "manifest.json"
+            manifest = json.loads(manifest_path.read_text())
+            manifest["settings"]["scheduling"]["max_workers_per_gpu"] = 1
+            manifest_path.write_text(json.dumps(manifest))
+            for task in tasks(manifest["settings"]):
+                if stage == "production" and task.job.resolution == 64 and task.job.problem == "ct":
+                    continue
+                marker = task.marker(manifest_path.parent)
+                marker.parent.mkdir(parents=True, exist_ok=True)
+                marker.write_text("{}")
+        replacement_started = threading.Event()
+        report_finished = threading.Event()
+        first, second = MagicMock(pid=12345), MagicMock(pid=12346)
+        first.poll.return_value = 0
+        first.returncode = 0
+        second.poll.return_value = None
+        launches = []
+
+        def launch(command: list[str], **kwargs: object) -> MagicMock:
+            launches.append(command)
+            if len(launches) == 1:
+                marker = self.out / "production/r64_n1_ct10/shard_000_001.json"
+                marker.parent.mkdir(parents=True, exist_ok=True)
+                marker.write_text("{}")
+                return first
+            replacement_started.set()
+            return second
+
+        def report(out: Path) -> None:
+            self.assertTrue(replacement_started.is_set(), "Report blocked replacement admission")
+            report_finished.set()
+
+        with ExitStack() as stack:
+            stack.enter_context(patch("sys.argv", ["pilot", "run", "--out", str(self.out)]))
+            stack.enter_context(patch("experiments.five_step_pilot.run.gpu_processes", return_value={1: set()}))
+            stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.check_output", return_value="49140, 2"))
+            stack.enter_context(patch("experiments.five_step_pilot.run.subprocess.Popen", side_effect=launch))
+            stack.enter_context(patch("experiments.five_step_pilot.run.signal.signal"))
+            stack.enter_context(patch("experiments.five_step_pilot.run.time.sleep", side_effect=[None, KeyboardInterrupt]))
+            ready = stack.enter_context(patch("experiments.five_step_pilot.run.model_ready", return_value=True))
+            stack.enter_context(patch("experiments.five_step_pilot.run.report", side_effect=report))
+            with self.assertRaises(KeyboardInterrupt):
+                main()
+        self.assertEqual(len(launches), 2)
+        self.assertEqual(ready.call_count, 2)  # Once per model per tick, not once per sample.
+        self.assertTrue(report_finished.is_set())
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@ import torch
 from dlr_dflow import dlr_dflow as core
 from p_flow import proxy_gradient
 from .operators import CT, MRI, noisy_measurement
-from .run import Evaluator, Job, jobs, model_ready, reviewed_source_hashes, solve
+from .run import Evaluator, Job, jobs, metrics, model_ready, reviewed_source_hashes, solve
 from . import queue
 from .validation import ChunkedEagerProducts
 from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
@@ -280,6 +280,57 @@ class SweepTests(unittest.TestCase):
         epsilon = 1e-5
         finite_difference = (evaluator.objective(source.detach() + epsilon*direction) - evaluator.objective(source.detach() - epsilon*direction)) / (2*epsilon)
         self.assertAlmostEqual(finite_difference, float((exact*direction).sum()), places=8)
+
+    def test_cached_measurement_matches_rejected_trials_and_metrics(self) -> None:
+        settings = self.settings
+        settings["flow_steps"] = 3
+        truth = torch.randn(1, 1, 16, 16)
+        source = torch.randn_like(truth)
+        for operator in (CT(16, 10, torch.device("cpu")), MRI(16, 4, 5, torch.device("cpu"))):
+            for noise in (0., .01):
+                clean = operator(truth)
+                observed = noisy_measurement(clean, noise, 23, getattr(operator, "mask", None))
+                evaluator = Evaluator(LinearVelocity(), operator, observed, settings, 0)
+                evaluator.objective(source)
+                accepted = evaluator.measurement.clone()
+                evaluator.objective(source + .5)
+                evaluator.gradient(source, "P-Flow")  # A rejected trial must not leak into the metrics.
+                torch.testing.assert_close(evaluator.measurement, accepted, rtol=0, atol=0)
+                predicted, image = evaluator.measurement, evaluator.image
+                norms = torch.stack((truth.norm(), clean.norm(), observed.norm(), (observed-clean).norm()))
+                expected = {"image_relative_l2": float((image-truth).norm()/truth.norm()),
+                    "measurement_relative_l2_clean": float((predicted-clean).norm()/clean.norm()),
+                    "measurement_relative_l2_noisy": float((predicted-observed).norm()/observed.norm()),
+                    "residual_over_noise": float((predicted-observed).norm())/float(norms[3]) if noise else None}
+                self.assertEqual(metrics(image, predicted, truth, clean, observed, norms), expected)
+                self.assertEqual(metrics(image, predicted, truth, clean, observed), expected)
+
+    def test_exact_gradient_reuses_trial_graph_and_invalidates_rejected_source(self) -> None:
+        settings = self.settings
+        settings["flow_steps"] = 3
+        model = LinearVelocity()
+        source = torch.randn(1, 1, 8, 8, dtype=torch.float64).requires_grad_(True)
+        for operator in (CT(8, 10, torch.device("cpu")), MRI(8, 4, 5, torch.device("cpu"))):
+            if isinstance(operator, CT):
+                operator.grids = tuple(grid.double() for grid in operator.grids)
+            observed = operator(torch.ones_like(source))
+            reference = Evaluator(model, operator, observed, settings, 0)
+            expected = reference.gradient(source, "D-Flow")
+            evaluator = Evaluator(model, operator, observed, settings, 0)
+            evaluator.method = "D-Flow"
+            with patch.object(model, "forward", wraps=model.forward) as forward:
+                evaluator.objective(source.detach())
+                self.assertEqual(forward.call_count, 3)
+                actual = evaluator.gradient(source, "D-Flow")
+                self.assertEqual(forward.call_count, 3)
+                torch.testing.assert_close(actual, expected, rtol=0, atol=0)
+                self.assertIsNone(evaluator.objective_loss)
+                self.assertIsNone(evaluator.image.grad_fn)
+                self.assertIsNone(evaluator.measurement.grad_fn)
+                evaluator.objective(source.detach() + .5)
+                actual = evaluator.gradient(source, "D-Flow")
+                self.assertEqual(forward.call_count, 9)
+                torch.testing.assert_close(actual, expected, rtol=0, atol=0)
 
     def test_resume_preserves_lbfgs_schedule_and_trajectory(self) -> None:
         settings = self.settings
