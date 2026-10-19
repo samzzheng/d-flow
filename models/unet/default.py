@@ -21,6 +21,7 @@ class Unet(nn.Module):
             groups: int = 32,
             dropout: float = 0.1,
             scale_shift: bool = True,
+            mid_attn: bool = True,
         ):
         super().__init__()
         assert len(att_channels) == len(ch_mul), 'Attention bool must be defined for each channel'
@@ -31,6 +32,10 @@ class Unet(nn.Module):
         self.dropout = dropout
         self.scale_shift = scale_shift
         self.groups = groups
+        # The bottleneck ResBlock carried attention unconditionally, so
+        # att_channels = [0, ...] alone never produced an attention-free model.
+        # Default True keeps every existing checkpoint loadable.
+        self.mid_attn = mid_attn
 
         self.temb_dim = self.ch * 4
         
@@ -144,6 +149,6 @@ class Unet(nn.Module):
 
         nch = self.ch * self.ch_mul[-1]
         self.mid = nn.ModuleList([
-            ResBlock(nch, nch, self.temb_dim, self.scale_shift, self.groups, self.dropout, attn=True),
+            ResBlock(nch, nch, self.temb_dim, self.scale_shift, self.groups, self.dropout, attn=self.mid_attn),
             ResBlock(nch, nch, self.temb_dim, self.scale_shift, self.groups, self.dropout, attn=False),
         ])

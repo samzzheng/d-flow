@@ -1,0 +1,32 @@
+=== [gpu 1] 250:3 start 0 22:55:46 ===
+=== [gpu 1] 250:4 start 0 22:55:48 ===
+=== [gpu 1] 160:3 start 0 09:19:27 ===
+=== [gpu 1] 160:4 start 0 09:19:29 ===
+=== [gpu 1] 160:1 start 20 09:19:33 ===
+=== [gpu 1] 160:2 start 20 09:19:36 ===
+=== [gpu 1] 128:1 start 80 09:26:37 ===
+=== [gpu 1] 128:3 start 80 09:26:43 ===
+=== [gpu 1] 96:1 start 160 09:26:49 ===
+=== [gpu 1] 96:3 start 160 09:26:55 ===
+=== [gpu 1] 96:1 finished rc=0 11:10:04 ===
+=== [gpu 1] worker done 11:10:04 ===
+=== [gpu 1] 96:3 finished rc=0 11:12:57 ===
+=== [gpu 1] worker done 11:12:57 ===
+=== [gpu 1] 250:3 finished rc=0 15:21:04 ===
+=== [gpu 1] worker done 15:21:04 ===
+=== [gpu 1] 250:4 finished rc=0 15:31:49 ===
+=== [gpu 1] worker done 15:31:49 ===
+=== [gpu 1] 128:3 finished rc=0 16:05:54 ===
+=== [gpu 1] worker done 16:05:54 ===
+=== [gpu 1] 128:1 finished rc=0 16:06:21 ===
+=== [gpu 1] worker done 16:06:21 ===
+=== [gpu 1] 200:3 start 40 16:09:35 ===
+=== [gpu 1] 200:4 start 40 16:09:38 ===
+=== [gpu 1] 160:2 finished rc=0 22:12:57 ===
+=== [gpu 1] worker done 22:12:57 ===
+=== [gpu 1] 160:1 finished rc=0 22:13:47 ===
+=== [gpu 1] worker done 22:13:47 ===
+=== [gpu 1] 160:3 finished rc=0 23:03:26 ===
+=== [gpu 1] worker done 23:03:26 ===
+=== [gpu 1] 160:4 finished rc=0 23:03:58 ===
+=== [gpu 1] worker done 23:03:58 ===

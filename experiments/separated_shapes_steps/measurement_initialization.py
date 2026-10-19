@@ -23,12 +23,17 @@ def main() -> None:
     parser.add_argument("--resolution", type=int, default=64)
     parser.add_argument("--problem", choices=("ct10", "mri4"), default="mri4")
     parser.add_argument("--sample", type=int, default=1)
+    parser.add_argument("--rank", type=int, default=32)
     parser.add_argument("--device", required=True, choices=("cuda:1",))
+    parser.add_argument("--memory-fraction", type=float, default=.10)
+    parser.add_argument("--source-cache", type=Path)
     args = parser.parse_args()
     if args.model == "small" and args.resolution != 64:
         parser.error("The small separated-shapes model is trained only at resolution 64")
     root = Path("outputs/separated_shapes_steps_20261019")
-    out = root / f"measurement_init_{args.model}_{args.mix:g}"
+    out = root / f"measurement_init_{args.model}_{args.mix:g}_paired"
+    if args.rank != 32:
+        out = out.with_name(f"{out.name}_rank_{args.rank}")
     path = out / "production/manifest.json"
     if not path.exists():
         template = "tiny_model_steps_5_rank_32" if args.model == "small" else "steps_10_rank_32"
@@ -36,12 +41,14 @@ def main() -> None:
         manifest["created_at"] = datetime.now().astimezone().isoformat()
         settings = manifest["settings"]
         settings["flow_steps"] = 5
+        settings["dlr"]["rank"] = args.rank
         settings.pop("baseline_out", None)
         settings["initialization"] = dict(mix=args.mix, rule="sqrt(1-rho^2)*z + rho*centered_normalized_adjoint_y",
                                           uses_ground_truth=False)
+        settings["initialization_cache"] = str(args.source_cache.resolve()) if args.source_cache else None
         manifest["source_sha256"] = source_hashes()
         manifest["source_sha256"][str(Path(__file__).relative_to(run.ROOT))] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-        manifest["protocol"]["methods"] = list(run.METHODS)
+        manifest["protocol"]["methods"] = list(run.METHODS) if args.rank == 32 else ["DLR D-Flow"]
         manifest["protocol"]["purpose"] = "Change source initialization only: one measurement adjoint, centered and normalized to sqrt(d), mixed with the original random source"
         manifest["protocol"]["selection"] = "Exploratory selected cases; same conditioned source across methods. This changes the initialization distribution, not the flow or objective."
         run.write_json(path, manifest)
@@ -50,19 +57,29 @@ def main() -> None:
     def conditioned_solve(evaluator: run.Evaluator, method: str, initial: torch.Tensor,
                           truth: torch.Tensor, clean: torch.Tensor, checkpoint: Path,
                           protocol: run.Settings, interrupted: list[bool]) -> run.Settings:
-        variable = torch.zeros_like(initial, requires_grad=True)
-        pairing = (evaluator.operator(variable).conj() * evaluator.observed).real.sum()
-        backprojection, = torch.autograd.grad(pairing, variable)
-        centered = backprojection - backprojection.mean()
-        norm = centered.norm()
-        if not torch.isfinite(norm) or norm == 0:
-            raise FloatingPointError("The centered measurement adjoint is zero or nonfinite")
-        direction = centered * (math.sqrt(initial.numel()) / norm)
-        conditioned = math.sqrt(1 - args.mix**2) * initial + args.mix * direction
-        protocol = {**protocol, "initialization": evaluator.settings["initialization"],
-                    "initial_source_sha256": hashlib.sha256(conditioned.detach().cpu().numpy().tobytes()).hexdigest()}
         inputs_path = checkpoint.parent / "inputs.pt"
         inputs = torch.load(inputs_path, weights_only=True, map_location="cpu")
+        cache_path = evaluator.settings["initialization_cache"]
+        cached = torch.load(cache_path, weights_only=True, map_location="cpu") if cache_path else inputs
+        if "initialization_direction" in cached:
+            assert torch.equal(cached["unconditioned_initial"], initial.detach().cpu())
+            assert torch.equal(cached["observed"], evaluator.observed.detach().cpu())
+            assert cached["protocol"]["operator"] == protocol["operator"]
+            assert cached["protocol"]["initialization"] == evaluator.settings["initialization"]
+            direction = cached["initialization_direction"].to(initial.device)
+            conditioned = cached["initial"].to(initial.device)
+        else:
+            variable = torch.zeros_like(initial, requires_grad=True)
+            pairing = (evaluator.operator(variable).conj() * evaluator.observed).real.sum()
+            backprojection, = torch.autograd.grad(pairing, variable)
+            centered = backprojection - backprojection.mean()
+            norm = centered.norm()
+            if not torch.isfinite(norm) or norm == 0:
+                raise FloatingPointError("The centered measurement adjoint is zero or nonfinite")
+            direction = centered * (math.sqrt(initial.numel()) / norm)
+            conditioned = math.sqrt(1 - args.mix**2) * initial + args.mix * direction
+        protocol = {**protocol, "initialization": evaluator.settings["initialization"],
+                    "initial_source_sha256": hashlib.sha256(conditioned.detach().cpu().numpy().tobytes()).hexdigest()}
         inputs.update(initial=conditioned.detach().cpu(), unconditioned_initial=initial.detach().cpu(),
                       initialization_direction=direction.detach().cpu(), protocol=protocol)
         run.save_tensor(inputs_path, inputs)
@@ -76,9 +93,11 @@ def main() -> None:
 
     run.solve = conditioned_solve
     run.plot_reconstruction_comparison = conditioned_plot
+    if args.rank != 32:
+        run.METHODS = ("DLR D-Flow",)
     sys.argv = [sys.argv[0], "--manifest", str(path), "--job", f"r{args.resolution}_shapes_{args.problem}",
                 "--sample-start", str(args.sample), "--sample-stop", str(args.sample+1),
-                "--device", args.device, "--memory-fraction", ".10"]
+                "--device", args.device, "--memory-fraction", str(args.memory_fraction)]
     run.main()
 
 

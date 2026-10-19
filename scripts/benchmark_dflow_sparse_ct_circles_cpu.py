@@ -17,11 +17,13 @@ import os
 import statistics
 import sys
 import time
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import cmocean
 import matplotlib
+import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -33,6 +35,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from models.unet.default import Unet
+from sampler.optimizer_state import (
+    LBFGS_HISTORY_RESET_POLICY, LBFGS_INITIAL_STEP_POLICY, reset_optimizer_history,
+)
 
 
 METHODS = ("forward_euler", "rk4")
@@ -149,6 +154,14 @@ def parse_args() -> argparse.Namespace:
         help="Checkpoint velocity-model calls (defaults on for CUDA).",
     )
     parser.add_argument(
+        "--methods", nargs="+", choices=METHODS, default=list(METHODS),
+        help="Integrators to run; defaults to both.",
+    )
+    parser.add_argument(
+        "--run-dir-template", type=str, default="outputs/fm_unet/circles-{res}/n1",
+        help="Training run directory holding config.json and checkpoints/.",
+    )
+    parser.add_argument(
         "--out-dir", type=Path,
         default=Path("outputs/dflow_sparse_ct_circles_cpu_euler_rk4"),
     )
@@ -172,13 +185,20 @@ def read_csv(path: Path) -> list[dict]:
         return list(csv.DictReader(handle))
 
 
-def load_model(resolution: int, epoch: int, device: torch.device) -> torch.nn.Module:
-    run = ROOT / f"outputs/fm_unet/circles-{resolution}/n1"
+def run_dir(template: str, resolution: int) -> Path:
+    return ROOT / template.format(res=resolution)
+
+
+def load_model(
+    resolution: int, epoch: int, device: torch.device, template: str,
+) -> torch.nn.Module:
+    run = run_dir(template, resolution)
     config = json.loads((run / "config.json").read_text())
     arch = config["arch"]
     model = Unet(
         ch=arch["ch"], ch_mul=arch["ch_mul"],
         att_channels=arch["att_channels"], groups=arch["groups"], dropout=0.0,
+        mid_attn=arch.get("mid_attn", True),
     )
     state = torch.load(
         run / f"checkpoints/epoch_{epoch:04d}.pt", map_location="cpu", weights_only=True)
@@ -551,7 +571,7 @@ def run_inverse(
         if should_restore:
             with torch.no_grad():
                 source.copy_(best_source)
-            optimizer.state.clear()
+            reset_optimizer_history(optimizer)
             last_relative = best_relative
             rollback_count += 1
         history.append(last_relative)
@@ -593,6 +613,16 @@ def run_inverse(
         image_relative_error, noisy_relative_error, args.noise_level,
         flow_steps,
     )
+    # Keep the fields themselves: comparison figures across methods cannot be
+    # rebuilt from the rendered diagnostic alone.
+    np.savez_compressed(
+        diagnostic_path.with_suffix(".npz"),
+        reconstruction=reconstruction.detach().cpu().numpy(),
+        ground_truth=ground_truth.detach().cpu().numpy(),
+        clean_measurement=clean_measurement.detach().cpu().numpy(),
+        noisy_measurement=noisy_measurement.detach().cpu().numpy(),
+        predicted_measurement=predicted_clamped.detach().cpu().numpy(),
+    )
     peak_memory_mb = (
         torch.cuda.max_memory_allocated(device) / (1024 ** 2)
         if device.type == "cuda" else 0.0
@@ -620,10 +650,10 @@ def run_inverse(
     return result, iteration_rows
 
 
-def summarize(rows: list[dict]) -> list[dict]:
+def summarize(rows: list[dict], methods: Sequence[str] = METHODS) -> list[dict]:
     summary = []
     for resolution in sorted({int(row["resolution"]) for row in rows}):
-        for method in METHODS:
+        for method in methods:
             group = [
                 row for row in rows
                 if int(row["resolution"]) == resolution and row["method"] == method
@@ -669,6 +699,7 @@ def validate_resume_settings(existing: dict, current: dict) -> None:
         "lbfgs_tolerance_change", "objective", "solution_state",
         "rollback_factor", "base_seed",
         "rollback_policy", "activation_checkpointing", "deterministic",
+        "lbfgs_initial_step_policy", "lbfgs_history_reset_policy",
     )
     mismatches = {
         key: (existing.get(key), current.get(key))
@@ -730,7 +761,10 @@ def main() -> None:
     settings["device_name"] = (
         torch.cuda.get_device_name(device) if device.type == "cuda" else "CPU"
     )
-    settings["methods"] = list(METHODS)
+    methods = tuple(args.methods)
+    settings["methods"] = list(methods)
+    settings["lbfgs_initial_step_policy"] = LBFGS_INITIAL_STEP_POLICY
+    settings["lbfgs_history_reset_policy"] = LBFGS_HISTORY_RESET_POLICY
     settings["effective_lbfgs_max_iter"] = (
         1 if args.closure_budget is not None else args.lbfgs_max_iter
     )
@@ -751,8 +785,8 @@ def main() -> None:
     settings["primary_metric"] = "relative L2 error"
     checkpoint_paths = {
         resolution: (
-            ROOT / f"outputs/fm_unet/circles-{resolution}/n1/checkpoints"
-            / f"epoch_{args.epoch:04d}.pt"
+            run_dir(args.run_dir_template, resolution)
+            / "checkpoints" / f"epoch_{args.epoch:04d}.pt"
         )
         for resolution in args.resolutions
     }
@@ -788,7 +822,7 @@ def main() -> None:
                 f"Existing rows for resolution {resolution} use different checkpoints: "
                 f"{wrong_hashes}"
             )
-        model = load_model(resolution, args.epoch, device)
+        model = load_model(resolution, args.epoch, device, args.run_dir_template)
         payload = torch.load(
             ROOT / f"data/circles-{resolution}-n1.pt",
             map_location="cpu", weights_only=True, mmap=True,
@@ -805,7 +839,7 @@ def main() -> None:
         )[:-1]
         for local_index in range(args.samples):
             sample_index = args.sample_offset + local_index
-            if all((resolution, sample_index, method) in completed for method in METHODS):
+            if all((resolution, sample_index, method) in completed for method in methods):
                 print(f"Skipping completed res={resolution} sample={sample_index}", flush=True)
                 continue
             ground_truth = normalize_images(
@@ -833,7 +867,7 @@ def main() -> None:
                 ground_truth.shape, generator=source_generator,
             ).to(device)
 
-            for method in METHODS:
+            for method in methods:
                 key = (resolution, sample_index, method)
                 if key in completed:
                     print(f"Skipping completed {key}", flush=True)
@@ -847,7 +881,7 @@ def main() -> None:
                 iteration_rows.extend(asdict(row) for row in timed_rows)
                 write_csv(samples_path, sample_rows)
                 write_csv(iterations_path, iteration_rows)
-                write_csv(args.out_dir / "summary.csv", summarize(sample_rows))
+                write_csv(args.out_dir / "summary.csv", summarize(sample_rows, methods))
                 completed.add(key)
                 print(
                     f"Completed res={resolution} sample={sample_index} method={method}: "

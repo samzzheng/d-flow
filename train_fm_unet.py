@@ -3,6 +3,8 @@ import argparse
 import json
 import math
 import re
+import signal
+from types import FrameType
 from pathlib import Path
 from datetime import datetime
 
@@ -55,9 +57,20 @@ def normalize_images(images: torch.Tensor) -> torch.Tensor:
 
 
 # ── loss ──────────────────────────────────────────────────────────────────────
-def fm_loss(model, x1, device):
+def sample_t(B: int, device, t_alpha: float = 1.0) -> torch.Tensor:
+    """t_alpha=1 is the original uniform sampler. t_alpha>1 biases t toward 1
+    (t = U^(1/t_alpha), density a*t^(a-1)): more gradient signal at the
+    terminal, edge-forming end of the flow. This deliberately changes the
+    training distribution (no importance-weight correction) -- it is a
+    targeted fine-tune objective, not an unbiased estimator of the uniform
+    flow-matching loss."""
+    u = torch.rand(B, device=device)
+    return u.pow(1.0 / t_alpha) if t_alpha != 1.0 else u
+
+
+def fm_loss(model, x1, device, t_alpha: float = 1.0):
     B  = x1.shape[0]
-    t  = torch.rand(B, device=device)
+    t  = sample_t(B, device, t_alpha)
     x0 = torch.randn_like(x1)
     xt = (1 - t[:, None, None, None]) * x0 + t[:, None, None, None] * x1
     return torch.mean((model(xt, t) - (x1 - x0)) ** 2)
@@ -199,6 +212,7 @@ def save_config(
     arch: dict,
     params: int,
     dataset_metadata: dict | None = None,
+    t_alpha: float = 1.0,
 ) -> None:
     config = {
         "im_size": im_size,
@@ -223,6 +237,7 @@ def save_config(
         "arch": arch,
         "params": params,
         "dataset_metadata": dataset_metadata or {},
+        "t_alpha": t_alpha,
         "started_at": datetime.now().isoformat(timespec="seconds"),
     }
     if n_circles >= 0:
@@ -272,7 +287,8 @@ def default_micro_batch(im_size: int, batch: int) -> int:
 
 
 def batch_fm_loss(model: torch.nn.Module, x1: torch.Tensor, device: str,
-                  micro_batch: int, backward: bool = False) -> torch.Tensor:
+                  micro_batch: int, backward: bool = False,
+                  t_alpha: float = 1.0) -> torch.Tensor:
     total = x1.shape[0]
     # Keep detached logging totals on-device; only synchronize at epoch end.
     # Float64 preserves the previous Python-float accumulation precision.
@@ -280,7 +296,7 @@ def batch_fm_loss(model: torch.nn.Module, x1: torch.Tensor, device: str,
     for start in range(0, total, micro_batch):
         x1_micro = x1[start:start + micro_batch]
         weight = x1_micro.shape[0] / total
-        loss = fm_loss(model, x1_micro, device)
+        loss = fm_loss(model, x1_micro, device, t_alpha)
         if backward:
             (loss * weight).backward()
         total_loss.add_(loss.detach().to(torch.float64) * weight)
@@ -288,13 +304,13 @@ def batch_fm_loss(model: torch.nn.Module, x1: torch.Tensor, device: str,
 
 
 def evaluate_split(model: torch.nn.Module, images: torch.Tensor, device: str,
-                   batch: int, micro_batch: int) -> float:
+                   batch: int, micro_batch: int, t_alpha: float = 1.0) -> float:
     model.eval()
     with torch.no_grad(), autocast_context(device):
         total_loss = sum(
             batch_fm_loss(
                 model, normalize_images(images[i:i + batch].to(device, non_blocking=True)),
-                device, micro_batch, backward=False,
+                device, micro_batch, backward=False, t_alpha=t_alpha,
             )
             for i in range(0, len(images), batch)
         )
@@ -323,6 +339,11 @@ def main():
     pa.add_argument("--micro-batch", type=int, default=None,
                     help="Forward/backward chunk size; defaults by image size")
     pa.add_argument("--compile", action=argparse.BooleanOptionalAction, default=True)
+    pa.add_argument("--gpu-resident", action="store_true", help="Keep compact dataset splits on the selected GPU")
+    pa.add_argument("--channels-last", action="store_true")
+    pa.add_argument("--fused-adam", action="store_true")
+    pa.add_argument("--save-training-state", action="store_true", help="Save complete resumable state every epoch")
+    pa.add_argument("--resume-training-state", type=Path, help="Resume model, EMA, Adam and RNG together")
     pa.add_argument("--resume-checkpoint", type=str, default=None,
                     help="EMA checkpoint to resume from without deleting prior outputs")
     pa.add_argument("--start-epoch", type=int, default=0,
@@ -331,13 +352,30 @@ def main():
                     help="Interrupted log used to recover the earlier loss curve")
     pa.add_argument("--device",  type=str, default=None,
                     help="e.g. cuda:0 or cuda:1 (default: cuda if available)")
+    pa.add_argument("--threads", type=int, default=None,
+                    help="torch intra-op threads (CPU training); also set OMP_NUM_THREADS")
+    pa.add_argument("--ch", type=int, default=ARCH["ch"])
+    pa.add_argument("--ch-mul", type=str, default=",".join(map(str, ARCH["ch_mul"])),
+                    help="comma-separated channel multipliers, one per resolution level")
+    pa.add_argument("--att-channels", type=str, default=None,
+                    help="comma-separated 0/1 per level (default: attention at the "
+                         "deepest level only)")
+    pa.add_argument("--groups", type=int, default=ARCH["groups"])
+    pa.add_argument("--mid-attn", action=argparse.BooleanOptionalAction, default=True,
+                    help="attention in the bottleneck ResBlock; --no-mid-attn is "
+                         "required for a genuinely attention-free model")
+    pa.add_argument("--t-alpha", type=float, default=1.0,
+                    help="bias t sampling toward 1 (t = U^(1/t_alpha)); "
+                         "1.0 = original uniform sampler")
     args = pa.parse_args()
 
     data_path = Path(args.data)
     out_dir   = Path(args.out_dir)
     eval_dir  = out_dir / "eval"
     ckpt_dir  = out_dir / "checkpoints"
-    resume_checkpoint = Path(args.resume_checkpoint) if args.resume_checkpoint else None
+    if args.resume_checkpoint and args.resume_training_state:
+        pa.error("Choose one resume source")
+    resume_checkpoint = args.resume_training_state or (Path(args.resume_checkpoint) if args.resume_checkpoint else None)
     start_epoch = args.start_epoch
     if resume_checkpoint is None:
         if start_epoch != 0 or args.resume_log is not None:
@@ -358,9 +396,31 @@ def main():
     eval_every = max(1, epochs // 10)
 
     device = args.device if args.device else ("cuda" if torch.cuda.is_available() else "cpu")
+    if args.gpu_resident and not device.startswith("cuda"):
+        pa.error("--gpu-resident requires a CUDA device")
+    if device.startswith("cuda"):
+        torch.cuda.set_device(device)
+    if args.threads is not None:
+        torch.set_num_threads(args.threads)
     print(f"Device: {device}  |  data: {data_path}  |  out: {out_dir}")
+    if device == "cpu":
+        print(f"CPU threads: intra-op {torch.get_num_threads()}, "
+              f"inter-op {torch.get_num_interop_threads()}")
+
+    ch_mul = [int(value) for value in args.ch_mul.split(",")]
+    if args.att_channels is not None:
+        att_channels = [int(value) for value in args.att_channels.split(",")]
+    else:
+        att_channels = [0] * (len(ch_mul) - 1) + [1]
+    if len(att_channels) != len(ch_mul):
+        pa.error("--att-channels must have one entry per --ch-mul level")
+    arch = {"ch": args.ch, "ch_mul": ch_mul, "att_channels": att_channels,
+            "groups": args.groups, "mid_attn": args.mid_attn}
+    print(f"Architecture: {arch}")
 
     splits     = load_dataset(data_path)
+    if args.gpu_resident:
+        splits.update({name: splits[name].to(device) for name in ("train", "val", "test")})
     train_data = splits["train"]
     val_data   = splits["val"]
     im_size    = train_data.shape[-1]
@@ -371,7 +431,7 @@ def main():
           f"val: {len(splits['val'])}  test: {len(splits['test'])}")
     print(f"Effective batch: {batch}  |  micro-batch: {micro_batch}")
 
-    loader = data.DataLoader(
+    loader = None if args.gpu_resident else data.DataLoader(
         data.TensorDataset(train_data),
         batch_size=batch,
         shuffle=True,
@@ -382,12 +442,21 @@ def main():
 
     if device.startswith("cuda"):
         torch.backends.cuda.enable_flash_sdp(True)
-    model = Unet(ch=ARCH["ch"], ch_mul=ARCH["ch_mul"],
-                 att_channels=ARCH["att_channels"],
-                 groups=ARCH["groups"], dropout=0.0).to(device)
+    model = Unet(ch=arch["ch"], ch_mul=arch["ch_mul"],
+                 att_channels=arch["att_channels"],
+                 groups=arch["groups"], mid_attn=arch["mid_attn"],
+                 dropout=0.0).to(device)
+    if args.channels_last:
+        model.to(memory_format=torch.channels_last)
     resume_state = None
+    training_state = None
     if resume_checkpoint is not None:
         resume_state = torch.load(resume_checkpoint, map_location=device, weights_only=True)
+        if args.resume_training_state:
+            training_state = resume_state
+            if training_state["epoch"] != start_epoch:
+                pa.error("--start-epoch does not match the training checkpoint")
+            resume_state = training_state["model"]
         model_state = {
             key.removeprefix("module._orig_mod.").removeprefix("module."): value
             for key, value in resume_state.items()
@@ -410,9 +479,10 @@ def main():
             ema_decay=ema_decay,
             sample_steps=sample_steps,
             micro_batch=micro_batch,
-            arch=ARCH,
+            arch=arch,
             params=n_params,
             dataset_metadata=splits.get("metadata", {}),
+            t_alpha=args.t_alpha,
         )
     else:
         config_path = out_dir / "config.json"
@@ -426,7 +496,8 @@ def main():
             "resumed_at": datetime.now().isoformat(timespec="seconds"),
             "micro_batch": micro_batch,
             "device": device,
-            "optimizer_state": "reinitialized; not present in legacy checkpoint",
+            "optimizer_state": "restored" if training_state else "reinitialized; not present in legacy checkpoint",
+            "t_alpha": args.t_alpha,
         })
         with config_path.open("w") as f:
             json.dump(config, f, indent=2)
@@ -436,10 +507,17 @@ def main():
         model = torch.compile(model)
 
     ema_model = AveragedModel(model, multi_avg_fn=get_ema_multi_avg_fn(ema_decay))
-    if resume_state is not None:
+    if training_state is not None:
+        getattr(ema_model.module, "_orig_mod", ema_model.module).load_state_dict(training_state["ema"])
+        ema_model.n_averaged.copy_(training_state["updates"])
+    elif resume_state is not None:
         ema_model.load_state_dict(resume_state)
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd, fused=args.fused_adam)
+    if training_state is not None:
+        optimizer.load_state_dict(training_state["optimizer"])
+        for group in optimizer.param_groups:
+            group.update(lr=lr, fused=args.fused_adam, capturable=False)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, T_max=epochs, eta_min=1e-5
     )
@@ -464,15 +542,35 @@ def main():
     else:
         train_losses, val_losses = [], []
 
+    if training_state is not None:
+        torch.set_rng_state(training_state["cpu_rng"].cpu())
+        if device.startswith("cuda"):
+            torch.cuda.set_rng_state(training_state["cuda_rng"].cpu(), device)
+    stop_requested = False
+
+    def request_stop(signum: int, frame: FrameType | None) -> None:
+        nonlocal stop_requested
+        stop_requested = True
+
+    if args.save_training_state:
+        signal.signal(signal.SIGTERM, request_stop)
+        signal.signal(signal.SIGINT, request_stop)
+
     epoch_bar = tqdm(range(start_epoch + 1, epochs + 1), desc="Training", unit="epoch")
     for epoch in epoch_bar:
         model.train()
         batch_losses = []
-        for (x1,) in tqdm(loader, desc=f"  Epoch {epoch:4d}", leave=False, unit="batch"):
+        epoch_batches = ((train_data[indices],) for indices in torch.randperm(
+            len(train_data), device=device).split(batch)) if args.gpu_resident else loader
+        for (x1,) in tqdm(epoch_batches, total=math.ceil(len(train_data) / batch),
+                         desc=f"  Epoch {epoch:4d}", leave=False, unit="batch"):
             x1 = normalize_images(x1.to(device, non_blocking=True))
-            optimizer.zero_grad()
+            if args.channels_last:
+                x1 = x1.contiguous(memory_format=torch.channels_last)
+            optimizer.zero_grad(set_to_none=True)
             with autocast_context(device):
-                loss = batch_fm_loss(model, x1, device, micro_batch, backward=True)
+                loss = batch_fm_loss(model, x1, device, micro_batch, backward=True,
+                                     t_alpha=args.t_alpha)
             optimizer.step()
             ema_model.update_parameters(model)
             batch_losses.append(loss)
@@ -487,12 +585,31 @@ def main():
         train_losses.append(train_loss)
         val_losses.append(val_loss)
         save_loss_history(train_losses, val_losses, out_dir)
+        if args.save_training_state:
+            state = {"model": getattr(model, "_orig_mod", model).state_dict(),
+                     "ema": getattr(ema_model.module, "_orig_mod", ema_model.module).state_dict(),
+                     "optimizer": optimizer.state_dict(), "updates": ema_model.n_averaged,
+                     "cpu_rng": torch.get_rng_state(), "epoch": epoch}
+            if device.startswith("cuda"):
+                state["cuda_rng"] = torch.cuda.get_rng_state(device)
+            ckpt_dir.mkdir(parents=True, exist_ok=True)
+            temporary = ckpt_dir / "training_state.tmp"
+            torch.save(state, temporary)
+            temporary.replace(ckpt_dir / "training_state.pt")
+            (out_dir / "status.json").write_text(json.dumps({
+                "status": "paused" if stop_requested else "running", "epoch": epoch,
+                "train_loss": train_loss, "val_loss": val_loss,
+                "updated_at": datetime.now().astimezone().isoformat()}, indent=2))
+            if epoch % 10 == 0 or stop_requested:
+                save_loss_plot(train_losses, val_losses, out_dir)
         epoch_bar.set_postfix(train=f"{train_loss:.4f}", val=f"{val_loss:.4f}")
 
         if epoch % eval_every == 0:
             save_eval_grid(ema_model, epoch, device, eval_dir, ckpt_dir,
                            im_size, train_losses, val_losses, out_dir,
                            sample_steps)
+        if stop_requested:
+            return
 
     save_loss_plot(train_losses, val_losses, out_dir)
     test_loss = evaluate_split(
@@ -510,6 +627,8 @@ def main():
     }
     with (out_dir / "run_summary.json").open("w") as f:
         json.dump(summary, f, indent=2)
+    if args.save_training_state:
+        (out_dir / "status.json").write_text(json.dumps(summary, indent=2))
     print(f"Final test FM loss: {test_loss:.6f}")
     print(f"Done. Outputs in {out_dir}/")
 

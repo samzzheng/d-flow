@@ -3,6 +3,17 @@ from typing import Callable, Dict, List, Optional
 import torch
 
 
+def euler_flow(model: torch.nn.Module, z: torch.Tensor, n_steps: int) -> torch.Tensor:
+    """Integrate a flow-matching model from ``t=0`` to ``t=1`` with Euler."""
+    dt = 1.0 / n_steps
+    x = z
+    for index in range(n_steps):
+        time = torch.full((x.shape[0],), index * dt,
+                          device=x.device, dtype=x.dtype)
+        x = x + dt * model(x, time)
+    return x
+
+
 def _euler_step(ode_func: Callable, t: torch.Tensor, x: torch.Tensor, dt: float) -> torch.Tensor:
     return x + dt * ode_func(t, x)
 

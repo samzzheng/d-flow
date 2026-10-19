@@ -1,0 +1,29 @@
+=== [gpu 0] 250:1 start 0 22:54:42 ===
+=== [gpu 0] 250:2 start 0 22:55:44 ===
+=== [gpu 0] 200:1 start 0 09:19:14 ===
+=== [gpu 0] 200:2 start 0 09:19:17 ===
+=== [gpu 0] 200:3 start 0 09:19:20 ===
+=== [gpu 0] 200:4 start 0 09:19:23 ===
+=== [gpu 0] 128:4 start 20 09:26:34 ===
+=== [gpu 0] 128:2 start 80 09:26:40 ===
+=== [gpu 0] 64:4 start 0 09:26:46 ===
+=== [gpu 0] 96:2 start 160 09:26:52 ===
+=== [gpu 0] 96:4 start 160 09:26:58 ===
+=== [gpu 0] 96:2 finished rc=0 11:24:09 ===
+=== [gpu 0] worker done 11:24:09 ===
+=== [gpu 0] 96:4 finished rc=0 11:24:15 ===
+=== [gpu 0] worker done 11:24:15 ===
+=== [gpu 0] 64:4 finished rc=0 13:59:03 ===
+=== [gpu 0] worker done 13:59:03 ===
+=== [gpu 0] 250:1 finished rc=0 16:42:09 ===
+=== [gpu 0] worker done 16:42:09 ===
+=== [gpu 0] 250:2 finished rc=0 16:45:05 ===
+=== [gpu 0] worker done 16:45:05 ===
+=== [gpu 0] 128:2 finished rc=0 16:48:32 ===
+=== [gpu 0] worker done 16:48:32 ===
+=== [gpu 0] 128:4 finished rc=0 18:05:07 ===
+=== [gpu 0] worker done 18:05:07 ===
+=== [gpu 0] 200:1 finished rc=0 22:41:04 ===
+=== [gpu 0] worker done 22:41:04 ===
+=== [gpu 0] 200:2 finished rc=0 22:41:17 ===
+=== [gpu 0] worker done 22:41:17 ===

@@ -1,0 +1,66 @@
+Note that running a local entrypoint in detached mode only keeps the last triggered Modal function alive after the parent process has been killed or disconnected.
+✓ Initialized. View run at 
+https://modal.com/apps/samuelzheng90/main/ap-qgzP9Q0mbh53PwiD8BlePf
+✓ Created objects.
+├── 🔨 Created mount /home/samzheng/d-flow/modal_train_fm.py
+├── 🔨 Created mount /home/samzheng/d-flow/train_fm_unet.py
+├── 🔨 Created mount /home/samzheng/d-flow/sampler
+├── 🔨 Created mount /home/samzheng/d-flow/dataset
+├── 🔨 Created mount /home/samzheng/d-flow/models
+├── 🔨 Created function make_dataset.
+├── 🔨 Created function train.
+└── 🔨 Created function probe_epoch.
+circles-64-n2.pt: exists
+circles-64-n3.pt: exists
+circles-64-n4.pt: exists
+circles-96-n2.pt: exists
+circles-96-n3.pt: exists
+circles-96-n4.pt: exists
+circles-128-n2.pt: exists
+circles-128-n3.pt: exists
+circles-128-n4.pt: exists
+circles-160-n2.pt: exists
+circles-160-n3.pt: exists
+circles-160-n4.pt: exists
+circles-200-n2.pt: exists
+circles-200-n3.pt: exists
+circles-200-n4.pt: exists
+circles-250-n2.pt: exists
+circles-250-n3.pt: exists
+circles-250-n4.pt: exists
+round 0: launched 24 training jobs on A10G
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-64-n1.pt --out-dir /vol/outputs/fm_unet/circles-64-noattn-ch16-b8-e200/n1 --epochs 200 --batch 512 --micro-batch 64 --device cuda:0 --ch 16 --ch-mul 1,2,2,2 --att-channels 0,0,0,0 --no-mid-attn --groups 4
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-64-n2.pt --out-dir /vol/outputs/fm_unet/circles-64-noattn-ch16-b8-e200/n2 --epochs 200 --batch 512 --micro-batch 64 --device cuda:0 --ch 16 --ch-mul 1,2,2,2 --att-channels 0,0,0,0 --no-mid-attn --groups 4
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-64-n3.pt --out-dir /vol/outputs/fm_unet/circles-64-noattn-ch16-b8-e200/n3 --epochs 200 --batch 512 --micro-batch 64 --device cuda:0 --ch 16 --ch-mul 1,2,2,2 --att-channels 0,0,0,0 --no-mid-attn --groups 4
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-64-n4.pt --out-dir /vol/outputs/fm_unet/circles-64-noattn-ch16-b8-e200/n4 --epochs 200 --batch 512 --micro-batch 64 --device cuda:0 --ch 16 --ch-mul 1,2,2,2 --att-channels 0,0,0,0 --no-mid-attn --groups 4
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-96-n1.pt --out-dir /vol/outputs/fm_unet/circles-96-noattn-ch16-b8-e200/n1 --epochs 200 --batch 512 --micro-batch 64 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4+ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-96-n3.pt --out-dir /vol/outputs/fm_unet/circles-96-noattn-ch16-b8-e200/n3 --epochs 200 --batch 512 --micro-batch 64 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
++
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-96-n4.pt --out-dir /vol/outputs/fm_unet/circles-96-noattn-ch16-b8-e200/n4 --epochs 200 --batch 512 --micro-batch 64 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
+ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-96-n2.pt --out-dir /vol/outputs/fm_unet/circles-96-noattn-ch16-b8-e200/n2 --epochs 200 --batch 512 --micro-batch 64 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-128-n1.pt --out-dir /vol/outputs/fm_unet/circles-128-noattn-ch16-b8-e200/n1 --epochs 200 --batch 512 --micro-batch 32 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-128-n2.pt --out-dir /vol/outputs/fm_unet/circles-128-noattn-ch16-b8-e200/n2 --epochs 200 --batch 512 --micro-batch 32 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
+Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-128-n3.pt --out-dir /vol/outputs/fm_unet/circles-128-noattn-ch16-b8-e200/n3 --epochs 200 --batch 512 --micro-batch 32 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+64/n1: complete
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-128-n4.pt --out-dir /vol/outputs/fm_unet/circles-128-noattn-ch16-b8-e200/n4 --epochs 200 --batch 512 --micro-batch 32 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-160-n1.pt --out-dir /vol/outputs/fm_unet/circles-160-noattn-ch16-b8-e200/n1 --epochs 200 --batch 512 --micro-batch 32 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
++ /usr/local/bin/python train_fm_unet.py --data /vol/data/circles-160-n2.pt --out-dir /vol/outputs/fm_unet/circles-160-noattn-ch16-b8-e200/n2 --epochs 200 --batch 512 --micro-batch 32 --device cuda:0 --ch 16 --ch-mul 1,2,2,2,2 --att-channels 0,0,0,0,0 --no-mid-attn --groups 4
+✓ Finished downloading files to local!
+64/n2: complete
+✓ Finished downloading files to local!
+64/n3: complete
+✓ Finished downloading files to local!

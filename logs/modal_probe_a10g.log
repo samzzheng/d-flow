@@ -1,0 +1,15 @@
+✓ Initialized. View run at 
+https://modal.com/apps/samuelzheng90/main/ap-b0dupj6otstZDwurf3wYw4
+✓ Created objects.
+├── 🔨 Created mount /home/samzheng/d-flow/modal_train_fm.py
+├── 🔨 Created mount /home/samzheng/d-flow/sampler
+├── 🔨 Created mount /home/samzheng/d-flow/train_fm_unet.py
+├── 🔨 Created mount /home/samzheng/d-flow/dataset
+├── 🔨 Created mount /home/samzheng/d-flow/models
+├── 🔨 Created function make_dataset.
+├── 🔨 Created function probe_epoch.
+└── 🔨 Created function train.
+A10G: 244 s/epoch at 250px -> 13.6 h per model
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/samuelzheng90/main/ap-b0dupj6otstZDwurf3wYw4
