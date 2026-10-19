@@ -1,38 +1,53 @@
 # Small circles-64 flow-matching pilot
 
-Start with the single-circle dataset and a 22,037-parameter non-attention U-Net
-(channels 4/8/8, GroupNorm with 2 groups), compared with the existing 472,017-parameter
-4-level model. This changes width and depth; it is a capacity pilot, not a
-controlled width-only ablation or a demonstrated minimum model size.
+The active 22,037-parameter model now uses the standard `train_fm_unet.py` trainer
+and the normal FM output layout:
 
-- Existing paired 48,000/1,000/1,000 training/validation/test images at 64².
-- 1,000 full epochs, batch 512 including the final partial batch; AdamW LR 2e-4,
-  weight decay 1e-4, cosine decay to 1e-5; EMA 0.999.
-- Same uniform-time conditional flow-matching objective as `train_fm_unet.py`.
-- BF16 autocast training and FP32 evaluation, TF32 disabled. GPU 1 only.
-- GPU-resident compact uint8 dataset; channels-last tensors; fused AdamW;
-  captured forward/backward/optimizer/EMA step. Graph capture warmup is undone.
-  No per-minibatch scalar transfer or data-loader workers.
-- Full optimizer, EMA, RNG, epoch and history checkpoint every epoch. SIGTERM
-  saves at the end of the current epoch. `--resume` restores the Adam buffers
-  in place so CUDA graph pointers remain valid.
-- Fixed validation noise/time draws shared with the existing epoch-200 baseline.
-  Select the small model's best checkpoint using validation only. Evaluate it
-  once on the held-out test split after training. Compare both models' raw
-  5- and 100-Euler-step samples with identical source seeds; plots display [0,1].
-- Different training budgets are intentional: the small model gets 5× the epochs.
-  FM loss and unconditional samples do not establish inverse-reconstruction
-  accuracy; that requires a subsequent paired CT/MRI test.
-
-Run from the repository root:
-
-```sh
-.venv/bin/python -m experiments.tiny_circles.verify
-.venv/bin/python -m experiments.tiny_circles.train \
-  --out outputs/tiny_circles_20261019/n1_22037_e1000 --epochs 1000
+```
+outputs/fm_unet/circles-64-noattn-ch4-e1000/n1/
+  config.json
+  launch.json
+  train.log
+  loss_history.json
+  loss_curves.png
+  checkpoints/epoch_XXXX.pt
+  checkpoints/training_state.pt
+  eval/epoch_XXXX.png
+  status.json
+  run_summary.json          # created on completion
 ```
 
-The active run uses `experiments.tiny_circles.launch` to resume the previously
-checkpoint-paused reconstruction queue after training exits. Runtime records,
-benchmark evidence, logs, checkpoints and sample grids are under
-`outputs/tiny_circles_20261019/`. Do not launch a duplicate trainer.
+Run/resume with:
+
+```sh
+.venv/bin/python scripts/train_small_circle_models.py --device cuda:1
+```
+
+Do not launch a duplicate trainer. The active supervisor is
+`experiments.tiny_circles.launch`; it restores the previous reconstruction queue
+when training exits.
+
+- Single-circle 64² dataset: 48,000/1,000/1,000 train/validation/test images.
+- Channels 4/8/8, no attention, GroupNorm groups 2; 22,037 parameters versus
+  the existing model's 472,017. This is a width-and-depth capacity pilot.
+- 1,000 epochs, batch/micro-batch 512, AdamW LR 2e-4, weight decay 1e-4,
+  cosine LR decay to 1e-5, EMA .999, uniform-time FM objective, BF16 training.
+- Same standard stochastic validation, loss-curve formatting, and 100-step
+  paired Euler/RK4 evaluation grids as the other FM models.
+- GPU-resident compact data, channels-last and fused AdamW retain efficient
+  training. The standard eager loop replaces the pilot's CUDA-graph loop.
+- Full model/EMA/Adam/RNG checkpoint every epoch; SIGTERM checkpoints at the
+  epoch boundary. Loss curves update every 10 epochs and at sampling checkpoints.
+
+The earlier isolated trainer (`train.py`) and its verification script remain as
+archived pilot/benchmark code. Its first 135 epochs, model, EMA and 12,690 Adam
+updates were migrated without resetting. Epochs 1–135 used fixed-draw FP32
+validation and sample-weighted training means; subsequent epochs use the
+standard trainer's stochastic BF16 validation and batch-averaged training means.
+These estimate the same objective but are not identical measurement protocols;
+the transition is recorded in `config.json`. The original history is preserved.
+
+Migration checks and the two-epoch standard-trainer smoke are under
+`outputs/tiny_circles_20261019/`. Smoke state is separate from production.
+Matching FM loss or unconditional samples does not establish matching inverse
+reconstruction accuracy; a later paired CT/MRI comparison is still needed.

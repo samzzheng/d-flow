@@ -15,11 +15,10 @@ def main() -> None:
     out = root / 'outputs/tiny_circles_20261019'
     queue = json.loads((out / 'paused_queue.json').read_text())
     env = {**os.environ, 'OMP_NUM_THREADS': '4', 'MKL_NUM_THREADS': '4', 'OPENBLAS_NUM_THREADS': '1'}
-    command = [sys.executable, '-u', '-m', 'experiments.tiny_circles.train',
-               '--out', str(out / 'n1_22037_e1000'), '--epochs', '1000']
-    if (out / 'n1_22037_e1000/latest.pt').exists():
-        command.append('--resume')
-    with (out / 'train.log').open('ab') as log:
+    model_out = root / 'outputs/fm_unet/circles-64-noattn-ch4-e1000/n1'
+    command = [sys.executable, '-u', 'scripts/train_small_circle_models.py',
+               '--out-dir', str(model_out), '--epochs', '1000', '--device', 'cuda:1']
+    with (model_out / 'train.log').open('ab') as log:
         child = subprocess.Popen(command, cwd=root, env=env, stdout=log, stderr=subprocess.STDOUT)
 
     def forward_signal(signum: int, frame: Any) -> None:
