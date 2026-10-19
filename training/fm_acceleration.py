@@ -1,15 +1,22 @@
 """Replay native FM microbatch forward/backward without changing the optimizer."""
 from __future__ import annotations
+
 from collections.abc import Callable
+
 import torch
 from torch import Tensor, nn
 
 
 class GraphedMicrobatches:
-    """Capture each encountered batch shape; retain native mixed-precision kernels."""
+    """Replay native BF16 kernels; the caller must retain gradient storage.
 
-    def __init__(self, model: nn.Module, loss_fn: Callable[..., Tensor], device: str,
-                 t_alpha: float = 1.) -> None:
+    Use ``zero_grad(set_to_none=False)`` and keep optimizer/EMA updates outside
+    capture. Graphs are rebuilt lazily after checkpoint resume.
+    """
+
+    def __init__(self, model: nn.Module,
+                 loss_fn: Callable[[nn.Module, Tensor, str, float], Tensor],
+                 device: str, t_alpha: float = 1.0) -> None:
         self.model = model
         self.loss_fn = loss_fn
         self.device = device
@@ -24,6 +31,8 @@ class GraphedMicrobatches:
         for chunk in images.split(micro_batch):
             shape = tuple(chunk.shape)
             if shape not in self.graphs:
+                # Capture warmup must not consume training draws or gradients,
+                # including when a partial chunk introduces a new shape.
                 rng = torch.cuda.get_rng_state(self.device)
                 saved_gradients = [p.grad.clone() for p in self.model.parameters()]
                 static = torch.empty_like(chunk).copy_(chunk)

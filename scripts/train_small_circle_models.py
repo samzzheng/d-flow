@@ -19,7 +19,7 @@ def main() -> None:
     parser.add_argument('--resolution', type=int, choices=(64, 96, 128, 160, 200, 250), default=64)
     parser.add_argument('--n-circles', type=int, choices=(1, 2, 3, 4), default=1)
     parser.add_argument('--micro-batch', type=int, help='Override the calibrated microbatch; effective batch stays 512')
-    parser.add_argument('--epochs', type=int, default=1000)
+    parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--device', default='cuda:1')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
@@ -43,7 +43,8 @@ def main() -> None:
         '--ema-decay', '0.999', '--t-alpha', '1', '--sample-steps', '100',
         '--ch', '4', '--ch-mul', '1,2,2', '--att-channels', '0,0,0', '--groups', '2',
         '--no-mid-attn', '--num-workers', '0', '--threads', '4', '--no-compile',
-        '--gpu-resident', '--channels-last', '--fused-adam', '--save-training-state']
+        '--gpu-resident', '--channels-last', '--fused-adam', '--save-training-state',
+        '--graph-microbatches']
     checkpoint = args.out_dir / 'checkpoints/training_state.pt'
     if checkpoint.exists():
         state = torch.load(checkpoint, weights_only=True, map_location='cpu', mmap=True)

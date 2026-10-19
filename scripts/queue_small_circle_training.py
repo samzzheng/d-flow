@@ -67,7 +67,7 @@ def main() -> None:
                              '--resolution', str(resolution), '--n-circles', str(circles),
                              '--micro-batch', str(micro_batch), '--epochs', str(args.epochs),
                              '--device', 'cuda:1', '--out-dir', str(run)]))
-        paths = ['train_fm_unet.py', 'scripts/train_small_circle_models.py',
+        paths = ['train_fm_unet.py', 'training/fm_acceleration.py', 'scripts/train_small_circle_models.py',
                  'models/unet/default.py', 'models/unet/unet.py', 'sampler/ode_samplers.py']
         manifest = dict(epochs=args.epochs, device='cuda:1', parameters=22037, effective_batch=512,
                         microbatch_profile=profile, jobs=jobs,
