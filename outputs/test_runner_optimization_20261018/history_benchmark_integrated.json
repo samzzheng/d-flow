@@ -1,0 +1,42 @@
+[
+  {
+    "dimension": 4096,
+    "history": 10,
+    "seconds": {
+      "eager": 0.000662619760259986,
+      "replay": 0.00017390692606568338
+    },
+    "capture_seconds": 0.058245452120900154,
+    "bitwise_equal": true
+  },
+  {
+    "dimension": 4096,
+    "history": 100,
+    "seconds": {
+      "eager": 0.0061429874040186405,
+      "replay": 0.0014338732603937387
+    },
+    "capture_seconds": 0.032948893029242754,
+    "bitwise_equal": true
+  },
+  {
+    "dimension": 62500,
+    "history": 10,
+    "seconds": {
+      "eager": 0.0006495027802884579,
+      "replay": 0.00018895261920988559
+    },
+    "capture_seconds": 0.004953675903379917,
+    "bitwise_equal": true
+  },
+  {
+    "dimension": 62500,
+    "history": 100,
+    "seconds": {
+      "eager": 0.006130142454057932,
+      "replay": 0.0017519346624612808
+    },
+    "capture_seconds": 0.02742443699389696,
+    "bitwise_equal": true
+  }
+]

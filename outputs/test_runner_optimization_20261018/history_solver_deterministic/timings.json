@@ -1,0 +1,167 @@
+{
+  "baseline_ref": "5e6af67",
+  "runner_sha256": "954617a7122401dc39af6ecc1397fafd448477a3553c55439fb26b476b45d0a8",
+  "deterministic": true,
+  "settings": {
+    "version": 1,
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200,
+      250
+    ],
+    "circles": [
+      0
+    ],
+    "ct_angles": [
+      10
+    ],
+    "mri_accelerations": [
+      4
+    ],
+    "mri_pattern": "cartesian",
+    "samples": 30,
+    "epoch": 200,
+    "run_template": "outputs/fm_unet/separated-shapes-{resolution}-noattn-ch16-b8-e200",
+    "noise_relative": 0.0,
+    "flow_steps": 5,
+    "seed": 20261007,
+    "source_projection": false,
+    "optimizer": {
+      "lr": 1.0,
+      "history_size": 100,
+      "max_ls": 30,
+      "c1": 0.0001,
+      "step_cap": 0.01,
+      "backtracking": "geometric"
+    },
+    "stopping": {
+      "min_updates": 140,
+      "max_updates": 140,
+      "window": 50,
+      "plateau_relative": 0.001,
+      "failed_searches": 2
+    },
+    "dlr_reuse_previous_v": true,
+    "dlr": {
+      "rank": 8,
+      "trace_probes": 0,
+      "enrichment_probes": 0,
+      "initialization_oversampling": 8,
+      "factor_stride": 1,
+      "zero_terminal_baseline": true,
+      "speed_profile": "fast"
+    },
+    "execution": {
+      "threads": 2,
+      "checkpoint_every": 10,
+      "cudnn_tf32": false,
+      "matmul_tf32": false,
+      "cudnn_benchmark": false,
+      "memory_fraction": 0.96,
+      "dlr_full_step_graphs": true,
+      "dlr_jvp_columns": 6,
+      "dlr_vjp_columns": 4,
+      "dlr_fused_norm": "triton",
+      "dlr_fused_primal": "full",
+      "dlr_specialized_algebra": true,
+      "dflow_checkpointed": false
+    },
+    "scheduling": {
+      "samples_per_worker": 1,
+      "max_workers_per_gpu": 4,
+      "gpu_headroom_mib": 1024,
+      "worker_memory_mib": {
+        "64": 9216,
+        "96": 9216,
+        "128": 9216,
+        "160": 9216,
+        "200": 9216,
+        "250": 9216
+      }
+    },
+    "dataset_label": "separated shapes: 1\u20134 circles/triangles",
+    "dataset_template": "data/separated-shapes-{resolution}.pt"
+  },
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "rows": [
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 12.369039363693446,
+      "operator_calls": 174,
+      "attempts": 140,
+      "history_length": 100,
+      "evaluations": {
+        "forward_objectives": 174,
+        "gradients": 141
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.572079062461853
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 11.975218024104834,
+      "operator_calls": 174,
+      "attempts": 140,
+      "history_length": 100,
+      "evaluations": {
+        "forward_objectives": 174,
+        "gradients": 141
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.572079062461853
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 12.252239282708615,
+      "operator_calls": 174,
+      "attempts": 140,
+      "history_length": 100,
+      "evaluations": {
+        "forward_objectives": 174,
+        "gradients": 141
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.572079062461853,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    }
+  ]
+}

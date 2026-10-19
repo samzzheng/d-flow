@@ -1,0 +1,1189 @@
+{
+  "case": "ct",
+  "source_kind": "initial",
+  "flow_steps": 100,
+  "device": "cpu",
+  "threads": 2,
+  "width": 16,
+  "independent_probes": 24,
+  "refinements": 2,
+  "source_directory": "outputs/five_step_noise005_n124_20261013/production/r64_n1_ct10/sample_015",
+  "dlr_settings": {
+    "rank": 8,
+    "trace_probes": 0,
+    "enrichment_probes": 0,
+    "initialization_oversampling": 8,
+    "factor_stride": 1,
+    "zero_terminal_baseline": true,
+    "speed_profile": "fast"
+  },
+  "source_sha256": "7b08e4b29a292b50777ea1fb8254b94aa65a6d0955a249b4ccc7655b93e142b8",
+  "checkpoint_sha256": "94df4baa4fc92e3a8131f462d77dc57363026c3280207715a9c6dc6063a097db",
+  "basis_initialization": "fresh sketch",
+  "fast_native_terminal_relative_difference": 4.610630526258319e-07,
+  "limitations": [
+    "Selected64px cases, not a model/dataset survey",
+    "Native partial Euler map derivatives; flow time is not optimization iteration",
+    "Stable and energy ranks are effective ranks, not algebraic rank",
+    "Unresolved cutoffs are reported honestly; stochastic tail uncertainty is not a full certification",
+    "Intermediate gradient diagnostics use hypothetical loss on A(x_t)",
+    "A100step trajectory changes the generator; saved optimized sources were optimized using5steps"
+  ],
+  "points": [
+    {
+      "completed_steps": 0,
+      "time": 0.0,
+      "alpha": 1.0,
+      "native_sigma_max_estimate": 1.0,
+      "native_frobenius_squared_estimate": 4096.0,
+      "native_stable_rank_estimate": 4096.0,
+      "native_energy_rank_estimates": {
+        "0.99": 4056,
+        "0.999": 4092
+      },
+      "native_energy_rank_status": {
+        "0.99": "exact identity",
+        "0.999": "exact identity"
+      },
+      "native_top8_energy_fraction_estimate": 0.001953125,
+      "native_top3_triplet_relative_residual": 0.0,
+      "approximation_sigma_max": 1.0,
+      "approximation_stable_rank": 4096.0,
+      "approximation_energy_ranks": {
+        "0.99": 4056,
+        "0.999": 4092
+      },
+      "approximation_top8_energy_fraction": 0.001953125,
+      "full_relative_frobenius_error_estimate": 0.0,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.0,
+        0.0
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.0,
+      "right_top3_containment_error": null,
+      "right_top3_principal_cosines": [],
+      "noise_gradient_norm_ratio": 1.0,
+      "noisy_gradient_relative_error": 0.0,
+      "noisy_gradient_cosine": 1.0000000000000004,
+      "clean_gradient_R": 0.9999999999999952,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 0.0,
+      "spectral_stages": [],
+      "seconds": 0.9058858538046479
+    },
+    {
+      "completed_steps": 10,
+      "time": 0.1,
+      "alpha": 0.8999999999999999,
+      "native_sigma_max_estimate": 1.4131014347076416,
+      "native_frobenius_squared_estimate": 3305.9522897826396,
+      "native_stable_rank_estimate": 1655.5789925651914,
+      "native_energy_rank_estimates": {
+        "0.99": null,
+        "0.999": null
+      },
+      "native_energy_rank_status": {
+        "0.99": "unresolved at budget",
+        "0.999": "unresolved at budget"
+      },
+      "native_top8_energy_fraction_estimate": 0.001979538673772463,
+      "native_top3_triplet_relative_residual": 0.2887618425964552,
+      "approximation_sigma_max": 1.4096032071576614,
+      "approximation_stable_rank": 1670.9266945791671,
+      "approximation_energy_ranks": {
+        "0.99": 4055,
+        "0.999": 4092
+      },
+      "approximation_top8_energy_fraction": 0.0026593904314370148,
+      "full_relative_frobenius_error_estimate": 0.00269791532104477,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.002645597106704573,
+        0.00274923809591905
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.004763348028063774,
+      "right_top3_containment_error": 0.9756890084676998,
+      "right_top3_principal_cosines": [
+        0.330617668628332,
+        0.13795402716218888,
+        0.12551360988395815
+      ],
+      "noise_gradient_norm_ratio": 0.9984514397358345,
+      "noisy_gradient_relative_error": 0.008301344313700585,
+      "noisy_gradient_cosine": 0.9999729168919214,
+      "clean_gradient_R": 1.1378239306571287,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 8.159759150082279e-10,
+      "spectral_stages": [
+        {
+          "refinement": 0,
+          "singular_values": [
+            0.9052553718464103,
+            0.9010122246458172,
+            0.9008482338546931,
+            0.9002213075010835,
+            0.9001240763115282,
+            0.8999717395677663,
+            0.8999270871245111,
+            0.8999231791279053,
+            0.8999205090923179,
+            0.8998957600488086,
+            0.8998437451557447,
+            0.8998101135140215,
+            0.8997763041362894,
+            0.8997572931963388,
+            0.8997130197693153,
+            0.8996769288786681
+          ],
+          "triplet_relative_residuals": [
+            0.12876580217987355,
+            0.037406259601240756,
+            0.030923305131539597,
+            0.011084510210995538,
+            0.009540532567729658,
+            0.005863816094076033,
+            0.005895353899453623,
+            0.005150162592586738,
+            0.006271398462281574,
+            0.005291062322945348,
+            0.005047447856901519,
+            0.005493721640133368,
+            0.004370658705591432,
+            0.005399087426536003,
+            0.0047225616004332015,
+            0.005074278110463729
+          ],
+          "tail_energy_estimate": 3293.017523741495,
+          "tail_energy_standard_error": 15.90105542223648,
+          "energy_rank_estimates": {
+            "0.99": null,
+            "0.999": null
+          }
+        },
+        {
+          "refinement": 1,
+          "singular_values": [
+            0.9302318600345864,
+            0.9026924850172099,
+            0.9018004614504546,
+            0.9003502119260925,
+            0.9002005442931812,
+            0.9000008408370919,
+            0.899956393080545,
+            0.8999537521751002,
+            0.8999451895343138,
+            0.8999201410605971,
+            0.8998651511973964,
+            0.8998361240252637,
+            0.8997941874900236,
+            0.8997820379545964,
+            0.899731974958152,
+            0.8996979803633951
+          ],
+          "triplet_relative_residuals": [
+            0.2887618425964552,
+            0.05784921057314074,
+            0.03958090674151156,
+            0.013155907377179926,
+            0.009318870632385524,
+            0.005661437330156322,
+            0.005852417660588634,
+            0.0057151568453419725,
+            0.004801999033549057,
+            0.005009321817932982,
+            0.004715552466030671,
+            0.005190698268400061,
+            0.004445764472674699,
+            0.004981369760623844,
+            0.004423333085233047,
+            0.004651806182710776
+          ],
+          "tail_energy_estimate": 3292.9305980481768,
+          "tail_energy_standard_error": 15.918577944456768,
+          "energy_rank_estimates": {
+            "0.99": null,
+            "0.999": null
+          }
+        }
+      ],
+      "seconds": 16.87761746905744,
+      "leading_norm_refinement": {
+        "previous_sigma_max_estimate": 0.9302318600345864,
+        "power_sigma_estimate": 1.4131014347076416,
+        "relative_triplet_residual": 8.710286783752963e-05,
+        "iterations": 23,
+        "leading_only": true,
+        "other_spectral_cutoffs_unchanged": true
+      }
+    },
+    {
+      "completed_steps": 25,
+      "time": 0.25,
+      "alpha": 0.7499999999999998,
+      "native_sigma_max_estimate": 7.185121059417725,
+      "native_frobenius_squared_estimate": 2352.374759409164,
+      "native_stable_rank_estimate": 45.56572987801232,
+      "native_energy_rank_estimates": {
+        "0.99": null,
+        "0.999": null
+      },
+      "native_energy_rank_status": {
+        "0.99": "unresolved at budget",
+        "0.999": "unresolved at budget"
+      },
+      "native_top8_energy_fraction_estimate": 0.024041680583868033,
+      "native_top3_triplet_relative_residual": 0.1410418124113442,
+      "approximation_sigma_max": 7.151556234852033,
+      "approximation_stable_rank": 46.1376958235527,
+      "approximation_energy_ranks": {
+        "0.99": 4054,
+        "0.999": 4092
+      },
+      "approximation_top8_energy_fraction": 0.025541766949189266,
+      "full_relative_frobenius_error_estimate": 0.00938835253375082,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.008790474457601415,
+        0.009950371119020033
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.017998147755861282,
+      "right_top3_containment_error": 0.5873284841647947,
+      "right_top3_principal_cosines": [
+        0.9997354986128818,
+        0.857047546807491,
+        0.4807649883808821
+      ],
+      "noise_gradient_norm_ratio": 0.9935097663570208,
+      "noisy_gradient_relative_error": 0.012217479732362308,
+      "noisy_gradient_cosine": 0.9999342858150617,
+      "clean_gradient_R": 2.12339128370395,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 1.1316511879994786e-10,
+      "spectral_stages": [
+        {
+          "refinement": 0,
+          "singular_values": [
+            3.3135812030900325,
+            0.778403836982754,
+            0.757234530492921,
+            0.7533834993809948,
+            0.751368519548971,
+            0.7510841857721695,
+            0.7506674131468296,
+            0.7506332458360994,
+            0.7504782889852889,
+            0.7504218351550542,
+            0.7502818105991447,
+            0.7501638529209943,
+            0.7500231007381745,
+            0.7499782882110253,
+            0.749931804363683,
+            0.7498103123793951
+          ],
+          "triplet_relative_residuals": [
+            1.8738858612111167,
+            0.1262164685791985,
+            0.04699293984131697,
+            0.02488655261680415,
+            0.009871906944540786,
+            0.006908324247017495,
+            0.005228718740022478,
+            0.00536362775392424,
+            0.004510563492304079,
+            0.00473103347477579,
+            0.0032776791115888488,
+            0.0034485843050041883,
+            0.0032606544808155957,
+            0.0029172255809010806,
+            0.003298247514909833,
+            0.003131544401000656
+          ],
+          "tail_energy_estimate": 2318.640928861557,
+          "tail_energy_standard_error": 14.770911139155714,
+          "energy_rank_estimates": {
+            "0.99": null,
+            "0.999": null
+          }
+        },
+        {
+          "refinement": 1,
+          "singular_values": [
+            7.183454002658989,
+            1.1968605606658054,
+            0.8181928278092865,
+            0.7684034536907152,
+            0.7529702048742554,
+            0.7518905235800276,
+            0.751192517841296,
+            0.7510518693225368,
+            0.7507795641453362,
+            0.7506835780161507,
+            0.7504255584150786,
+            0.7503215006087105,
+            0.7501659619312022,
+            0.7501168847617292,
+            0.7500727562468832,
+            0.7499388564316246
+          ],
+          "triplet_relative_residuals": [
+            0.02143240942465714,
+            0.1410418124113442,
+            0.060430894064537395,
+            0.026507797151874183,
+            0.006161783595985325,
+            0.004356232776826655,
+            0.003369840601849794,
+            0.002907808535656393,
+            0.002314451528253443,
+            0.002148527937663033,
+            0.0014885281166406848,
+            0.0015640032960847735,
+            0.001540282650702409,
+            0.0015694950219208267,
+            0.0013697266494511512,
+            0.0013757066116656315
+          ],
+          "tail_energy_estimate": 2291.315958429361,
+          "tail_energy_standard_error": 10.91271408310487,
+          "energy_rank_estimates": {
+            "0.99": null,
+            "0.999": null
+          }
+        }
+      ],
+      "seconds": 41.594923975877464,
+      "leading_norm_refinement": {
+        "previous_sigma_max_estimate": 7.183454002658989,
+        "power_sigma_estimate": 7.185121059417725,
+        "relative_triplet_residual": 2.1044485038146377e-05,
+        "iterations": 5,
+        "leading_only": true,
+        "other_spectral_cutoffs_unchanged": true
+      }
+    },
+    {
+      "completed_steps": 50,
+      "time": 0.5,
+      "alpha": 0.49999999999999956,
+      "native_sigma_max_estimate": 39.92599486850239,
+      "native_frobenius_squared_estimate": 2628.7960520435527,
+      "native_stable_rank_estimate": 1.649093958482827,
+      "native_energy_rank_estimates": {
+        "0.99": null,
+        "0.999": null
+      },
+      "native_energy_rank_status": {
+        "0.99": "unresolved at budget",
+        "0.999": "unresolved at budget"
+      },
+      "native_top8_energy_fraction_estimate": 0.611708711672625,
+      "native_top3_triplet_relative_residual": 0.015298634332533203,
+      "approximation_sigma_max": 39.6449326022091,
+      "approximation_stable_rank": 1.6595337208021423,
+      "approximation_energy_ranks": {
+        "0.99": 3991,
+        "0.999": 4085
+      },
+      "approximation_top8_energy_fraction": 0.6082470965247618,
+      "full_relative_frobenius_error_estimate": 0.02646485582227322,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.02072569156845421,
+        0.031164449239425417
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.027479983866214752,
+      "right_top3_containment_error": 0.13548151263504438,
+      "right_top3_principal_cosines": [
+        0.9998634046600863,
+        0.9942742242649006,
+        0.978073945379936
+      ],
+      "noise_gradient_norm_ratio": 0.9920475481306831,
+      "noisy_gradient_relative_error": 0.019793618363319176,
+      "noisy_gradient_cosine": 0.9998235508020368,
+      "clean_gradient_R": 10.445413993972725,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 3.1581268558482087e-10,
+      "spectral_stages": [
+        {
+          "refinement": 0,
+          "singular_values": [
+            38.855365040149785,
+            1.074684125218678,
+            0.6052423146317903,
+            0.5093393448193214,
+            0.5030158195236354,
+            0.5025598446242262,
+            0.5015147074175096,
+            0.5010929516956242,
+            0.5009067090209157,
+            0.5007212404115352,
+            0.5005114336694401,
+            0.5003364433033358,
+            0.5002671535616301,
+            0.5001603188236593,
+            0.5000384209274947,
+            0.49984433922741917
+          ],
+          "triplet_relative_residuals": [
+            0.23633874393090404,
+            0.06521090517704135,
+            0.026173938964346777,
+            0.004433179299341467,
+            0.0013547161299096737,
+            0.0011986721408340127,
+            0.001036374867548861,
+            0.0006744117488038745,
+            0.00048163690613756946,
+            0.0004974647229498268,
+            0.0005070669294079655,
+            0.0004041765251885469,
+            0.0004500106651091677,
+            0.00044657553406664773,
+            0.0003950864578903485,
+            0.000387223406532014
+          ],
+          "tail_energy_estimate": 1084.8972522078877,
+          "tail_energy_standard_error": 16.214448355441817,
+          "energy_rank_estimates": {
+            "0.99": null,
+            "0.999": null
+          }
+        },
+        {
+          "refinement": 1,
+          "singular_values": [
+            39.92599486850239,
+            3.050634587281212,
+            1.8009682381756493,
+            0.6279505262549745,
+            0.5111716522754797,
+            0.5080308187685209,
+            0.5059857008598583,
+            0.5027791385127759,
+            0.5017061305742313,
+            0.5015166818464082,
+            0.5012630178066291,
+            0.5009971600254619,
+            0.5007772771058466,
+            0.5006808370413953,
+            0.5004924410214486,
+            0.5002826686640922
+          ],
+          "triplet_relative_residuals": [
+            3.944554920068957e-05,
+            0.006073679880724285,
+            0.015298634332533203,
+            0.012598954146944905,
+            0.002563012215512611,
+            0.0019866019825044395,
+            0.0018494452512119763,
+            0.000999609732569545,
+            0.0006515628186400504,
+            0.000599737906978477,
+            0.000561115438445406,
+            0.0005303461227046006,
+            0.0004254452750058353,
+            0.0004229191848691894,
+            0.0003879671746162397,
+            0.0003916556625079734
+          ],
+          "tail_energy_estimate": 1018.7308803929767,
+          "tail_energy_standard_error": 4.864129235630383,
+          "energy_rank_estimates": {
+            "0.99": null,
+            "0.999": null
+          }
+        }
+      ],
+      "seconds": 84.3242418798618
+    },
+    {
+      "completed_steps": 75,
+      "time": 0.75,
+      "alpha": 0.24999999999999933,
+      "native_sigma_max_estimate": 106.57859620739706,
+      "native_frobenius_squared_estimate": 11658.077179206271,
+      "native_stable_rank_estimate": 1.0263297899632287,
+      "native_energy_rank_estimates": {
+        "0.99": null,
+        "0.999": null
+      },
+      "native_energy_rank_status": {
+        "0.99": "unresolved at budget",
+        "0.999": "unresolved at budget"
+      },
+      "native_top8_energy_fraction_estimate": 0.9782043983844378,
+      "native_top3_triplet_relative_residual": 0.0003464193910087299,
+      "approximation_sigma_max": 105.80781715655812,
+      "approximation_stable_rank": 1.0265367204796558,
+      "approximation_energy_ranks": {
+        "0.99": 2256,
+        "0.999": 3911
+      },
+      "approximation_top8_energy_fraction": 0.977775570297818,
+      "full_relative_frobenius_error_estimate": 0.03165855875360141,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.019885359277511252,
+        0.040113603317512646
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.03049532324075699,
+      "right_top3_containment_error": 0.09487999806069387,
+      "right_top3_principal_cosines": [
+        0.999851708642018,
+        0.9973526266249134,
+        0.9892316183371409
+      ],
+      "noise_gradient_norm_ratio": 0.9927633090007016,
+      "noisy_gradient_relative_error": 0.0230719281975219,
+      "noisy_gradient_cosine": 0.9997580951734069,
+      "clean_gradient_R": 12.270429600443267,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 9.179283721009893e-10,
+      "spectral_stages": [
+        {
+          "refinement": 0,
+          "singular_values": [
+            106.4724578920458,
+            4.693657835870345,
+            1.4833787072065598,
+            0.2590455766997101,
+            0.25297763452329136,
+            0.25166990797772343,
+            0.2507842217279973,
+            0.2505357299155799,
+            0.25018017845671486,
+            0.2501120668509792,
+            0.24998372307878433,
+            0.24976768672747013,
+            0.2496674710023993,
+            0.24954535242581657,
+            0.24949034258194872,
+            0.24940102270635583
+          ],
+          "triplet_relative_residuals": [
+            0.0446390609743124,
+            0.03515234868275521,
+            0.023191478359434522,
+            0.0012970072700169673,
+            0.0005729847413028596,
+            0.0003017767791453642,
+            0.0002789136793409597,
+            0.00018463699604971107,
+            0.0001549231197955079,
+            0.00014794879919354138,
+            0.00016918609897874446,
+            0.00012884068487549013,
+            0.00013469199359988264,
+            0.00012963410798831303,
+            0.00013452286738028656,
+            0.00013128877835480332
+          ],
+          "tail_energy_estimate": 287.0370170680183,
+          "tail_energy_standard_error": 5.757684102329141,
+          "energy_rank_estimates": {
+            "0.99": null,
+            "0.999": null
+          }
+        },
+        {
+          "refinement": 1,
+          "singular_values": [
+            106.57859620739706,
+            6.0065615848718705,
+            2.9111278560103777,
+            0.39837506106420945,
+            0.27798052847985066,
+            0.25746219637589973,
+            0.2564112955238813,
+            0.2524816825013085,
+            0.2516961071939423,
+            0.2512578866554272,
+            0.25096818616739847,
+            0.2504981563288003,
+            0.250475011923708,
+            0.25034296901378905,
+            0.25026952153893994,
+            0.25013045141605117
+          ],
+          "triplet_relative_residuals": [
+            2.358995572642596e-06,
+            7.942733316718577e-05,
+            0.0003464193910087299,
+            0.003201688628857173,
+            0.001432184348058211,
+            0.0005574246216823899,
+            0.0005946306925925466,
+            0.0002961118376654619,
+            0.0002533046393969986,
+            0.00019649393101512416,
+            0.00016496100056000458,
+            0.00015018005118746193,
+            0.00014467763353050522,
+            0.00014893029875784965,
+            0.000130530911443686,
+            0.00013747608451916061
+          ],
+          "tail_energy_estimate": 253.5919805788125,
+          "tail_energy_standard_error": 1.1844810308461926,
+          "energy_rank_estimates": {
+            "0.99": null,
+            "0.999": null
+          }
+        }
+      ],
+      "seconds": 128.93601354700513
+    },
+    {
+      "completed_steps": 90,
+      "time": 0.9,
+      "alpha": 0.09999999999999924,
+      "native_sigma_max_estimate": 155.91664899905246,
+      "native_frobenius_squared_estimate": 24435.33318769144,
+      "native_stable_rank_estimate": 1.0051555633566023,
+      "native_energy_rank_estimates": {
+        "0.99": 1,
+        "0.999": null
+      },
+      "native_energy_rank_status": {
+        "0.99": "resolved estimate",
+        "0.999": "unresolved at budget"
+      },
+      "native_top8_energy_fraction_estimate": 0.9983475316762254,
+      "native_top3_triplet_relative_residual": 9.188807598347589e-06,
+      "approximation_sigma_max": 154.78700668810427,
+      "approximation_stable_rank": 1.004959982351073,
+      "approximation_energy_ranks": {
+        "0.99": 1,
+        "0.999": 1687
+      },
+      "approximation_top8_energy_fraction": 0.9983028943360863,
+      "full_relative_frobenius_error_estimate": 0.03167822555182446,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.019378739550611482,
+        0.040391637768900805
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.03138246387243271,
+      "right_top3_containment_error": 0.08130541758948862,
+      "right_top3_principal_cosines": [
+        0.9998409486238508,
+        0.9978633129171521,
+        0.9923496422510358
+      ],
+      "noise_gradient_norm_ratio": 0.9928196050769985,
+      "noisy_gradient_relative_error": 0.024008236591901384,
+      "noisy_gradient_cosine": 0.9997373337347234,
+      "clean_gradient_R": 14.765239832869575,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 1.0841654120753695e-10,
+      "spectral_stages": [
+        {
+          "refinement": 0,
+          "singular_values": [
+            155.90442274555696,
+            8.193213141190947,
+            3.337778275033902,
+            0.10991620863372167,
+            0.10393308681914162,
+            0.10157298444292287,
+            0.10036132099337684,
+            0.10028014525746266,
+            0.10004386701628892,
+            0.09998015357573027,
+            0.09988856952070463,
+            0.0997146900865045,
+            0.09968896118823209,
+            0.09959043266781596,
+            0.09952424649191928,
+            0.09950730946488645
+          ],
+          "triplet_relative_residuals": [
+            0.012437826494691382,
+            0.011991020570082365,
+            0.011227731779255429,
+            0.0006833843457552281,
+            0.0004095935557832651,
+            0.00018839460051153399,
+            0.00010460671359891174,
+            9.281194341117433e-05,
+            8.079468854856578e-05,
+            7.582810208234013e-05,
+            6.933819348342197e-05,
+            6.60238684591721e-05,
+            6.45246281741176e-05,
+            6.072112334879163e-05,
+            5.795172222512284e-05,
+            6.569943378713995e-05
+          ],
+          "tail_energy_estimate": 49.25810144962325,
+          "tail_energy_standard_error": 1.4100936183154238,
+          "energy_rank_estimates": {
+            "0.99": 1,
+            "0.999": null
+          }
+        },
+        {
+          "refinement": 1,
+          "singular_values": [
+            155.91664899905246,
+            8.403821721033204,
+            3.7693006293975513,
+            0.23646259338404607,
+            0.17492174885397,
+            0.11456672485905948,
+            0.10493867280805921,
+            0.10315975332366926,
+            0.10206278909874414,
+            0.10125616590972988,
+            0.10108362173608916,
+            0.10090976943248266,
+            0.1007199264443331,
+            0.10053322877344033,
+            0.1005067164005012,
+            0.10038801651897902
+          ],
+          "triplet_relative_residuals": [
+            2.329990435900352e-06,
+            1.7854345335406316e-06,
+            9.188807598347589e-06,
+            0.000921991229107372,
+            0.0009532979329351077,
+            0.00041942784708830195,
+            0.00024825396165958414,
+            0.00017247016738790945,
+            0.00013358884960244742,
+            9.786962268783536e-05,
+            8.619139168036372e-05,
+            0.00010449354657962147,
+            7.769544307886691e-05,
+            7.119787701694475e-05,
+            7.465789764761192e-05,
+            7.048235509196693e-05
+          ],
+          "tail_energy_estimate": 40.29711298176283,
+          "tail_energy_standard_error": 0.1871696765469862,
+          "energy_rank_estimates": {
+            "0.99": 1,
+            "0.999": null
+          }
+        }
+      ],
+      "seconds": 150.92069017910399
+    },
+    {
+      "completed_steps": 95,
+      "time": 0.95,
+      "alpha": 0.04999999999999925,
+      "native_sigma_max_estimate": 171.57567651983976,
+      "native_frobenius_squared_estimate": 29550.1720977275,
+      "native_stable_rank_estimate": 1.0038031970673362,
+      "native_energy_rank_estimates": {
+        "0.99": 1,
+        "0.999": 2
+      },
+      "native_energy_rank_status": {
+        "0.99": "resolved estimate",
+        "0.999": "resolved estimate"
+      },
+      "native_top8_energy_fraction_estimate": 0.9996615385684671,
+      "native_top3_triplet_relative_residual": 1.4417174536930815e-06,
+      "approximation_sigma_max": 170.3329333255293,
+      "approximation_stable_rank": 1.0035754953401874,
+      "approximation_energy_ranks": {
+        "0.99": 1,
+        "0.999": 2
+      },
+      "approximation_top8_energy_fraction": 0.9996491618858457,
+      "full_relative_frobenius_error_estimate": 0.03163372722096834,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.019293469474233573,
+        0.040362698515189546
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.03160233423113823,
+      "right_top3_containment_error": 0.07930951367557863,
+      "right_top3_principal_cosines": [
+        0.9998356909703019,
+        0.9977924864147807,
+        0.9929102111122481
+      ],
+      "noise_gradient_norm_ratio": 0.9928282919125003,
+      "noisy_gradient_relative_error": 0.024256092824500062,
+      "noisy_gradient_cosine": 0.9997316657368954,
+      "clean_gradient_R": 15.771137158223175,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 8.641210449356505e-10,
+      "spectral_stages": [
+        {
+          "refinement": 0,
+          "singular_values": [
+            171.57286542160642,
+            9.182312437573831,
+            3.969552437601173,
+            0.0640473430474328,
+            0.055830708129703005,
+            0.05242658075491792,
+            0.05051082015715397,
+            0.05036880189071133,
+            0.0502846045555311,
+            0.05007321073154305,
+            0.05001020749638493,
+            0.049966771443116585,
+            0.04984614998600654,
+            0.04975585743266519,
+            0.049668876237638535,
+            0.04963203703117246
+          ],
+          "triplet_relative_residuals": [
+            0.005665236560741237,
+            0.005537603520638173,
+            0.005581418770860653,
+            0.0006002574552018177,
+            0.0003974769221263335,
+            0.00021085937540707918,
+            9.366212996596613e-05,
+            8.101091053672902e-05,
+            6.432326244492987e-05,
+            5.451527168078056e-05,
+            5.637824854613784e-05,
+            5.5178861439841985e-05,
+            4.636216486989907e-05,
+            4.658677397046124e-05,
+            4.7570038674286796e-05,
+            4.25351951485483e-05
+          ],
+          "tail_energy_estimate": 12.463414451004306,
+          "tail_energy_standard_error": 0.38372588246569717,
+          "energy_rank_estimates": {
+            "0.99": 1,
+            "0.999": 2
+          }
+        },
+        {
+          "refinement": 1,
+          "singular_values": [
+            171.57567651983976,
+            9.231341501450798,
+            4.0834484262245505,
+            0.17089056534948388,
+            0.14956163148202156,
+            0.08401457441245266,
+            0.061767893851167696,
+            0.05538936866737325,
+            0.05364218081327253,
+            0.05242408308555328,
+            0.05214113751931413,
+            0.051887611382625105,
+            0.05157442996083516,
+            0.05129598618799432,
+            0.050865369207121286,
+            0.050803560131397744
+          ],
+          "triplet_relative_residuals": [
+            1.4417174536930815e-06,
+            1.8820402103108341e-07,
+            9.268516445848948e-07,
+            0.0003307760556769801,
+            0.000458212415037672,
+            0.0003694527534919063,
+            0.0002882248425615636,
+            0.00016222412294801736,
+            0.00012072562922118719,
+            0.00010110782635396619,
+            9.768902735016913e-05,
+            8.553138503924863e-05,
+            8.260866975785144e-05,
+            7.769545790210707e-05,
+            5.6709828274532133e-05,
+            5.700959488543662e-05
+          ],
+          "tail_energy_estimate": 9.980097272226054,
+          "tail_energy_standard_error": 0.04724337055480466,
+          "energy_rank_estimates": {
+            "0.99": 1,
+            "0.999": 2
+          }
+        }
+      ],
+      "seconds": 157.76080082915723
+    },
+    {
+      "completed_steps": 99,
+      "time": 0.99,
+      "alpha": 0.009999999999999247,
+      "native_sigma_max_estimate": 184.76700068718424,
+      "native_frobenius_squared_estimate": 34256.144699405755,
+      "native_stable_rank_estimate": 1.0034359732450897,
+      "native_energy_rank_estimates": {
+        "0.99": 1,
+        "0.999": 2
+      },
+      "native_energy_rank_status": {
+        "0.99": "resolved estimate",
+        "0.999": "resolved estimate"
+      },
+      "native_top8_energy_fraction_estimate": 0.9999873642273976,
+      "native_top3_triplet_relative_residual": 6.747148153560122e-07,
+      "approximation_sigma_max": 183.4292421876197,
+      "approximation_stable_rank": 1.0031978280503222,
+      "approximation_energy_ranks": {
+        "0.99": 1,
+        "0.999": 2
+      },
+      "approximation_top8_energy_fraction": 0.999987895481307,
+      "full_relative_frobenius_error_estimate": 0.03159191622393942,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.019238856670353542,
+        0.04032325303616273
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.03175833448767662,
+      "right_top3_containment_error": 0.079084669322289,
+      "right_top3_principal_cosines": [
+        0.9998150305217268,
+        0.9976138941502615,
+        0.9931639358759992
+      ],
+      "noise_gradient_norm_ratio": 0.9928287812302927,
+      "noisy_gradient_relative_error": 0.024420235984591077,
+      "noisy_gradient_cosine": 0.9997278842467228,
+      "clean_gradient_R": 16.97838843764931,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 5.575088884106965e-10,
+      "spectral_stages": [
+        {
+          "refinement": 0,
+          "singular_values": [
+            184.7671596686877,
+            9.895662717368028,
+            4.3397332790562775,
+            0.045483568995818985,
+            0.035173090468169126,
+            0.02659609673636233,
+            0.017476884095722164,
+            0.015809948450179728,
+            0.01498414742167767,
+            0.013622176127395394,
+            0.01328822016668574,
+            0.01302290914372701,
+            0.01238079934679648,
+            0.01200453807657316,
+            0.011853681013763457,
+            0.011760062038779039
+          ],
+          "triplet_relative_residuals": [
+            0.0011145078619101047,
+            0.0010835212400254102,
+            0.0011197995808582067,
+            0.00037480653331859706,
+            0.0004459667461302843,
+            0.0003348165428486956,
+            0.00018296218795475533,
+            0.00017499634484885576,
+            0.00013718848088469578,
+            0.00010521196133017492,
+            0.00010609255019505193,
+            9.056554796659408e-05,
+            8.940901890383971e-05,
+            7.613073301250934e-05,
+            7.626575247174472e-05,
+            6.47768473406561e-05
+          ],
+          "tail_energy_estimate": 0.5631761783114982,
+          "tail_energy_standard_error": 0.0172266403028428,
+          "energy_rank_estimates": {
+            "0.99": 1,
+            "0.999": 2
+          }
+        },
+        {
+          "refinement": 1,
+          "singular_values": [
+            184.76700068718424,
+            9.897699600395,
+            4.344664406849809,
+            0.10356485407777774,
+            0.08483172696401549,
+            0.06577303495782955,
+            0.05011427966209422,
+            0.044472365528389686,
+            0.03937816237703313,
+            0.03506390787566402,
+            0.029261234793313405,
+            0.02882822145539366,
+            0.026589090996041054,
+            0.02608266781783795,
+            0.02472613368837455,
+            0.021590377152974318
+          ],
+          "triplet_relative_residuals": [
+            6.747148153560122e-07,
+            1.3844969716863262e-07,
+            3.513582843871986e-08,
+            4.1020065350245896e-05,
+            2.2291075275909062e-05,
+            5.3690926639314565e-05,
+            7.873183919974826e-05,
+            7.670269215621906e-05,
+            7.135497288254854e-05,
+            8.507626413217747e-05,
+            6.354361627062032e-05,
+            8.353386253972857e-05,
+            7.332701309118527e-05,
+            6.829659199793468e-05,
+            7.60669003596252e-05,
+            7.145976812027491e-05
+          ],
+          "tail_energy_estimate": 0.4259206397400783,
+          "tail_energy_standard_error": 0.002372601222919397,
+          "energy_rank_estimates": {
+            "0.99": 1,
+            "0.999": 2
+          }
+        }
+      ],
+      "seconds": 168.08374551986344
+    },
+    {
+      "completed_steps": 100,
+      "time": 1.0,
+      "alpha": 0.0,
+      "native_sigma_max_estimate": 189.44903573994787,
+      "native_frobenius_squared_estimate": 36011.84483378769,
+      "native_stable_rank_estimate": 1.0033687526884738,
+      "native_energy_rank_estimates": {
+        "0.99": 1,
+        "0.999": 2
+      },
+      "native_energy_rank_status": {
+        "0.99": "resolved estimate",
+        "0.999": "resolved estimate"
+      },
+      "native_top8_energy_fraction_estimate": 0.9999993153434849,
+      "native_top3_triplet_relative_residual": 1.1204236909677888e-06,
+      "approximation_sigma_max": 188.07750255348245,
+      "approximation_stable_rank": 1.0031345012363007,
+      "approximation_energy_ranks": {
+        "0.99": 1,
+        "0.999": 2
+      },
+      "approximation_top8_energy_fraction": 1.0,
+      "full_relative_frobenius_error_estimate": 0.024062181048103252,
+      "full_relative_frobenius_error_two_se_interval": [
+        0.024061467624920143,
+        0.024062894450085585
+      ],
+      "measurement_relative_frobenius_error_estimate": 0.03178649768233299,
+      "right_top3_containment_error": 0.07974838671892769,
+      "right_top3_principal_cosines": [
+        0.9997918937660049,
+        0.9975830926870836,
+        0.9930600726038963
+      ],
+      "noise_gradient_norm_ratio": 0.9928311008952052,
+      "noisy_gradient_relative_error": 0.024456933458577485,
+      "noisy_gradient_cosine": 0.9997270306382028,
+      "clean_gradient_R": 17.54967593802712,
+      "gradient_interpretation": "Loss on A(x_t); only t=1 is the actual reconstruction loss",
+      "adjoint_scaled_error": 6.691136528739248e-11,
+      "spectral_stages": [
+        {
+          "refinement": 0,
+          "singular_values": [
+            189.44906951331066,
+            10.07031326628717,
+            4.410217536017696,
+            0.06500054582387572,
+            0.05406895441051804,
+            0.045309638513099534,
+            0.032351185214683054,
+            0.026815876167618356,
+            0.022181905170998786,
+            0.020744950338779412,
+            0.01934506772964172,
+            0.018319238837857507,
+            0.017744866165718597,
+            0.016656143103146503,
+            0.01554457305928527,
+            0.013736881787011266
+          ],
+          "triplet_relative_residuals": [
+            0.0002695201578228814,
+            0.00025734004468131843,
+            0.0002572198155324539,
+            0.0002623630576382266,
+            0.0001551772393004964,
+            0.0001525587221027139,
+            0.00012107787724426926,
+            0.00010537223996982921,
+            0.0001008120270312263,
+            7.916839939979867e-05,
+            6.135057725941063e-05,
+            6.913829846321523e-05,
+            7.198893705536085e-05,
+            5.91143074593779e-05,
+            6.940502930556278e-05,
+            5.5045842379549266e-05
+          ],
+          "tail_energy_estimate": 0.033212592499784734,
+          "tail_energy_standard_error": 0.0019170917651413506,
+          "energy_rank_estimates": {
+            "0.99": 1,
+            "0.999": 2
+          }
+        },
+        {
+          "refinement": 1,
+          "singular_values": [
+            189.44903573994787,
+            10.07044378618852,
+            4.410486117086255,
+            0.08435488999638643,
+            0.060980962381739556,
+            0.054551858997949516,
+            0.04194265890746929,
+            0.035212078479224744,
+            0.032181034142984004,
+            0.02723179446207468,
+            0.026222433760994007,
+            0.023721374089584257,
+            0.022754849459948403,
+            0.02167651288808326,
+            0.02102946540381207,
+            0.01928480137807367
+          ],
+          "triplet_relative_residuals": [
+            1.1204236909677888e-06,
+            2.3426312817794505e-07,
+            1.9579500353643115e-08,
+            1.9456246793944897e-05,
+            1.6812788222322635e-05,
+            2.090209037973643e-05,
+            3.950874384248526e-05,
+            2.8191739376151177e-05,
+            4.981178855308567e-05,
+            4.359176452465986e-05,
+            4.0801328846692435e-05,
+            3.5403303486849725e-05,
+            3.748218594548755e-05,
+            3.1466465006994356e-05,
+            3.8021596079887124e-05,
+            4.7647569388457905e-05
+          ],
+          "tail_energy_estimate": 0.019826438606056183,
+          "tail_energy_standard_error": 0.0006185469203017268,
+          "energy_rank_estimates": {
+            "0.99": 1,
+            "0.999": 2
+          }
+        }
+      ],
+      "seconds": 168.09548421599902,
+      "terminal_frobenius_refinement": {
+        "formula": "||J-B||F^2 = ||J||F^2 + ||S||F^2 - 2<US,JV>; alpha=0",
+        "previous_probe_estimate": 0.03157551887279532,
+        "J_inner_product_B": 35737.46246643952,
+        "B_frobenius_squared": 35483.93054515908,
+        "relative_left_range_loss": 0.0005569771091726401,
+        "relative_right_range_loss": 0.021155659348996474,
+        "relative_within_right_subspace_error": 0.01150867114806832,
+        "uncertainty": "Only the independently probed omitted Frobenius energy remains stochastic; spectral numerical error is separate"
+      }
+    }
+  ]
+}

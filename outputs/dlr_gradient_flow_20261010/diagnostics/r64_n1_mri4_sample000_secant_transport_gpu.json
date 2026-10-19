@@ -1,0 +1,137 @@
+{
+  "run": "/home/samzheng/d-flow/outputs/dlr_gradient_flow_20261010/recon/r64_n1_mri4/sample_000/secant_transport/state.pt",
+  "inputs": "/home/samzheng/d-flow/outputs/ct_mri_sweep_fp32_20261009/r64_n1_mri4/sample_000/inputs.pt",
+  "case": "r64_n1_mri4/sample_000",
+  "mode": "secant_transport",
+  "status": "stalled",
+  "attempts": 75,
+  "factor_age": 3,
+  "device": "cuda:0",
+  "threads": 2,
+  "flow_steps": 100,
+  "native_flow_checkpoint_stride": 10,
+  "dtype": "torch.float32",
+  "torch": "2.11.0+cu129",
+  "state_sha256": "bba74772650fcd0d114c3cfd793d355721d5c408f84fbc82a266af33c3eb2bb4",
+  "inputs_sha256": "b35ab0526c27bbccae13e0f2d8df4b66dc34c549e9c5d96db019ec4b82822160",
+  "checkpoint_sha256": "94df4baa4fc92e3a8131f462d77dc57363026c3280207715a9c6dc6063a097db",
+  "diagnostic_sha256": "a32e6bc1b9f4bc458c7a4f3f1ed7425c420bab84e81a5063fcc0822b0561b221",
+  "factor_source_matches": true,
+  "native_objective": 0.04994501148179076,
+  "saved_gpu_objective": 0.04994501148179076,
+  "native_metrics": {
+    "image_relative_l2": 0.024237744510173798,
+    "measurement_relative_l2_clean": 0.01993304118514061,
+    "measurement_relative_l2_noisy": 0.01993304118514061,
+    "residual_over_noise": null
+  },
+  "saved_gpu_metrics": {
+    "step": 75,
+    "phi": 0.04994501148179076,
+    "source_step_norm": 0.0,
+    "line_search_trials": 29,
+    "elapsed_seconds": 311.5011516159866,
+    "image_relative_l2": 0.024237744510173798,
+    "measurement_relative_l2_clean": 0.01993304118514061,
+    "measurement_relative_l2_noisy": 0.01993304118514061,
+    "residual_over_noise": null
+  },
+  "endpoint_native_vs_saved_gpu": {
+    "gradient_norm": 18.382012856341667,
+    "reference_norm": 18.382012856341667,
+    "absolute_error": 0.0,
+    "relative_error": 0.0,
+    "norm_ratio": 1.0,
+    "cosine": 0.9999999999999994,
+    "inner_product": 337.8983966507102
+  },
+  "saved_factors_vs_exact_native_gradient": {
+    "gradient_norm": 0.10886299825926891,
+    "reference_norm": 0.11061041390955974,
+    "absolute_error": 0.008338629071164443,
+    "relative_error": 0.07538737788272357,
+    "norm_ratio": 0.984202069330293,
+    "cosine": 0.9972395495295571,
+    "inner_product": 0.012008141660227624
+  },
+  "factor_negative_gradient_native_objective_derivative": -0.012008141660227624,
+  "right_subspace_vs_exact_native_gradient": {
+    "gradient_norm": 0.11036359020227504,
+    "reference_norm": 0.11061041390955974,
+    "absolute_error": 0.007385230051151104,
+    "relative_error": 0.0667679451700598,
+    "norm_ratio": 0.9977685310219839,
+    "cosine": 0.9977685310219842,
+    "inner_product": 0.012180122042335702
+  },
+  "raw_vvt_subspace_vs_exact_native_gradient": {
+    "gradient_norm": 0.11036359611386061,
+    "reference_norm": 0.11061041390955974,
+    "absolute_error": 0.007385230127351241,
+    "relative_error": 0.06676794585896542,
+    "norm_ratio": 0.9977685844670924,
+    "cosine": 0.9977685309758858,
+    "inner_product": 0.01218012269419677
+  },
+  "coefficient_vs_projected_gradient": {
+    "gradient_norm": 0.10886299825926891,
+    "reference_norm": 0.11036359020227504,
+    "absolute_error": 0.003871835615116799,
+    "relative_error": 0.03508254495908004,
+    "norm_ratio": 0.9864031974652525,
+    "cosine": 0.999469835497125,
+    "inner_product": 0.0120081416606514
+  },
+  "error_decomposition": {
+    "total_squared": 6.953273478646877e-05,
+    "coefficient_squared": 1.4991111030486882e-05,
+    "missing_subspace_squared": 5.454162290842533e-05,
+    "coefficient_fraction": 0.2155978917918843,
+    "missing_subspace_fraction": 0.7844020960187986,
+    "identity_absolute_defect": 8.475565559172386e-13,
+    "identity_relative_defect": 1.2189317139905953e-08,
+    "left_orthogonality_defect": 4.288612842628936e-07,
+    "right_orthogonality_defect": 4.823106110052322e-07,
+    "projection": "Float64 QR of saved V; same subspace, removes FP32 orthogonality drift"
+  },
+  "cached_gpu_gradient_vs_exact_native_gradient": {
+    "gradient_norm": 0.10886299825926891,
+    "reference_norm": 0.11061041390955974,
+    "absolute_error": 0.008338629071164443,
+    "relative_error": 0.07538737788272357,
+    "norm_ratio": 0.984202069330293,
+    "cosine": 0.9972395495295571,
+    "inner_product": 0.012008141660227624
+  },
+  "cached_gpu_gradient_vs_recomputed_factor_gradient": {
+    "gradient_norm": 0.10886299825926891,
+    "reference_norm": 0.10886299825926891,
+    "absolute_error": 0.0,
+    "relative_error": 0.0,
+    "norm_ratio": 1.0,
+    "cosine": 1.0000000000000002,
+    "inner_product": 0.011851152389997588
+  },
+  "cached_gpu_gradient_vs_factors_at_saved_gpu_endpoint": {
+    "gradient_norm": 0.10886299825926891,
+    "reference_norm": 0.10886299825926891,
+    "absolute_error": 0.0,
+    "relative_error": 0.0,
+    "norm_ratio": 1.0,
+    "cosine": 1.0000000000000002,
+    "inner_product": 0.011851152389997588
+  },
+  "factor_gradient_saved_endpoint_vs_native_endpoint": {
+    "gradient_norm": 0.10886299825926891,
+    "reference_norm": 0.10886299825926891,
+    "absolute_error": 0.0,
+    "relative_error": 0.0,
+    "norm_ratio": 1.0,
+    "cosine": 1.0000000000000002,
+    "inner_product": 0.011851152389997588
+  },
+  "peak_allocated_mib": 172.71728515625,
+  "peak_reserved_mib": 198.0,
+  "elapsed_seconds": 7.997648999793455,
+  "interpretation": "Exact and factor gradients use the same newly computed native Euler endpoint and terminal gradient. The factors were computed on GPU. Cached GPU gradient comparisons can mix numerical backends; endpoint drift limits GPU-stall attribution. Positive cosine is local negative-gradient descent, not guaranteed finite-step progress or descent of the saved L-BFGS direction. No fresh DLR solve was run."
+}

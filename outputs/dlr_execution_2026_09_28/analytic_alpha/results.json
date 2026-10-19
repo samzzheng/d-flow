@@ -1,0 +1,97 @@
+{
+  "protocol": {
+    "device": "cuda:1",
+    "repeats": 5,
+    "iterates": [
+      0,
+      20
+    ],
+    "memory_fraction": 0.2,
+    "out": "/home/samzheng/d-flow/outputs/dlr_execution_2026_09_28/analytic_alpha/results.json",
+    "rank": 8,
+    "steps": 100,
+    "jvp_columns": {
+      "probes4": 12,
+      "analytic": 8
+    },
+    "step_chunks": [
+      6,
+      4
+    ],
+    "gpu_load": "shared with another user's job (contended)"
+  },
+  "accuracy": {
+    "0": {
+      "probes4": {
+        "grad_rel_err": 0.02704041078686714,
+        "cosine": 0.9996503591537476,
+        "image_diff_vs_exact": 0.0004709772183559835
+      },
+      "analytic": {
+        "grad_rel_err": 0.027568424120545387,
+        "cosine": 0.9996470808982849,
+        "image_diff_vs_exact": 0.0004709772183559835
+      }
+    },
+    "20": {
+      "probes4": {
+        "grad_rel_err": 0.36960163712501526,
+        "cosine": 0.9291953444480896,
+        "image_diff_vs_exact": 2.2195510609890334e-05
+      },
+      "analytic": {
+        "grad_rel_err": 0.36380261182785034,
+        "cosine": 0.9314863085746765,
+        "image_diff_vs_exact": 2.2195510609890334e-05
+      }
+    }
+  },
+  "calls": [
+    {
+      "arm": "probes4",
+      "seconds": 3.503461890039034
+    },
+    {
+      "arm": "analytic",
+      "seconds": 3.0121264619519934
+    },
+    {
+      "arm": "analytic",
+      "seconds": 3.013898321078159
+    },
+    {
+      "arm": "probes4",
+      "seconds": 3.509658938040957
+    },
+    {
+      "arm": "analytic",
+      "seconds": 3.0176637748954818
+    },
+    {
+      "arm": "probes4",
+      "seconds": 3.5090187140740454
+    },
+    {
+      "arm": "analytic",
+      "seconds": 3.018258311902173
+    },
+    {
+      "arm": "probes4",
+      "seconds": 3.513036377960816
+    },
+    {
+      "arm": "probes4",
+      "seconds": 3.5139285429613665
+    },
+    {
+      "arm": "analytic",
+      "seconds": 3.0230512029957026
+    }
+  ],
+  "medians": {
+    "probes4": 3.509658938040957,
+    "analytic": 3.0176637748954818
+  },
+  "ratio_analytic_over_probes4": 0.8598168164396909,
+  "peak_reserved_GiB": 4.615234375
+}

@@ -1,0 +1,8 @@
+{
+  "pid": 1965830,
+  "resumed_training_pids": [
+    1892382
+  ],
+  "finished_at": "2026-10-19T12:36:50.071808-04:00",
+  "status": "interrupted_or_failed"
+}

@@ -1,0 +1,649 @@
+{
+  "epochs": 500,
+  "device": "cuda:1",
+  "parameters": 22037,
+  "effective_batch": 512,
+  "microbatch_profile": {
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "effective_batch": 512,
+    "parameters": 22037,
+    "settings": {
+      "parameters": 22037,
+      "ch_mul": [
+        1,
+        2,
+        2
+      ],
+      "precision": "bf16",
+      "tf32": false,
+      "channels_last": true,
+      "fused_adam": true,
+      "gpu_resident": true,
+      "threads": 4
+    },
+    "micro_batches": {
+      "64": 512,
+      "96": 128,
+      "128": 128,
+      "160": 64,
+      "200": 32,
+      "250": 32
+    },
+    "selection_rule": "Lowest peak reserved memory within 2% of the fastest median across the tested candidates",
+    "evidence": "outputs/microbatch_tuning_20261019/results.json",
+    "timing_scope": "Gather and normalize data, forward/backward, AdamW, EMA and loss collection; excludes validation, checkpoint and plotting",
+    "memory_scope": "Peak PyTorch reserved memory including warmup and resident uint8 train/val/test data; excludes CUDA context",
+    "measurements": {
+      "64": {
+        "micro_batch": 512,
+        "median_ms": 33.08306448161602,
+        "peak_reserved_gib": 3.408203125,
+        "peak_allocated_gib": 3.162447929382324
+      },
+      "96": {
+        "micro_batch": 128,
+        "median_ms": 74.35143645852804,
+        "peak_reserved_gib": 1.76953125,
+        "peak_allocated_gib": 1.601590633392334
+      },
+      "128": {
+        "micro_batch": 128,
+        "median_ms": 126.0167087893933,
+        "peak_reserved_gib": 3.02734375,
+        "peak_allocated_gib": 2.8167009353637695
+      },
+      "160": {
+        "micro_batch": 64,
+        "median_ms": 193.92111722845584,
+        "peak_reserved_gib": 3.78125,
+        "peak_allocated_gib": 3.6556100845336914
+      },
+      "200": {
+        "micro_batch": 32,
+        "median_ms": 308.2898906432092,
+        "peak_reserved_gib": 3.927734375,
+        "peak_allocated_gib": 3.840383529663086
+      },
+      "250": {
+        "micro_batch": 32,
+        "median_ms": 491.3066140143201,
+        "peak_reserved_gib": 6.134765625,
+        "peak_allocated_gib": 5.9759521484375
+      }
+    }
+  },
+  "jobs": [
+    {
+      "resolution": 64,
+      "circles": 1,
+      "micro_batch": 512,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n1",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "64",
+        "--n-circles",
+        "1",
+        "--micro-batch",
+        "512",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n1"
+      ]
+    },
+    {
+      "resolution": 64,
+      "circles": 2,
+      "micro_batch": 512,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n2",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "64",
+        "--n-circles",
+        "2",
+        "--micro-batch",
+        "512",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n2"
+      ]
+    },
+    {
+      "resolution": 64,
+      "circles": 3,
+      "micro_batch": 512,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n3",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "64",
+        "--n-circles",
+        "3",
+        "--micro-batch",
+        "512",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n3"
+      ]
+    },
+    {
+      "resolution": 64,
+      "circles": 4,
+      "micro_batch": 512,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n4",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "64",
+        "--n-circles",
+        "4",
+        "--micro-batch",
+        "512",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n4"
+      ]
+    },
+    {
+      "resolution": 96,
+      "circles": 1,
+      "micro_batch": 128,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n1",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "96",
+        "--n-circles",
+        "1",
+        "--micro-batch",
+        "128",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n1"
+      ]
+    },
+    {
+      "resolution": 96,
+      "circles": 2,
+      "micro_batch": 128,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n2",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "96",
+        "--n-circles",
+        "2",
+        "--micro-batch",
+        "128",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n2"
+      ]
+    },
+    {
+      "resolution": 96,
+      "circles": 3,
+      "micro_batch": 128,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n3",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "96",
+        "--n-circles",
+        "3",
+        "--micro-batch",
+        "128",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n3"
+      ]
+    },
+    {
+      "resolution": 96,
+      "circles": 4,
+      "micro_batch": 128,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n4",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "96",
+        "--n-circles",
+        "4",
+        "--micro-batch",
+        "128",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n4"
+      ]
+    },
+    {
+      "resolution": 128,
+      "circles": 1,
+      "micro_batch": 128,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n1",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "128",
+        "--n-circles",
+        "1",
+        "--micro-batch",
+        "128",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n1"
+      ]
+    },
+    {
+      "resolution": 128,
+      "circles": 2,
+      "micro_batch": 128,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n2",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "128",
+        "--n-circles",
+        "2",
+        "--micro-batch",
+        "128",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n2"
+      ]
+    },
+    {
+      "resolution": 128,
+      "circles": 3,
+      "micro_batch": 128,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n3",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "128",
+        "--n-circles",
+        "3",
+        "--micro-batch",
+        "128",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n3"
+      ]
+    },
+    {
+      "resolution": 128,
+      "circles": 4,
+      "micro_batch": 128,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n4",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "128",
+        "--n-circles",
+        "4",
+        "--micro-batch",
+        "128",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n4"
+      ]
+    },
+    {
+      "resolution": 160,
+      "circles": 1,
+      "micro_batch": 64,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n1",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "160",
+        "--n-circles",
+        "1",
+        "--micro-batch",
+        "64",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n1"
+      ]
+    },
+    {
+      "resolution": 160,
+      "circles": 2,
+      "micro_batch": 64,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n2",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "160",
+        "--n-circles",
+        "2",
+        "--micro-batch",
+        "64",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n2"
+      ]
+    },
+    {
+      "resolution": 160,
+      "circles": 3,
+      "micro_batch": 64,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n3",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "160",
+        "--n-circles",
+        "3",
+        "--micro-batch",
+        "64",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n3"
+      ]
+    },
+    {
+      "resolution": 160,
+      "circles": 4,
+      "micro_batch": 64,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n4",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "160",
+        "--n-circles",
+        "4",
+        "--micro-batch",
+        "64",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n4"
+      ]
+    },
+    {
+      "resolution": 200,
+      "circles": 1,
+      "micro_batch": 32,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n1",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "200",
+        "--n-circles",
+        "1",
+        "--micro-batch",
+        "32",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n1"
+      ]
+    },
+    {
+      "resolution": 200,
+      "circles": 2,
+      "micro_batch": 32,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n2",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "200",
+        "--n-circles",
+        "2",
+        "--micro-batch",
+        "32",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n2"
+      ]
+    },
+    {
+      "resolution": 200,
+      "circles": 3,
+      "micro_batch": 32,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n3",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "200",
+        "--n-circles",
+        "3",
+        "--micro-batch",
+        "32",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n3"
+      ]
+    },
+    {
+      "resolution": 200,
+      "circles": 4,
+      "micro_batch": 32,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n4",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "200",
+        "--n-circles",
+        "4",
+        "--micro-batch",
+        "32",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n4"
+      ]
+    },
+    {
+      "resolution": 250,
+      "circles": 1,
+      "micro_batch": 32,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n1",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "250",
+        "--n-circles",
+        "1",
+        "--micro-batch",
+        "32",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n1"
+      ]
+    },
+    {
+      "resolution": 250,
+      "circles": 2,
+      "micro_batch": 32,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n2",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "250",
+        "--n-circles",
+        "2",
+        "--micro-batch",
+        "32",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n2"
+      ]
+    },
+    {
+      "resolution": 250,
+      "circles": 3,
+      "micro_batch": 32,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n3",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "250",
+        "--n-circles",
+        "3",
+        "--micro-batch",
+        "32",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n3"
+      ]
+    },
+    {
+      "resolution": 250,
+      "circles": 4,
+      "micro_batch": 32,
+      "run": "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n4",
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "scripts/train_small_circle_models.py",
+        "--resolution",
+        "250",
+        "--n-circles",
+        "4",
+        "--micro-batch",
+        "32",
+        "--epochs",
+        "500",
+        "--device",
+        "cuda:1",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n4"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "train_fm_unet.py": "36004aba8767f63621a2d0fcde65713ec3f20fb775e9e47ba111462300c17876",
+    "scripts/train_small_circle_models.py": "6f0d325bc76f886883172462a5e905e5d73a7698518508a54f593538cf7e4c2c",
+    "models/unet/default.py": "d77a723293c19108c865049c3b94b4b7ac151efbd91b899b7c6c782559c4f64c",
+    "models/unet/unet.py": "fb9d630e0b592c4b79309303854d5033aa600240ca7f39933eb2bba94b4958cc",
+    "sampler/ode_samplers.py": "7738267d43ed8dfd7b3b3fcb4b3d677fb8c3f163d298f744b3e5a951724e6594"
+  },
+  "budget_change": {
+    "from": 1000,
+    "to": 500,
+    "at": "2026-10-19T15:51:21.497759-04:00",
+    "preserved_runs": [
+      {
+        "from": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e1000-mbtuned-20261019/n1",
+        "to": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n1",
+        "epoch": 35,
+        "updates": 3290
+      }
+    ]
+  }
+}

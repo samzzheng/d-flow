@@ -1,0 +1,82 @@
+{
+  "protocol": {
+    "device": "cuda:1",
+    "memory_fraction": 0.14,
+    "resolution": 250,
+    "non_attention": true,
+    "rank": 8,
+    "trace_probes": 4,
+    "enrichment_probes": 0,
+    "flow_steps": 100,
+    "terminal_alpha": 0,
+    "source": "saved exact CPU sample0 step20",
+    "seed": 0,
+    "timing": "complete fresh DLR sensitivity solve and terminal/source gradient, excludes Armijo",
+    "gpu_is_shared": true,
+    "initial_product_chunks": {
+      "A": 20,
+      "AT": 16
+    },
+    "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+    "torch": "2.11.0+cu129",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "cudnn_tf32": true,
+    "matmul_tf32": false
+  },
+  "calls": [
+    {
+      "oversampling": 8,
+      "warmup": true,
+      "seconds": 4.804581681033596,
+      "gradient_norm": 8.761588096618652,
+      "peak_allocated_MiB": 1185.32470703125,
+      "peak_reserved_MiB": 3754.0
+    },
+    {
+      "oversampling": 32,
+      "warmup": true,
+      "seconds": 3.496421124029439,
+      "gradient_norm": 8.848840713500977,
+      "peak_allocated_MiB": 1185.32470703125,
+      "peak_reserved_MiB": 4628.0
+    },
+    {
+      "oversampling": 8,
+      "warmup": false,
+      "seconds": 3.1555729719693772,
+      "gradient_norm": 8.76134204864502,
+      "peak_allocated_MiB": 1185.32470703125,
+      "peak_reserved_MiB": 4628.0
+    },
+    {
+      "oversampling": 32,
+      "warmup": false,
+      "seconds": 3.2400572350015864,
+      "gradient_norm": 8.849332809448242,
+      "peak_allocated_MiB": 1185.32470703125,
+      "peak_reserved_MiB": 4628.0
+    },
+    {
+      "oversampling": 32,
+      "warmup": false,
+      "seconds": 3.208549344970379,
+      "gradient_norm": 8.849289894104004,
+      "peak_allocated_MiB": 1185.32470703125,
+      "peak_reserved_MiB": 4628.0
+    },
+    {
+      "oversampling": 8,
+      "warmup": false,
+      "seconds": 3.167173644003924,
+      "gradient_norm": 8.761495590209961,
+      "peak_allocated_MiB": 1185.32470703125,
+      "peak_reserved_MiB": 4628.0
+    }
+  ],
+  "status": "complete",
+  "medians": {
+    "8": 3.1613733079866506,
+    "32": 3.2243032899859827
+  },
+  "total_seconds": 21.361696574022062
+}

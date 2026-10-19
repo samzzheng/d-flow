@@ -1,0 +1,2 @@
+resolution,dimension,algorithm,seconds_per_iteration_mean,seconds_per_iteration_median,peak_allocated_gib,peak_reserved_gib,setup_peak_allocated_gib,iteration_peak_allocated_gib,persistent_allocated_gib,warmup_seconds,checkpointed,terminal_loss
+250,62500,D-Flow,5.937275358786185,5.9614703599363565,2.3102574348449707,2.6953125,2.3102574348449707,2.310081958770752,0.029125690460205078,6.872469683177769,True,121.26679992675781

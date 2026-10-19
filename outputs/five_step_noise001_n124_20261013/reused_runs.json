@@ -1,0 +1,12 @@
+{
+  "source": "/home/samzheng/d-flow/outputs/five_step_noise001_20261011",
+  "source_manifest_sha256": "7a9aa9932f8109b2348ea5940861427cdbe004d751a58b0755c2c77f62f2fe03",
+  "settings_differences": [
+    "circles",
+    "resolutions",
+    "scheduling"
+  ],
+  "completed_cases_validated_now": 180,
+  "eventual_reused_cases": 180,
+  "mechanism": "Linked original n1 acquisition directories. Original checkpoints/protocol hashes retained; dependency requires original10% run to finish before new admission."
+}

@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "device": "cuda:0",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "torch": "2.11.0+cu129",
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200
+    ],
+    "single_sample": true,
+    "flow_steps": 100,
+    "rank": 8,
+    "trace_probes": 32,
+    "initialization_oversampling": 8,
+    "enrichment_probes": 4,
+    "factor_stride": 1,
+    "angles": 15,
+    "warmup_iterations": 1,
+    "timed_iterations": 3,
+    "dlr_cuda_graphs": true,
+    "dlr_attention_mode": "chunked",
+    "allow_tf32_matmul": false,
+    "allow_tf32_cudnn": true
+  },
+  "rows": [
+    {
+      "resolution": 64,
+      "dimension": 4096,
+      "algorithm": "D-Flow",
+      "warmup_seconds": 1.801671128720045,
+      "seconds_per_iteration_mean": 1.2769477864106495,
+      "seconds_per_iteration_median": 1.2166857747361064,
+      "iteration_seconds": [
+        1.4394087987020612,
+        1.2166857747361064,
+        1.1747487857937813
+      ],
+      "peak_allocated_gib": 4.8726396560668945,
+      "peak_reserved_gib": 4.9375,
+      "setup_peak_allocated_gib": 4.863849639892578,
+      "iteration_peak_allocated_gib": 4.8726396560668945,
+      "persistent_allocated_gib": 0.02704906463623047,
+      "persistent_reserved_gib": 0.052734375,
+      "terminal_loss": 21.195335388183594,
+      "checkpointed": false,
+      "final_source_norm": 65.35060119628906
+    },
+    {
+      "resolution": 64,
+      "dimension": 4096,
+      "algorithm": "DLR-D-Flow",
+      "warmup_seconds": 2.564026433043182,
+      "seconds_per_iteration_mean": 2.1594162518158555,
+      "seconds_per_iteration_median": 2.160300967283547,
+      "iteration_seconds": [
+        2.1559267891570926,
+        2.160300967283547,
+        2.162020999006927
+      ],
+      "peak_allocated_gib": 0.41373252868652344,
+      "peak_reserved_gib": 1.568359375,
+      "setup_peak_allocated_gib": 0.41373252868652344,
+      "iteration_peak_allocated_gib": 0.07510995864868164,
+      "persistent_allocated_gib": 0.06605195999145508,
+      "persistent_reserved_gib": 1.564453125,
+      "terminal_loss": 21.30907440185547,
+      "cuda_graphs": true,
+      "hand_jvp": true,
+      "hand_vjp": true,
+      "attention_mode": "chunked",
+      "final_source_norm": 65.29034423828125
+    },
+    {
+      "resolution": 96,
+      "dimension": 9216,
+      "algorithm": "D-Flow",
+      "warmup_seconds": 1.5519373286515474,
+      "seconds_per_iteration_mean": 1.2866011234000325,
+      "seconds_per_iteration_median": 1.1962403077632189,
+      "iteration_seconds": [
+        1.4773484971374273,
+        1.1962403077632189,
+        1.1862145652994514
+      ],
+      "peak_allocated_gib": 12.288633823394775,
+      "peak_reserved_gib": 12.876953125,
+      "setup_peak_allocated_gib": 12.288632869720459,
+      "iteration_peak_allocated_gib": 12.288633823394775,
+      "persistent_allocated_gib": 0.0627908706665039,
+      "persistent_reserved_gib": 0.138671875,
+      "terminal_loss": 32.16895294189453,
+      "checkpointed": false,
+      "final_source_norm": 101.88827514648438
+    },
+    {
+      "resolution": 96,
+      "dimension": 9216,
+      "algorithm": "DLR-D-Flow",
+      "warmup_seconds": 6.779142517596483,
+      "seconds_per_iteration_mean": 6.3847953012834,
+      "seconds_per_iteration_median": 6.37646085396409,
+      "iteration_seconds": [
+        6.376250707544386,
+        6.37646085396409,
+        6.401674342341721
+      ],
+      "peak_allocated_gib": 0.8899078369140625,
+      "peak_reserved_gib": 3.24609375,
+      "setup_peak_allocated_gib": 0.8899078369140625,
+      "iteration_peak_allocated_gib": 0.11554384231567383,
+      "persistent_allocated_gib": 0.09746026992797852,
+      "persistent_reserved_gib": 3.240234375,
+      "terminal_loss": 33.0848503112793,
+      "cuda_graphs": true,
+      "hand_jvp": true,
+      "hand_vjp": true,
+      "attention_mode": "chunked",
+      "final_source_norm": 99.37008666992188
+    },
+    {
+      "resolution": 128,
+      "dimension": 16384,
+      "algorithm": "D-Flow",
+      "warmup_seconds": 1.665210329927504,
+      "seconds_per_iteration_mean": 1.3240291743228834,
+      "seconds_per_iteration_median": 1.2027845960110426,
+      "iteration_seconds": [
+        1.58679352235049,
+        1.2027845960110426,
+        1.1825094046071172
+      ],
+      "peak_allocated_gib": 25.752506256103516,
+      "peak_reserved_gib": 26.642578125,
+      "setup_peak_allocated_gib": 25.7039213180542,
+      "iteration_peak_allocated_gib": 25.752506256103516,
+      "persistent_allocated_gib": 0.08965921401977539,
+      "persistent_reserved_gib": 0.203125,
+      "terminal_loss": 57.01732635498047,
+      "checkpointed": false,
+      "final_source_norm": 128.232421875
+    },
+    {
+      "resolution": 128,
+      "dimension": 16384,
+      "algorithm": "DLR-D-Flow",
+      "warmup_seconds": 16.283074230886996,
+      "seconds_per_iteration_mean": 15.589699434737364,
+      "seconds_per_iteration_median": 15.58994061499834,
+      "iteration_seconds": [
+        15.526089866645634,
+        15.58994061499834,
+        15.653067822568119
+      ],
+      "peak_allocated_gib": 1.5524983406066895,
+      "peak_reserved_gib": 5.791015625,
+      "setup_peak_allocated_gib": 1.5524983406066895,
+      "iteration_peak_allocated_gib": 0.15892982482910156,
+      "persistent_allocated_gib": 0.13031005859375,
+      "persistent_reserved_gib": 5.662109375,
+      "terminal_loss": 53.58342742919922,
+      "cuda_graphs": true,
+      "hand_jvp": true,
+      "hand_vjp": true,
+      "attention_mode": "chunked",
+      "final_source_norm": 128.447998046875
+    }
+  ]
+}

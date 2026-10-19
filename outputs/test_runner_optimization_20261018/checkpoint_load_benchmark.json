@@ -1,0 +1,8 @@
+{
+  "checkpoint": "outputs/separated_shapes_noiseless_20261016/production/r64_shapes_ct10/sample_000/d_flow.pt",
+  "file_bytes": 3497739,
+  "median_seconds": {
+    "False": 0.02753792703151703,
+    "True": 0.025492554996162653
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "resolution": 250,
+  "micro_batch": 32,
+  "compiled": false,
+  "graphed": true,
+  "startup_seconds": 8.652309020981193,
+  "round_seconds": [
+    0.47786092228488997,
+    0.4785796343930997,
+    0.4787634388776496
+  ],
+  "median_seconds": 0.4785796343930997,
+  "peak_reserved_mib": 3454.0,
+  "loss": 1.2419835925102234
+}

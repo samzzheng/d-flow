@@ -1,0 +1,242 @@
+{
+  "baseline_ref": "5e6af67",
+  "runner_sha256": "954617a7122401dc39af6ecc1397fafd448477a3553c55439fb26b476b45d0a8",
+  "settings": {
+    "version": 1,
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200,
+      250
+    ],
+    "circles": [
+      0
+    ],
+    "ct_angles": [
+      10
+    ],
+    "mri_accelerations": [
+      4
+    ],
+    "mri_pattern": "cartesian",
+    "samples": 30,
+    "epoch": 200,
+    "run_template": "outputs/fm_unet/separated-shapes-{resolution}-noattn-ch16-b8-e200",
+    "noise_relative": 0.0,
+    "flow_steps": 5,
+    "seed": 20261007,
+    "source_projection": false,
+    "optimizer": {
+      "lr": 1.0,
+      "history_size": 100,
+      "max_ls": 30,
+      "c1": 0.0001,
+      "step_cap": 0.01,
+      "backtracking": "geometric"
+    },
+    "stopping": {
+      "min_updates": 120,
+      "max_updates": 120,
+      "window": 50,
+      "plateau_relative": 0.001,
+      "failed_searches": 2
+    },
+    "dlr_reuse_previous_v": true,
+    "dlr": {
+      "rank": 8,
+      "trace_probes": 0,
+      "enrichment_probes": 0,
+      "initialization_oversampling": 8,
+      "factor_stride": 1,
+      "zero_terminal_baseline": true,
+      "speed_profile": "fast"
+    },
+    "execution": {
+      "threads": 2,
+      "checkpoint_every": 10,
+      "cudnn_tf32": false,
+      "matmul_tf32": false,
+      "cudnn_benchmark": false,
+      "memory_fraction": 0.96,
+      "dlr_full_step_graphs": true,
+      "dlr_jvp_columns": 6,
+      "dlr_vjp_columns": 4,
+      "dlr_fused_norm": "triton",
+      "dlr_fused_primal": "full",
+      "dlr_specialized_algebra": true,
+      "dflow_checkpointed": false
+    },
+    "scheduling": {
+      "samples_per_worker": 1,
+      "max_workers_per_gpu": 4,
+      "gpu_headroom_mib": 1024,
+      "worker_memory_mib": {
+        "64": 9216,
+        "96": 9216,
+        "128": 9216,
+        "160": 9216,
+        "200": 9216,
+        "250": 9216
+      }
+    },
+    "dataset_label": "separated shapes: 1\u20134 circles/triangles",
+    "dataset_template": "data/separated-shapes-{resolution}.pt"
+  },
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "rows": [
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 7.691654583904892,
+      "operator_calls": 144,
+      "attempts": 120,
+      "history_length": 100,
+      "evaluations": {
+        "forward_objectives": 144,
+        "gradients": 121
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.6211245059967041
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 7.592934655956924,
+      "operator_calls": 144,
+      "attempts": 120,
+      "history_length": 100,
+      "evaluations": {
+        "forward_objectives": 144,
+        "gradients": 121
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.7649778723716736
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 7.632062662858516,
+      "operator_calls": 141,
+      "attempts": 120,
+      "history_length": 100,
+      "evaluations": {
+        "forward_objectives": 141,
+        "gradients": 121
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.759283721446991,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 0.2089816927909851,
+            "baseline_repeat_relative_difference": 0.1360597163438797,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.5835992097854614,
+            "baseline_repeat_relative_difference": 0.5575291514396667,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.5383089184761047,
+            "baseline_repeat_relative_difference": 0.5315529704093933,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": false
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 7.389648477081209,
+      "operator_calls": 133,
+      "attempts": 120,
+      "history_length": 99,
+      "evaluations": {
+        "forward_objectives": 133,
+        "gradients": 121
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.6234393119812012
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 7.667830594815314,
+      "operator_calls": 145,
+      "attempts": 120,
+      "history_length": 98,
+      "evaluations": {
+        "forward_objectives": 145,
+        "gradients": 121
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.6324209570884705
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 7.8477105749771,
+      "operator_calls": 147,
+      "attempts": 120,
+      "history_length": 95,
+      "evaluations": {
+        "forward_objectives": 147,
+        "gradients": 121
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.5912054181098938,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 0.18774640560150146,
+            "baseline_repeat_relative_difference": 0.23514574766159058,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.35937121510505676,
+            "baseline_repeat_relative_difference": 0.29340872168540955,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.29771772027015686,
+            "baseline_repeat_relative_difference": 0.24414315819740295,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": false,
+        "same_status": true,
+        "same_line_search_trials": false
+      }
+    }
+  ]
+}

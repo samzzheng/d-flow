@@ -1,0 +1,74 @@
+{
+  "protocol": {
+    "device": "cuda:1",
+    "mode": "flow",
+    "method": "dlr",
+    "memory_format": "channels-last",
+    "cudnn_benchmark": false,
+    "checkpoint_blocks": false,
+    "resolution": 250,
+    "steps": 100,
+    "repeats": 2,
+    "threads": 4,
+    "memory_fraction": 0.14,
+    "max_seconds": 45,
+    "out": "outputs/dlr_execution_2026_09_28/layout_channels_last.json",
+    "torch": "2.11.0+cu129",
+    "non_attention": true,
+    "epoch": 100,
+    "seed": 0,
+    "timing": "one warmup excluded; no Armijo or optimization",
+    "peak_memory": "absolute allocator peak including model and graph capture; fresh process per policy",
+    "model": "outputs/fm_unet/circles-250-noattn-ch16-b8/n1",
+    "cudnn_tf32": true,
+    "matmul_tf32": false,
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "source": "saved exact CPU sample0 step20",
+    "rank": 8,
+    "trace_probes": 4,
+    "enrichment_probes": 0,
+    "initialization_oversampling": 8,
+    "terminal_alpha": 0.0,
+    "factor_stride": 1,
+    "full_step_cuda_graphs": true,
+    "initial_product_chunks": [
+      20,
+      16
+    ]
+  },
+  "calls": [
+    {
+      "warmup": true,
+      "seconds": 8.165825978969224,
+      "allocated_MiB": 210.14501953125,
+      "reserved_MiB": 4296.0,
+      "peak_allocated_MiB": 1261.1220703125,
+      "peak_reserved_MiB": 4296.0
+    },
+    {
+      "warmup": false,
+      "seconds": 6.864149188972078,
+      "allocated_MiB": 210.14501953125,
+      "reserved_MiB": 4298.0,
+      "peak_allocated_MiB": 236.45556640625,
+      "peak_reserved_MiB": 4298.0
+    },
+    {
+      "warmup": false,
+      "seconds": 6.869170975056477,
+      "allocated_MiB": 210.14501953125,
+      "reserved_MiB": 4298.0,
+      "peak_allocated_MiB": 236.45556640625,
+      "peak_reserved_MiB": 4298.0
+    }
+  ],
+  "status": "complete",
+  "capture_memory": {
+    "allocated_MiB": 210.14501953125,
+    "reserved_MiB": 4296.0,
+    "peak_allocated_MiB": 1261.1220703125,
+    "peak_reserved_MiB": 4296.0
+  },
+  "median_seconds": 6.866660082014278,
+  "total_seconds": 22.22421914897859
+}

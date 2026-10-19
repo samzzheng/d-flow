@@ -1,0 +1,48 @@
+{
+  "metadata": {
+    "device": "cuda:1",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "torch": "2.11.0+cu129",
+    "resolutions": [
+      250
+    ],
+    "single_sample": true,
+    "flow_steps": 100,
+    "rank": 8,
+    "trace_probes": 32,
+    "initialization_oversampling": 8,
+    "enrichment_probes": 4,
+    "factor_stride": 1,
+    "angles": 15,
+    "warmup_iterations": 1,
+    "timed_iterations": 3,
+    "dlr_cuda_graphs": true,
+    "dlr_attention_mode": "chunked",
+    "allow_tf32_matmul": false,
+    "allow_tf32_cudnn": true
+  },
+  "rows": [
+    {
+      "resolution": 250,
+      "dimension": 62500,
+      "algorithm": "D-Flow",
+      "warmup_seconds": 6.872469683177769,
+      "seconds_per_iteration_mean": 5.937275358786185,
+      "seconds_per_iteration_median": 5.9614703599363565,
+      "iteration_seconds": [
+        5.866081928834319,
+        5.9614703599363565,
+        5.984273787587881
+      ],
+      "peak_allocated_gib": 2.3102574348449707,
+      "peak_reserved_gib": 2.6953125,
+      "setup_peak_allocated_gib": 2.3102574348449707,
+      "iteration_peak_allocated_gib": 2.310081958770752,
+      "persistent_allocated_gib": 0.029125690460205078,
+      "persistent_reserved_gib": 0.046875,
+      "terminal_loss": 121.26679992675781,
+      "checkpointed": true,
+      "final_source_norm": 253.63790893554688
+    }
+  ]
+}

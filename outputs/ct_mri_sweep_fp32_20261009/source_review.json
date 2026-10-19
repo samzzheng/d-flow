@@ -1,0 +1,20 @@
+{
+  "created_at": "2026-10-09T10:28:31.974532-04:00",
+  "manifest_sha256": "01ce9cfbbd0b2396a52e251032d6eea1056f4f0152d275084c1f31d186791e6c",
+  "commit": "faa3e25",
+  "scope": "Fixed residual heatmap scales only (CT 0..1; MRI 0..25), plus explicit reviewed-source validation in queue/worker. No algorithm, optimizer, data, measurement, precision or checkpoint changes.",
+  "changes": {
+    "experiments/ct_mri_sweep/queue.py": {
+      "before": "dba8db03235f3c60ce550eedd6afc83d15c585f667bdee96723183cec22fdae5",
+      "after": "312181c5372a5c4b890354b7b83118e8a6ad312827c0809aa3cb818bec4a862d"
+    },
+    "experiments/ct_mri_sweep/run.py": {
+      "before": "f474c34696d74bfdc1ef4bb0c4bcde8739bfd55c09cc25a1f64e9a4a31046e60",
+      "after": "b014b2aa4e451f855c17f04627d808938e99f0c4665e23dc481d1c0ceccf3c58"
+    },
+    "scripts/reconstruction_figures.py": {
+      "before": "45ffa2a24cfbfe17085bc3f1d5a94b76ad3189dd35ad9a213ad8b87d54042f50",
+      "after": "95c5ccf21ae6ea16acf997c487140f4fe29fbe5edf2d8636ba96f44491b22dd3"
+    }
+  }
+}

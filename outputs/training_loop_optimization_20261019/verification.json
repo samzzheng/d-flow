@@ -1,0 +1,60 @@
+{
+  "correctness": "passed",
+  "updates": 4,
+  "max_loss_difference": 0.0,
+  "parameters_ema_adam": "bitwise equal",
+  "timings": [
+    {
+      "resolution": 64,
+      "batch": 512,
+      "micro_batch": 512,
+      "old_ms": 69.5195154985413,
+      "new_ms": 66.87027340133984,
+      "old_rounds_ms": [
+        67.10468558594584,
+        69.5195154985413,
+        70.80382492858917
+      ],
+      "new_rounds_ms": [
+        66.66817985630284,
+        66.87027340133984,
+        66.98977842461318
+      ]
+    },
+    {
+      "resolution": 64,
+      "batch": 512,
+      "micro_batch": 128,
+      "old_ms": 94.06199011330803,
+      "new_ms": 84.07259600547452,
+      "old_rounds_ms": [
+        94.03505203469346,
+        94.06199011330803,
+        94.18500451526295
+      ],
+      "new_rounds_ms": [
+        84.16982573301841,
+        84.07259600547452,
+        82.50566416730483
+      ]
+    },
+    {
+      "resolution": 250,
+      "batch": 64,
+      "micro_batch": 16,
+      "old_ms": 138.03895291251442,
+      "new_ms": 130.46713115181774,
+      "old_rounds_ms": [
+        138.1200800727432,
+        137.13810422147313,
+        138.03895291251442
+      ],
+      "new_rounds_ms": [
+        130.46713115181774,
+        131.00205276471874,
+        128.90369123003134
+      ]
+    }
+  ],
+  "timing_note": "Short alternating rounds; existing GPU training is left running. Not an isolated whole-epoch throughput claim."
+}

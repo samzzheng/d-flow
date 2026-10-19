@@ -1,0 +1,14 @@
+[
+  {
+    "variant": "baseline",
+    "seconds": 0.381662973202765,
+    "model_ready_calls": 7920,
+    "unready": 0
+  },
+  {
+    "variant": "optimized",
+    "seconds": 0.05525536276400089,
+    "model_ready_calls": 24,
+    "unready": 0
+  }
+]

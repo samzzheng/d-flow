@@ -1,0 +1,172 @@
+{
+  "protocol": {
+    "device": "cuda:1",
+    "mode": "flow",
+    "method": "compare-all",
+    "memory_format": "contiguous",
+    "cudnn_benchmark": false,
+    "disable_conv_tf32": false,
+    "fused_norm": true,
+    "specialized_algebra": true,
+    "source_iterate": 20,
+    "step_jvp_columns": 6,
+    "step_vjp_columns": 4,
+    "selective_block_chunks": false,
+    "fused_primal": "full",
+    "checkpoint_blocks": false,
+    "resolution": 250,
+    "steps": 100,
+    "repeats": 3,
+    "threads": 4,
+    "memory_fraction": 0.65,
+    "max_seconds": 45,
+    "out": "outputs/dlr_execution_2026_09_28/idle_matched_all.json",
+    "torch": "2.11.0+cu129",
+    "non_attention": true,
+    "epoch": 100,
+    "seed": 0,
+    "timing": "one warmup per method, then randomized interleaving; no Armijo or optimization",
+    "peak_memory": "shared process pools: absolute peaks cannot be attributed to individual methods",
+    "model": "outputs/fm_unet/circles-250-noattn-ch16-b8/n1",
+    "cudnn_tf32": true,
+    "matmul_tf32": false,
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "source": "saved exact CPU sample0 step20",
+    "dlr_settings_apply_to": "DLR only",
+    "rank": 8,
+    "trace_probes": 4,
+    "enrichment_probes": 0,
+    "initialization_oversampling": 8,
+    "terminal_alpha": 0.0,
+    "factor_stride": 1,
+    "full_step_cuda_graphs": true,
+    "initial_product_chunks": [
+      20,
+      16
+    ],
+    "exact_dflow_execution": "eager autograd through the native model"
+  },
+  "calls": [
+    {
+      "method": "dlr",
+      "warmup": true,
+      "seconds": 3.090557607007213,
+      "allocated_MiB": 209.71435546875,
+      "reserved_MiB": 2918.0,
+      "peak_allocated_MiB": 1031.8095703125,
+      "peak_reserved_MiB": 2918.0
+    },
+    {
+      "method": "dflow-checkpointed",
+      "warmup": true,
+      "seconds": 3.9415582419605926,
+      "allocated_MiB": 220.31689453125,
+      "reserved_MiB": 3186.0,
+      "peak_allocated_MiB": 491.384765625,
+      "peak_reserved_MiB": 3186.0
+    },
+    {
+      "method": "dflow-uncheckpointed",
+      "warmup": true,
+      "seconds": 1.8869278909405693,
+      "allocated_MiB": 220.79443359375,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 24357.1015625,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dlr",
+      "warmup": false,
+      "seconds": 1.662065387936309,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 248.01318359375,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dflow-checkpointed",
+      "warmup": false,
+      "seconds": 3.274590553017333,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 491.0458984375,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dflow-uncheckpointed",
+      "warmup": false,
+      "seconds": 1.5040337890386581,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 24357.20654296875,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dflow-checkpointed",
+      "warmup": false,
+      "seconds": 3.2658943500136957,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 24357.20654296875,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dlr",
+      "warmup": false,
+      "seconds": 1.6586277480237186,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 24357.20654296875,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dflow-uncheckpointed",
+      "warmup": false,
+      "seconds": 1.5158269290113822,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 24357.20654296875,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dflow-checkpointed",
+      "warmup": false,
+      "seconds": 3.2598457370186225,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 24357.20654296875,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dflow-uncheckpointed",
+      "warmup": false,
+      "seconds": 1.4937699650181457,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 24357.20654296875,
+      "peak_reserved_MiB": 27068.0
+    },
+    {
+      "method": "dlr",
+      "warmup": false,
+      "seconds": 1.6731922730104998,
+      "allocated_MiB": 221.27197265625,
+      "reserved_MiB": 27068.0,
+      "peak_allocated_MiB": 24357.20654296875,
+      "peak_reserved_MiB": 27068.0
+    }
+  ],
+  "status": "complete",
+  "capture_memory": {
+    "allocated_MiB": 221.27197265625,
+    "reserved_MiB": 27068.0,
+    "peak_allocated_MiB": 24357.1015625,
+    "peak_reserved_MiB": 27068.0
+  },
+  "medians": {
+    "dlr": 1.662065387936309,
+    "dflow-checkpointed": 3.2658943500136957,
+    "dflow-uncheckpointed": 1.5040337890386581
+  },
+  "total_seconds": 28.452387950965203
+}

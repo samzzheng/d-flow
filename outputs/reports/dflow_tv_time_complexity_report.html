@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D-Flow TV and Runtime Results</title>
+<style>
+:root{--ink:#17212b;--muted:#5a6774;--line:#d7dde3;--soft:#f4f7f9;--accent:#245b78}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+main{max-width:1120px;margin:auto;padding:34px 26px 60px} h1{font-size:30px;margin-bottom:6px}
+h2{font-size:21px;margin:34px 0 12px;border-top:1px solid var(--line);padding-top:18px}
+p,li{line-height:1.6} .subtitle,.small{color:var(--muted);font-size:13px}
+table{width:100%;border-collapse:collapse;margin:16px 0 22px;font-size:13px}
+th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left} th{background:var(--soft)} tr.best{background:#edf6ef;font-weight:650}
+.sub{color:var(--muted);font-weight:400;font-size:12px}
+.result{border-left:4px solid var(--accent);background:#eef5f8;padding:11px 15px;margin:16px 0;line-height:1.55}
+.goal{border:1px solid #a9c5d4;border-left:5px solid var(--accent);border-radius:7px;background:#f3f8fa;padding:14px 17px;margin:16px 0 20px;line-height:1.6}
+.goal strong{display:block;margin-bottom:4px;color:var(--accent)}
+figure{margin:18px 0;border:1px solid var(--line);border-radius:7px;padding:10px} figure img{width:100%;display:block}
+figcaption{color:var(--muted);font-size:13px;margin-top:8px} code{font-family:ui-monospace,monospace}
+@media(max-width:800px){main{padding:22px 14px}table{display:block;overflow-x:auto;font-size:12px}}
+</style></head><body><main>
+<h1>D-Flow TV and Runtime Results</h1>
+<p class="subtitle">Results from the completed TV sweep and GPU iteration-timing experiment.</p>
+
+<h2>1. TV-regularization sweep</h2>
+<div class="goal"><strong>Goal of the test</strong>Provide numerical evidence that TV regularization can reduce oscillatory error in D-Flow reconstructions. We are particularly interested in high-resolution cases and whether good reconstruction results can still be obtained without TV regularization.</div>
+<p><strong>Experiment:</strong> five paired samples at each of 64×64, 96×96, 128×128, and 160×160; LBFGS LR 1.0; no line search; 750 outer steps; five Euler steps. TV weights: 0, 10<sup>−6</sup>, 3×10<sup>−6</sup>, 10<sup>−5</sup>, 3×10<sup>−5</sup>, 10<sup>−4</sup>, 3×10<sup>−4</sup>, and 10<sup>−3</sup>.</p>
+<table>
+<tr><th>TV weight</th><th>64 MSE<br><span class="sub">mean / median</span></th><th>96 MSE<br><span class="sub">mean / median</span></th><th>128 MSE<br><span class="sub">mean / median</span></th><th>160 MSE<br><span class="sub">mean / median</span></th><th>All MSE<br><span class="sub">mean / median</span></th><th>Mean solution TV</th><th>Samples with lower<br>image MSE</th><th>Samples with lower<br>solution TV</th></tr>
+<tr>
+<td>0e+00</td>
+<td>2.808e-03<br><span class="sub">4.083e-04</span></td>
+<td>1.114e-03<br><span class="sub">1.297e-04</span></td>
+<td>6.744e-05<br><span class="sub">1.546e-05</span></td>
+<td>4.413e-05<br><span class="sub">4.267e-05</span></td>
+<td>1.008e-03<br><span class="sub">4.757e-05</span></td>
+<td>0.02104</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>1e-06</td>
+<td>1.785e-04<br><span class="sub">3.160e-05</span></td>
+<td>3.360e-04<br><span class="sub">2.896e-04</span></td>
+<td>3.650e-03<br><span class="sub">9.619e-06</span></td>
+<td>2.276e-05<br><span class="sub">1.655e-05</span></td>
+<td>1.047e-03<br><span class="sub">1.974e-05</span></td>
+<td>0.02188</td>
+<td>13</td>
+<td>17</td>
+</tr>
+<tr class="best">
+<td>3e-06</td>
+<td>1.285e-04<br><span class="sub">4.275e-05</span></td>
+<td>6.621e-05<br><span class="sub">6.812e-05</span></td>
+<td>1.006e-05<br><span class="sub">8.659e-06</span></td>
+<td>5.323e-05<br><span class="sub">4.407e-05</span></td>
+<td>6.450e-05<br><span class="sub">2.155e-05</span></td>
+<td>0.00703</td>
+<td>15</td>
+<td>20</td>
+</tr>
+<tr>
+<td>1e-05</td>
+<td>6.197e-05<br><span class="sub">2.728e-05</span></td>
+<td>3.014e-04<br><span class="sub">2.100e-04</span></td>
+<td>4.999e-04<br><span class="sub">6.496e-05</span></td>
+<td>2.249e-05<br><span class="sub">1.026e-05</span></td>
+<td>2.214e-04<br><span class="sub">2.405e-05</span></td>
+<td>0.00774</td>
+<td>11</td>
+<td>19</td>
+</tr>
+<tr>
+<td>3e-05</td>
+<td>1.111e-04<br><span class="sub">9.104e-05</span></td>
+<td>2.274e-04<br><span class="sub">2.502e-05</span></td>
+<td>1.492e-05<br><span class="sub">1.613e-05</span></td>
+<td>3.653e-05<br><span class="sub">1.036e-05</span></td>
+<td>9.749e-05<br><span class="sub">2.417e-05</span></td>
+<td>0.00707</td>
+<td>11</td>
+<td>20</td>
+</tr>
+<tr>
+<td>1e-04</td>
+<td>1.898e-04<br><span class="sub">9.051e-05</span></td>
+<td>4.357e-05<br><span class="sub">4.816e-05</span></td>
+<td>1.960e-05<br><span class="sub">1.318e-05</span></td>
+<td>1.477e-05<br><span class="sub">1.818e-05</span></td>
+<td>6.694e-05<br><span class="sub">3.184e-05</span></td>
+<td>0.00616</td>
+<td>13</td>
+<td>19</td>
+</tr>
+<tr>
+<td>3e-04</td>
+<td>9.076e-05<br><span class="sub">5.705e-05</span></td>
+<td>2.373e-04<br><span class="sub">1.344e-04</span></td>
+<td>8.299e-05<br><span class="sub">1.000e-04</span></td>
+<td>2.241e-05<br><span class="sub">2.629e-05</span></td>
+<td>1.084e-04<br><span class="sub">5.677e-05</span></td>
+<td>0.00589</td>
+<td>11</td>
+<td>20</td>
+</tr>
+<tr>
+<td>1e-03</td>
+<td>4.169e-04<br><span class="sub">2.505e-04</span></td>
+<td>2.276e-04<br><span class="sub">1.847e-04</span></td>
+<td>4.654e-05<br><span class="sub">4.782e-05</span></td>
+<td>3.214e-05<br><span class="sub">2.777e-05</span></td>
+<td>1.808e-04<br><span class="sub">6.817e-05</span></td>
+<td>0.00587</td>
+<td>8</td>
+<td>20</td>
+</tr>
+</table>
+<div class="result"><strong>What the last two columns mean.</strong> Every TV setting is compared with no TV on the same 20 cases: five samples at each of four resolutions. “Samples with lower image MSE” counts cases where TV improved reconstruction accuracy. “Samples with lower solution TV” counts cases where TV produced a smoother reconstruction. These are independent tests: one sample can count in both columns, one column, or neither, so the totals should not be added together. Lower solution TV is evidence of reduced oscillation, but it does not automatically imply lower image error. The counts are binary and do not show improvement magnitude; the mean and median MSE columns provide that information.</div>
+<div class="result"><strong>Result.</strong> Across all four resolutions, TV weight 3×10<sup>−6</sup> gave the lowest overall mean image MSE, 6.450e-05, compared with 1.008e-03 without TV (93.6% lower), and won 15/20 paired comparisons. TV weight 10<sup>−4</sup> gave a similar overall mean MSE of 6.694e-05, reduced mean solution TV by 70.7%, and reduced solution TV in 19/20 pairs.</div>
+
+<h3>Best, median, and worst reconstructions</h3>
+<p>The selections below are based on image MSE among the five samples for each resolution and TV weight.</p>
+<figure><img src="dflow_tv_gallery_res_64.png" alt="64x64 TV sweep reconstruction gallery"><figcaption>64×64 sweep.</figcaption></figure>
+<figure><img src="dflow_tv_gallery_res_96.png" alt="96x96 TV sweep reconstruction gallery"><figcaption>96×96 sweep.</figcaption></figure>
+<figure><img src="dflow_tv_gallery_res_128.png" alt="128x128 TV sweep reconstruction gallery"><figcaption>128×128 sweep.</figcaption></figure>
+<figure><img src="dflow_tv_gallery_res_160.png" alt="160x160 TV sweep reconstruction gallery"><figcaption>160×160 sweep.</figcaption></figure>
+
+<h2>2. Per-iteration runtime</h2>
+<p><strong>Experiment:</strong> four resolutions, five samples per resolution, 750 outer LBFGS steps per sample, LR 1.0, TV weight 10<sup>−4</sup>, no line search, and five Euler steps. Timing used one GPU process, with the first 10 iterations of each sample excluded as warm-up.</p>
+<table>
+<tr><th>Resolution</th><th>Mean (s)</th><th>Median (s)</th><th>Lowest (s)</th><th>Highest (s)</th></tr>
+<tr>
+<td>64×64</td>
+<td>1.270</td>
+<td>1.230</td>
+<td>0.124</td>
+<td>2.332</td>
+</tr>
+<tr>
+<td>96×96</td>
+<td>1.229</td>
+<td>1.218</td>
+<td>0.119</td>
+<td>1.841</td>
+</tr>
+<tr>
+<td>128×128</td>
+<td>2.839</td>
+<td>3.881</td>
+<td>0.182</td>
+<td>5.884</td>
+</tr>
+<tr>
+<td>160×160</td>
+<td>5.559</td>
+<td>5.897</td>
+<td>0.225</td>
+<td>7.083</td>
+</tr>
+</table>
+<p class="small">The 128×128 timings changed partway through the run because of GPU contention; the values above are the measured results, not isolated-hardware estimates.</p>
+
+<p class="small">Source data: <code>outputs/dflow_tv_lr_comparison_750_steps/by_tv_weight/</code> and <code>outputs/dflow_time_complexity_tv_1e-4_lr_1p0_750_steps/</code>.</p>
+</main></body></html>

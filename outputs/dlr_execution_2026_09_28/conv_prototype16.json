@@ -1,0 +1,43 @@
+{
+  "protocol": {
+    "device": "cuda:1",
+    "channels": 16,
+    "lanes": 12,
+    "resolution": 250,
+    "memory_fraction": 0.08,
+    "repeats": 2,
+    "iterations": 5,
+    "out": "outputs/dlr_execution_2026_09_28/conv_prototype16.json",
+    "input_dtype": "float32",
+    "custom_input_precision": "tf32x3",
+    "cudnn_allow_tf32": true,
+    "cudnn_benchmark": false,
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "torch": "2.11.0+cu129",
+    "includes_backward": false
+  },
+  "measurements": {
+    "cudnn": {
+      "graph_ms_samples": [
+        0.21913599967956543,
+        0.21811199188232422
+      ],
+      "graph_ms_median": 0.21862399578094482,
+      "relative_l2_vs_strict_fp32": 0.0,
+      "max_abs_vs_strict_fp32": 0.0
+    },
+    "implicit_gemm_tf32x3": {
+      "graph_ms_samples": [
+        0.28958721160888673,
+        0.2916352033615112
+      ],
+      "graph_ms_median": 0.290611207485199,
+      "relative_l2_vs_strict_fp32": 2.6851239454117604e-07,
+      "max_abs_vs_strict_fp32": 3.337860107421875e-06
+    }
+  },
+  "setup_wall_seconds": 0.9719613129273057,
+  "peak_reserved_mib": 338.0,
+  "peak_allocated_mib": 284.1376953125,
+  "measured_scope": "one synthetic bias-free forward convolution; no full-network speed claim"
+}

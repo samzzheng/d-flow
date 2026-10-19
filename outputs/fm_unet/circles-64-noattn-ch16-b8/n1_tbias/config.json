@@ -1,0 +1,84 @@
+{
+  "im_size": 64,
+  "data": "data/circles-64-n1.pt",
+  "epochs": 100,
+  "batch": 512,
+  "lr": 0.0002,
+  "wd": 0.0001,
+  "ema_decay": 0.999,
+  "lr_schedule": {
+    "name": "CosineAnnealingLR",
+    "t_max": 100,
+    "eta_min": 1e-05
+  },
+  "checkpoint_sampling": {
+    "samples_per_integrator": 2,
+    "integrators": [
+      "euler",
+      "rk4"
+    ],
+    "steps": 100,
+    "shared_initial_noise": true
+  },
+  "micro_batch": 128,
+  "arch": {
+    "ch": 16,
+    "ch_mul": [
+      1,
+      2,
+      2,
+      2
+    ],
+    "att_channels": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "groups": 4,
+    "mid_attn": false
+  },
+  "params": 472017,
+  "dataset_metadata": {
+    "format_version": 2,
+    "resolution": 64,
+    "n_circles": 1,
+    "split_sizes": {
+      "train": 48000,
+      "val": 1000,
+      "test": 1000
+    },
+    "seed": 782,
+    "background_value": 0,
+    "circle_value": 1,
+    "storage_dtype": "torch.uint8",
+    "radius_min_fraction": 0.1,
+    "radius_max_fraction": 0.25,
+    "radius_min_pixels": 6.4,
+    "radius_max_pixels": 16.0,
+    "border_gap_pixels": 4,
+    "antialias_width_pixels": 1.0
+  },
+  "started_at": "2026-09-17T04:25:11",
+  "n_circles": 1,
+  "initial_micro_batch": 64,
+  "resumes": [
+    {
+      "checkpoint": "outputs/fm_unet/circles-64-noattn-ch16-b8/n1/checkpoints/epoch_0100.pt",
+      "start_epoch": 100,
+      "resumed_at": "2026-09-27T20:11:42",
+      "micro_batch": 128,
+      "device": "cuda:1",
+      "optimizer_state": "reinitialized; not present in legacy checkpoint"
+    },
+    {
+      "checkpoint": "outputs/fm_unet/circles-64-noattn-ch16-b8/n1/checkpoints/epoch_0100.pt",
+      "start_epoch": 100,
+      "resumed_at": "2026-09-27T22:45:55",
+      "micro_batch": 128,
+      "device": "cuda:1",
+      "optimizer_state": "reinitialized; not present in legacy checkpoint",
+      "t_alpha": 3.0
+    }
+  ]
+}

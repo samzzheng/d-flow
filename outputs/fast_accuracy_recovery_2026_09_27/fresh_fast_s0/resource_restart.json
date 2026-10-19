@@ -1,0 +1,8 @@
+{
+  "utc": "2026-09-27T15:39:05.866992+00:00",
+  "pid": 1382344,
+  "action": "SIGINT own slow CPU worker; exact accepted-state resume for local memory allocation",
+  "last_saved_step": 16,
+  "last_saved_elapsed_seconds": 2405.7897625989863,
+  "note": "Any partially executed next gradient will be discarded; no trajectory restart."
+}

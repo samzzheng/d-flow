@@ -1,0 +1,9 @@
+{
+  "seconds_per_batch": 0.031403433469434576,
+  "estimated_train_epoch_seconds": 2.9519227461268502,
+  "startup_seconds": 12.215372099075466,
+  "validation_loss": 1.2592852115631104,
+  "peak_allocated_mib": 3262.31884765625,
+  "peak_reserved_mib": 3494.0,
+  "finite": true
+}

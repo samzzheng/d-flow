@@ -1,0 +1,5 @@
+{
+  "rank": 512,
+  "archived_preflight": "outputs/separated_shapes_high_rank_20261017/rank_512_memory_smoke_9216",
+  "reason": "250x250 validation exceeded 8.14 GiB allocator cap; GPU had free VRAM. Increase reservation from 9216 to 16384 MiB; numerical settings unchanged."
+}

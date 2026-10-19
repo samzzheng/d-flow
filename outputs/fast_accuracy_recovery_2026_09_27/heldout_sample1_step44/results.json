@@ -1,0 +1,107 @@
+{
+  "settings": {
+    "mode": "points",
+    "profiles": [
+      "fast",
+      "sketch32"
+    ],
+    "threads": 8,
+    "sample": 1,
+    "start_step": 44,
+    "source_file": "outputs/rk4_noise_floor_2026_09_27/sample1_euler/accepted/state_00044.pt",
+    "seed": 0,
+    "nested_sketch": true,
+    "cached_exact_gradient": true,
+    "outer_steps": 10,
+    "history": 100,
+    "target_tau": 1.0,
+    "keep_terminal_alpha": false,
+    "out": "outputs/fast_accuracy_recovery_2026_09_27/heldout_sample1_step44"
+  },
+  "protocol": {
+    "device": "cpu",
+    "resolution": 250,
+    "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+    "checkpoint_sha256": "8ddc304ec6f1b70339f55d015b018f0f5571f006ae9b0a23490076aa9d491ae5",
+    "flow_steps": 100,
+    "integrator": "Euler",
+    "noise": 0.01,
+    "base_seed": 20260807,
+    "angles": 15,
+    "source_prior": "none",
+    "objective": "relative_scaled",
+    "factor_refresh": "every gradient",
+    "armijo_initial_step_policy": "first_iteration_only",
+    "source_generation_optimizer_policy": "first_iteration_only",
+    "source_state_step": 44,
+    "sample": 1,
+    "optimizer_history_reset_at_start": true,
+    "history": 100,
+    "noise_norm": 0.16475559771060944,
+    "normalized_noise_floor": 0.00999856384646041,
+    "timing_scope": "CPU diagnostic; not a CUDA speed claim"
+  },
+  "runs": [
+    {
+      "profile": "fast",
+      "parameters": {
+        "rank": 8,
+        "trace_probes": 4,
+        "enrichment_probes": 0,
+        "initialization_oversampling": 8
+      },
+      "seconds": 77.65756211895496,
+      "terminal_alpha": 0.002059124642983079,
+      "zero_alpha": {
+        "relative_error": 0.08664022654903175,
+        "cosine": 0.9968291521072388,
+        "norm_ratio": 0.9628493169506807
+      },
+      "retained_alpha": {
+        "relative_error": 0.08620501219591704,
+        "cosine": 0.9968617558479309,
+        "norm_ratio": 0.963030557983967
+      },
+      "best_gradient_in_V_relative_error": 0.07719976454973221,
+      "V_orthogonality_defect": 0.0001567046419950202,
+      "coefficient_component_relative_error": 0.03933029994368553,
+      "primal_relative_error": 1.0280022877395822e-07
+    },
+    {
+      "profile": "sketch32",
+      "parameters": {
+        "rank": 8,
+        "trace_probes": 4,
+        "enrichment_probes": 0,
+        "initialization_oversampling": 32
+      },
+      "seconds": 80.42291357700014,
+      "terminal_alpha": 0.002059124642983079,
+      "zero_alpha": {
+        "relative_error": 0.08353278745206406,
+        "cosine": 0.9970330595970154,
+        "norm_ratio": 0.9648853407529164
+      },
+      "retained_alpha": {
+        "relative_error": 0.08308762263854176,
+        "cosine": 0.9970659017562866,
+        "norm_ratio": 0.965066242806714
+      },
+      "best_gradient_in_V_relative_error": 0.07551005482673645,
+      "V_orthogonality_defect": 0.00021906914480496198,
+      "coefficient_component_relative_error": 0.03568977117538452,
+      "primal_relative_error": 1.0280022877395822e-07
+    }
+  ],
+  "initial": {
+    "objective": 6.8873291015625,
+    "residual": 0.01049748858641822,
+    "residual_over_noise": 1.0498998739300585,
+    "image_relative_l2": 0.01638333685696125,
+    "raw_image_relative_l2": 0.01684177666902542,
+    "clamped_noisy_residual": 0.01052569318562746,
+    "clamped_clean_residual": 0.0032427175901830196
+  },
+  "exact_gradient_seconds": 0.0,
+  "exact_gradient_reused_from": "outputs/rk4_noise_floor_2026_09_27/sample1_euler/accepted/state_00044.pt"
+}

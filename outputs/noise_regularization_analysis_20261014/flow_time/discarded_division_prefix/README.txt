@@ -1,0 +1,1 @@
+Discarded preliminary diagnostics: prefix used velocity/steps instead of canonical dt*velocity. Native endpoint validation failed at highly sensitive D-Flow source. Replaced by operation-matched reference; do not use these values as final results.

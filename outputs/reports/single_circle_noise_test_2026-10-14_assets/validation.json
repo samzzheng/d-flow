@@ -1,0 +1,46 @@
+{
+  "method_runs": 4320,
+  "representative_panels": 144,
+  "representative_ranks_per_30_samples": [
+    1,
+    15,
+    30
+  ],
+  "advantage_panels": 108,
+  "advantage_noise_percent": [
+    5,
+    10,
+    20
+  ],
+  "unique_figures": 242,
+  "all_selected_metrics_match_terminal_json": true,
+  "selection_ranks_checked": true,
+  "figures_byte_identical_to_sources": true,
+  "mathjax_expressions_per_version": 460,
+  "mathjax_errors": 0,
+  "standalone_mathjax_and_images_work_offline": true,
+  "mobile_horizontal_overflow": false,
+  "browser_errors": [],
+  "table_rows": 48,
+  "table_statistics_verified": 432,
+  "samples_per_table_row": 30,
+  "statistics": [
+    "minimum",
+    "median",
+    "maximum"
+  ],
+  "setup_bullets": 11,
+  "tables": 8,
+  "rows_per_table": 6,
+  "table_highlights_verified": true,
+  "independent_section_controls_verified_both_versions": true,
+  "section4_pdf_pages": 40,
+  "section4_pdf_figure_images": 108,
+  "section4_pdf_gallery_pages": 36,
+  "section4_pdf_figures_per_gallery_page": 3,
+  "section4_pdf_mib": 18.96,
+  "pdf_pages_visually_inspected": [
+    1,
+    5
+  ]
+}

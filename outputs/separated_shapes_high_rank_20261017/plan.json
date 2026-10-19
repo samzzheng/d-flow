@@ -1,0 +1,34 @@
+{
+  "rank_roots": {
+    "8": "/home/samzheng/d-flow/outputs/separated_shapes_noiseless_20261016",
+    "16": "/home/samzheng/d-flow/outputs/separated_shapes_rank16_noiseless_20261017",
+    "32": "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_32",
+    "64": "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_64",
+    "128": "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_128",
+    "256": "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_256",
+    "512": "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_512"
+  },
+  "resolutions": [
+    64,
+    96,
+    128,
+    160,
+    200,
+    250
+  ],
+  "samples": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "new_runs": 120,
+  "noise_relative": 0,
+  "flow_steps": 5,
+  "selection": "Exploratory comparison; choose by paired final image errors with measurement residuals and optimizer outcomes, then confirm on separate samples.",
+  "new_ranks": [
+    256,
+    512
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "case": "outputs/separated_shapes_noiseless_20261016/production/r64_shapes_mri4/sample_000",
+    "stage": "initial",
+    "protocol": {
+      "manifest_sha256": "6bc980ca7285d09f92de588d36cc73e7b002624f255c5835ba69051fc532783d",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "test_subset_sha256": "34ab9fe5b53eff157018ec3bbbaccaf05f11647fd30893da1441a0abee435504",
+      "job": {
+        "resolution": 64,
+        "circles": 0,
+        "problem": "mri",
+        "level": 4
+      },
+      "sample": 0,
+      "operator": {
+        "kind": "mri",
+        "pattern": "cartesian",
+        "nominal_acceleration": 4,
+        "actual_acceleration": 4.0,
+        "acquired_coefficients": 1024,
+        "mask_seed": 30901007,
+        "normalization": "centered orthonormal FFT",
+        "zero_phase_phantom": true
+      },
+      "source_seed": 20901007,
+      "noise_seed": 40901007,
+      "dlr_seed": 50901007,
+      "torch": "2.11.0+cu129",
+      "gpu": "NVIDIA RTX 6000 Ada Generation"
+    },
+    "flow_steps": 5,
+    "device": "cuda:1",
+    "tf32": false,
+    "source_sha256": "429040fe0a01f919524299e2a1fd6b77629bc299fe298b09308e0b1cf15bd23b",
+    "code_sha256": "af0eef4a4740f0aaa59d6da351674c56268355fa57fdf1b2f202834d03d073bb",
+    "native_graph_vs_full_map_relative_errors": [
+      5.336262915989209e-07,
+      4.478047685552156e-06
+    ],
+    "final_image_relative_l2": 0.014148694463074207,
+    "definition": "J = derivative of the full discrete Euler map with respect to source; not the objective Hessian"
+  },
+  "exact_gradient_norm": 50.2081184387207,
+  "width": 32,
+  "stages": [
+    {
+      "refinement": 0,
+      "ranks": {
+        "4": {
+          "relative_gradient_error": 0.004433879066753876,
+          "cosine": 0.9999901703877799,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0009686995057682761,
+          "reference_converged": false
+        },
+        "8": {
+          "relative_gradient_error": 0.0016697408381923906,
+          "cosine": 0.9999986060710864,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0011198220105217904,
+          "reference_converged": false
+        },
+        "12": {
+          "relative_gradient_error": 0.0011840845069051608,
+          "cosine": 0.9999992990661635,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0011198220105217904,
+          "reference_converged": false
+        },
+        "16": {
+          "relative_gradient_error": 0.001105386588706707,
+          "cosine": 0.9999993891551371,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0011198220105217904,
+          "reference_converged": false
+        }
+      }
+    },
+    {
+      "refinement": 1,
+      "ranks": {
+        "4": {
+          "relative_gradient_error": 0.00434427417186219,
+          "cosine": 0.9999905635964684,
+          "change_over_exact_norm": 0.0003100210953528363,
+          "triplet_residual": 7.967427997688584e-07,
+          "reference_converged": true
+        },
+        "8": {
+          "relative_gradient_error": 0.0016750671307090546,
+          "cosine": 0.9999985970741004,
+          "change_over_exact_norm": 0.0004593758632414154,
+          "triplet_residual": 2.325466156935418e-05,
+          "reference_converged": true
+        },
+        "12": {
+          "relative_gradient_error": 0.0010480459052467416,
+          "cosine": 0.9999994507997674,
+          "change_over_exact_norm": 0.0006887288936826663,
+          "triplet_residual": 5.9519278090246554e-05,
+          "reference_converged": true
+        },
+        "16": {
+          "relative_gradient_error": 0.0008940750458169558,
+          "cosine": 0.9999996003148544,
+          "change_over_exact_norm": 0.0007292989498445712,
+          "triplet_residual": 9.770497654331183e-05,
+          "reference_converged": true
+        }
+      }
+    }
+  ],
+  "latest": {
+    "refinement": 1,
+    "ranks": {
+      "4": {
+        "relative_gradient_error": 0.00434427417186219,
+        "cosine": 0.9999905635964684,
+        "change_over_exact_norm": 0.0003100210953528363,
+        "triplet_residual": 7.967427997688584e-07,
+        "reference_converged": true
+      },
+      "8": {
+        "relative_gradient_error": 0.0016750671307090546,
+        "cosine": 0.9999985970741004,
+        "change_over_exact_norm": 0.0004593758632414154,
+        "triplet_residual": 2.325466156935418e-05,
+        "reference_converged": true
+      },
+      "12": {
+        "relative_gradient_error": 0.0010480459052467416,
+        "cosine": 0.9999994507997674,
+        "change_over_exact_norm": 0.0006887288936826663,
+        "triplet_residual": 5.9519278090246554e-05,
+        "reference_converged": true
+      },
+      "16": {
+        "relative_gradient_error": 0.0008940750458169558,
+        "cosine": 0.9999996003148544,
+        "change_over_exact_norm": 0.0007292989498445712,
+        "triplet_residual": 9.770497654331183e-05,
+        "reference_converged": true
+      }
+    }
+  }
+}

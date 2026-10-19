@@ -1,0 +1,50 @@
+{
+  "manifest_count": 24,
+  "manifest_bytes_preserved": true,
+  "effective_source_hashes_verified": true,
+  "controller_pid": 1149723,
+  "active_workers": [
+    {
+      "work": "rank_256/production/r250_shapes_ct10_004_005",
+      "pid": 1149799,
+      "reserved_mib": 9216
+    },
+    {
+      "work": "rank_512/production/r250_shapes_ct10_004_005",
+      "pid": 1149800,
+      "reserved_mib": 16384
+    },
+    {
+      "work": "rank_512/production/r250_shapes_mri4_004_005",
+      "pid": 1149801,
+      "reserved_mib": 16384
+    }
+  ],
+  "failures": {},
+  "checkpoint_progress": [
+    {
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_256/production/r250_shapes_ct10/sample_004/dlr_d_flow.json",
+      "status": "paused",
+      "step": 342,
+      "current_step": 380,
+      "current_status": "running"
+    },
+    {
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_512/production/r250_shapes_ct10/sample_004/dlr_d_flow.json",
+      "status": "paused",
+      "step": 364,
+      "current_step": 380,
+      "current_status": "running"
+    },
+    {
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_512/production/r250_shapes_mri4/sample_004/dlr_d_flow.json",
+      "status": "paused",
+      "step": 341,
+      "current_step": 360,
+      "current_status": "running"
+    }
+  ],
+  "runtime_samples_per_process": 3,
+  "poll_seconds": 1.0,
+  "checked_at": "2026-10-18T23:36:11.224806-04:00"
+}

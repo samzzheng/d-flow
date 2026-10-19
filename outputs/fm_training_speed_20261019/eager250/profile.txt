@@ -1,0 +1,31 @@
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg    # of Calls  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                             aten::convolution_backward         6.39%      58.389ms        16.31%     149.177ms     116.545us     263.774ms        27.66%     312.172ms     243.884us          1280  
+                                aten::cudnn_convolution         3.31%      30.284ms         5.09%      46.589ms      36.397us     174.761ms        18.32%     174.761ms     136.532us          1280  
+                                            aten::copy_         5.39%      49.284ms        12.43%     113.699ms       7.558us     169.403ms        17.76%     169.591ms      11.273us         15044  
+sm80_xmma_fprop_implicit_gemm_indexed_bf16bf16_bf16f...         0.00%       0.000us         0.00%       0.000us       0.000us      82.681ms         8.67%      82.681ms     172.252us           480  
+                       aten::native_group_norm_backward         3.17%      28.957ms         7.21%      65.964ms      71.082us      69.103ms         7.25%      69.103ms      74.464us           928  
+void at::native::elementwise_kernel<128, 2, at::nati...         0.00%       0.000us         0.00%       0.000us       0.000us      60.069ms         6.30%      60.069ms      32.365us          1856  
+sm80_xmma_dgrad_implicit_gemm_bf16bf16_bf16f32_f32_n...         0.00%       0.000us         0.00%       0.000us       0.000us      57.527ms         6.03%      57.527ms      81.714us           704  
+_ZN17cutlass__5x_cudnn6KernelINS_4conv6kernel23Impli...         0.00%       0.000us         0.00%       0.000us       0.000us      54.324ms         5.70%      54.324ms     169.762us           320  
+                                    aten::silu_backward         1.07%       9.800ms         1.68%      15.404ms      10.940us      52.911ms         5.55%      52.911ms      37.579us          1408  
+void at::native::elementwise_kernel<128, 2, at::nati...         0.00%       0.000us         0.00%       0.000us       0.000us      52.127ms         5.47%      52.127ms      56.171us           928  
+                                aten::native_group_norm         2.25%      20.577ms         4.83%      44.140ms      47.565us      49.202ms         5.16%      49.202ms      53.020us           928  
+                                              aten::sum         3.28%      29.973ms         5.25%      48.047ms      17.875us      47.459ms         4.98%      47.459ms      17.656us          2688  
+void cudnn::cnn::dgrad2d_grouped_direct_kernel<__nv_...         0.00%       0.000us         0.00%       0.000us       0.000us      46.515ms         4.88%      46.515ms     242.268us           192  
+void at::native::unrolled_elementwise_kernel<at::nat...         0.00%       0.000us         0.00%       0.000us       0.000us      41.189ms         4.32%      41.189ms       7.395us          5570  
+void at::native::elementwise_kernel<128, 4, at::nati...         0.00%       0.000us         0.00%       0.000us       0.000us      40.078ms         4.20%      40.078ms      16.057us          2496  
+void at::native::(anonymous namespace)::ComputeInter...         0.00%       0.000us         0.00%       0.000us       0.000us      37.206ms         3.90%      37.206ms      40.092us           928  
+void convolve_common_engine_float_NHWC<__nv_bfloat16...         0.00%       0.000us         0.00%       0.000us       0.000us      35.462ms         3.72%      35.462ms     369.392us            96  
+void at::native::(anonymous namespace)::RowwiseMomen...         0.00%       0.000us         0.00%       0.000us       0.000us      32.716ms         3.43%      32.716ms      35.255us           928  
+void at::native::elementwise_kernel<128, 4, at::nati...         0.00%       0.000us         0.00%       0.000us       0.000us      31.750ms         3.33%      31.750ms      16.265us          1952  
+                                             aten::add_         2.63%      24.039ms         5.37%      49.150ms       6.753us      31.426ms         3.30%      31.426ms       4.318us          7278  
+void at::native::vectorized_elementwise_kernel<4, at...         0.00%       0.000us         0.00%       0.000us       0.000us      27.365ms         2.87%      27.365ms       5.482us          4992  
+                                              aten::mul         1.23%      11.213ms         1.97%      17.982ms      10.807us      25.871ms         2.71%      25.871ms      15.548us          1664  
+void at::native::reduce_kernel<128, 4, at::native::R...         0.00%       0.000us         0.00%       0.000us       0.000us      25.843ms         2.71%      25.843ms      28.843us           896  
+void at::native::elementwise_kernel<128, 2, at::nati...         0.00%       0.000us         0.00%       0.000us       0.000us      25.431ms         2.67%      25.431ms      27.404us           928  
+void nhwcAddPaddingKernel<__nv_bfloat16, __nv_bfloat...         0.00%       0.000us         0.00%       0.000us       0.000us      25.292ms         2.65%      25.292ms      14.371us          1760  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 914.429ms
+Self CUDA time total: 953.696ms

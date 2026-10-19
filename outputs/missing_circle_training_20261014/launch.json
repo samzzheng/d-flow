@@ -1,0 +1,8 @@
+{
+  "pid": 821203,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "scripts/resume_missing_circle_models.py"
+  ]
+}

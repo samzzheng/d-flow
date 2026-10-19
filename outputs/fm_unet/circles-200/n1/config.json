@@ -1,0 +1,61 @@
+{
+  "im_size": 200,
+  "data": "data/circles-200-n1.pt",
+  "epochs": 50,
+  "batch": 512,
+  "lr": 0.0002,
+  "wd": 0.0001,
+  "ema_decay": 0.999,
+  "lr_schedule": {
+    "name": "CosineAnnealingLR",
+    "t_max": 50,
+    "eta_min": 1e-05
+  },
+  "checkpoint_sampling": {
+    "samples_per_integrator": 2,
+    "integrators": [
+      "euler",
+      "rk4"
+    ],
+    "steps": 100,
+    "shared_initial_noise": true
+  },
+  "micro_batch": 40,
+  "arch": {
+    "ch": 44,
+    "ch_mul": [
+      1,
+      2,
+      2
+    ],
+    "att_channels": [
+      0,
+      0,
+      1
+    ],
+    "groups": 4
+  },
+  "params": 2705517,
+  "dataset_metadata": {
+    "format_version": 2,
+    "resolution": 200,
+    "n_circles": 1,
+    "split_sizes": {
+      "train": 48000,
+      "val": 1000,
+      "test": 1000
+    },
+    "seed": 2142,
+    "background_value": 0,
+    "circle_value": 1,
+    "storage_dtype": "torch.uint8",
+    "radius_min_fraction": 0.1,
+    "radius_max_fraction": 0.25,
+    "radius_min_pixels": 20.0,
+    "radius_max_pixels": 50.0,
+    "border_gap_pixels": 12,
+    "antialias_width_pixels": 1.0
+  },
+  "started_at": "2026-09-02T18:29:04",
+  "n_circles": 1
+}

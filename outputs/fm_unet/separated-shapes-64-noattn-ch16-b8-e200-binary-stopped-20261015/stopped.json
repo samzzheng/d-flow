@@ -1,0 +1,5 @@
+{
+  "stopped_at": "2026-10-15T01:04:19.994138-04:00",
+  "reason": "User requested mandatory antialiasing and fresh training",
+  "last_completed_epoch": 96
+}

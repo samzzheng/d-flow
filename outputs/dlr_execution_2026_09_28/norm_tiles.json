@@ -1,0 +1,178 @@
+[
+  {
+    "channels": 16,
+    "lanes": 12,
+    "transpose": false,
+    "block": 512,
+    "milliseconds": [
+      0.0843775987625122,
+      0.08663039803504943,
+      0.08550400137901307
+    ]
+  },
+  {
+    "channels": 16,
+    "lanes": 12,
+    "transpose": false,
+    "block": 1024,
+    "milliseconds": [
+      0.08089600205421447,
+      0.08499199748039246,
+      0.0843775987625122
+    ]
+  },
+  {
+    "channels": 16,
+    "lanes": 12,
+    "transpose": false,
+    "block": 2048,
+    "milliseconds": [
+      0.07997440099716187,
+      0.0719871997833252,
+      0.07106559872627258
+    ]
+  },
+  {
+    "channels": 16,
+    "lanes": 12,
+    "transpose": false,
+    "block": 4096,
+    "milliseconds": [
+      0.07137280106544494,
+      0.07106559872627258,
+      0.07096319794654846
+    ]
+  },
+  {
+    "channels": 16,
+    "lanes": 8,
+    "transpose": true,
+    "block": 512,
+    "milliseconds": [
+      0.04669440090656281,
+      0.04659200012683869,
+      0.04659200012683869
+    ]
+  },
+  {
+    "channels": 16,
+    "lanes": 8,
+    "transpose": true,
+    "block": 1024,
+    "milliseconds": [
+      0.042905598878860474,
+      0.04085760116577149,
+      0.03819519877433777
+    ]
+  },
+  {
+    "channels": 16,
+    "lanes": 8,
+    "transpose": true,
+    "block": 2048,
+    "milliseconds": [
+      0.04464640021324158,
+      0.04362240135669708,
+      0.04567039906978607
+    ]
+  },
+  {
+    "channels": 16,
+    "lanes": 8,
+    "transpose": true,
+    "block": 4096,
+    "milliseconds": [
+      0.04720639884471893,
+      0.04741120040416717,
+      0.045158401131629944
+    ]
+  },
+  {
+    "channels": 48,
+    "lanes": 12,
+    "transpose": false,
+    "block": 512,
+    "milliseconds": [
+      1.0486783981323242,
+      1.0382335662841797,
+      0.962764835357666
+    ]
+  },
+  {
+    "channels": 48,
+    "lanes": 12,
+    "transpose": false,
+    "block": 1024,
+    "milliseconds": [
+      0.7665664196014405,
+      1.046016025543213,
+      0.8321023941040039
+    ]
+  },
+  {
+    "channels": 48,
+    "lanes": 12,
+    "transpose": false,
+    "block": 2048,
+    "milliseconds": [
+      1.0503168106079102,
+      1.0540032386779785,
+      1.0413056373596192
+    ]
+  },
+  {
+    "channels": 48,
+    "lanes": 12,
+    "transpose": false,
+    "block": 4096,
+    "milliseconds": [
+      1.0447872161865235,
+      0.9732095718383789,
+      1.012838363647461
+    ]
+  },
+  {
+    "channels": 48,
+    "lanes": 8,
+    "transpose": true,
+    "block": 512,
+    "milliseconds": [
+      0.6337535858154297,
+      0.44113922119140625,
+      0.6266880035400391
+    ]
+  },
+  {
+    "channels": 48,
+    "lanes": 8,
+    "transpose": true,
+    "block": 1024,
+    "milliseconds": [
+      0.38881280422210696,
+      0.6420479774475097,
+      0.6359039783477783
+    ]
+  },
+  {
+    "channels": 48,
+    "lanes": 8,
+    "transpose": true,
+    "block": 2048,
+    "milliseconds": [
+      0.6048768043518067,
+      0.642252779006958,
+      0.6315008163452148
+    ]
+  },
+  {
+    "channels": 48,
+    "lanes": 8,
+    "transpose": true,
+    "block": 4096,
+    "milliseconds": [
+      0.6312960147857666,
+      0.4281343936920166,
+      0.6215680122375489
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "processes": [
+    {
+      "pid": 2349917,
+      "command": "/home/samzheng/d-flow/.venv/bin/python -u scripts/queue_small_circle_training.py --epochs 500 ",
+      "starttime": "241900209"
+    },
+    {
+      "pid": 2350049,
+      "command": "/home/samzheng/d-flow/.venv/bin/python -u scripts/train_small_circle_models.py --resolution 64 --n-circles 1 --micro-batch 512 --epochs 500 --device cuda:1 --out-dir /home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n1 ",
+      "starttime": "241901215"
+    }
+  ],
+  "at": "2026-10-19T15:53:54.780157-04:00"
+}

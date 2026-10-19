@@ -1,0 +1,2368 @@
+{
+  "settings": {
+    "device": "cuda:0",
+    "resolutions": [
+      64,
+      250
+    ],
+    "samples": [
+      0,
+      1
+    ],
+    "iterates": [
+      0,
+      10
+    ],
+    "steps": 100,
+    "rank": 8,
+    "oversampling": 8,
+    "factor_stride": 1,
+    "repeats": 2,
+    "warmups": 0,
+    "threads": 4,
+    "order_seed": 20260927,
+    "implementations": [
+      "baseline",
+      "shared"
+    ],
+    "configs": [
+      "trace8_e4",
+      "trace4_e0"
+    ],
+    "cuda_graphs": true,
+    "full_step_graphs": true,
+    "zero_terminal_baseline": true,
+    "points_cache": "outputs/dlr_speed_2026_09_27/initial/points",
+    "generate_missing_points": true,
+    "source_root": "/home/samzheng/d-flow",
+    "out": "outputs/dlr_speed_2026_09_27/validated"
+  },
+  "environment": {
+    "torch": "2.11.0+cu129",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "source_module": "/home/samzheng/d-flow/dlr_dflow/dlr_dflow.py",
+    "cuda": "12.9",
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "cudnn_allow_tf32": true,
+    "matmul_allow_tf32": false
+  },
+  "protocol": {
+    "noise": 0.01,
+    "base_seed": 20260807,
+    "angles": 15,
+    "objective": "relative_scaled",
+    "point_optimizer": "exact Armijo L-BFGS, step cap 0.01 sqrt(d)",
+    "timed_operation": "flow, terminal gradient, source gradient",
+    "capture_policy": "independent CUDA graphs for every variant",
+    "checkpoint_exact_at_resolution_ge": 160
+  },
+  "resolutions": {
+    "64": {
+      "model": "circles-64/n1 epoch 50 (attention)",
+      "checkpoint_sha256": "e5be736cb2756420afe56f5be2cd0eff4a5500646fd9628a31c751387cfd5b8d",
+      "flags": {
+        "FUSE_K_IMAGE": true,
+        "RECOMPRESS_FROM_TRANSPOSE": true,
+        "PROBES_AS_ENRICHMENT": null,
+        "V_ENRICH_FROM_Q2": null
+      },
+      "variants": {
+        "baseline/trace8_e4": {
+          "shared_linearization": false,
+          "full_step_graphs": false,
+          "skip_untruncated_svd": false,
+          "trace_probes": 8,
+          "enrichment_probes": 4,
+          "rank": 8,
+          "factor_stride": 1
+        },
+        "baseline/trace4_e0": {
+          "shared_linearization": false,
+          "full_step_graphs": false,
+          "skip_untruncated_svd": false,
+          "trace_probes": 4,
+          "enrichment_probes": 0,
+          "rank": 8,
+          "factor_stride": 1
+        },
+        "shared/trace8_e4": {
+          "shared_linearization": true,
+          "full_step_graphs": false,
+          "skip_untruncated_svd": true,
+          "trace_probes": 8,
+          "enrichment_probes": 4,
+          "rank": 8,
+          "factor_stride": 1
+        },
+        "shared/trace4_e0": {
+          "shared_linearization": true,
+          "full_step_graphs": true,
+          "skip_untruncated_svd": true,
+          "trace_probes": 4,
+          "enrichment_probes": 0,
+          "rank": 8,
+          "factor_stride": 1
+        }
+      },
+      "setup": {
+        "exact": {
+          "first_call_s": 1.304899882990867,
+          "peak_above_existing_mib": 4961.89990234375,
+          "persistent_added_mib": 0.03125,
+          "capture_events": []
+        },
+        "baseline/trace8_e4": {
+          "first_call_s": 1.965195972006768,
+          "peak_above_existing_mib": 210.43994140625,
+          "persistent_added_mib": 38.67333984375,
+          "capture_events": [
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "24"
+              ],
+              "seconds": 0.3093291340046562
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "16"
+              ],
+              "seconds": 0.12685315898852423
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "20"
+              ],
+              "seconds": 0.11981906002620235
+            }
+          ]
+        },
+        "baseline/trace4_e0": {
+          "first_call_s": 1.473986150987912,
+          "peak_above_existing_mib": 187.884765625,
+          "persistent_added_mib": 38.54736328125,
+          "capture_events": [
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "20"
+              ],
+              "seconds": 0.13010016200132668
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "16"
+              ],
+              "seconds": 0.11721112002851442
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "12"
+              ],
+              "seconds": 0.11584447097266093
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "8"
+              ],
+              "seconds": 0.12261666503036395
+            }
+          ]
+        },
+        "shared/trace8_e4": {
+          "first_call_s": 1.5644416639697738,
+          "peak_above_existing_mib": 253.490234375,
+          "persistent_added_mib": 68.63134765625,
+          "capture_events": [
+            {
+              "method": "_capture_linearization",
+              "arguments": [],
+              "seconds": 0.09080920601263642
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "24"
+              ],
+              "seconds": 0.09278813801938668
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "16"
+              ],
+              "seconds": 0.08951367402914912
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "20"
+              ],
+              "seconds": 0.09497036697575822
+            }
+          ]
+        },
+        "shared/trace4_e0": {
+          "first_call_s": 1.1501907779602334,
+          "peak_above_existing_mib": 219.240234375,
+          "persistent_added_mib": 69.2734375,
+          "capture_events": [
+            {
+              "method": "_capture_linearization",
+              "arguments": [],
+              "seconds": 0.08759526303038001
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "20"
+              ],
+              "seconds": 0.08962067501852289
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "16"
+              ],
+              "seconds": 0.0886029020184651
+            },
+            {
+              "method": "whole_step._capture",
+              "arguments": [],
+              "seconds": 0.1388919500168413
+            }
+          ]
+        }
+      },
+      "points": [
+        {
+          "sample": 0,
+          "iterate": 0,
+          "residual": 1.1604899430667137,
+          "source_norm_over_sqrt_d": 1.0152353048324585,
+          "accuracy": {
+            "exact": {
+              "gradient": {
+                "relative_error": 4.24417891124251e-06,
+                "absolute_error": 0.0333254337310791,
+                "cosine": 1.00000001704658,
+                "norm_ratio": 1.0000024252277413,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.0,
+                "absolute_error": 0.0,
+                "cosine": 1.0000000611345896,
+                "norm_ratio": 1.0,
+                "finite": true
+              },
+              "evolved_alpha": 0.0
+            },
+            "baseline/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.023418016559828128,
+                "absolute_error": 183.87904357910156,
+                "cosine": 0.999756615744618,
+                "norm_ratio": 0.9919013561624788,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00012087110261404849,
+                "absolute_error": 0.0021500953007489443,
+                "cosine": 0.9999999670782438,
+                "norm_ratio": 0.9999779117109643,
+                "finite": true
+              },
+              "evolved_alpha": 0.0010147783905267715,
+              "zero_terminal_baseline": {
+                "relative_error": 0.023418016559828128,
+                "absolute_error": 183.87904357910156,
+                "cosine": 0.999756615744618,
+                "norm_ratio": 0.9919013561624788,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.023422696005662345,
+                "absolute_error": 183.91578674316406,
+                "cosine": 0.9997565588394364,
+                "norm_ratio": 0.9919060200619814,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.023361946771350273,
+                "absolute_error": 183.43878173828125,
+                "cosine": 0.9997566140961363,
+                "norm_ratio": 0.9920726767375388,
+                "finite": true
+              }
+            },
+            "baseline/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.02280760344964394,
+                "absolute_error": 179.0860595703125,
+                "cosine": 0.9997709846289867,
+                "norm_ratio": 0.9918710719083756,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00012087110261404849,
+                "absolute_error": 0.0021500953007489443,
+                "cosine": 0.9999999670782438,
+                "norm_ratio": 0.9999779117109643,
+                "finite": true
+              },
+              "evolved_alpha": 0.03347035497426987,
+              "zero_terminal_baseline": {
+                "relative_error": 0.02280760344964394,
+                "absolute_error": 179.0860595703125,
+                "cosine": 0.9997709846289867,
+                "norm_ratio": 0.9918710719083756,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.02292383365512167,
+                "absolute_error": 179.9987030029297,
+                "cosine": 0.9997673335153973,
+                "norm_ratio": 0.9920248562213061,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.02275007619257154,
+                "absolute_error": 178.6343536376953,
+                "cosine": 0.9997710431688134,
+                "norm_ratio": 0.992042330298109,
+                "finite": true
+              }
+            },
+            "shared/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.02341647552970083,
+                "absolute_error": 183.866943359375,
+                "cosine": 0.9997566271848807,
+                "norm_ratio": 0.9919090671429897,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00012087110261404849,
+                "absolute_error": 0.0021500953007489443,
+                "cosine": 0.9999999670782438,
+                "norm_ratio": 0.9999779117109643,
+                "finite": true
+              },
+              "evolved_alpha": 0.0010152817703783512,
+              "zero_terminal_baseline": {
+                "relative_error": 0.02341647552970083,
+                "absolute_error": 183.866943359375,
+                "cosine": 0.9997566271848807,
+                "norm_ratio": 0.9919090671429897,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.023421141372494833,
+                "absolute_error": 183.90357971191406,
+                "cosine": 0.9997566329571036,
+                "norm_ratio": 0.9919136688571655,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.023360431004011948,
+                "absolute_error": 183.4268798828125,
+                "cosine": 0.9997565655971221,
+                "norm_ratio": 0.9920805120887032,
+                "finite": true
+              }
+            },
+            "shared/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.02280120030428524,
+                "absolute_error": 179.03578186035156,
+                "cosine": 0.9997710292823039,
+                "norm_ratio": 0.9918899762476926,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00012087110261404849,
+                "absolute_error": 0.0021500953007489443,
+                "cosine": 0.9999999670782438,
+                "norm_ratio": 0.9999779117109643,
+                "finite": true
+              },
+              "evolved_alpha": 0.033472444862127304,
+              "zero_terminal_baseline": {
+                "relative_error": 0.0228012022475767,
+                "absolute_error": 179.03579711914062,
+                "cosine": 0.9997710292823039,
+                "norm_ratio": 0.9918899762476926,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.02291666679621943,
+                "absolute_error": 179.9424285888672,
+                "cosine": 0.9997672501638353,
+                "norm_ratio": 0.9920438227459498,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.022743799361157703,
+                "absolute_error": 178.58506774902344,
+                "cosine": 0.9997710251447075,
+                "norm_ratio": 0.9920612968227527,
+                "finite": true
+              }
+            }
+          },
+          "timing": {
+            "baseline/trace4_e0": {
+              "median_s": 0.9887797510018572,
+              "min_s": 0.9873241430032067,
+              "samples_s": [
+                0.9873241430032067,
+                0.9902353590005077
+              ],
+              "speedup_vs_exact": 1.4651461486422044
+            },
+            "shared/trace4_e0": {
+              "median_s": 0.746098385512596,
+              "min_s": 0.744227301038336,
+              "samples_s": [
+                0.744227301038336,
+                0.747969469986856
+              ],
+              "speedup_vs_exact": 1.9417101982340519
+            },
+            "shared/trace8_e4": {
+              "median_s": 1.2007278605015017,
+              "min_s": 1.2001934250001796,
+              "samples_s": [
+                1.2012622960028239,
+                1.2001934250001796
+              ],
+              "speedup_vs_exact": 1.206523885795983
+            },
+            "baseline/trace8_e4": {
+              "median_s": 1.3967078135174233,
+              "min_s": 1.3948292330023833,
+              "samples_s": [
+                1.3948292330023833,
+                1.3985863940324634
+              ],
+              "speedup_vs_exact": 1.0372297126249999
+            },
+            "exact": {
+              "median_s": 1.4487068440357689,
+              "min_s": 1.3036764800199308,
+              "samples_s": [
+                1.593737208051607,
+                1.3036764800199308
+              ]
+            }
+          },
+          "orders": [
+            [
+              "baseline/trace4_e0",
+              "shared/trace4_e0",
+              "shared/trace8_e4",
+              "baseline/trace8_e4",
+              "exact"
+            ],
+            [
+              "baseline/trace4_e0",
+              "shared/trace8_e4",
+              "baseline/trace8_e4",
+              "shared/trace4_e0",
+              "exact"
+            ]
+          ]
+        },
+        {
+          "sample": 0,
+          "iterate": 10,
+          "residual": 0.6009694185473917,
+          "source_norm_over_sqrt_d": 1.015568494796753,
+          "accuracy": {
+            "exact": {
+              "gradient": {
+                "relative_error": 4.314935173363094e-06,
+                "absolute_error": 0.001753689837642014,
+                "cosine": 1.0000001943688237,
+                "norm_ratio": 1.0000012014108168,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.0,
+                "absolute_error": 0.0,
+                "cosine": 1.0000000629989716,
+                "norm_ratio": 1.0,
+                "finite": true
+              },
+              "evolved_alpha": 0.0
+            },
+            "baseline/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.07355292789072207,
+                "absolute_error": 29.893617630004883,
+                "cosine": 0.9981196036126282,
+                "norm_ratio": 0.95746585215018,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 1.5042188298640675e-05,
+                "absolute_error": 0.0002241206238977611,
+                "cosine": 0.9999999895360707,
+                "norm_ratio": 0.9999999359927328,
+                "finite": true
+              },
+              "evolved_alpha": 0.004390375688672066,
+              "zero_terminal_baseline": {
+                "relative_error": 0.07355292789072207,
+                "absolute_error": 29.893617630004883,
+                "cosine": 0.9981196036126282,
+                "norm_ratio": 0.95746585215018,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.07264085058834589,
+                "absolute_error": 29.52292823791504,
+                "cosine": 0.9981168621210286,
+                "norm_ratio": 0.9592081230989551,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.07355035142768153,
+                "absolute_error": 29.89257049560547,
+                "cosine": 0.9981197237140033,
+                "norm_ratio": 0.9574699069116864,
+                "finite": true
+              }
+            },
+            "baseline/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.07718197229006021,
+                "absolute_error": 31.368545532226562,
+                "cosine": 0.9979796623478926,
+                "norm_ratio": 0.9541591190535045,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 1.5042188298640675e-05,
+                "absolute_error": 0.0002241206238977611,
+                "cosine": 0.9999999895360707,
+                "norm_ratio": 0.9999999359927328,
+                "finite": true
+              },
+              "evolved_alpha": 0.00527936639264226,
+              "zero_terminal_baseline": {
+                "relative_error": 0.07718197229006021,
+                "absolute_error": 31.368545532226562,
+                "cosine": 0.9979796623478926,
+                "norm_ratio": 0.9541591190535045,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.07602838325545688,
+                "absolute_error": 30.899700164794922,
+                "cosine": 0.9979784248439388,
+                "norm_ratio": 0.9562525023134667,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.0771792785017446,
+                "absolute_error": 31.367450714111328,
+                "cosine": 0.9979797255255551,
+                "norm_ratio": 0.954163323991363,
+                "finite": true
+              }
+            },
+            "shared/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.0735554527306416,
+                "absolute_error": 29.894643783569336,
+                "cosine": 0.998119825464788,
+                "norm_ratio": 0.9574565412163504,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 1.5042188298640675e-05,
+                "absolute_error": 0.0002241206238977611,
+                "cosine": 0.9999999895360707,
+                "norm_ratio": 0.9999999359927328,
+                "finite": true
+              },
+              "evolved_alpha": 0.00439033005386591,
+              "zero_terminal_baseline": {
+                "relative_error": 0.0735554527306416,
+                "absolute_error": 29.894643783569336,
+                "cosine": 0.998119825464788,
+                "norm_ratio": 0.9574565412163504,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.07264281226694508,
+                "absolute_error": 29.523725509643555,
+                "cosine": 0.9981170835436085,
+                "norm_ratio": 0.9591988121651255,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.07355283872351302,
+                "absolute_error": 29.89358139038086,
+                "cosine": 0.9981197890127019,
+                "norm_ratio": 0.9574607461542088,
+                "finite": true
+              }
+            },
+            "shared/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.07717427575201559,
+                "absolute_error": 31.36541748046875,
+                "cosine": 0.9979796007902285,
+                "norm_ratio": 0.9541704573680874,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 1.5042188298640675e-05,
+                "absolute_error": 0.0002241206238977611,
+                "cosine": 0.9999999895360707,
+                "norm_ratio": 0.9999999359927328,
+                "finite": true
+              },
+              "evolved_alpha": 0.005279382690787315,
+              "zero_terminal_baseline": {
+                "relative_error": 0.07717427575201559,
+                "absolute_error": 31.36541748046875,
+                "cosine": 0.9979796007902285,
+                "norm_ratio": 0.9541704573680874,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.07602095421903941,
+                "absolute_error": 30.89668083190918,
+                "cosine": 0.9979783428791409,
+                "norm_ratio": 0.9562637655398735,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.07717158665671098,
+                "absolute_error": 31.36432456970215,
+                "cosine": 0.9979798210382026,
+                "norm_ratio": 0.9541745121295938,
+                "finite": true
+              }
+            }
+          },
+          "timing": {
+            "baseline/trace8_e4": {
+              "median_s": 1.3966269314987585,
+              "min_s": 1.3952685249969363,
+              "samples_s": [
+                1.3952685249969363,
+                1.3979853380005807
+              ],
+              "speedup_vs_exact": 0.9169996887540598
+            },
+            "exact": {
+              "median_s": 1.280706461489899,
+              "min_s": 1.2679820829653181,
+              "samples_s": [
+                1.2679820829653181,
+                1.29343084001448
+              ]
+            },
+            "shared/trace8_e4": {
+              "median_s": 1.2000057775294408,
+              "min_s": 1.1991971740499139,
+              "samples_s": [
+                1.1991971740499139,
+                1.2008143810089678
+              ],
+              "speedup_vs_exact": 1.0672502461834843
+            },
+            "baseline/trace4_e0": {
+              "median_s": 0.9968443674733862,
+              "min_s": 0.9959188629873097,
+              "samples_s": [
+                0.9977698719594628,
+                0.9959188629873097
+              ],
+              "speedup_vs_exact": 1.2847606941251954
+            },
+            "shared/trace4_e0": {
+              "median_s": 0.7449952835158911,
+              "min_s": 0.7448091880069114,
+              "samples_s": [
+                0.7448091880069114,
+                0.7451813790248707
+              ],
+              "speedup_vs_exact": 1.7190799590647088
+            }
+          },
+          "orders": [
+            [
+              "baseline/trace8_e4",
+              "exact",
+              "shared/trace8_e4",
+              "baseline/trace4_e0",
+              "shared/trace4_e0"
+            ],
+            [
+              "shared/trace4_e0",
+              "shared/trace8_e4",
+              "baseline/trace4_e0",
+              "baseline/trace8_e4",
+              "exact"
+            ]
+          ]
+        },
+        {
+          "sample": 1,
+          "iterate": 0,
+          "residual": 0.8068549954322786,
+          "source_norm_over_sqrt_d": 0.9966695308685303,
+          "accuracy": {
+            "exact": {
+              "gradient": {
+                "relative_error": 1.099817732656889e-05,
+                "absolute_error": 0.023319382220506668,
+                "cosine": 0.9999999562541185,
+                "norm_ratio": 0.9999909035733873,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.0,
+                "absolute_error": 0.0,
+                "cosine": 1.000000039998704,
+                "norm_ratio": 1.0,
+                "finite": true
+              },
+              "evolved_alpha": 0.0
+            },
+            "baseline/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.03918159464158295,
+                "absolute_error": 83.07654571533203,
+                "cosine": 0.9993258018813792,
+                "norm_ratio": 0.9856403118623506,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 2.9411502478030427e-05,
+                "absolute_error": 0.000569725118111819,
+                "cosine": 1.0000000404635343,
+                "norm_ratio": 0.9999962583296474,
+                "finite": true
+              },
+              "evolved_alpha": 0.0019086715765297413,
+              "zero_terminal_baseline": {
+                "relative_error": 0.03918159464158295,
+                "absolute_error": 83.07654571533203,
+                "cosine": 0.9993258018813792,
+                "norm_ratio": 0.9856403118623506,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.03911606294796303,
+                "absolute_error": 82.9375991821289,
+                "cosine": 0.9993245484261031,
+                "norm_ratio": 0.9859135500946546,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.03916869844182818,
+                "absolute_error": 83.04920196533203,
+                "cosine": 0.9993257581411158,
+                "norm_ratio": 0.9856815336437096,
+                "finite": true
+              }
+            },
+            "baseline/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.04013699650271183,
+                "absolute_error": 85.10227966308594,
+                "cosine": 0.999301221825702,
+                "norm_ratio": 0.9846773572324479,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 2.9411502478030427e-05,
+                "absolute_error": 0.000569725118111819,
+                "cosine": 1.0000000404635343,
+                "norm_ratio": 0.9999962583296474,
+                "finite": true
+              },
+              "evolved_alpha": 0.004235290456563234,
+              "zero_terminal_baseline": {
+                "relative_error": 0.04013699650271183,
+                "absolute_error": 85.10227966308594,
+                "cosine": 0.999301221825702,
+                "norm_ratio": 0.9846773572324479,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.03997737724458644,
+                "absolute_error": 84.76383972167969,
+                "cosine": 0.9992988537909541,
+                "norm_ratio": 0.9852833634762812,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.040123564160723955,
+                "absolute_error": 85.07379913330078,
+                "cosine": 0.9993011712610842,
+                "norm_ratio": 0.9847188093030882,
+                "finite": true
+              }
+            },
+            "shared/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.039177877628651395,
+                "absolute_error": 83.06866455078125,
+                "cosine": 0.99932587489191,
+                "norm_ratio": 0.9856481416979159,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 2.9411502478030427e-05,
+                "absolute_error": 0.000569725118111819,
+                "cosine": 1.0000000404635343,
+                "norm_ratio": 0.9999962583296474,
+                "finite": true
+              },
+              "evolved_alpha": 0.0019086545798927546,
+              "zero_terminal_baseline": {
+                "relative_error": 0.039177877628651395,
+                "absolute_error": 83.06866455078125,
+                "cosine": 0.99932587489191,
+                "norm_ratio": 0.9856481416979159,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.03911247547275223,
+                "absolute_error": 82.92999267578125,
+                "cosine": 0.9993247342331008,
+                "norm_ratio": 0.98592137993022,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.039165003018516754,
+                "absolute_error": 83.04136657714844,
+                "cosine": 0.9993258272446375,
+                "norm_ratio": 0.9856894786239156,
+                "finite": true
+              }
+            },
+            "shared/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.040137277167773454,
+                "absolute_error": 85.10287475585938,
+                "cosine": 0.9993005446677098,
+                "norm_ratio": 0.9847139732281802,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 2.9411502478030427e-05,
+                "absolute_error": 0.000569725118111819,
+                "cosine": 1.0000000404635343,
+                "norm_ratio": 0.9999962583296474,
+                "finite": true
+              },
+              "evolved_alpha": 0.004235121887177229,
+              "zero_terminal_baseline": {
+                "relative_error": 0.040137277167773454,
+                "absolute_error": 85.10287475585938,
+                "cosine": 0.9993005446677098,
+                "norm_ratio": 0.9847139732281802,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.0399781112916707,
+                "absolute_error": 84.76539611816406,
+                "cosine": 0.9992984067911985,
+                "norm_ratio": 0.9853198643273728,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.040123945577346165,
+                "absolute_error": 85.0746078491211,
+                "cosine": 0.9993006148839024,
+                "norm_ratio": 0.9847551950095391,
+                "finite": true
+              }
+            }
+          },
+          "timing": {
+            "baseline/trace8_e4": {
+              "median_s": 1.3943028635112569,
+              "min_s": 1.3916164810070768,
+              "samples_s": [
+                1.3916164810070768,
+                1.396989246015437
+              ],
+              "speedup_vs_exact": 0.9003070540401692
+            },
+            "exact": {
+              "median_s": 1.2553007034875918,
+              "min_s": 1.2208608479704708,
+              "samples_s": [
+                1.2208608479704708,
+                1.2897405590047128
+              ]
+            },
+            "baseline/trace4_e0": {
+              "median_s": 0.9927253109926824,
+              "min_s": 0.9886069549829699,
+              "samples_s": [
+                0.9886069549829699,
+                0.9968436670023948
+              ],
+              "speedup_vs_exact": 1.2644995444231653
+            },
+            "shared/trace4_e0": {
+              "median_s": 0.7445110385015141,
+              "min_s": 0.7438727269764058,
+              "samples_s": [
+                0.7438727269764058,
+                0.7451493500266224
+              ],
+              "speedup_vs_exact": 1.686073998330703
+            },
+            "shared/trace8_e4": {
+              "median_s": 1.202079657028662,
+              "min_s": 1.2015811960445717,
+              "samples_s": [
+                1.2025781180127524,
+                1.2015811960445717
+              ],
+              "speedup_vs_exact": 1.0442741428554603
+            }
+          },
+          "orders": [
+            [
+              "baseline/trace8_e4",
+              "exact",
+              "baseline/trace4_e0",
+              "shared/trace4_e0",
+              "shared/trace8_e4"
+            ],
+            [
+              "shared/trace8_e4",
+              "baseline/trace4_e0",
+              "baseline/trace8_e4",
+              "exact",
+              "shared/trace4_e0"
+            ]
+          ]
+        },
+        {
+          "sample": 1,
+          "iterate": 10,
+          "residual": 0.33918793199609026,
+          "source_norm_over_sqrt_d": 0.9965739846229553,
+          "accuracy": {
+            "exact": {
+              "gradient": {
+                "relative_error": 1.0166482401593574e-05,
+                "absolute_error": 0.0827985480427742,
+                "cosine": 0.9999999698968519,
+                "norm_ratio": 0.9999908270406133,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.0,
+                "absolute_error": 0.0,
+                "cosine": 0.9999999560069345,
+                "norm_ratio": 1.0,
+                "finite": true
+              },
+              "evolved_alpha": 0.0
+            },
+            "baseline/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.02122270385088629,
+                "absolute_error": 172.84336853027344,
+                "cosine": 0.999822384222008,
+                "norm_ratio": 0.9900665243399082,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 8.015900213862793e-05,
+                "absolute_error": 0.0010923852678388357,
+                "cosine": 1.000000002891487,
+                "norm_ratio": 0.9999870536220081,
+                "finite": true
+              },
+              "evolved_alpha": -0.0033538974821567535,
+              "zero_terminal_baseline": {
+                "relative_error": 0.02122270385088629,
+                "absolute_error": 172.84336853027344,
+                "cosine": 0.999822384222008,
+                "norm_ratio": 0.9900665243399082,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.021253544554412706,
+                "absolute_error": 173.09454345703125,
+                "cosine": 0.9998222480847168,
+                "norm_ratio": 0.990014244466802,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.021275779987828144,
+                "absolute_error": 173.275634765625,
+                "cosine": 0.9998224130703414,
+                "norm_ratio": 0.9899514126927018,
+                "finite": true
+              }
+            },
+            "baseline/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.020365103343579667,
+                "absolute_error": 165.8588409423828,
+                "cosine": 0.9998400970532021,
+                "norm_ratio": 0.9900945828039147,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 8.015900213862793e-05,
+                "absolute_error": 0.0010923852678388357,
+                "cosine": 1.000000002891487,
+                "norm_ratio": 0.9999870536220081,
+                "finite": true
+              },
+              "evolved_alpha": 0.0034083258360624313,
+              "zero_terminal_baseline": {
+                "relative_error": 0.020365103343579667,
+                "absolute_error": 165.8588409423828,
+                "cosine": 0.9998400970532021,
+                "norm_ratio": 0.9900945828039147,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.020333471996903496,
+                "absolute_error": 165.60122680664062,
+                "cosine": 0.9998402377053597,
+                "norm_ratio": 0.9901477619867647,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.020420358433088266,
+                "absolute_error": 166.30885314941406,
+                "cosine": 0.9998400670445323,
+                "norm_ratio": 0.9899794711567084,
+                "finite": true
+              }
+            },
+            "shared/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.021202371956428562,
+                "absolute_error": 172.6777801513672,
+                "cosine": 0.9998226014202167,
+                "norm_ratio": 0.9901021370057626,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 8.015900213862793e-05,
+                "absolute_error": 0.0010923852678388357,
+                "cosine": 1.000000002891487,
+                "norm_ratio": 0.9999870536220081,
+                "finite": true
+              },
+              "evolved_alpha": -0.003353589680045843,
+              "zero_terminal_baseline": {
+                "relative_error": 0.021202371956428562,
+                "absolute_error": 172.6777801513672,
+                "cosine": 0.9998226014202167,
+                "norm_ratio": 0.9901021370057626,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.021233188303649418,
+                "absolute_error": 172.9287567138672,
+                "cosine": 0.9998223434763994,
+                "norm_ratio": 0.9900498571326564,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.021255198909628903,
+                "absolute_error": 173.10801696777344,
+                "cosine": 0.9998225102905854,
+                "norm_ratio": 0.9899873251284709,
+                "finite": true
+              }
+            },
+            "shared/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.020351418846978192,
+                "absolute_error": 165.7473907470703,
+                "cosine": 0.9998400904212689,
+                "norm_ratio": 0.990123540577665,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 8.015900213862793e-05,
+                "absolute_error": 0.0010923852678388357,
+                "cosine": 1.000000002891487,
+                "norm_ratio": 0.9999870536220081,
+                "finite": true
+              },
+              "evolved_alpha": 0.00340841431170702,
+              "zero_terminal_baseline": {
+                "relative_error": 0.020351418846978192,
+                "absolute_error": 165.7473907470703,
+                "cosine": 0.9998400904212689,
+                "norm_ratio": 0.990123540577665,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.020319830592227243,
+                "absolute_error": 165.49012756347656,
+                "cosine": 0.9998402916087696,
+                "norm_ratio": 0.9901766598065321,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.020406516557281623,
+                "absolute_error": 166.1961212158203,
+                "cosine": 0.9998401822406958,
+                "norm_ratio": 0.9900084289304587,
+                "finite": true
+              }
+            }
+          },
+          "timing": {
+            "baseline/trace4_e0": {
+              "median_s": 0.9940248085185885,
+              "min_s": 0.9928052310133353,
+              "samples_s": [
+                0.9928052310133353,
+                0.9952443860238418
+              ],
+              "speedup_vs_exact": 1.2242509015832463
+            },
+            "shared/trace8_e4": {
+              "median_s": 1.1954552344686817,
+              "min_s": 1.1945334859774448,
+              "samples_s": [
+                1.1963769829599187,
+                1.1945334859774448
+              ],
+              "speedup_vs_exact": 1.017968496801021
+            },
+            "shared/trace4_e0": {
+              "median_s": 0.7477881264931057,
+              "min_s": 0.7477308899979107,
+              "samples_s": [
+                0.7478453629883006,
+                0.7477308899979107
+              ],
+              "speedup_vs_exact": 1.6273804369321123
+            },
+            "baseline/trace8_e4": {
+              "median_s": 1.3969269880035426,
+              "min_s": 1.396754482993856,
+              "samples_s": [
+                1.3970994930132292,
+                1.396754482993856
+              ],
+              "speedup_vs_exact": 0.8711520204532763
+            },
+            "exact": {
+              "median_s": 1.216935768024996,
+              "min_s": 1.2061046020244248,
+              "samples_s": [
+                1.2061046020244248,
+                1.227766934025567
+              ]
+            }
+          },
+          "orders": [
+            [
+              "baseline/trace4_e0",
+              "shared/trace8_e4",
+              "shared/trace4_e0",
+              "baseline/trace8_e4",
+              "exact"
+            ],
+            [
+              "exact",
+              "shared/trace8_e4",
+              "baseline/trace4_e0",
+              "baseline/trace8_e4",
+              "shared/trace4_e0"
+            ]
+          ]
+        }
+      ]
+    },
+    "250": {
+      "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+      "checkpoint_sha256": "8ddc304ec6f1b70339f55d015b018f0f5571f006ae9b0a23490076aa9d491ae5",
+      "flags": {
+        "FUSE_K_IMAGE": true,
+        "RECOMPRESS_FROM_TRANSPOSE": true,
+        "PROBES_AS_ENRICHMENT": null,
+        "V_ENRICH_FROM_Q2": null
+      },
+      "variants": {
+        "baseline/trace8_e4": {
+          "shared_linearization": false,
+          "full_step_graphs": false,
+          "skip_untruncated_svd": false,
+          "trace_probes": 8,
+          "enrichment_probes": 4,
+          "rank": 8,
+          "factor_stride": 1
+        },
+        "baseline/trace4_e0": {
+          "shared_linearization": false,
+          "full_step_graphs": false,
+          "skip_untruncated_svd": false,
+          "trace_probes": 4,
+          "enrichment_probes": 0,
+          "rank": 8,
+          "factor_stride": 1
+        },
+        "shared/trace8_e4": {
+          "shared_linearization": true,
+          "full_step_graphs": false,
+          "skip_untruncated_svd": true,
+          "trace_probes": 8,
+          "enrichment_probes": 4,
+          "rank": 8,
+          "factor_stride": 1
+        },
+        "shared/trace4_e0": {
+          "shared_linearization": true,
+          "full_step_graphs": true,
+          "skip_untruncated_svd": true,
+          "trace_probes": 4,
+          "enrichment_probes": 0,
+          "rank": 8,
+          "factor_stride": 1
+        }
+      },
+      "setup": {
+        "exact": {
+          "first_call_s": 3.252245275012683,
+          "peak_above_existing_mib": 272.1865234375,
+          "persistent_added_mib": 0.4462890625,
+          "capture_events": []
+        },
+        "baseline/trace8_e4": {
+          "first_call_s": 6.674474038998596,
+          "peak_above_existing_mib": 1166.99755859375,
+          "persistent_added_mib": 60.51953125,
+          "capture_events": [
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "24"
+              ],
+              "seconds": 0.2737418489996344
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "16"
+              ],
+              "seconds": 0.21274439396802336
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "20"
+              ],
+              "seconds": 0.23029678297461942
+            }
+          ]
+        },
+        "baseline/trace4_e0": {
+          "first_call_s": 4.047193595033605,
+          "peak_above_existing_mib": 975.1904296875,
+          "persistent_added_mib": 68.662109375,
+          "capture_events": [
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "20"
+              ],
+              "seconds": 0.22080310800811276
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "16"
+              ],
+              "seconds": 0.20126440498279408
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "12"
+              ],
+              "seconds": 0.20148156298091635
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "8"
+              ],
+              "seconds": 0.1926713070133701
+            }
+          ]
+        },
+        "shared/trace8_e4": {
+          "first_call_s": 5.807228689023759,
+          "peak_above_existing_mib": 1370.1181640625,
+          "persistent_added_mib": 188.54296875,
+          "capture_events": [
+            {
+              "method": "_capture_linearization",
+              "arguments": [],
+              "seconds": 0.1453175019705668
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "24"
+              ],
+              "seconds": 0.19888376805465668
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "16"
+              ],
+              "seconds": 0.16593922598985955
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "20"
+              ],
+              "seconds": 0.18400963599560782
+            }
+          ]
+        },
+        "shared/trace4_e0": {
+          "first_call_s": 3.3400501429568976,
+          "peak_above_existing_mib": 1164.88427734375,
+          "persistent_added_mib": 195.9091796875,
+          "capture_events": [
+            {
+              "method": "_capture_linearization",
+              "arguments": [],
+              "seconds": 0.1544772739871405
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "A",
+                "20"
+              ],
+              "seconds": 0.1832494999980554
+            },
+            {
+              "method": "_capture",
+              "arguments": [
+                "AT",
+                "16"
+              ],
+              "seconds": 0.16680908703710884
+            },
+            {
+              "method": "whole_step._capture",
+              "arguments": [],
+              "seconds": 0.23716243903618306
+            }
+          ]
+        }
+      },
+      "points": [
+        {
+          "sample": 0,
+          "iterate": 0,
+          "residual": 1.0395451048789657,
+          "source_norm_over_sqrt_d": 0.9970557250976563,
+          "accuracy": {
+            "exact": {
+              "gradient": {
+                "relative_error": 1.786644455326831e-05,
+                "absolute_error": 0.7971549034118652,
+                "cosine": 1.000000035656306,
+                "norm_ratio": 0.999996498005658,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.0,
+                "absolute_error": 0.0,
+                "cosine": 1.000000049969918,
+                "norm_ratio": 1.0,
+                "finite": true
+              },
+              "evolved_alpha": 0.0
+            },
+            "baseline/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.025052058240267103,
+                "absolute_error": 1117.758544921875,
+                "cosine": 0.9997031721600064,
+                "norm_ratio": 0.9938631051150743,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00047097720664252685,
+                "absolute_error": 0.05123653635382652,
+                "cosine": 0.9999998377739457,
+                "norm_ratio": 1.0000207587840515,
+                "finite": true
+              },
+              "evolved_alpha": 0.0027999109588563442,
+              "zero_terminal_baseline": {
+                "relative_error": 0.025052058240267103,
+                "absolute_error": 1117.758544921875,
+                "cosine": 0.9997031721600064,
+                "norm_ratio": 0.9938631051150743,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.02503949209963209,
+                "absolute_error": 1117.1978759765625,
+                "cosine": 0.9997033825574404,
+                "norm_ratio": 0.993885342779146,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.025119233605172726,
+                "absolute_error": 1120.7557373046875,
+                "cosine": 0.9997031445707951,
+                "norm_ratio": 0.9935818074195528,
+                "finite": true
+              }
+            },
+            "baseline/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.027056498572105583,
+                "absolute_error": 1207.1915283203125,
+                "cosine": 0.9996501127329546,
+                "norm_ratio": 0.9939538067685321,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00047097720664252685,
+                "absolute_error": 0.05123653635382652,
+                "cosine": 0.9999998377739457,
+                "norm_ratio": 1.0000207587840515,
+                "finite": true
+              },
+              "evolved_alpha": 5.977819819236174e-05,
+              "zero_terminal_baseline": {
+                "relative_error": 0.027056498572105583,
+                "absolute_error": 1207.1915283203125,
+                "cosine": 0.9996501127329546,
+                "norm_ratio": 0.9939538067685321,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.027056192147600657,
+                "absolute_error": 1207.1778564453125,
+                "cosine": 0.9996501019402981,
+                "norm_ratio": 0.9939543320676834,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.027117312892600925,
+                "absolute_error": 1209.9049072265625,
+                "cosine": 0.9996500701257248,
+                "norm_ratio": 0.9936725090730107,
+                "finite": true
+              }
+            },
+            "shared/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.02510835827118096,
+                "absolute_error": 1120.2705078125,
+                "cosine": 0.9997031759545222,
+                "norm_ratio": 0.9936190161094366,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00047097720664252685,
+                "absolute_error": 0.05123653635382652,
+                "cosine": 0.9999998377739457,
+                "norm_ratio": 1.0000207587840515,
+                "finite": true
+              },
+              "evolved_alpha": 0.002800198271870613,
+              "zero_terminal_baseline": {
+                "relative_error": 0.025108339119649402,
+                "absolute_error": 1120.2696533203125,
+                "cosine": 0.9997033700887703,
+                "norm_ratio": 0.9936190161094366,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.02509565533389196,
+                "absolute_error": 1119.7037353515625,
+                "cosine": 0.9997033216935879,
+                "norm_ratio": 0.9936412537735083,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.025178132772512286,
+                "absolute_error": 1123.3836669921875,
+                "cosine": 0.9997031951219094,
+                "norm_ratio": 0.9933375433141981,
+                "finite": true
+              }
+            },
+            "shared/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.02709265666368676,
+                "absolute_error": 1208.8048095703125,
+                "cosine": 0.9996500099510379,
+                "norm_ratio": 0.9937992812681912,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00047097720664252685,
+                "absolute_error": 0.05123653635382652,
+                "cosine": 0.9999998377739457,
+                "norm_ratio": 1.0000207587840515,
+                "finite": true
+              },
+              "evolved_alpha": 5.996368417982012e-05,
+              "zero_terminal_baseline": {
+                "relative_error": 0.02709265666368676,
+                "absolute_error": 1208.8048095703125,
+                "cosine": 0.9996500099510379,
+                "norm_ratio": 0.9937992812681912,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.027092347503248758,
+                "absolute_error": 1208.791015625,
+                "cosine": 0.9996499344571138,
+                "norm_ratio": 0.9937998065673426,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.027155030466037528,
+                "absolute_error": 1211.5877685546875,
+                "cosine": 0.9996500140525262,
+                "norm_ratio": 0.9935178084729528,
+                "finite": true
+              }
+            }
+          },
+          "timing": {
+            "shared/trace4_e0": {
+              "median_s": 2.60652668698458,
+              "min_s": 2.6016037840163335,
+              "samples_s": [
+                2.6016037840163335,
+                2.6114495899528265
+              ],
+              "speedup_vs_exact": 1.2670191546494245
+            },
+            "exact": {
+              "median_s": 3.3025192395143677,
+              "min_s": 3.1833398640155792,
+              "samples_s": [
+                3.421698615013156,
+                3.1833398640155792
+              ]
+            },
+            "shared/trace8_e4": {
+              "median_s": 5.147091353515862,
+              "min_s": 5.128575207025278,
+              "samples_s": [
+                5.128575207025278,
+                5.165607500006445
+              ],
+              "speedup_vs_exact": 0.6416282542291564
+            },
+            "baseline/trace8_e4": {
+              "median_s": 6.006635540485149,
+              "min_s": 6.004841271962505,
+              "samples_s": [
+                6.008429809007794,
+                6.004841271962505
+              ],
+              "speedup_vs_exact": 0.549811823483405
+            },
+            "baseline/trace4_e0": {
+              "median_s": 3.2342172445205506,
+              "min_s": 3.230264824000187,
+              "samples_s": [
+                3.230264824000187,
+                3.238169665040914
+              ],
+              "speedup_vs_exact": 1.0211185550721849
+            }
+          },
+          "orders": [
+            [
+              "shared/trace4_e0",
+              "exact",
+              "shared/trace8_e4",
+              "baseline/trace8_e4",
+              "baseline/trace4_e0"
+            ],
+            [
+              "exact",
+              "baseline/trace8_e4",
+              "baseline/trace4_e0",
+              "shared/trace8_e4",
+              "shared/trace4_e0"
+            ]
+          ]
+        },
+        {
+          "sample": 0,
+          "iterate": 10,
+          "residual": 0.2357580702645293,
+          "source_norm_over_sqrt_d": 0.9977804565429688,
+          "accuracy": {
+            "exact": {
+              "gradient": {
+                "relative_error": 1.6714801431668035e-05,
+                "absolute_error": 0.02463413029909134,
+                "cosine": 0.9999999882487022,
+                "norm_ratio": 0.9999926283611463,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.0,
+                "absolute_error": 0.0,
+                "cosine": 1.0000000495443724,
+                "norm_ratio": 1.0,
+                "finite": true
+              },
+              "evolved_alpha": 0.0
+            },
+            "baseline/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.03719898502886411,
+                "absolute_error": 54.823543548583984,
+                "cosine": 0.9995208176720549,
+                "norm_ratio": 0.9788939212057947,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00011211219990284878,
+                "absolute_error": 0.011299985460937023,
+                "cosine": 1.0000000133106481,
+                "norm_ratio": 0.9999977291611363,
+                "finite": true
+              },
+              "evolved_alpha": 0.00030377862276509404,
+              "zero_terminal_baseline": {
+                "relative_error": 0.037199013500783834,
+                "absolute_error": 54.823585510253906,
+                "cosine": 0.9995206670853517,
+                "norm_ratio": 0.9788938383783918,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.03719029850499023,
+                "absolute_error": 54.81074142456055,
+                "cosine": 0.9995204469991319,
+                "norm_ratio": 0.9789177754978154,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.03723351111407081,
+                "absolute_error": 54.874427795410156,
+                "cosine": 0.9995213453656281,
+                "norm_ratio": 0.9787981727281002,
+                "finite": true
+              }
+            },
+            "baseline/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.03734212113441405,
+                "absolute_error": 55.03449630737305,
+                "cosine": 0.9995233499838181,
+                "norm_ratio": 0.9785084424729313,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00011211219990284878,
+                "absolute_error": 0.011299985460937023,
+                "cosine": 1.0000000133106481,
+                "norm_ratio": 0.9999977291611363,
+                "finite": true
+              },
+              "evolved_alpha": 0.0008115445380099118,
+              "zero_terminal_baseline": {
+                "relative_error": 0.03734212113441405,
+                "absolute_error": 55.03449630737305,
+                "cosine": 0.9995233499838181,
+                "norm_ratio": 0.9785084424729313,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.03731756280946906,
+                "absolute_error": 54.9983024597168,
+                "cosine": 0.9995228975177026,
+                "norm_ratio": 0.9785722195731258,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.03737767997380004,
+                "absolute_error": 55.0869026184082,
+                "cosine": 0.9995240287935925,
+                "norm_ratio": 0.9784127768226398,
+                "finite": true
+              }
+            },
+            "shared/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.037221110298850384,
+                "absolute_error": 54.85615158081055,
+                "cosine": 0.9995204456244902,
+                "norm_ratio": 0.9788658427162286,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00011211219990284878,
+                "absolute_error": 0.011299985460937023,
+                "cosine": 1.0000000133106481,
+                "norm_ratio": 0.9999977291611363,
+                "finite": true
+              },
+              "evolved_alpha": 0.0003037980932276696,
+              "zero_terminal_baseline": {
+                "relative_error": 0.037221110298850384,
+                "absolute_error": 54.85615158081055,
+                "cosine": 0.9995204456244902,
+                "norm_ratio": 0.9788658427162286,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.037212382361275075,
+                "absolute_error": 54.84328842163086,
+                "cosine": 0.9995201079571929,
+                "norm_ratio": 0.9788897798356522,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.03725560273542468,
+                "absolute_error": 54.906986236572266,
+                "cosine": 0.9995211754748239,
+                "norm_ratio": 0.9787700114111313,
+                "finite": true
+              }
+            },
+            "shared/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.03733635168813429,
+                "absolute_error": 55.02599334716797,
+                "cosine": 0.9995233110716626,
+                "norm_ratio": 0.9785210322381646,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.00011211219990284878,
+                "absolute_error": 0.011299985460937023,
+                "cosine": 1.0000000133106481,
+                "norm_ratio": 0.9999977291611363,
+                "finite": true
+              },
+              "evolved_alpha": 0.0008115175878629088,
+              "zero_terminal_baseline": {
+                "relative_error": 0.03733635168813429,
+                "absolute_error": 55.02599334716797,
+                "cosine": 0.9995233110716626,
+                "norm_ratio": 0.9785210322381646,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.0373117933631893,
+                "absolute_error": 54.98979949951172,
+                "cosine": 0.9995228916311443,
+                "norm_ratio": 0.9785848921657618,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.03737183028847376,
+                "absolute_error": 55.07828140258789,
+                "cosine": 0.9995240744823861,
+                "norm_ratio": 0.9784252837604701,
+                "finite": true
+              }
+            }
+          },
+          "timing": {
+            "exact": {
+              "median_s": 3.341179099981673,
+              "min_s": 3.2785437629790977,
+              "samples_s": [
+                3.2785437629790977,
+                3.4038144369842485
+              ]
+            },
+            "baseline/trace4_e0": {
+              "median_s": 3.248072296002647,
+              "min_s": 3.243519716023002,
+              "samples_s": [
+                3.243519716023002,
+                3.252624875982292
+              ],
+              "speedup_vs_exact": 1.0286652498756297
+            },
+            "shared/trace4_e0": {
+              "median_s": 2.615430248028133,
+              "min_s": 2.612141022051219,
+              "samples_s": [
+                2.612141022051219,
+                2.6187194740050472
+              ],
+              "speedup_vs_exact": 1.2774873665626174
+            },
+            "baseline/trace8_e4": {
+              "median_s": 6.03014266648097,
+              "min_s": 6.025189712992869,
+              "samples_s": [
+                6.025189712992869,
+                6.03509561996907
+              ],
+              "speedup_vs_exact": 0.5540796105130122
+            },
+            "shared/trace8_e4": {
+              "median_s": 5.177245025493903,
+              "min_s": 5.173950871976558,
+              "samples_s": [
+                5.173950871976558,
+                5.180539179011248
+              ],
+              "speedup_vs_exact": 0.6453585031283947
+            }
+          },
+          "orders": [
+            [
+              "exact",
+              "baseline/trace4_e0",
+              "shared/trace4_e0",
+              "baseline/trace8_e4",
+              "shared/trace8_e4"
+            ],
+            [
+              "baseline/trace8_e4",
+              "shared/trace8_e4",
+              "exact",
+              "baseline/trace4_e0",
+              "shared/trace4_e0"
+            ]
+          ]
+        },
+        {
+          "sample": 1,
+          "iterate": 0,
+          "residual": 0.9707754864192344,
+          "source_norm_over_sqrt_d": 1.0076336669921875,
+          "accuracy": {
+            "exact": {
+              "gradient": {
+                "relative_error": 1.2165968869022452e-05,
+                "absolute_error": 0.02514461614191532,
+                "cosine": 0.9999999384691042,
+                "norm_ratio": 0.9999961018757065,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.0,
+                "absolute_error": 0.0,
+                "cosine": 1.0000000318066549,
+                "norm_ratio": 1.0,
+                "finite": true
+              },
+              "evolved_alpha": 0.0
+            },
+            "baseline/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.055973351300142575,
+                "absolute_error": 115.68568420410156,
+                "cosine": 0.998742909864684,
+                "norm_ratio": 0.9738370891170276,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 7.86302984296996e-05,
+                "absolute_error": 0.008177921175956726,
+                "cosine": 0.9999999416322432,
+                "norm_ratio": 0.9999976526002404,
+                "finite": true
+              },
+              "evolved_alpha": 0.002286303788423538,
+              "zero_terminal_baseline": {
+                "relative_error": 0.055973347608737,
+                "absolute_error": 115.68567657470703,
+                "cosine": 0.998742909864684,
+                "norm_ratio": 0.9738370891170276,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.05572074841623935,
+                "absolute_error": 115.16360473632812,
+                "cosine": 0.998745458352833,
+                "norm_ratio": 0.9743042734073505,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.05595800981854822,
+                "absolute_error": 115.65397644042969,
+                "cosine": 0.9987428134690504,
+                "norm_ratio": 0.9738714634857972,
+                "finite": true
+              }
+            },
+            "baseline/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.056199870712210935,
+                "absolute_error": 116.15385437011719,
+                "cosine": 0.998747468232609,
+                "norm_ratio": 0.9731517279912493,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 7.86302984296996e-05,
+                "absolute_error": 0.008177921175956726,
+                "cosine": 0.9999999416322432,
+                "norm_ratio": 0.9999976526002404,
+                "finite": true
+              },
+              "evolved_alpha": 0.0028466996736824512,
+              "zero_terminal_baseline": {
+                "relative_error": 0.056199870712210935,
+                "absolute_error": 116.15385437011719,
+                "cosine": 0.998747468232609,
+                "norm_ratio": 0.9731517279912493,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.05588482032009507,
+                "absolute_error": 115.5027084350586,
+                "cosine": 0.998750595210751,
+                "norm_ratio": 0.9737335525732936,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.05618466212121749,
+                "absolute_error": 116.12242126464844,
+                "cosine": 0.9987474899796227,
+                "norm_ratio": 0.9731863386099762,
+                "finite": true
+              }
+            },
+            "shared/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.05595667352972792,
+                "absolute_error": 115.65121459960938,
+                "cosine": 0.9987435112219073,
+                "norm_ratio": 0.9738519728643299,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 7.86302984296996e-05,
+                "absolute_error": 0.008177921175956726,
+                "cosine": 0.9999999416322432,
+                "norm_ratio": 0.9999976526002404,
+                "finite": true
+              },
+              "evolved_alpha": 0.0022863016929477453,
+              "zero_terminal_baseline": {
+                "relative_error": 0.055956684603944665,
+                "absolute_error": 115.65123748779297,
+                "cosine": 0.9987434511252327,
+                "norm_ratio": 0.9738519728643299,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.05570376795056706,
+                "absolute_error": 115.12850952148438,
+                "cosine": 0.998746059858147,
+                "norm_ratio": 0.9743190980921634,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.05594130251688892,
+                "absolute_error": 115.61944580078125,
+                "cosine": 0.9987434133802554,
+                "norm_ratio": 0.9738865244205674,
+                "finite": true
+              }
+            },
+            "shared/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.0561730046623929,
+                "absolute_error": 116.09832763671875,
+                "cosine": 0.9987480627946478,
+                "norm_ratio": 0.9731898823593338,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 7.86302984296996e-05,
+                "absolute_error": 0.008177921175956726,
+                "cosine": 0.9999999416322432,
+                "norm_ratio": 0.9999976526002404,
+                "finite": true
+              },
+              "evolved_alpha": 0.0028467050287872553,
+              "zero_terminal_baseline": {
+                "relative_error": 0.0561730046623929,
+                "absolute_error": 116.09832763671875,
+                "cosine": 0.9987480627946478,
+                "norm_ratio": 0.9731898823593338,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.05585768848907521,
+                "absolute_error": 115.4466323852539,
+                "cosine": 0.99875118929502,
+                "norm_ratio": 0.9737717069413782,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.05615795849324502,
+                "absolute_error": 116.06723022460938,
+                "cosine": 0.9987480253362935,
+                "norm_ratio": 0.9732243748530821,
+                "finite": true
+              }
+            }
+          },
+          "timing": {
+            "exact": {
+              "median_s": 3.27916737247142,
+              "min_s": 3.273184526944533,
+              "samples_s": [
+                3.273184526944533,
+                3.285150217998307
+              ]
+            },
+            "baseline/trace4_e0": {
+              "median_s": 3.2418208264862187,
+              "min_s": 3.2358856829814613,
+              "samples_s": [
+                3.2358856829814613,
+                3.247755969990976
+              ],
+              "speedup_vs_exact": 1.011520237540605
+            },
+            "shared/trace8_e4": {
+              "median_s": 5.163931273506023,
+              "min_s": 5.156445844040718,
+              "samples_s": [
+                5.156445844040718,
+                5.171416702971328
+              ],
+              "speedup_vs_exact": 0.6350137518861763
+            },
+            "baseline/trace8_e4": {
+              "median_s": 6.025843502982752,
+              "min_s": 6.019975345989224,
+              "samples_s": [
+                6.019975345989224,
+                6.031711659976281
+              ],
+              "speedup_vs_exact": 0.5441839587848994
+            },
+            "shared/trace4_e0": {
+              "median_s": 2.6165346969792154,
+              "min_s": 2.613173306977842,
+              "samples_s": [
+                2.613173306977842,
+                2.6198960869805887
+              ],
+              "speedup_vs_exact": 1.2532481897745185
+            }
+          },
+          "orders": [
+            [
+              "exact",
+              "baseline/trace4_e0",
+              "shared/trace8_e4",
+              "baseline/trace8_e4",
+              "shared/trace4_e0"
+            ],
+            [
+              "shared/trace8_e4",
+              "baseline/trace8_e4",
+              "shared/trace4_e0",
+              "exact",
+              "baseline/trace4_e0"
+            ]
+          ]
+        },
+        {
+          "sample": 1,
+          "iterate": 10,
+          "residual": 0.9691705098708736,
+          "source_norm_over_sqrt_d": 1.0076478271484375,
+          "accuracy": {
+            "exact": {
+              "gradient": {
+                "relative_error": 1.3953700753006737e-05,
+                "absolute_error": 0.029384596273303032,
+                "cosine": 1.0000000162968943,
+                "norm_ratio": 1.0000015071382122,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 0.0,
+                "absolute_error": 0.0,
+                "cosine": 0.9999999544538367,
+                "norm_ratio": 1.0,
+                "finite": true
+              },
+              "evolved_alpha": 0.0
+            },
+            "baseline/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.05523120282729854,
+                "absolute_error": 116.30940246582031,
+                "cosine": 0.9987674556543681,
+                "norm_ratio": 0.974539218576661,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 8.144407008932115e-05,
+                "absolute_error": 0.008453886024653912,
+                "cosine": 0.9999998953999404,
+                "norm_ratio": 1.000001690522636,
+                "finite": true
+              },
+              "evolved_alpha": 0.002479241695255041,
+              "zero_terminal_baseline": {
+                "relative_error": 0.05523119920437015,
+                "absolute_error": 116.30939483642578,
+                "cosine": 0.9987674556543681,
+                "norm_ratio": 0.974539218576661,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.05495685295165483,
+                "absolute_error": 115.73165893554688,
+                "cosine": 0.9987705793179448,
+                "norm_ratio": 0.9750417912036226,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.055244930102987394,
+                "absolute_error": 116.33831024169922,
+                "cosine": 0.9987674856640335,
+                "norm_ratio": 0.9745080324090364,
+                "finite": true
+              }
+            },
+            "baseline/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.05542192102387087,
+                "absolute_error": 116.71102905273438,
+                "cosine": 0.9987722771294402,
+                "norm_ratio": 0.9739178138983416,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 8.144407008932115e-05,
+                "absolute_error": 0.008453886024653912,
+                "cosine": 0.9999998953999404,
+                "norm_ratio": 1.000001690522636,
+                "finite": true
+              },
+              "evolved_alpha": 0.0028953636065125465,
+              "zero_terminal_baseline": {
+                "relative_error": 0.05542192102387087,
+                "absolute_error": 116.71102905273438,
+                "cosine": 0.9987722771294402,
+                "norm_ratio": 0.9739178138983416,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.055101041878849503,
+                "absolute_error": 116.0353012084961,
+                "cosine": 0.9987755468717502,
+                "norm_ratio": 0.9745051340663203,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.05543544541556959,
+                "absolute_error": 116.73950958251953,
+                "cosine": 0.998772304187804,
+                "norm_ratio": 0.9738867436644257,
+                "finite": true
+              }
+            },
+            "shared/trace8_e4": {
+              "gradient": {
+                "relative_error": 0.055227945814671386,
+                "absolute_error": 116.30254364013672,
+                "cosine": 0.9987677774142654,
+                "norm_ratio": 0.9745315669518907,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 8.144407008932115e-05,
+                "absolute_error": 0.008453886024653912,
+                "cosine": 0.9999998953999404,
+                "norm_ratio": 1.000001690522636,
+                "finite": true
+              },
+              "evolved_alpha": 0.0024792214389890432,
+              "zero_terminal_baseline": {
+                "relative_error": 0.05522794219174299,
+                "absolute_error": 116.30253601074219,
+                "cosine": 0.9987677774142654,
+                "norm_ratio": 0.9745315669518907,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.05495345102189188,
+                "absolute_error": 115.72449493408203,
+                "cosine": 0.9987710165715684,
+                "norm_ratio": 0.9750341395788522,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.055241698450859,
+                "absolute_error": 116.33150482177734,
+                "cosine": 0.9987678043121221,
+                "norm_ratio": 0.9745004967179747,
+                "finite": true
+              }
+            },
+            "shared/trace4_e0": {
+              "gradient": {
+                "relative_error": 0.05542043924615729,
+                "absolute_error": 116.7079086303711,
+                "cosine": 0.9987726802272899,
+                "norm_ratio": 0.9739028584499269,
+                "finite": true
+              },
+              "terminal_state": {
+                "relative_error": 8.144407008932115e-05,
+                "absolute_error": 0.008453886024653912,
+                "cosine": 0.9999998953999404,
+                "norm_ratio": 1.000001690522636,
+                "finite": true
+              },
+              "evolved_alpha": 0.002895413665100932,
+              "zero_terminal_baseline": {
+                "relative_error": 0.055420442869085686,
+                "absolute_error": 116.70791625976562,
+                "cosine": 0.9987726802272899,
+                "norm_ratio": 0.9739028584499269,
+                "finite": true
+              },
+              "evolved_terminal_baseline": {
+                "relative_error": 0.055099335479575434,
+                "absolute_error": 116.03170776367188,
+                "cosine": 0.998776068599802,
+                "norm_ratio": 0.9744900626841969,
+                "finite": true
+              },
+              "common_terminal_gradient": {
+                "relative_error": 0.0554339056710017,
+                "absolute_error": 116.73626708984375,
+                "cosine": 0.9987727041739897,
+                "norm_ratio": 0.9738719041497196,
+                "finite": true
+              }
+            }
+          },
+          "timing": {
+            "baseline/trace8_e4": {
+              "median_s": 6.03695457149297,
+              "min_s": 6.030406443984248,
+              "samples_s": [
+                6.030406443984248,
+                6.043502699001692
+              ],
+              "speedup_vs_exact": 0.5389562020018649
+            },
+            "exact": {
+              "median_s": 3.2536541075096466,
+              "min_s": 3.216902948974166,
+              "samples_s": [
+                3.216902948974166,
+                3.290405266045127
+              ]
+            },
+            "shared/trace8_e4": {
+              "median_s": 5.177265746984631,
+              "min_s": 5.175813267997,
+              "samples_s": [
+                5.175813267997,
+                5.178718225972261
+              ],
+              "speedup_vs_exact": 0.6284502798421456
+            },
+            "shared/trace4_e0": {
+              "median_s": 2.623375405004481,
+              "min_s": 2.621221094042994,
+              "samples_s": [
+                2.621221094042994,
+                2.6255297159659676
+              ],
+              "speedup_vs_exact": 1.2402548645164604
+            },
+            "baseline/trace4_e0": {
+              "median_s": 3.254669772955822,
+              "min_s": 3.251823278958909,
+              "samples_s": [
+                3.2575162669527344,
+                3.251823278958909
+              ],
+              "speedup_vs_exact": 0.9996879359452641
+            }
+          },
+          "orders": [
+            [
+              "baseline/trace8_e4",
+              "exact",
+              "shared/trace8_e4",
+              "shared/trace4_e0",
+              "baseline/trace4_e0"
+            ],
+            [
+              "baseline/trace8_e4",
+              "exact",
+              "baseline/trace4_e0",
+              "shared/trace8_e4",
+              "shared/trace4_e0"
+            ]
+          ]
+        }
+      ]
+    }
+  }
+}

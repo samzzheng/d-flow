@@ -1,0 +1,8 @@
+{
+  "correctness": "passed",
+  "updates": 4,
+  "max_loss_difference": 0.0,
+  "parameters_ema_adam": "bitwise equal",
+  "timings": [],
+  "timing_note": "Short alternating rounds; existing GPU training is left running. Not an isolated whole-epoch throughput claim."
+}

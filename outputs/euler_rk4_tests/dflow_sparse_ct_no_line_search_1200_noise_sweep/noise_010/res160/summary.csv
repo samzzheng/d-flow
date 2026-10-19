@@ -1,0 +1,3 @@
+resolution,method,samples,mean_image_relative_l2,median_image_relative_l2,mean_measurement_relative_l2_noisy,mean_measurement_relative_l2_clean,mean_elapsed_s,median_elapsed_s,mean_outer_steps,mean_closure_evaluations,closure_budget_reached_count,mean_peak_gpu_memory_mb
+160,forward_euler,5,0.04179529920220375,0.03199814260005951,0.099907548725605,0.011155595909804106,3838.907924281433,3802.378800657578,1200.0,1200.0,5,587.91982421875
+160,rk4,5,0.5087894640862942,0.052700839936733246,0.08827119395136833,0.4971355301328003,15449.659002870136,15234.054456164129,1200.0,1200.0,5,618.89326171875

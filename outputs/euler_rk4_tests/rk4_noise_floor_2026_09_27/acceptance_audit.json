@@ -1,0 +1,19 @@
+{
+  "acceptance_policy": "legacy_rounded_rhs",
+  "runs": {
+    "sample1_euler": {
+      "last_accepted_index": 96,
+      "equal_consecutive_sources": [],
+      "equal_consecutive_objectives": [],
+      "forward_trials": 98,
+      "failed_searches": 0
+    },
+    "sample1_rk4": {
+      "last_accepted_index": 94,
+      "equal_consecutive_sources": [],
+      "equal_consecutive_objectives": [],
+      "forward_trials": 96,
+      "failed_searches": 0
+    }
+  }
+}

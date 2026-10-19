@@ -1,0 +1,8 @@
+{
+  "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 taskset -c 16-23 .venv/bin/python -m unittest discover -s tests -q",
+  "collected": 61,
+  "passed": 55,
+  "skipped_cuda": 6,
+  "unittest_seconds": 7.692,
+  "exit_code": 0
+}

@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-13T00:59:00.595644-04:00",
+  "settings_differences": {
+    "noise_relative": [
+      0.1,
+      0.2
+    ]
+  },
+  "paired_cases": 360,
+  "method_runs": 1080,
+  "source_hashes_verified": true,
+  "noise_checks": [
+    {
+      "job": "r250_n1_ct10",
+      "cpu_noise_relative": 0.2000000054752823,
+      "relative_difference_from_twice_saved_10_percent_noise": 2.8243059077850374e-07,
+      "acquired_only_mri": false
+    },
+    {
+      "job": "r250_n1_mri4",
+      "cpu_noise_relative": 0.1999969687302388,
+      "relative_difference_from_twice_saved_10_percent_noise": 1.5171907515942944e-05,
+      "acquired_only_mri": true
+    },
+    {
+      "job": "r200_n1_ct10",
+      "cpu_noise_relative": 0.20000000374034144,
+      "relative_difference_from_twice_saved_10_percent_noise": 2.627064519540174e-07,
+      "acquired_only_mri": false
+    },
+    {
+      "job": "r200_n1_mri4",
+      "cpu_noise_relative": 0.19999891449811028,
+      "relative_difference_from_twice_saved_10_percent_noise": 5.414936203972056e-06,
+      "acquired_only_mri": true
+    },
+    {
+      "job": "r160_n1_ct10",
+      "cpu_noise_relative": 0.19999998790136514,
+      "relative_difference_from_twice_saved_10_percent_noise": 3.466628321007232e-07,
+      "acquired_only_mri": false
+    },
+    {
+      "job": "r160_n1_mri4",
+      "cpu_noise_relative": 0.19999952713963556,
+      "relative_difference_from_twice_saved_10_percent_noise": 2.402777578995102e-06,
+      "acquired_only_mri": true
+    },
+    {
+      "job": "r128_n1_ct10",
+      "cpu_noise_relative": 0.19999998644906633,
+      "relative_difference_from_twice_saved_10_percent_noise": 2.7788100478516263e-07,
+      "acquired_only_mri": false
+    },
+    {
+      "job": "r128_n1_mri4",
+      "cpu_noise_relative": 0.19999965450528434,
+      "relative_difference_from_twice_saved_10_percent_noise": 1.7463548384169011e-06,
+      "acquired_only_mri": true
+    },
+    {
+      "job": "r96_n1_ct10",
+      "cpu_noise_relative": 0.19999998938851724,
+      "relative_difference_from_twice_saved_10_percent_noise": 3.2687193253313173e-07,
+      "acquired_only_mri": false
+    },
+    {
+      "job": "r96_n1_mri4",
+      "cpu_noise_relative": 0.199999991447785,
+      "relative_difference_from_twice_saved_10_percent_noise": 2.753909035637978e-07,
+      "acquired_only_mri": true
+    },
+    {
+      "job": "r64_n1_ct10",
+      "cpu_noise_relative": 0.2000000032175683,
+      "relative_difference_from_twice_saved_10_percent_noise": 3.374301179315539e-07,
+      "acquired_only_mri": false
+    },
+    {
+      "job": "r64_n1_mri4",
+      "cpu_noise_relative": 0.19999995891598424,
+      "relative_difference_from_twice_saved_10_percent_noise": 4.579002633002395e-07,
+      "acquired_only_mri": true
+    }
+  ],
+  "noise_check_note": "CPU audit versus saved GPU-normalized FP32 noise; norm tolerance2e-5 and vector relative tolerance1e-4 allow reduction/subtraction roundoff. Exact seed and mask pairing unchanged.",
+  "gpu_smoke": "Pending dependency completion; mandatory two-update CT/MRI checks at resolution250 before production"
+}

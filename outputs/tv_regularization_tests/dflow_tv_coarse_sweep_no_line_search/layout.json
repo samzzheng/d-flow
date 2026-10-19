@@ -1,0 +1,23 @@
+{
+  "layout": "resolution/tv_weight",
+  "resolutions": [
+    64,
+    96,
+    128,
+    160
+  ],
+  "tv_weights": [
+    "0",
+    "1e-6",
+    "3e-6",
+    "1e-5",
+    "3e-5",
+    "1e-4",
+    "3e-4",
+    "1e-3"
+  ],
+  "samples_per_resolution_weight": 5,
+  "figures": 160,
+  "aggregate_results": "outputs/dflow_tv_coarse_sweep_no_line_search/aggregate_by_tv_weight",
+  "raw_provenance": "outputs/dflow_tv_coarse_sweep_no_line_search/provenance"
+}

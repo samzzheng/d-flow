@@ -1,0 +1,20 @@
+{
+  "pid": 2190215,
+  "gpu": 1,
+  "updated_at": "2026-10-11T17:43:58.226782-04:00",
+  "status": "finished",
+  "active": null,
+  "pending": [],
+  "failures": {},
+  "shared_controllers": {
+    "2165033": [
+      33000,
+      "172745099"
+    ]
+  },
+  "external": [],
+  "memory_total_used_mib": [
+    49140,
+    1098
+  ]
+}

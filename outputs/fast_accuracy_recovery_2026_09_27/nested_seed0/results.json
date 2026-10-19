@@ -1,0 +1,102 @@
+{
+  "settings": {
+    "mode": "points",
+    "profiles": [
+      "fast",
+      "sketch32"
+    ],
+    "threads": 4,
+    "sample": 0,
+    "start_step": 20,
+    "source_file": "/home/samzheng/d-flow/outputs/accuracy_fast_euler_2026_09_27/exact_from_z0/sources_sample0_exact.pt",
+    "seed": 0,
+    "nested_sketch": true,
+    "outer_steps": 10,
+    "history": 100,
+    "target_tau": 1.0,
+    "keep_terminal_alpha": false,
+    "out": "outputs/fast_accuracy_recovery_2026_09_27/nested_seed0"
+  },
+  "protocol": {
+    "device": "cpu",
+    "resolution": 250,
+    "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+    "checkpoint_sha256": "8ddc304ec6f1b70339f55d015b018f0f5571f006ae9b0a23490076aa9d491ae5",
+    "flow_steps": 100,
+    "integrator": "Euler",
+    "noise": 0.01,
+    "base_seed": 20260807,
+    "angles": 15,
+    "source_prior": "none",
+    "objective": "relative_scaled",
+    "factor_refresh": "every gradient",
+    "armijo_initial_step_policy": "first_iteration_only",
+    "optimizer_history_reset_at_start": true,
+    "history": 100,
+    "noise_norm": 0.15301357209682465,
+    "normalized_noise_floor": 0.010000208134638703,
+    "timing_scope": "CPU diagnostic; not a CUDA speed claim"
+  },
+  "runs": [
+    {
+      "profile": "fast",
+      "parameters": {
+        "rank": 8,
+        "trace_probes": 4,
+        "enrichment_probes": 0,
+        "initialization_oversampling": 8
+      },
+      "seconds": 146.09260982600972,
+      "terminal_alpha": -0.0002832423779182136,
+      "zero_alpha": {
+        "relative_error": 0.3687390188049801,
+        "cosine": 0.9295555949211121,
+        "norm_ratio": 0.9231993805639673
+      },
+      "retained_alpha": {
+        "relative_error": 0.3690843429403046,
+        "cosine": 0.9294183254241943,
+        "norm_ratio": 0.9231182902354769
+      },
+      "best_gradient_in_V_relative_error": 0.36620858311653137,
+      "V_orthogonality_defect": 8.506081940140575e-05,
+      "coefficient_component_relative_error": 0.043124955147504807,
+      "primal_relative_error": 1.1899873442189346e-07
+    },
+    {
+      "profile": "sketch32",
+      "parameters": {
+        "rank": 8,
+        "trace_probes": 4,
+        "enrichment_probes": 0,
+        "initialization_oversampling": 32
+      },
+      "seconds": 157.98056785698282,
+      "terminal_alpha": -0.0002832423779182136,
+      "zero_alpha": {
+        "relative_error": 0.3232775360974671,
+        "cosine": 0.9464196562767029,
+        "norm_ratio": 0.9316712236090862
+      },
+      "retained_alpha": {
+        "relative_error": 0.32360997576697853,
+        "cosine": 0.9463058710098267,
+        "norm_ratio": 0.9315696817475589
+      },
+      "best_gradient_in_V_relative_error": 0.3107488453388214,
+      "V_orthogonality_defect": 7.445043593179435e-05,
+      "coefficient_component_relative_error": 0.08912710845470428,
+      "primal_relative_error": 1.1899873442189346e-07
+    }
+  ],
+  "initial": {
+    "objective": 19.264236450195312,
+    "residual": 0.01755641716110311,
+    "residual_over_noise": 1.755605626374157,
+    "image_relative_l2": 0.026874523609876633,
+    "raw_image_relative_l2": 0.0326625257730484,
+    "clamped_noisy_residual": 0.011283366940915585,
+    "clamped_clean_residual": 0.005095446947962046
+  },
+  "exact_gradient_seconds": 24.58580942300614
+}

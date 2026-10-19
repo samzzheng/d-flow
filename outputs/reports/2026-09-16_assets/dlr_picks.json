@@ -1,0 +1,27 @@
+{
+ "64": {
+  "best": 3,
+  "median": 0,
+  "worst": 2
+ },
+ "96": {
+  "best": 3,
+  "median": 2,
+  "worst": 4
+ },
+ "128": {
+  "best": 3,
+  "median": 2,
+  "worst": 0
+ },
+ "160": {
+  "best": 1,
+  "median": 2,
+  "worst": 4
+ },
+ "200": {
+  "best": 0,
+  "median": 4,
+  "worst": 1
+ }
+}

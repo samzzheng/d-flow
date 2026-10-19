@@ -1,0 +1,247 @@
+{
+  "definition": "c=Re<epsilon,A(x_hat)-A(x_GT)>/||epsilon||^2; c=1 fits the noise component; c=0 fits none of that component.",
+  "scope": "All 30 samples at 64px, single circles, CT10 and MRI4, each of 1/5/10/20% noise; saved terminal measurements only. No clipping or new model evaluations.",
+  "max_decomposition_relative_error": 4.103438145697405e-15,
+  "groups": [
+    {
+      "noise_percent": 1,
+      "problem": "ct10",
+      "method": "d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.9017501823039384,
+      "median_perpendicular_error_over_noise": 0.213853968262821,
+      "median_residual_over_noise": 0.23475939146110278,
+      "median_image_error_percent": 3.9673449429349943
+    },
+    {
+      "noise_percent": 1,
+      "problem": "ct10",
+      "method": "p_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.024975614721273676,
+      "median_perpendicular_error_over_noise": 0.6084513675874768,
+      "median_residual_over_noise": 1.1832911009883191,
+      "median_image_error_percent": 3.4310481011842446
+    },
+    {
+      "noise_percent": 1,
+      "problem": "ct10",
+      "method": "dlr_d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.0009132841885979345,
+      "median_perpendicular_error_over_noise": 0.5073552989346103,
+      "median_residual_over_noise": 1.086795848471016,
+      "median_image_error_percent": 2.1790300764705095
+    },
+    {
+      "noise_percent": 1,
+      "problem": "mri4",
+      "method": "d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.5906358350250963,
+      "median_perpendicular_error_over_noise": 0.40663612854358144,
+      "median_residual_over_noise": 0.584644888099044,
+      "median_image_error_percent": 1.457255238499231
+    },
+    {
+      "noise_percent": 1,
+      "problem": "mri4",
+      "method": "p_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.29524607495443056,
+      "median_perpendicular_error_over_noise": 0.8891607116694683,
+      "median_residual_over_noise": 1.1783083013169038,
+      "median_image_error_percent": 2.178751919270268
+    },
+    {
+      "noise_percent": 1,
+      "problem": "mri4",
+      "method": "dlr_d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.0038242240636273102,
+      "median_perpendicular_error_over_noise": 1.2031331586119047,
+      "median_residual_over_noise": 1.5541947135188887,
+      "median_image_error_percent": 2.0264978129449718
+    },
+    {
+      "noise_percent": 5,
+      "problem": "ct10",
+      "method": "d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.9919920010529988,
+      "median_perpendicular_error_over_noise": 0.08826038678008266,
+      "median_residual_over_noise": 0.08860807277495691,
+      "median_image_error_percent": 32.765221078175
+    },
+    {
+      "noise_percent": 5,
+      "problem": "ct10",
+      "method": "p_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.015124997149946993,
+      "median_perpendicular_error_over_noise": 0.19346501995095758,
+      "median_residual_over_noise": 1.0120507511078753,
+      "median_image_error_percent": 4.134793179462289
+    },
+    {
+      "noise_percent": 5,
+      "problem": "ct10",
+      "method": "dlr_d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.008299776018335581,
+      "median_perpendicular_error_over_noise": 0.1446989440114042,
+      "median_residual_over_noise": 1.0014147612539932,
+      "median_image_error_percent": 2.8133659944084286
+    },
+    {
+      "noise_percent": 5,
+      "problem": "mri4",
+      "method": "d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.5677742061559121,
+      "median_perpendicular_error_over_noise": 0.4089912657020556,
+      "median_residual_over_noise": 0.5744386208363339,
+      "median_image_error_percent": 4.7545127955628175
+    },
+    {
+      "noise_percent": 5,
+      "problem": "mri4",
+      "method": "p_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.7184869276170399,
+      "median_perpendicular_error_over_noise": 0.41470702130081327,
+      "median_residual_over_noise": 0.5305554250070283,
+      "median_image_error_percent": 7.1145293000160486
+    },
+    {
+      "noise_percent": 5,
+      "problem": "mri4",
+      "method": "dlr_d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.003523016013358557,
+      "median_perpendicular_error_over_noise": 0.2406859399810971,
+      "median_residual_over_noise": 1.0255867232240008,
+      "median_image_error_percent": 2.040895990648784
+    },
+    {
+      "noise_percent": 10,
+      "problem": "ct10",
+      "method": "d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.9918627303640997,
+      "median_perpendicular_error_over_noise": 0.08979006039289861,
+      "median_residual_over_noise": 0.09015804215506512,
+      "median_image_error_percent": 57.44770654935988
+    },
+    {
+      "noise_percent": 10,
+      "problem": "ct10",
+      "method": "p_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.012219859447227453,
+      "median_perpendicular_error_over_noise": 0.14356942886093044,
+      "median_residual_over_noise": 1.0023855033226456,
+      "median_image_error_percent": 6.325566571248
+    },
+    {
+      "noise_percent": 10,
+      "problem": "ct10",
+      "method": "dlr_d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.00987509018619144,
+      "median_perpendicular_error_over_noise": 0.11577025574445288,
+      "median_residual_over_noise": 0.9972380489450805,
+      "median_image_error_percent": 4.37611856026467
+    },
+    {
+      "noise_percent": 10,
+      "problem": "mri4",
+      "method": "d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.46338499673522426,
+      "median_perpendicular_error_over_noise": 0.3793659735862246,
+      "median_residual_over_noise": 0.634947825194373,
+      "median_image_error_percent": 7.142126445805825
+    },
+    {
+      "noise_percent": 10,
+      "problem": "mri4",
+      "method": "p_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.7270418808930089,
+      "median_perpendicular_error_over_noise": 0.4106149894626657,
+      "median_residual_over_noise": 0.5224106293004642,
+      "median_image_error_percent": 12.958594548627259
+    },
+    {
+      "noise_percent": 10,
+      "problem": "mri4",
+      "method": "dlr_d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.004107444779121705,
+      "median_perpendicular_error_over_noise": 0.1435016120757538,
+      "median_residual_over_noise": 1.0055341374888211,
+      "median_image_error_percent": 2.3027734802565565
+    },
+    {
+      "noise_percent": 20,
+      "problem": "ct10",
+      "method": "d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.9918973532745697,
+      "median_perpendicular_error_over_noise": 0.08979813153738392,
+      "median_residual_over_noise": 0.0901629494846927,
+      "median_image_error_percent": 120.98864723634335
+    },
+    {
+      "noise_percent": 20,
+      "problem": "ct10",
+      "method": "p_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.047825630165694605,
+      "median_perpendicular_error_over_noise": 0.12567873643189512,
+      "median_residual_over_noise": 0.9647128157545837,
+      "median_image_error_percent": 11.592598927202607
+    },
+    {
+      "noise_percent": 20,
+      "problem": "ct10",
+      "method": "dlr_d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.008053330467178894,
+      "median_perpendicular_error_over_noise": 0.10669105134898783,
+      "median_residual_over_noise": 0.9974330396642292,
+      "median_image_error_percent": 5.321969286580822
+    },
+    {
+      "noise_percent": 20,
+      "problem": "mri4",
+      "method": "d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.6617794562555468,
+      "median_perpendicular_error_over_noise": 0.40349703046149277,
+      "median_residual_over_noise": 0.5811136470917722,
+      "median_image_error_percent": 23.335801791738852
+    },
+    {
+      "noise_percent": 20,
+      "problem": "mri4",
+      "method": "p_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.7139945502044687,
+      "median_perpendicular_error_over_noise": 0.410604253853324,
+      "median_residual_over_noise": 0.5347898701692384,
+      "median_image_error_percent": 24.332153362123094
+    },
+    {
+      "noise_percent": 20,
+      "problem": "mri4",
+      "method": "dlr_d_flow",
+      "samples": 30,
+      "median_noise_fit_coefficient": 0.0038527973695964756,
+      "median_perpendicular_error_over_noise": 0.09235964961395554,
+      "median_residual_over_noise": 1.0006328127522277,
+      "median_image_error_percent": 2.8242716746131746
+    }
+  ]
+}

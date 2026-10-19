@@ -1,0 +1,38 @@
+[
+  {
+    "problem": "ct",
+    "method": "D-Flow",
+    "bitwise_equal_sources_images_measurements_factors": true,
+    "identical_nontiming_histories": true
+  },
+  {
+    "problem": "ct",
+    "method": "P-Flow",
+    "bitwise_equal_sources_images_measurements_factors": true,
+    "identical_nontiming_histories": true
+  },
+  {
+    "problem": "ct",
+    "method": "DLR D-Flow",
+    "bitwise_equal_sources_images_measurements_factors": true,
+    "identical_nontiming_histories": true
+  },
+  {
+    "problem": "mri",
+    "method": "D-Flow",
+    "bitwise_equal_sources_images_measurements_factors": true,
+    "identical_nontiming_histories": true
+  },
+  {
+    "problem": "mri",
+    "method": "P-Flow",
+    "bitwise_equal_sources_images_measurements_factors": true,
+    "identical_nontiming_histories": true
+  },
+  {
+    "problem": "mri",
+    "method": "DLR D-Flow",
+    "bitwise_equal_sources_images_measurements_factors": true,
+    "identical_nontiming_histories": true
+  }
+]

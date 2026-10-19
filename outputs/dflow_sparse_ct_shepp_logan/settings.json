@@ -1,0 +1,21 @@
+{
+  "resolutions": [
+    64,
+    128
+  ],
+  "samples": 5,
+  "epoch": 50,
+  "angles": 15,
+  "flow_steps": 5,
+  "outer_steps": 100,
+  "lbfgs_lr": 0.3,
+  "lbfgs_max_iter": 10,
+  "history_size": 100,
+  "tv_weight": 0.0,
+  "tv_eps": 1e-06,
+  "stop_mse": 1e-12,
+  "base_seed": 123,
+  "device": "cuda:1",
+  "out_dir": "outputs/dflow_sparse_ct_shepp_logan",
+  "line_search": null
+}

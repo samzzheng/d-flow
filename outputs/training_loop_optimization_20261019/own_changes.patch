@@ -1,0 +1,70 @@
+--- a/train_fm_unet.py
++++ b/train_fm_unet.py
+@@ -271,30 +271,34 @@
+     return min(batch, 128)
+ 
+ 
+-def batch_fm_loss(model, x1, device, micro_batch: int, backward: bool = False):
++def batch_fm_loss(model: torch.nn.Module, x1: torch.Tensor, device: str,
++                  micro_batch: int, backward: bool = False) -> torch.Tensor:
+     total = x1.shape[0]
+-    total_loss = 0.0
++    # Keep detached logging totals on-device; only synchronize at epoch end.
++    # Float64 preserves the previous Python-float accumulation precision.
++    total_loss = torch.zeros((), device=x1.device, dtype=torch.float64)
+     for start in range(0, total, micro_batch):
+         x1_micro = x1[start:start + micro_batch]
+         weight = x1_micro.shape[0] / total
+         loss = fm_loss(model, x1_micro, device)
+         if backward:
+             (loss * weight).backward()
+-        total_loss += loss.item() * weight
++        total_loss.add_(loss.detach().to(torch.float64) * weight)
+     return total_loss
+ 
+ 
+-def evaluate_split(model, images: torch.Tensor, device: str,
++def evaluate_split(model: torch.nn.Module, images: torch.Tensor, device: str,
+                    batch: int, micro_batch: int) -> float:
+     model.eval()
+     with torch.no_grad(), autocast_context(device):
+-        return sum(
++        total_loss = sum(
+             batch_fm_loss(
+-                model, normalize_images(images[i:i + batch]).to(device),
++                model, normalize_images(images[i:i + batch].to(device, non_blocking=True)),
+                 device, micro_batch, backward=False,
+             )
+             for i in range(0, len(images), batch)
+-        ) / math.ceil(len(images) / batch)
++        )
++        return (total_loss / math.ceil(len(images) / batch)).item()
+ 
+ 
+ 
+@@ -373,6 +377,7 @@
+         shuffle=True,
+         pin_memory=device.startswith("cuda"),
+         num_workers=num_workers,
++        persistent_workers=num_workers > 0,
+     )
+ 
+     if device.startswith("cuda"):
+@@ -464,7 +469,7 @@
+         model.train()
+         batch_losses = []
+         for (x1,) in tqdm(loader, desc=f"  Epoch {epoch:4d}", leave=False, unit="batch"):
+-            x1 = normalize_images(x1).to(device)
++            x1 = normalize_images(x1.to(device, non_blocking=True))
+             optimizer.zero_grad()
+             with autocast_context(device):
+                 loss = batch_fm_loss(model, x1, device, micro_batch, backward=True)
+@@ -473,7 +478,7 @@
+             batch_losses.append(loss)
+         scheduler.step()
+ 
+-        train_loss = sum(batch_losses) / len(batch_losses)
++        train_loss = torch.stack(batch_losses).mean().item()
+ 
+         val_loss = evaluate_split(
+             ema_model, val_data, device, batch, micro_batch,

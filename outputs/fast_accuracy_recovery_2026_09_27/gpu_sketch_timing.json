@@ -1,0 +1,35 @@
+{
+  "protocol": {
+    "device": "cuda:1",
+    "memory_fraction": 0.14,
+    "resolution": 250,
+    "non_attention": true,
+    "rank": 8,
+    "trace_probes": 4,
+    "enrichment_probes": 0,
+    "flow_steps": 100,
+    "terminal_alpha": 0,
+    "source": "saved exact CPU sample0 step20",
+    "seed": 0,
+    "timing": "complete fresh DLR sensitivity solve and terminal/source gradient, excludes Armijo",
+    "gpu_is_shared": true,
+    "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+    "torch": "2.11.0+cu129",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "cudnn_tf32": true,
+    "matmul_tf32": false
+  },
+  "calls": [
+    {
+      "oversampling": 8,
+      "warmup": true,
+      "seconds": 8.576262818998657,
+      "gradient_norm": 8.76147174835205,
+      "peak_allocated_MiB": 1185.32470703125,
+      "peak_reserved_MiB": 3754.0
+    }
+  ],
+  "status": "memory_cap_exceeded",
+  "error": "CUDA out of memory. Tried to allocate 306.00 MiB. GPU 1 has a total capacity of 47.37 GiB of which 3.96 GiB is free. Process 1275486 has 36.19 GiB memory in use. Including non-PyTorch memory, this process has 7.21 GiB memory in use. 6.63 GiB allowed; Of the allocated memory 6.53 GiB is allocated by PyTorch, with 6.26 GiB allocated in private pools (e.g., CUDA Graphs), and 59.54 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+  "total_seconds": 9.944462493003812
+}

@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "case": "r250_n1_ct10",
+      "noise_relative_actual_float64": 0.09999999586530851,
+      "five_percent_input_pairing_verified": true,
+      "scaled_noise_direction_error": 5.309973851829604e-07,
+      "backend": {
+        "passed": true,
+        "gradient_relative_error_graph_vs_eager_dlr": 1.3900662452215329e-05,
+        "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.184916436614003e-05,
+        "endpoint_relative_error_fast_vs_native": 2.195158231188543e-06,
+        "terminal_alpha": 0.0,
+        "checkpoint_sha256": "2d97ccb4daa40e2fbfe7391c83d8a9583d5d90712071803c6e133cb3ab944b21",
+        "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+      },
+      "memory": {
+        "sample_start": 0,
+        "sample_stop": 1,
+        "peak_allocated_mib": 2429.4208984375,
+        "peak_reserved_mib": 4850.0
+      }
+    },
+    {
+      "case": "r250_n1_mri4",
+      "noise_relative_actual_float64": 0.10000000136750868,
+      "five_percent_input_pairing_verified": true,
+      "scaled_noise_direction_error": 7.010272267746472e-07,
+      "backend": {
+        "passed": true,
+        "gradient_relative_error_graph_vs_eager_dlr": 1.9791254089795984e-05,
+        "seeded_gradient_relative_error_graph_vs_eager_dlr": 7.811556315573398e-06,
+        "endpoint_relative_error_fast_vs_native": 2.195158231188543e-06,
+        "terminal_alpha": 0.0,
+        "checkpoint_sha256": "2d97ccb4daa40e2fbfe7391c83d8a9583d5d90712071803c6e133cb3ab944b21",
+        "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+      },
+      "memory": {
+        "sample_start": 0,
+        "sample_stop": 1,
+        "peak_allocated_mib": 2424.00927734375,
+        "peak_reserved_mib": 4834.0
+      }
+    }
+  ],
+  "method_runs": 6,
+  "accepted_updates": 12
+}

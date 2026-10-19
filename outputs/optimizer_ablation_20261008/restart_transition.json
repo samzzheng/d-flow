@@ -1,0 +1,31 @@
+{
+  "requested_at": "2026-10-08T00:34:09.725199-04:00",
+  "reason": "Superseded by requested geometric-halving and previous-V sweep restart",
+  "driver": 3718390,
+  "children": [
+    3718475,
+    3718476,
+    3718481,
+    3718482,
+    3718484,
+    3718485,
+    3718486,
+    3718487,
+    3718488,
+    3718489,
+    3718491,
+    3718492,
+    3718493,
+    3718494,
+    3718495,
+    3718496,
+    3718497
+  ],
+  "gpu_scheduler": 3600989,
+  "saved_statuses": {
+    "stalled": 14,
+    "paused": 16
+  },
+  "saved_runs": 30,
+  "remaining_pool_terminated_after_checkpoint_grace": true
+}

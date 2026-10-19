@@ -1,0 +1,19 @@
+{
+  "pid": 2190215,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "outputs/five_step_pilot_20261011",
+    "--shared-controller",
+    "2165033",
+    "33000",
+    "--shared-controller",
+    "2165034",
+    "4800"
+  ],
+  "at": "2026-10-11T16:03:06.655857-04:00",
+  "gpu": 1
+}

@@ -1,0 +1,869 @@
+{
+  "status": "complete",
+  "rows": [
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "initial",
+      "steps": 5,
+      "rank": 32,
+      "source_sha256": "66dcb8f02aec79880127d93ed2dfc1489ca735bbbc04629048055f6b1544086c",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 179.2477569580078,
+      "endpoint_gradient_norm": 6.109929084777832,
+      "relative_gradient_error": 0.5333018193896901,
+      "norm_ratio": 0.833570709432331,
+      "cosine": 0.846016526222229,
+      "coefficient_error_over_exact": 0.14361623226883113,
+      "subspace_error_over_exact": 0.5136004118775389,
+      "decomposition_error_over_exact_squared": 1.7468751879865374e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 179.71058719626427,
+          "relative_error": 0.0025820699020790826
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 180.01821481051175,
+          "relative_error": 0.004298284483885801
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 179.35141807598143,
+          "relative_error": 0.0005783119394788305
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "initial",
+      "steps": 5,
+      "rank": 128,
+      "source_sha256": "66dcb8f02aec79880127d93ed2dfc1489ca735bbbc04629048055f6b1544086c",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 179.2477569580078,
+      "endpoint_gradient_norm": 6.109929084777832,
+      "relative_gradient_error": 0.43726669402642215,
+      "norm_ratio": 0.8916749473767366,
+      "cosine": 0.899364709854126,
+      "coefficient_error_over_exact": 0.14121207036820152,
+      "subspace_error_over_exact": 0.41383903082790674,
+      "decomposition_error_over_exact_squared": 1.4305494583174706e-06,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 179.71058719626427,
+          "relative_error": 0.0025820699020790826
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 180.01821481051175,
+          "relative_error": 0.004298284483885801
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 179.35141807598143,
+          "relative_error": 0.0005783119394788305
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "initial",
+      "steps": 10,
+      "rank": 32,
+      "source_sha256": "66dcb8f02aec79880127d93ed2dfc1489ca735bbbc04629048055f6b1544086c",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 4.711951732635498,
+      "endpoint_gradient_norm": 6.72700834274292,
+      "relative_gradient_error": 0.18693745010336807,
+      "norm_ratio": 0.9675885039374381,
+      "cosine": 0.9824846982955933,
+      "coefficient_error_over_exact": 0.06233525066944595,
+      "subspace_error_over_exact": 0.17623859771198802,
+      "decomposition_error_over_exact_squared": 1.1654836138499071e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 4.729372523456732,
+          "relative_error": 0.0036971496759135927
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 4.71370113748056,
+          "relative_error": 0.0003712696870269545
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 4.712425040480639,
+          "relative_error": 0.00010044836449887585
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "initial",
+      "steps": 10,
+      "rank": 128,
+      "source_sha256": "66dcb8f02aec79880127d93ed2dfc1489ca735bbbc04629048055f6b1544086c",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 4.711951732635498,
+      "endpoint_gradient_norm": 6.72700834274292,
+      "relative_gradient_error": 0.1709220543391462,
+      "norm_ratio": 0.9815151858302622,
+      "cosine": 0.9852916598320007,
+      "coefficient_error_over_exact": 0.05290123583755352,
+      "subspace_error_over_exact": 0.1625300973650328,
+      "decomposition_error_over_exact_squared": 2.2464311344958094e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 4.729372523456732,
+          "relative_error": 0.0036971496759135927
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 4.71370113748056,
+          "relative_error": 0.0003712696870269545
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 4.712425040480639,
+          "relative_error": 0.00010044836449887585
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "initial",
+      "steps": 20,
+      "rank": 32,
+      "source_sha256": "66dcb8f02aec79880127d93ed2dfc1489ca735bbbc04629048055f6b1544086c",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 3.6839427947998047,
+      "endpoint_gradient_norm": 6.78200101852417,
+      "relative_gradient_error": 0.04722520295017155,
+      "norm_ratio": 0.9845454599582593,
+      "cosine": 0.9989886283874512,
+      "coefficient_error_over_exact": 0.035733478740291605,
+      "subspace_error_over_exact": 0.03087654294940529,
+      "decomposition_error_over_exact_squared": 2.261370444950455e-08,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 3.6894623802709248,
+          "relative_error": 0.0014982820794371293
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 3.6847065572753004,
+          "relative_error": 0.00020732202372246783
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 3.684011348241256,
+          "relative_error": 1.8608714974695634e-05
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "initial",
+      "steps": 20,
+      "rank": 128,
+      "source_sha256": "66dcb8f02aec79880127d93ed2dfc1489ca735bbbc04629048055f6b1544086c",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 3.6839427947998047,
+      "endpoint_gradient_norm": 6.78200101852417,
+      "relative_gradient_error": 0.019422365475858256,
+      "norm_ratio": 0.9952809344496639,
+      "cosine": 0.9998217821121216,
+      "coefficient_error_over_exact": 0.011448602597236682,
+      "subspace_error_over_exact": 0.01568986797851559,
+      "decomposition_error_over_exact_squared": 1.417793489272236e-08,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 3.6894623802709248,
+          "relative_error": 0.0014982820794371293
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 3.6847065572753004,
+          "relative_error": 0.00020732202372246783
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 3.684011348241256,
+          "relative_error": 1.8608714974695634e-05
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "failed_dflow_final",
+      "steps": 5,
+      "rank": 32,
+      "source_sha256": "15d04111f05424a9814a3f0df92a6965d6b01aca52bfac83e862e1c881db7abe",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 0.22374187409877777,
+      "endpoint_gradient_norm": 5.606766223907471,
+      "relative_gradient_error": 0.5575856391678143,
+      "norm_ratio": 0.7940073911111795,
+      "cosine": 0.8309406638145447,
+      "coefficient_error_over_exact": 0.1857367664724417,
+      "subspace_error_over_exact": 0.5257414504354727,
+      "decomposition_error_over_exact_squared": 4.7411945288041524e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 0.20753250374205834,
+          "relative_error": 0.07244674436562243
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 0.22328133599695357,
+          "relative_error": 0.0020583455988255443
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 0.2236192491338329,
+          "relative_error": 0.0005480644400552633
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "failed_dflow_final",
+      "steps": 5,
+      "rank": 128,
+      "source_sha256": "15d04111f05424a9814a3f0df92a6965d6b01aca52bfac83e862e1c881db7abe",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 0.22374187409877777,
+      "endpoint_gradient_norm": 5.606766223907471,
+      "relative_gradient_error": 0.45681849619944986,
+      "norm_ratio": 0.8657168471421,
+      "cosine": 0.8898882865905762,
+      "coefficient_error_over_exact": 0.17123239842550111,
+      "subspace_error_over_exact": 0.4235154391293596,
+      "decomposition_error_over_exact_squared": 2.722981557104742e-06,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 0.20753250374205834,
+          "relative_error": 0.07244674436562243
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 0.22328133599695357,
+          "relative_error": 0.0020583455988255443
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 0.2236192491338329,
+          "relative_error": 0.0005480644400552633
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "failed_dflow_final",
+      "steps": 10,
+      "rank": 32,
+      "source_sha256": "15d04111f05424a9814a3f0df92a6965d6b01aca52bfac83e862e1c881db7abe",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 7.868675708770752,
+      "endpoint_gradient_norm": 6.694876194000244,
+      "relative_gradient_error": 0.11800286562521721,
+      "norm_ratio": 0.9804325089449284,
+      "cosine": 0.9930939674377441,
+      "coefficient_error_over_exact": 0.041286624999719725,
+      "subspace_error_over_exact": 0.11054481208696573,
+      "decomposition_error_over_exact_squared": 6.458744697866491e-08,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 7.91188299100547,
+          "relative_error": 0.0054910487906570365
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 7.872542658544053,
+          "relative_error": 0.0004914359056621182
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 7.868309835124876,
+          "relative_error": 4.649748692378032e-05
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "failed_dflow_final",
+      "steps": 10,
+      "rank": 128,
+      "source_sha256": "15d04111f05424a9814a3f0df92a6965d6b01aca52bfac83e862e1c881db7abe",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 7.868675708770752,
+      "endpoint_gradient_norm": 6.694876194000244,
+      "relative_gradient_error": 0.11257808159093345,
+      "norm_ratio": 0.9889183664651554,
+      "cosine": 0.9936542510986328,
+      "coefficient_error_over_exact": 0.03349635788415682,
+      "subspace_error_over_exact": 0.1074800344616763,
+      "decomposition_error_over_exact_squared": 1.3934469176834766e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 7.91188299100547,
+          "relative_error": 0.0054910487906570365
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 7.872542658544053,
+          "relative_error": 0.0004914359056621182
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 7.868309835124876,
+          "relative_error": 4.649748692378032e-05
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "failed_dflow_final",
+      "steps": 20,
+      "rank": 32,
+      "source_sha256": "15d04111f05424a9814a3f0df92a6965d6b01aca52bfac83e862e1c881db7abe",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 4.152736186981201,
+      "endpoint_gradient_norm": 6.762229919433594,
+      "relative_gradient_error": 0.04618862929486427,
+      "norm_ratio": 0.9858109829704468,
+      "cosine": 0.9990200996398926,
+      "coefficient_error_over_exact": 0.03320831925294058,
+      "subspace_error_over_exact": 0.03210321654157077,
+      "decomposition_error_over_exact_squared": 1.950378181379585e-08,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 4.164113151637139,
+          "relative_error": 0.0027396309670728257
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 4.15361286074282,
+          "relative_error": 0.00021110750169182048
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 4.1527287999088,
+          "relative_error": 1.778844614316423e-06
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "source": "failed_dflow_final",
+      "steps": 20,
+      "rank": 128,
+      "source_sha256": "15d04111f05424a9814a3f0df92a6965d6b01aca52bfac83e862e1c881db7abe",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "dlr_seed": 50901008,
+      "exact_gradient_norm": 4.152736186981201,
+      "endpoint_gradient_norm": 6.762229919433594,
+      "relative_gradient_error": 0.022507714146267753,
+      "norm_ratio": 0.9954376656850293,
+      "cosine": 0.9997559785842896,
+      "coefficient_error_over_exact": 0.011951593640668836,
+      "subspace_error_over_exact": 0.01907269037925373,
+      "decomposition_error_over_exact_squared": 1.091276445203396e-08,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 4.164113151637139,
+          "relative_error": 0.0027396309670728257
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 4.15361286074282,
+          "relative_error": 0.00021110750169182048
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 4.1527287999088,
+          "relative_error": 1.778844614316423e-06
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "initial",
+      "steps": 5,
+      "rank": 32,
+      "source_sha256": "a54a674b7f662348f9dcb0b57f64bb2a30beba3f089056ea6baf26628dac1dde",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 0.03185369074344635,
+      "endpoint_gradient_norm": 0.2388041913509369,
+      "relative_gradient_error": 0.1243925907473809,
+      "norm_ratio": 0.9474200237174675,
+      "cosine": 0.9932928085327148,
+      "coefficient_error_over_exact": 0.05585717213641988,
+      "subspace_error_over_exact": 0.1111477067267322,
+      "decomposition_error_over_exact_squared": 3.197568439195608e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 0.031862786907721485,
+          "relative_error": 0.0002855607643207477
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 0.03186318348250931,
+          "relative_error": 0.0002980106493596683
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 0.03207947078642803,
+          "relative_error": 0.00708803399895301
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "initial",
+      "steps": 5,
+      "rank": 128,
+      "source_sha256": "a54a674b7f662348f9dcb0b57f64bb2a30beba3f089056ea6baf26628dac1dde",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 0.03185369074344635,
+      "endpoint_gradient_norm": 0.2388041913509369,
+      "relative_gradient_error": 0.12642519700233668,
+      "norm_ratio": 0.9715211457361186,
+      "cosine": 0.9921914339065552,
+      "coefficient_error_over_exact": 0.048725346932283586,
+      "subspace_error_over_exact": 0.11666347246879188,
+      "decomposition_error_over_exact_squared": 1.1948050683245861e-06,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 0.031862786907721485,
+          "relative_error": 0.0002855607643207477
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 0.03186318348250931,
+          "relative_error": 0.0002980106493596683
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 0.03207947078642803,
+          "relative_error": 0.00708803399895301
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "initial",
+      "steps": 10,
+      "rank": 32,
+      "source_sha256": "a54a674b7f662348f9dcb0b57f64bb2a30beba3f089056ea6baf26628dac1dde",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 0.23673665523529053,
+      "endpoint_gradient_norm": 0.2115539312362671,
+      "relative_gradient_error": 0.6392518521912834,
+      "norm_ratio": 0.7557298587888258,
+      "cosine": 0.7691138982772827,
+      "coefficient_error_over_exact": 0.2386835587904875,
+      "subspace_error_over_exact": 0.5930206516873282,
+      "decomposition_error_over_exact_squared": 4.0403456915170366e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 0.24157208036037492,
+          "relative_error": 0.02042533345872655
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 0.2371741746967822,
+          "relative_error": 0.0018481272410342568
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 0.2367246187586769,
+          "relative_error": 5.084331618045185e-05
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "initial",
+      "steps": 10,
+      "rank": 128,
+      "source_sha256": "a54a674b7f662348f9dcb0b57f64bb2a30beba3f089056ea6baf26628dac1dde",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 0.23673665523529053,
+      "endpoint_gradient_norm": 0.2115539312362671,
+      "relative_gradient_error": 0.42424156209983327,
+      "norm_ratio": 0.8966727655243918,
+      "cosine": 0.9055930376052856,
+      "coefficient_error_over_exact": 0.1657891218601625,
+      "subspace_error_over_exact": 0.39050764870780924,
+      "decomposition_error_over_exact_squared": 1.3536135588725317e-06,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 0.24157208036037492,
+          "relative_error": 0.02042533345872655
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 0.2371741746967822,
+          "relative_error": 0.0018481272410342568
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 0.2367246187586769,
+          "relative_error": 5.084331618045185e-05
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "initial",
+      "steps": 20,
+      "rank": 32,
+      "source_sha256": "a54a674b7f662348f9dcb0b57f64bb2a30beba3f089056ea6baf26628dac1dde",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 2.2560932636260986,
+      "endpoint_gradient_norm": 0.38395488262176514,
+      "relative_gradient_error": 0.4320524306857812,
+      "norm_ratio": 0.8708045057980558,
+      "cosine": 0.9024018049240112,
+      "coefficient_error_over_exact": 0.135507711243497,
+      "subspace_error_over_exact": 0.4102524310873562,
+      "decomposition_error_over_exact_squared": 9.415804512213659e-08,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 2.2818822348787293,
+          "relative_error": 0.01143080903099788
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 2.258352493055208,
+          "relative_error": 0.0010013900868080074
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 2.2558260296365873,
+          "relative_error": 0.00011844988583576045
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "initial",
+      "steps": 20,
+      "rank": 128,
+      "source_sha256": "a54a674b7f662348f9dcb0b57f64bb2a30beba3f089056ea6baf26628dac1dde",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 2.2560932636260986,
+      "endpoint_gradient_norm": 0.38395488262176514,
+      "relative_gradient_error": 0.34094214879177187,
+      "norm_ratio": 0.9224397032530004,
+      "cosine": 0.940252959728241,
+      "coefficient_error_over_exact": 0.11907030954350331,
+      "subspace_error_over_exact": 0.319475482843713,
+      "decomposition_error_over_exact_squared": 7.739302585816959e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 2.2818822348787293,
+          "relative_error": 0.01143080903099788
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 2.258352493055208,
+          "relative_error": 0.0010013900868080074
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 2.2558260296365873,
+          "relative_error": 0.00011844988583576045
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "failed_dflow_final",
+      "steps": 5,
+      "rank": 32,
+      "source_sha256": "147bd4a65956d3e78bfe06fb96ee5b37f2507ea8dea2d451ea6ff96ee640b361",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 0.04877183213829994,
+      "endpoint_gradient_norm": 0.2318165898323059,
+      "relative_gradient_error": 0.43565515022087004,
+      "norm_ratio": 0.8877037117605907,
+      "cosine": 0.900200366973877,
+      "coefficient_error_over_exact": 0.15022380118253092,
+      "subspace_error_over_exact": 0.4089356939140881,
+      "decomposition_error_over_exact_squared": 1.822847565171082e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": -3.13532012119353,
+          "relative_error": 65.28546937303592
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": -2.8694600197603317,
+          "relative_error": 59.834370044240735
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": -0.5192963461935207,
+          "relative_error": 11.647464395452216
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "failed_dflow_final",
+      "steps": 5,
+      "rank": 128,
+      "source_sha256": "147bd4a65956d3e78bfe06fb96ee5b37f2507ea8dea2d451ea6ff96ee640b361",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 0.04877183213829994,
+      "endpoint_gradient_norm": 0.2318165898323059,
+      "relative_gradient_error": 0.6136489371558657,
+      "norm_ratio": 0.750561808738086,
+      "cosine": 0.7905930280685425,
+      "coefficient_error_over_exact": 0.304417346994815,
+      "subspace_error_over_exact": 0.5328239061008522,
+      "decomposition_error_over_exact_squared": 6.217991407787568e-06,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": -3.13532012119353,
+          "relative_error": 65.28546937303592
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": -2.8694600197603317,
+          "relative_error": 59.834370044240735
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": -0.5192963461935207,
+          "relative_error": 11.647464395452216
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "failed_dflow_final",
+      "steps": 10,
+      "rank": 32,
+      "source_sha256": "147bd4a65956d3e78bfe06fb96ee5b37f2507ea8dea2d451ea6ff96ee640b361",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 2.179314374923706,
+      "endpoint_gradient_norm": 0.21613386273384094,
+      "relative_gradient_error": 0.4031268861369257,
+      "norm_ratio": 0.9162986517344883,
+      "cosine": 0.9151447415351868,
+      "coefficient_error_over_exact": 0.0864484415702199,
+      "subspace_error_over_exact": 0.39374861813205475,
+      "decomposition_error_over_exact_squared": 2.100436853309377e-08,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 3.819539447115794,
+          "relative_error": 0.7526335305568337
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 2.330723457698543,
+          "relative_error": 0.06947555823841957
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 2.1956153597845196,
+          "relative_error": 0.007479868461558796
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "failed_dflow_final",
+      "steps": 10,
+      "rank": 128,
+      "source_sha256": "147bd4a65956d3e78bfe06fb96ee5b37f2507ea8dea2d451ea6ff96ee640b361",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 2.179314374923706,
+      "endpoint_gradient_norm": 0.21613386273384094,
+      "relative_gradient_error": 0.40997269139028303,
+      "norm_ratio": 0.9185307000869846,
+      "cosine": 0.9121202230453491,
+      "coefficient_error_over_exact": 0.12947112570176464,
+      "subspace_error_over_exact": 0.3889931872884669,
+      "decomposition_error_over_exact_squared": 8.644615301280813e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 3.819539447115794,
+          "relative_error": 0.7526335305568337
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 2.330723457698543,
+          "relative_error": 0.06947555823841957
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 2.1956153597845196,
+          "relative_error": 0.007479868461558796
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "failed_dflow_final",
+      "steps": 20,
+      "rank": 32,
+      "source_sha256": "147bd4a65956d3e78bfe06fb96ee5b37f2507ea8dea2d451ea6ff96ee640b361",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 2.503999710083008,
+      "endpoint_gradient_norm": 0.3843732178211212,
+      "relative_gradient_error": 0.809534192503601,
+      "norm_ratio": 0.5495837862398186,
+      "cosine": 0.5883512496948242,
+      "coefficient_error_over_exact": 0.3755991886150164,
+      "subspace_error_over_exact": 0.7171273680947154,
+      "decomposition_error_over_exact_squared": 8.037262547444525e-07,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 2.552675223955392,
+          "relative_error": 0.019439105234868578
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 2.5083382633891795,
+          "relative_error": 0.0017326492845432073
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 2.504676647003823,
+          "relative_error": 0.00027034225207342845
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "source": "failed_dflow_final",
+      "steps": 20,
+      "rank": 128,
+      "source_sha256": "147bd4a65956d3e78bfe06fb96ee5b37f2507ea8dea2d451ea6ff96ee640b361",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "dlr_seed": 51541007,
+      "exact_gradient_norm": 2.503999710083008,
+      "endpoint_gradient_norm": 0.3843732178211212,
+      "relative_gradient_error": 0.5894978127187567,
+      "norm_ratio": 0.7653744295663447,
+      "cosine": 0.8089441061019897,
+      "coefficient_error_over_exact": 0.2526150588772083,
+      "subspace_error_over_exact": 0.532632118566411,
+      "decomposition_error_over_exact_squared": 3.67049988040633e-06,
+      "endpoint_error_over_gt": 0.0,
+      "exact_finite_differences": [
+        {
+          "epsilon": 0.01,
+          "numerical_derivative": 2.552675223955392,
+          "relative_error": 0.019439105234868578
+        },
+        {
+          "epsilon": 0.003,
+          "numerical_derivative": 2.5083382633891795,
+          "relative_error": 0.0017326492845432073
+        },
+        {
+          "epsilon": 0.001,
+          "numerical_derivative": 2.504676647003823,
+          "relative_error": 0.00027034225207342845
+        }
+      ],
+      "note": "Same native endpoint and gx for both gradients; fresh DLR sketch, no previous-V reuse in this fixed-point diagnostic."
+    }
+  ]
+}

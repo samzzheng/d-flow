@@ -1,0 +1,766 @@
+{
+  "repeats": 12,
+  "records": [
+    {
+      "resolution": 96,
+      "workers": 4,
+      "stages": {
+        "D-Flow": {
+          "seconds": 1.4731914920266718,
+          "evaluations_per_second": 32.58232229807839
+        },
+        "P-Flow": {
+          "seconds": 0.518543919082731,
+          "evaluations_per_second": 92.56689401528176
+        },
+        "DLR D-Flow": {
+          "seconds": 2.248293018899858,
+          "evaluations_per_second": 21.349530331009753
+        }
+      },
+      "worker_results": [
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 1.4472368799615651,
+              "gradient_norm": 1.9743477019850628,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 0.5177734780590981,
+              "gradient_norm": 0.8042281355807683,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 2.247423588996753,
+              "gradient_norm": 1.5375856524446903,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 1.4484679449815303,
+              "gradient_norm": 1.9743480936540307,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 0.5175979130435735,
+              "gradient_norm": 0.8042281355220762,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 2.2473938239272684,
+              "gradient_norm": 1.5379897794172002,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 1.448558832053095,
+              "gradient_norm": 1.9743479582449164,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 0.5178686310537159,
+              "gradient_norm": 0.8042281358442056,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 2.2475544868502766,
+              "gradient_norm": 1.5378308139353163,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 1.448451440082863,
+              "gradient_norm": 1.9743478713383147,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 0.5177008481696248,
+              "gradient_norm": 0.8042281355501408,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 2.247400884050876,
+              "gradient_norm": 1.5380117663044424,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        }
+      ]
+    },
+    {
+      "resolution": 96,
+      "workers": 8,
+      "stages": {
+        "D-Flow": {
+          "seconds": 2.921416160883382,
+          "evaluations_per_second": 32.86077529295634
+        },
+        "P-Flow": {
+          "seconds": 1.0519994280766696,
+          "evaluations_per_second": 91.25480246269063
+        },
+        "DLR D-Flow": {
+          "seconds": 4.483675803057849,
+          "evaluations_per_second": 21.41100387644628
+        }
+      },
+      "worker_results": [
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.890833995072171,
+              "gradient_norm": 1.9743476701374538,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 1.0501371219288558,
+              "gradient_norm": 0.8042281357635697,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 4.481558904051781,
+              "gradient_norm": 1.5373095223501911,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.8911596059333533,
+              "gradient_norm": 1.9743480898992771,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 1.0502556101419032,
+              "gradient_norm": 0.8042281354697739,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 4.481771774124354,
+              "gradient_norm": 1.5372891994158513,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.8910023691132665,
+              "gradient_norm": 1.9743477006199974,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 1.0500834709964693,
+              "gradient_norm": 0.8042281356779022,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 4.482200809987262,
+              "gradient_norm": 1.537139712376448,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.8907497881446034,
+              "gradient_norm": 1.9743477915475671,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 1.0504377249162644,
+              "gradient_norm": 0.8042281352441085,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 4.481848570052534,
+              "gradient_norm": 1.537193355760742,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.8911282180342823,
+              "gradient_norm": 1.9743479270534674,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 1.0504075791686773,
+              "gradient_norm": 0.8042281350752982,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 4.482058195862919,
+              "gradient_norm": 1.5378275973701574,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.8909406650345773,
+              "gradient_norm": 1.9743479816295408,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 1.0501687589567155,
+              "gradient_norm": 0.8042281353087257,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 4.481831644196063,
+              "gradient_norm": 1.537231545500342,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.8906132120173424,
+              "gradient_norm": 1.9743478350114216,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 1.0504103931598365,
+              "gradient_norm": 0.8042281357561287,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 4.482154070166871,
+              "gradient_norm": 1.5370291961986442,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.8908630290534347,
+              "gradient_norm": 1.9743479280384788,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 1.0500286067835987,
+              "gradient_norm": 0.8042281356669267,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 4.481878744903952,
+              "gradient_norm": 1.537754046541938,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        }
+      ]
+    },
+    {
+      "resolution": 96,
+      "workers": 4,
+      "stages": {
+        "D-Flow": {
+          "seconds": 1.461780966958031,
+          "evaluations_per_second": 32.83665684872617
+        },
+        "P-Flow": {
+          "seconds": 0.5178973441943526,
+          "evaluations_per_second": 92.68246021741892
+        },
+        "DLR D-Flow": {
+          "seconds": 2.2466927780769765,
+          "evaluations_per_second": 21.364736856048868
+        }
+      },
+      "worker_results": [
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 1.4458305609878153,
+              "gradient_norm": 1.9743481060906864,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 0.5171083649620414,
+              "gradient_norm": 0.8042281357794439,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 2.24574953597039,
+              "gradient_norm": 1.537587898810907,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 1.4458986329846084,
+              "gradient_norm": 1.974347755591902,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 0.5172514610458165,
+              "gradient_norm": 0.8042281350519715,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 2.2457283248659223,
+              "gradient_norm": 1.537459091604052,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 1.4459882280789316,
+              "gradient_norm": 1.9743477834678813,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 0.5170721912290901,
+              "gradient_norm": 0.8042281352714026,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 2.2457273029722273,
+              "gradient_norm": 1.5376298065392802,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 1.4457391831092536,
+              "gradient_norm": 1.974347463741418,
+              "objective": 14.988032918404535
+            },
+            "P-Flow": {
+              "seconds": 0.5172097079921514,
+              "gradient_norm": 0.8042281357345104,
+              "objective": 14.988032918404535
+            },
+            "DLR D-Flow": {
+              "seconds": 2.24563135788776,
+              "gradient_norm": 1.5373410664034064,
+              "objective": 14.988032918404535
+            }
+          },
+          "peak_reserved_mib": 416.0
+        }
+      ]
+    },
+    {
+      "resolution": 250,
+      "workers": 4,
+      "stages": {
+        "D-Flow": {
+          "seconds": 2.4499657191336155,
+          "evaluations_per_second": 19.592110871238763
+        },
+        "P-Flow": {
+          "seconds": 0.951782796997577,
+          "evaluations_per_second": 50.43167427633408
+        },
+        "DLR D-Flow": {
+          "seconds": 5.928348458139226,
+          "evaluations_per_second": 8.096690054394358
+        }
+      },
+      "worker_results": [
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.427824854152277,
+              "gradient_norm": 22.43979896381852,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 0.9507468959782273,
+              "gradient_norm": 1.7310763541631304,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 5.927116292063147,
+              "gradient_norm": 17.375902274345854,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.427741238148883,
+              "gradient_norm": 22.439799779871088,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 0.9509811189491302,
+              "gradient_norm": 1.7310763538890115,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 5.927235912065953,
+              "gradient_norm": 17.132241236597903,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.427666826173663,
+              "gradient_norm": 22.439801424883385,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 0.9508349290117621,
+              "gradient_norm": 1.7310763542752017,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 5.927199377911165,
+              "gradient_norm": 17.332627188053102,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.4278098221402615,
+              "gradient_norm": 22.43980248302396,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 0.950946617173031,
+              "gradient_norm": 1.7310763538998126,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 5.927558487979695,
+              "gradient_norm": 17.160468403622936,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        }
+      ]
+    },
+    {
+      "resolution": 250,
+      "workers": 8,
+      "stages": {
+        "D-Flow": {
+          "seconds": 4.8684705989435315,
+          "evaluations_per_second": 19.718718239940117
+        },
+        "P-Flow": {
+          "seconds": 1.8871422540396452,
+          "evaluations_per_second": 50.87056886914643
+        },
+        "DLR D-Flow": {
+          "seconds": 11.826817771885544,
+          "evaluations_per_second": 8.117145444500643
+        }
+      },
+      "worker_results": [
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 4.832127262139693,
+              "gradient_norm": 22.439803294125227,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 1.8858296659309417,
+              "gradient_norm": 1.7310763539447875,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 11.82491846010089,
+              "gradient_norm": 17.426196980363493,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 4.8321521889884025,
+              "gradient_norm": 22.439800896282794,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 1.885328731033951,
+              "gradient_norm": 1.7310763541135123,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 11.825168336043134,
+              "gradient_norm": 17.13547611637184,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 4.832139368867502,
+              "gradient_norm": 22.439800800515176,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 1.885410443879664,
+              "gradient_norm": 1.7310763545281118,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 11.825200585182756,
+              "gradient_norm": 17.16074075347878,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 4.825828860048205,
+              "gradient_norm": 22.439803915606582,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 1.8857237270567566,
+              "gradient_norm": 1.7310763539144916,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 11.824710356071591,
+              "gradient_norm": 17.405651368668675,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 4.832067370880395,
+              "gradient_norm": 22.43980117312603,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 1.8857756848447025,
+              "gradient_norm": 1.7310763540966858,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 11.824799419846386,
+              "gradient_norm": 17.14512886797588,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 4.831488518975675,
+              "gradient_norm": 22.43980292295261,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 1.885447259992361,
+              "gradient_norm": 1.7310763543531074,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 11.825336148962379,
+              "gradient_norm": 17.307869791724492,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 4.8317012002225965,
+              "gradient_norm": 22.439804386248667,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 1.8855482719372958,
+              "gradient_norm": 1.7310763537917053,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 11.825304822064936,
+              "gradient_norm": 17.269841334089293,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 4.831684954930097,
+              "gradient_norm": 22.439803963903454,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 1.885492908069864,
+              "gradient_norm": 1.731076354108793,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 11.825272082118317,
+              "gradient_norm": 17.4083741917608,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        }
+      ]
+    },
+    {
+      "resolution": 250,
+      "workers": 4,
+      "stages": {
+        "D-Flow": {
+          "seconds": 2.4543805229477584,
+          "evaluations_per_second": 19.556869666791144
+        },
+        "P-Flow": {
+          "seconds": 0.9533712510019541,
+          "evaluations_per_second": 50.34764783346883
+        },
+        "DLR D-Flow": {
+          "seconds": 5.944462171057239,
+          "evaluations_per_second": 8.074742275879109
+        }
+      },
+      "worker_results": [
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.43122257408686,
+              "gradient_norm": 22.439801844249605,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 0.9524541881401092,
+              "gradient_norm": 1.7310763540006446,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 5.943610928021371,
+              "gradient_norm": 17.41228869923686,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.4310819928068668,
+              "gradient_norm": 22.43980296466965,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 0.9524010978639126,
+              "gradient_norm": 1.7310763542165504,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 5.943619520869106,
+              "gradient_norm": 17.43542868310169,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.430878686020151,
+              "gradient_norm": 22.439803573876233,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 0.9525665380060673,
+              "gradient_norm": 1.7310763540434861,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 5.943607643945143,
+              "gradient_norm": 17.104951419294256,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        },
+        {
+          "methods": {
+            "D-Flow": {
+              "seconds": 2.43106132093817,
+              "gradient_norm": 22.439799315053246,
+              "objective": 80.84810298247751
+            },
+            "P-Flow": {
+              "seconds": 0.9523045828100294,
+              "gradient_norm": 1.7310763540118697,
+              "objective": 80.84810298247751
+            },
+            "DLR D-Flow": {
+              "seconds": 5.94362579099834,
+              "gradient_norm": 17.307652584027704,
+              "objective": 80.84810298247751
+            }
+          },
+          "peak_reserved_mib": 2610.0
+        }
+      ]
+    }
+  ],
+  "scope": "One gradient plus one canonical forward per repetition at a fixed source; warmed, no optimizer/line search, not full solve throughput."
+}

@@ -1,0 +1,2 @@
+resolution,n_samples,total_elapsed_s,mean_elapsed_s,median_elapsed_s,std_elapsed_s,min_elapsed_s,max_elapsed_s,mean_best_loss,median_best_loss,mean_best_objective,median_best_objective,mean_best_tv,median_best_tv,mean_image_mse_clamped,median_image_mse_clamped
+96,5,9477.102238277905,1895.420447655581,1872.5360245460179,32.530833077953645,1870.4099996360019,1935.0102485709358,2.611466584645505e-10,6.358775311854359e-11,2.611466584645505e-10,6.358775311854359e-11,0.010388857312500476,0.010179565288126469,0.00018516880127208423,1.7231137462658808e-05

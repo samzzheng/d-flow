@@ -1,0 +1,12 @@
+{
+  "runs": ["sample1_euler", "sample1_rk4"],
+  "armijo_initial_step_policy": "first_iteration_only",
+  "armijo_progress_policy_in_loaded_optimizer": "legacy_rounded_rhs",
+  "policy_explanation": "Both workers imported the central optimizer before strict-decrease and nonzero-step guards were added. The running worker's loaded Python class is unchanged.",
+  "preexisting_accepted_state_files_rewritten": false,
+  "original_results_and_resume_snapshots_preserved": true,
+  "subsequent_central_progress_policy": "strict_decrease_nonzero_step",
+  "resume_constraint": "The harness records armijo_progress_policy and rejects mismatched policies by default. Only explicit --resume --legacy-progress may normalize an old missing tag to legacy_rounded_rhs; every other field must match. RK4 retained that policy after the interruption and the single time-only allowance extension, with both protocols saved separately in sample1_rk4/resume_provenance.json.",
+  "accepted_state_audit": "acceptance_audit.json",
+  "audit_scope": "Exact consecutive saved-source equality and equality of objectives recomputed at accepted states; not a replay of every Armijo trial."
+}

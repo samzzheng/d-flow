@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "device": "cuda:0",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "torch": "2.11.0+cu129",
+    "resolutions": [
+      64
+    ],
+    "single_sample": true,
+    "flow_steps": 100,
+    "rank": 8,
+    "trace_probes": 32,
+    "initialization_oversampling": 8,
+    "enrichment_probes": 4,
+    "factor_stride": 1,
+    "angles": 15,
+    "warmup_iterations": 1,
+    "timed_iterations": 1,
+    "dlr_cuda_graphs": true,
+    "dlr_attention_mode": "chunked",
+    "allow_tf32_matmul": false,
+    "allow_tf32_cudnn": true
+  },
+  "rows": [
+    {
+      "resolution": 64,
+      "dimension": 4096,
+      "algorithm": "D-Flow",
+      "warmup_seconds": 1.8220029035583138,
+      "seconds_per_iteration_mean": 1.4880326204001904,
+      "seconds_per_iteration_median": 1.4880326204001904,
+      "iteration_seconds": [
+        1.4880326204001904
+      ],
+      "peak_allocated_gib": 4.872639179229736,
+      "peak_reserved_gib": 4.9375,
+      "terminal_loss": 30.453201293945312,
+      "checkpointed": false,
+      "final_source_norm": 64.79271697998047
+    },
+    {
+      "resolution": 64,
+      "dimension": 4096,
+      "algorithm": "DLR-D-Flow",
+      "warmup_seconds": 2.559835239313543,
+      "seconds_per_iteration_mean": 2.154827032238245,
+      "seconds_per_iteration_median": 2.154827032238245,
+      "iteration_seconds": [
+        2.154827032238245
+      ],
+      "peak_allocated_gib": 0.07510948181152344,
+      "peak_reserved_gib": 1.568359375,
+      "terminal_loss": 30.498802185058594,
+      "cuda_graphs": true,
+      "hand_jvp": true,
+      "hand_vjp": true,
+      "attention_mode": "chunked",
+      "final_source_norm": 64.76864624023438
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "config": {
+    "device": "cpu",
+    "resolution": 64,
+    "steps": 20,
+    "rank": 8,
+    "trace_probes": 4,
+    "repeats": 3,
+    "threads": 2,
+    "run_dir": null,
+    "epoch": 50,
+    "output": "outputs/dlr_review_2026_09_27/recompression_cpu.json"
+  },
+  "torch": "2.11.0+cu129",
+  "device_name": "cpu",
+  "seconds": {
+    "explicit_jvp": [
+      28.28267430397682,
+      28.16674613795476,
+      28.346418767992873
+    ],
+    "reuse_vjp": [
+      20.160922950017266,
+      20.61961212597089,
+      20.912890081002843
+    ]
+  },
+  "median_seconds": {
+    "explicit_jvp": 28.28267430397682,
+    "reuse_vjp": 20.61961212597089
+  },
+  "speedup": 1.3716394921102382,
+  "errors": {
+    "state": {
+      "absolute": 0.0,
+      "relative": 0.0
+    },
+    "alpha": {
+      "absolute": 0.0,
+      "relative": 0.0
+    },
+    "residual_action": {
+      "absolute": 0.0003100349858868867,
+      "relative": 1.5347156016689043e-05
+    },
+    "source_gradient": {
+      "absolute": 0.00014998724509496242,
+      "relative": 1.3273423509576507e-05
+    }
+  },
+  "product_calls": {
+    "explicit_jvp": 59,
+    "reuse_vjp": 40
+  },
+  "jvp_columns_removed": 152
+}

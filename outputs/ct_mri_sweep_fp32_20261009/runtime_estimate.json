@@ -1,0 +1,88 @@
+{
+  "kind": "scenario projection, not a completion guarantee",
+  "timings_seconds_100_steps": {
+    "64": {
+      "dflow": 1.042674601310864,
+      "dlr": 0.3640411626547575,
+      "forward_trial": 0.5955456966379036
+    },
+    "128": {
+      "dflow": 1.3231101193620511,
+      "dlr": 0.5594583887141198,
+      "forward_trial": 0.7565546579814205
+    },
+    "250": {
+      "dflow": 1.4571135907123485,
+      "dlr": 1.4247868146436908,
+      "forward_trial": 0.8340617219607035
+    }
+  },
+  "basis": "RTX 6000 Ada historical 150-step calls scaled linearly to configured step count; rank-8 analytical-alpha fused/graphed DLR; native exact D-Flow; P-Flow reuses accepted trial endpoint",
+  "excludes": [
+    "training wait",
+    "other users' GPU occupancy",
+    "new checkpoint effects on convergence",
+    "acquisition overhead changes (especially CT180)",
+    "initial graph capture",
+    "checkpoint and figure IO"
+  ],
+  "scenarios": [
+    {
+      "mean_updates_per_method": 100,
+      "mean_trials_per_update": 1,
+      "gpu_hours": 63.64835453568958,
+      "one_gpu_days": 2.652014772320399,
+      "two_dedicated_gpu_days": 1.3260073861601995
+    },
+    {
+      "mean_updates_per_method": 100,
+      "mean_trials_per_update": 2,
+      "gpu_hours": 96.44078568439,
+      "one_gpu_days": 4.018366070182917,
+      "two_dedicated_gpu_days": 2.0091830350914583
+    },
+    {
+      "mean_updates_per_method": 250,
+      "mean_trials_per_update": 1,
+      "gpu_hours": 159.12088633922394,
+      "one_gpu_days": 6.630036930800998,
+      "two_dedicated_gpu_days": 3.315018465400499
+    },
+    {
+      "mean_updates_per_method": 250,
+      "mean_trials_per_update": 2,
+      "gpu_hours": 241.10196421097498,
+      "one_gpu_days": 10.04591517545729,
+      "two_dedicated_gpu_days": 5.022957587728645
+    },
+    {
+      "mean_updates_per_method": 500,
+      "mean_trials_per_update": 1,
+      "gpu_hours": 318.2417726784479,
+      "one_gpu_days": 13.260073861601995,
+      "two_dedicated_gpu_days": 6.630036930800998
+    },
+    {
+      "mean_updates_per_method": 500,
+      "mean_trials_per_update": 2,
+      "gpu_hours": 482.20392842194997,
+      "one_gpu_days": 20.09183035091458,
+      "two_dedicated_gpu_days": 10.04591517545729
+    },
+    {
+      "mean_updates_per_method": 1000,
+      "mean_trials_per_update": 1,
+      "gpu_hours": 636.4835453568958,
+      "one_gpu_days": 26.52014772320399,
+      "two_dedicated_gpu_days": 13.260073861601995
+    },
+    {
+      "mean_updates_per_method": 1000,
+      "mean_trials_per_update": 2,
+      "gpu_hours": 964.4078568438999,
+      "one_gpu_days": 40.18366070182916,
+      "two_dedicated_gpu_days": 20.09183035091458
+    }
+  ],
+  "precision_note": "Historical timing scenarios do not measure this FP32 rerun; do not treat as a validated FP32 completion forecast."
+}

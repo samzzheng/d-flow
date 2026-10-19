@@ -1,0 +1,8 @@
+{
+  "armijo_progress_policy": "legacy_rounded_rhs",
+  "armijo_class_sha256": "fe6c8097700b521be85f38464db824fab034ffc810625d783ad944f9094bf2ac",
+  "launch_time_utc": "2026-09-27 16:09:31 UTC",
+  "wait_for": "tail_reset_from32",
+  "affinity": "16-23",
+  "threads": 8
+}

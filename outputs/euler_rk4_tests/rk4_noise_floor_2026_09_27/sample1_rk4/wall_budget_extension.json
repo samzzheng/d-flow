@@ -1,0 +1,13 @@
+{
+  "applied_utc": "2026-09-27T17:03:08.074638+00:00",
+  "continued_from_accepted_step": 93,
+  "previous_max_minutes_cumulative": 120,
+  "new_max_minutes_cumulative": 180,
+  "max_optimizer_attempts_unchanged": 120,
+  "reason": "Allow the original common120-attempt ceiling despite RK4 intentionally using400 versus100 velocity evaluations per forward solve. This changes only the wall allowance, not the noise threshold, optimizer, model, source, integrator or image-based selection.",
+  "prior_stop_reason": "wall_budget_checkpointed",
+  "prior_recorded_elapsed_seconds": 7206.8678472039755,
+  "saved_pre_extension_results": "wall_budget_results_step00093.json",
+  "saved_pre_extension_checkpoint": "wall_budget_resume_step00093.pt",
+  "further_wall_allowance_extensions_authorized": false
+}

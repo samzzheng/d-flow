@@ -1,0 +1,101 @@
+{
+  "all_observations_exactly_clean": true,
+  "rows": [
+    {
+      "case": "r250_shapes_ct10",
+      "method": "D-Flow",
+      "steps": 2,
+      "initial_phi": 2.489072215828128,
+      "final_phi": 2.468379049070675,
+      "final_image_percent": 108.38680267333984
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "method": "P-Flow",
+      "steps": 2,
+      "initial_phi": 2.489072215828128,
+      "final_phi": 2.438316559846614,
+      "final_image_percent": 108.15562009811401
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "method": "DLR D-Flow",
+      "steps": 2,
+      "initial_phi": 2.489072215828128,
+      "final_phi": 2.485731031523851,
+      "final_image_percent": 108.51215124130249
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "method": "D-Flow",
+      "steps": 2,
+      "initial_phi": 657.7509003608874,
+      "final_phi": 650.8865058094977,
+      "final_image_percent": 108.14002752304077
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "method": "P-Flow",
+      "steps": 2,
+      "initial_phi": 657.7509003608874,
+      "final_phi": 564.6723426687964,
+      "final_image_percent": 99.8292624950409
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "method": "DLR D-Flow",
+      "steps": 2,
+      "initial_phi": 657.7509003608874,
+      "final_phi": 656.1533156824498,
+      "final_image_percent": 108.45798254013062
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "method": "D-Flow",
+      "steps": 2,
+      "initial_phi": 0.7769950543463287,
+      "final_phi": 0.5331234851465312,
+      "final_image_percent": 107.46171474456787
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "method": "P-Flow",
+      "steps": 2,
+      "initial_phi": 0.7769950543463287,
+      "final_phi": 0.4971093717591597,
+      "final_image_percent": 108.31151008605957
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "method": "DLR D-Flow",
+      "steps": 2,
+      "initial_phi": 0.7769950543463287,
+      "final_phi": 0.6430530930887471,
+      "final_image_percent": 110.49684286117554
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "method": "D-Flow",
+      "steps": 2,
+      "initial_phi": 35.97065856668246,
+      "final_phi": 27.0220240802156,
+      "final_image_percent": 107.28967189788818
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "method": "P-Flow",
+      "steps": 2,
+      "initial_phi": 35.97065856668246,
+      "final_phi": 21.681709233526952,
+      "final_image_percent": 97.98818230628967
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "method": "DLR D-Flow",
+      "steps": 2,
+      "initial_phi": 35.97065856668246,
+      "final_phi": 29.811097902357915,
+      "final_image_percent": 110.446035861969
+    }
+  ]
+}

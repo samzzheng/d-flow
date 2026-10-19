@@ -1,0 +1,15 @@
+{
+  "pid": 2165034,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-m",
+    "experiments.multicircle_rank_hybrid.adaptive_queue",
+    "--output",
+    "outputs/rank_adaptive_dlr_20261011/production"
+  ],
+  "physical_gpu": 1,
+  "CUDA_VISIBLE_DEVICES": "GPU-df1365ae-00a9-6ee4-b3f9-f600faea48a4",
+  "worker_logical_gpu": 0,
+  "reserved_mib": 4800,
+  "output": "outputs/rank_adaptive_dlr_20261011/production"
+}

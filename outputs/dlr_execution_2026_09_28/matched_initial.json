@@ -1,0 +1,97 @@
+{
+  "protocol": {
+    "device": "cuda:1",
+    "mode": "flow",
+    "method": "compare",
+    "memory_format": "contiguous",
+    "cudnn_benchmark": false,
+    "disable_conv_tf32": false,
+    "fused_norm": true,
+    "specialized_algebra": true,
+    "source_iterate": 0,
+    "step_jvp_columns": 6,
+    "step_vjp_columns": 4,
+    "selective_block_chunks": false,
+    "fused_primal": "full",
+    "checkpoint_blocks": false,
+    "resolution": 250,
+    "steps": 100,
+    "repeats": 1,
+    "threads": 4,
+    "memory_fraction": 0.14,
+    "max_seconds": 45,
+    "out": "outputs/dlr_execution_2026_09_28/matched_initial.json",
+    "torch": "2.11.0+cu129",
+    "non_attention": true,
+    "epoch": 100,
+    "seed": 0,
+    "timing": "one warmup per method, then randomized interleaving; no Armijo or optimization",
+    "peak_memory": "shared process pools: absolute peaks cannot be attributed to individual methods",
+    "model": "outputs/fm_unet/circles-250-noattn-ch16-b8/n1",
+    "cudnn_tf32": true,
+    "matmul_tf32": false,
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "source": "saved exact CPU sample0 step0",
+    "rank": 8,
+    "trace_probes": 4,
+    "enrichment_probes": 0,
+    "initialization_oversampling": 8,
+    "terminal_alpha": 0.0,
+    "factor_stride": 1,
+    "full_step_cuda_graphs": true,
+    "initial_product_chunks": [
+      20,
+      16
+    ]
+  },
+  "calls": [
+    {
+      "method": "dlr",
+      "warmup": true,
+      "seconds": 3.0967944939620793,
+      "allocated_MiB": 209.71435546875,
+      "reserved_MiB": 2918.0,
+      "peak_allocated_MiB": 1031.8095703125,
+      "peak_reserved_MiB": 2918.0
+    },
+    {
+      "method": "dflow-checkpointed",
+      "warmup": true,
+      "seconds": 4.006840944988653,
+      "allocated_MiB": 220.31689453125,
+      "reserved_MiB": 3186.0,
+      "peak_allocated_MiB": 491.384765625,
+      "peak_reserved_MiB": 3186.0
+    },
+    {
+      "method": "dlr",
+      "warmup": false,
+      "seconds": 1.6724519380368292,
+      "allocated_MiB": 220.79443359375,
+      "reserved_MiB": 3186.0,
+      "peak_allocated_MiB": 247.10498046875,
+      "peak_reserved_MiB": 3186.0
+    },
+    {
+      "method": "dflow-checkpointed",
+      "warmup": false,
+      "seconds": 3.3256010609911755,
+      "allocated_MiB": 220.79443359375,
+      "reserved_MiB": 3188.0,
+      "peak_allocated_MiB": 491.8623046875,
+      "peak_reserved_MiB": 3188.0
+    }
+  ],
+  "status": "complete",
+  "capture_memory": {
+    "allocated_MiB": 220.79443359375,
+    "reserved_MiB": 3186.0,
+    "peak_allocated_MiB": 491.384765625,
+    "peak_reserved_MiB": 3186.0
+  },
+  "medians": {
+    "dlr": 1.6724519380368292,
+    "dflow-checkpointed": 3.3256010609911755
+  },
+  "total_seconds": 12.284301202977076
+}

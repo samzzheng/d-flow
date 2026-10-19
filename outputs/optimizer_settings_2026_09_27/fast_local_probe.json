@@ -1,0 +1,70 @@
+{
+  "protocol": {
+    "device": "cpu",
+    "threads": 4,
+    "sample": 1,
+    "resolution": 250,
+    "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+    "checkpoint_sha256": "8ddc304ec6f1b70339f55d015b018f0f5571f006ae9b0a23490076aa9d491ae5",
+    "base_seed": 20260807,
+    "noise": 0.01,
+    "flow_steps": 100,
+    "rank": 8,
+    "trace_probes": 4,
+    "enrichment_probes": 0,
+    "initialization_oversampling": 8,
+    "terminal_alpha": 0,
+    "factor_refresh": "every gradient",
+    "source_prior": "none",
+    "objective": "relative_scaled",
+    "c1": 0.0001,
+    "step_cap": 2.5,
+    "purpose": "local first-step/second-step audit, not a complete optimization"
+  },
+  "trials": [
+    {
+      "objective": 58859.98046875,
+      "residual": 0.9704430460070895,
+      "image_relative_l2": 1.251605749130249,
+      "raw_image_relative_l2": 1.2545922994613647,
+      "policy": "repeat_l1_scaling",
+      "step_norm": 0.009590109685711405,
+      "armijo_rhs": 58879.78717081677,
+      "accepted": true,
+      "relative_objective_drop": 0.0003364243327871552
+    },
+    {
+      "objective": 50763.14453125,
+      "residual": 0.9012271197796877,
+      "image_relative_l2": 1.1870484352111816,
+      "raw_image_relative_l2": 1.1905041933059692,
+      "policy": "once_scaling_then_cap",
+      "step_norm": 2.5,
+      "armijo_rhs": 58879.29592861328,
+      "accepted": true,
+      "relative_objective_drop": 0.1378511142870146
+    }
+  ],
+  "initial": {
+    "objective": 58899.57421875,
+    "residual": 0.9707693771994412,
+    "image_relative_l2": 1.2519117593765259,
+    "raw_image_relative_l2": 1.2548973560333252
+  },
+  "first_step": {
+    "objective": 58879.7890625,
+    "residual": 0.9706063174324535,
+    "image_relative_l2": 1.25175940990448,
+    "raw_image_relative_l2": 1.254745364189148,
+    "step_norm": 0.009588743560016155,
+    "armijo_rhs": 58899.57232935355,
+    "accepted": true,
+    "gradient_seconds": 152.81114427000284
+  },
+  "curvature": {
+    "y_dot_s": -0.019417138770222664,
+    "pair_stored_by_current_optimizer": false,
+    "second_gradient_seconds": 128.24850589002017,
+    "gradient_norm": 1972.53466796875
+  }
+}

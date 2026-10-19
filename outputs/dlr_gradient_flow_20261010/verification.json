@@ -1,0 +1,12 @@
+{
+  "cpu_tests_passed": 14,
+  "production_files_verified": 30,
+  "production_hash_mismatches": [],
+  "main_cases": 4,
+  "new_main_runs": 13,
+  "unfinished_main_runs": [],
+  "main_png_and_pdf_pairs": 16,
+  "refresh_followup_png_and_pdf_pairs": 6,
+  "gpu0_study_workers_finished": true,
+  "timing_scope": "Isolated gradient benchmarks only; reconstruction workers shared GPU0 and were paused for timing."
+}

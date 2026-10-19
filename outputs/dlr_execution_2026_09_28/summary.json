@@ -1,0 +1,405 @@
+{
+  "scope": "sample0, 250x250 non-attention epoch100; 100 Euler steps; no optimizer/Armijo",
+  "timing": {
+    "idle_native": {
+      "median_seconds": 2.5562072340399027,
+      "samples_seconds": [
+        2.553456300054677,
+        2.5562072340399027,
+        2.556906346930191
+      ],
+      "cold_seconds": 3.4773706239648163,
+      "peak_reserved_MiB": 3758.0
+    },
+    "idle_optimized": {
+      "median_seconds": 1.6663931590737775,
+      "samples_seconds": [
+        1.6659564800793305,
+        1.6663931590737775,
+        1.6696687639923766
+      ],
+      "cold_seconds": 3.090986173017882,
+      "peak_reserved_MiB": 2922.0
+    },
+    "idle_dflow_uncheckpointed": {
+      "median_seconds": 1.5006437109550461,
+      "samples_seconds": [
+        1.5006437109550461,
+        1.5684567959979177,
+        1.4818533689249307
+      ],
+      "cold_seconds": 2.459641427034512,
+      "peak_reserved_MiB": 24188.0
+    },
+    "idle_dflow_checkpointed": {
+      "median_seconds": 3.222855322062969,
+      "samples_seconds": [
+        3.222855322062969,
+        3.2582334670005366,
+        3.0991305639036
+      ],
+      "cold_seconds": 4.340325639932416,
+      "peak_reserved_MiB": 328.0
+    },
+    "idle_optimized_tuned": {
+      "median_seconds": 1.6451537470566109,
+      "samples_seconds": [
+        1.644044385990128,
+        1.6454256359720603,
+        1.6451537470566109
+      ],
+      "cold_seconds": 5.087319346959703,
+      "peak_reserved_MiB": 3018.0
+    },
+    "idle_optimized_chunks3_2": {
+      "median_seconds": 1.8561430174740963,
+      "samples_seconds": [
+        1.855004312004894,
+        1.8572817229432985
+      ],
+      "cold_seconds": 5.44458754803054,
+      "peak_reserved_MiB": 2768.0
+    }
+  },
+  "accuracy": {
+    "source20": {
+      "idle_native": {
+        "image_vs_old_dlr": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999928,
+          "bitwise_equal": true
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999976,
+          "bitwise_equal": true
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.3696053072078139,
+          "cosine": 0.9291944666602217,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.02680366113781929,
+          "raw_image_relative_l2": 0.03260553628206253,
+          "psnr_db_clipped_range_1": 39.365482330322266,
+          "measurement_relative_residual": 0.017561543732881546
+        }
+      },
+      "idle_optimized": {
+        "image_vs_old_dlr": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999928,
+          "bitwise_equal": true
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.00018715397847298467,
+          "cosine": 0.9999999946037894,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.36960211232134915,
+          "cosine": 0.9291952500368359,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.02680366113781929,
+          "raw_image_relative_l2": 0.03260553628206253,
+          "psnr_db_clipped_range_1": 39.365482330322266,
+          "measurement_relative_residual": 0.017561543732881546
+        }
+      },
+      "idle_dflow_uncheckpointed": {
+        "image_vs_old_dlr": {
+          "relative_l2": 2.2195475165513168e-05,
+          "cosine": 0.9999999997549742,
+          "bitwise_equal": false
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.3991575901805359,
+          "cosine": 0.9291944666602217,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999923,
+          "bitwise_equal": true
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.02681778557598591,
+          "raw_image_relative_l2": 0.03261708468198776,
+          "psnr_db_clipped_range_1": 39.360904693603516,
+          "measurement_relative_residual": 0.017561858519911766
+        }
+      },
+      "idle_dflow_checkpointed": {
+        "image_vs_old_dlr": {
+          "relative_l2": 2.2195475165513168e-05,
+          "cosine": 0.9999999997549742,
+          "bitwise_equal": false
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.399157078611261,
+          "cosine": 0.9291941490284888,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 1.3760866737305351e-05,
+          "cosine": 0.9999999999109577,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.02681778557598591,
+          "raw_image_relative_l2": 0.03261708468198776,
+          "psnr_db_clipped_range_1": 39.360904693603516,
+          "measurement_relative_residual": 0.017561858519911766
+        }
+      },
+      "idle_optimized_tuned": {
+        "image_vs_old_dlr": {
+          "relative_l2": 0.00022886635607342594,
+          "cosine": 0.9999999864258328,
+          "bitwise_equal": false
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.1007613460147237,
+          "cosine": 0.9953707989593935,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.38018822186392154,
+          "cosine": 0.9254557044328066,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.026906827464699745,
+          "raw_image_relative_l2": 0.032645080238580704,
+          "psnr_db_clipped_range_1": 39.332115173339844,
+          "measurement_relative_residual": 0.017553571611642838
+        }
+      },
+      "idle_optimized_chunks3_2": {
+        "image_vs_old_dlr": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999928,
+          "bitwise_equal": true
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.00018575921986609408,
+          "cosine": 0.999999995023023,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.36960106649579083,
+          "cosine": 0.9291956642693185,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.02680366113781929,
+          "raw_image_relative_l2": 0.03260553628206253,
+          "psnr_db_clipped_range_1": 39.365482330322266,
+          "measurement_relative_residual": 0.017561543732881546
+        }
+      }
+    },
+    "interleaved_source20": {
+      "dlr": {
+        "image_vs_old_dlr": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999928,
+          "bitwise_equal": true
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.00019243105271169773,
+          "cosine": 0.9999999943654713,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.369602375679857,
+          "cosine": 0.9291951105609954,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.02680366113781929,
+          "raw_image_relative_l2": 0.03260553628206253,
+          "psnr_db_clipped_range_1": 39.365482330322266,
+          "measurement_relative_residual": 0.017561543732881546
+        }
+      },
+      "dflow-checkpointed": {
+        "image_vs_old_dlr": {
+          "relative_l2": 2.2195475165513168e-05,
+          "cosine": 0.9999999997549742,
+          "bitwise_equal": false
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.3991579107096076,
+          "cosine": 0.9291939982576598,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 1.3974126616245812e-05,
+          "cosine": 0.999999999910367,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.02681778557598591,
+          "raw_image_relative_l2": 0.03261708468198776,
+          "psnr_db_clipped_range_1": 39.360904693603516,
+          "measurement_relative_residual": 0.017561858519911766
+        }
+      },
+      "dflow-uncheckpointed": {
+        "image_vs_old_dlr": {
+          "relative_l2": 2.2195475165513168e-05,
+          "cosine": 0.9999999997549742,
+          "bitwise_equal": false
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.39915748952582664,
+          "cosine": 0.9291935504922297,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.0,
+          "cosine": 0.999999999999996,
+          "bitwise_equal": true
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 0.02681778557598591,
+          "raw_image_relative_l2": 0.03261708468198776,
+          "psnr_db_clipped_range_1": 39.360904693603516,
+          "measurement_relative_residual": 0.017561858519911766
+        }
+      }
+    },
+    "source0": {
+      "old_dlr": {
+        "image_vs_old_dlr": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999964,
+          "bitwise_equal": true
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999952,
+          "bitwise_equal": true
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.027083571106720168,
+          "cosine": 0.9996501349750565,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 1.308074951171875,
+          "raw_image_relative_l2": 1.3094888925552368,
+          "psnr_db_clipped_range_1": 5.5967020988464355,
+          "measurement_relative_residual": 1.0395845174789429
+        }
+      },
+      "optimized_dlr": {
+        "image_vs_old_dlr": {
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999964,
+          "bitwise_equal": true
+        },
+        "gradient_vs_old_dlr": {
+          "relative_l2": 0.00016508537311584758,
+          "cosine": 0.9999999979656721,
+          "bitwise_equal": false
+        },
+        "gradient_vs_dflow": {
+          "relative_l2": 0.02704262212728718,
+          "cosine": 0.9996503748599234,
+          "bitwise_equal": false
+        },
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 1.308074951171875,
+          "raw_image_relative_l2": 1.3094888925552368,
+          "psnr_db_clipped_range_1": 5.5967020988464355,
+          "measurement_relative_residual": 1.0395845174789429
+        }
+      },
+      "dflow": {
+        "image_metrics_at_fixed_source": {
+          "image_relative_l2": 1.3080437183380127,
+          "raw_image_relative_l2": 1.3094574213027954,
+          "psnr_db_clipped_range_1": 5.596909999847412,
+          "measurement_relative_residual": 1.0395451784133911
+        }
+      }
+    }
+  },
+  "interleaved_timing": {
+    "medians_seconds": {
+      "dlr": 1.662065387936309,
+      "dflow-checkpointed": 3.2658943500136957,
+      "dflow-uncheckpointed": 1.5040337890386581
+    },
+    "calls": [
+      {
+        "method": "dlr",
+        "warmup": true,
+        "seconds": 3.090557607007213
+      },
+      {
+        "method": "dflow-checkpointed",
+        "warmup": true,
+        "seconds": 3.9415582419605926
+      },
+      {
+        "method": "dflow-uncheckpointed",
+        "warmup": true,
+        "seconds": 1.8869278909405693
+      },
+      {
+        "method": "dlr",
+        "warmup": false,
+        "seconds": 1.662065387936309
+      },
+      {
+        "method": "dflow-checkpointed",
+        "warmup": false,
+        "seconds": 3.274590553017333
+      },
+      {
+        "method": "dflow-uncheckpointed",
+        "warmup": false,
+        "seconds": 1.5040337890386581
+      },
+      {
+        "method": "dflow-checkpointed",
+        "warmup": false,
+        "seconds": 3.2658943500136957
+      },
+      {
+        "method": "dlr",
+        "warmup": false,
+        "seconds": 1.6586277480237186
+      },
+      {
+        "method": "dflow-uncheckpointed",
+        "warmup": false,
+        "seconds": 1.5158269290113822
+      },
+      {
+        "method": "dflow-checkpointed",
+        "warmup": false,
+        "seconds": 3.2598457370186225
+      },
+      {
+        "method": "dflow-uncheckpointed",
+        "warmup": false,
+        "seconds": 1.4937699650181457
+      },
+      {
+        "method": "dlr",
+        "warmup": false,
+        "seconds": 1.6731922730104998
+      }
+    ],
+    "memory_note": "Use isolated runs for per-method memory; this process shares allocator pools."
+  },
+  "speedup_vs_previous_dlr": 1.5339760728858884,
+  "optimized_over_uncheckpointed_time": 1.1104522325377584
+}

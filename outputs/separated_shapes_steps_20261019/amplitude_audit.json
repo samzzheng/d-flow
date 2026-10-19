@@ -1,0 +1,66 @@
+[
+  {
+    "case": "r128_shapes_ct10/sample_000",
+    "prediction_measurement_cosine": 0.49666689079613496,
+    "optimal_unconstrained_amplitude": 6.769202585897424,
+    "initial_objective": 1.266753946345049,
+    "zero_image_objective": 1.3584478962531898,
+    "zero_image_improves_objective": false
+  },
+  {
+    "case": "r128_shapes_mri4/sample_002",
+    "prediction_measurement_cosine": 0.006026071998023211,
+    "optimal_unconstrained_amplitude": 0.007410533784573803,
+    "initial_objective": 66.40979796165351,
+    "zero_image_objective": 40.21288937920851,
+    "zero_image_improves_objective": true
+  },
+  {
+    "case": "r160_shapes_ct10/sample_000",
+    "prediction_measurement_cosine": 0.5021786953316136,
+    "optimal_unconstrained_amplitude": 8.831559090205053,
+    "initial_objective": 1.613129597271004,
+    "zero_image_objective": 1.7049881166329852,
+    "zero_image_improves_objective": false
+  },
+  {
+    "case": "r200_shapes_ct10/sample_001",
+    "prediction_measurement_cosine": 0.13867408952984026,
+    "optimal_unconstrained_amplitude": 0.26200887033482256,
+    "initial_objective": 1.4347580299481737,
+    "zero_image_objective": 1.2659593027121057,
+    "zero_image_improves_objective": true
+  },
+  {
+    "case": "r250_shapes_mri4/sample_000",
+    "prediction_measurement_cosine": 0.039099096992633406,
+    "optimal_unconstrained_amplitude": 0.08870272822288636,
+    "initial_objective": 657.7508911151735,
+    "zero_image_objective": 567.1120760854919,
+    "zero_image_improves_objective": true
+  },
+  {
+    "case": "r64_shapes_ct10/sample_000",
+    "prediction_measurement_cosine": 0.2591686076545253,
+    "optimal_unconstrained_amplitude": 0.34208637001423897,
+    "initial_objective": 0.7769950563196258,
+    "zero_image_objective": 0.6577585216765395,
+    "zero_image_improves_objective": true
+  },
+  {
+    "case": "r64_shapes_mri4/sample_001",
+    "prediction_measurement_cosine": -0.003711063399833949,
+    "optimal_unconstrained_amplitude": -0.008598801999831273,
+    "initial_objective": 20.53452025649839,
+    "zero_image_objective": 17.263678595635092,
+    "zero_image_improves_objective": true
+  },
+  {
+    "case": "r96_shapes_mri4/sample_001",
+    "prediction_measurement_cosine": 0.0042740706311869695,
+    "optimal_unconstrained_amplitude": 0.003580100041469675,
+    "initial_objective": 101.5467726916674,
+    "zero_image_objective": 42.04745660410779,
+    "zero_image_improves_objective": true
+  }
+]

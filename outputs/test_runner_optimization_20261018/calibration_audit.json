@@ -1,0 +1,21 @@
+{
+  "calibration_cached": {
+    "calibration_seconds": 0.00018186401575803757,
+    "solve_seconds": 20.12390757026151
+  },
+  "calibration_control": {
+    "calibration_seconds": 25.55022792564705,
+    "solve_seconds": 13.411079382989556
+  },
+  "differences": {
+    "source": 1.0517167083889944e-06,
+    "image": 4.023773271910613e-06,
+    "measurement": 2.5908134375640657e-06,
+    "previous_v": 1.3986066579818726
+  },
+  "same_evaluations": true,
+  "same_phi": false,
+  "gradient_relative_difference": 0.00024187580856960267,
+  "basis_note": "Raw V is gauge dependent. Compare projectors and applied gradients; CUDA rank-deficient QR/SVD tails need not agree between repeats.",
+  "previous_v_relative_orthogonal_component": 0.00043282905244268477
+}

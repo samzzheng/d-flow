@@ -1,0 +1,67 @@
+{
+  "format_version": 1,
+  "resolution": 64,
+  "split_sizes": {
+    "train": 32,
+    "val": 8,
+    "test": 8
+  },
+  "domain": [
+    [
+      -1,
+      1
+    ],
+    [
+      -1,
+      1
+    ]
+  ],
+  "separation": 0.05,
+  "count_distribution": "Uniform integers 1..4",
+  "type_distribution": "Independent disk/triangle, probability 1/2 each",
+  "disk_radius_range": [
+    0.1,
+    0.2
+  ],
+  "triangle_side_range": [
+    0.2,
+    0.3
+  ],
+  "triangle_orientation_range": [
+    0.0,
+    6.283185307179586
+  ],
+  "placement": "Joint uniform center rejection with fixed shape parameters; enclosing disks",
+  "rasterization": "Mean subpixel coverage",
+  "supersample": 8,
+  "storage": "uint8 [0,255], NCHW, row=y, column=x; divide by 255 to obtain [0,1]",
+  "geometry_file": "dataset.geometry.jsonl",
+  "geometry_order": "One JSON line per sample, train then val then test, in tensor order",
+  "seed": 202610150000,
+  "initial_split_seed_ranges": {
+    "train": [
+      202610150000,
+      202610150031
+    ],
+    "val": [
+      202610150032,
+      202610150039
+    ],
+    "test": [
+      202610150040,
+      202610150047
+    ]
+  },
+  "rng": "default_rng/PCG64",
+  "split_policy": "Independent seeds, then swap exact cross-split raster duplicates into one split",
+  "seed_lookup": "sample_seeds[split][index] in the .pt file; geometry JSONL follows final tensor order",
+  "numpy_version": "2.4.4",
+  "source_sha256": {
+    "generate_separated_shapes.py": "8025bd3052605c598cc9cb00c0cf239d5a32fa897d20e6c7d1b12bb181eb1ffb",
+    "separated_shapes.py": "e1cb0ea1a487b7a00ae49d8a9d2557e6a7f2df9c7a40a72f734e071feba98046"
+  },
+  "created_at": "2026-10-15T01:01:24.964124-04:00",
+  "cross_split_duplicate_swaps": 0,
+  "generation_seconds": 0.9265116949100047,
+  "dataset_bytes": 201109
+}

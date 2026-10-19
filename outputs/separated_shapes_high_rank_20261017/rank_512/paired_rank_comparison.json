@@ -1,0 +1,362 @@
+[
+  {
+    "case": "r64_shapes_ct10",
+    "sample": 0,
+    "rank8_image_percent": 78.8473904132843,
+    "rank512_image_percent": 2.511572279036045
+  },
+  {
+    "case": "r64_shapes_ct10",
+    "sample": 1,
+    "rank8_image_percent": 102.83669233322144,
+    "rank512_image_percent": 1.944989152252674
+  },
+  {
+    "case": "r64_shapes_ct10",
+    "sample": 2,
+    "rank8_image_percent": 100.89869499206543,
+    "rank512_image_percent": 3.019849769771099
+  },
+  {
+    "case": "r64_shapes_ct10",
+    "sample": 3,
+    "rank8_image_percent": 103.17399501800537,
+    "rank512_image_percent": 4.900332540273666
+  },
+  {
+    "case": "r64_shapes_ct10",
+    "sample": 4,
+    "rank8_image_percent": 30.278217792510986,
+    "rank512_image_percent": 2.3465167731046677
+  },
+  {
+    "case": "r64_shapes_mri4",
+    "sample": 0,
+    "rank8_image_percent": 76.36176347732544,
+    "rank512_image_percent": 2.1358344703912735
+  },
+  {
+    "case": "r64_shapes_mri4",
+    "sample": 1,
+    "rank8_image_percent": 99.85325932502747,
+    "rank512_image_percent": 99.84508752822876
+  },
+  {
+    "case": "r64_shapes_mri4",
+    "sample": 2,
+    "rank8_image_percent": 101.71127319335938,
+    "rank512_image_percent": 101.73279047012329
+  },
+  {
+    "case": "r64_shapes_mri4",
+    "sample": 3,
+    "rank8_image_percent": 99.83578324317932,
+    "rank512_image_percent": 5.290019512176514
+  },
+  {
+    "case": "r64_shapes_mri4",
+    "sample": 4,
+    "rank8_image_percent": 73.90690445899963,
+    "rank512_image_percent": 1.564742997288704
+  },
+  {
+    "case": "r96_shapes_ct10",
+    "sample": 0,
+    "rank8_image_percent": 84.81653332710266,
+    "rank512_image_percent": 52.430540323257446
+  },
+  {
+    "case": "r96_shapes_ct10",
+    "sample": 1,
+    "rank8_image_percent": 102.35707759857178,
+    "rank512_image_percent": 102.24239826202393
+  },
+  {
+    "case": "r96_shapes_ct10",
+    "sample": 2,
+    "rank8_image_percent": 100.42885541915894,
+    "rank512_image_percent": 3.5987328737974167
+  },
+  {
+    "case": "r96_shapes_ct10",
+    "sample": 3,
+    "rank8_image_percent": 100.36181211471558,
+    "rank512_image_percent": 2.35544815659523
+  },
+  {
+    "case": "r96_shapes_ct10",
+    "sample": 4,
+    "rank8_image_percent": 77.90430188179016,
+    "rank512_image_percent": 1.572505570948124
+  },
+  {
+    "case": "r96_shapes_mri4",
+    "sample": 0,
+    "rank8_image_percent": 82.22969770431519,
+    "rank512_image_percent": 50.808900594711304
+  },
+  {
+    "case": "r96_shapes_mri4",
+    "sample": 1,
+    "rank8_image_percent": 99.57156777381897,
+    "rank512_image_percent": 100.73177814483643
+  },
+  {
+    "case": "r96_shapes_mri4",
+    "sample": 2,
+    "rank8_image_percent": 99.6326208114624,
+    "rank512_image_percent": 3.1758908182382584
+  },
+  {
+    "case": "r96_shapes_mri4",
+    "sample": 3,
+    "rank8_image_percent": 99.49670433998108,
+    "rank512_image_percent": 2.4438194930553436
+  },
+  {
+    "case": "r96_shapes_mri4",
+    "sample": 4,
+    "rank8_image_percent": 97.82790541648865,
+    "rank512_image_percent": 1.6962578520178795
+  },
+  {
+    "case": "r128_shapes_ct10",
+    "sample": 0,
+    "rank8_image_percent": 99.59852695465088,
+    "rank512_image_percent": 103.90257835388184
+  },
+  {
+    "case": "r128_shapes_ct10",
+    "sample": 1,
+    "rank8_image_percent": 99.71004724502563,
+    "rank512_image_percent": 99.80814456939697
+  },
+  {
+    "case": "r128_shapes_ct10",
+    "sample": 2,
+    "rank8_image_percent": 104.3587327003479,
+    "rank512_image_percent": 3.2573893666267395
+  },
+  {
+    "case": "r128_shapes_ct10",
+    "sample": 3,
+    "rank8_image_percent": 104.8848032951355,
+    "rank512_image_percent": 2.336454950273037
+  },
+  {
+    "case": "r128_shapes_ct10",
+    "sample": 4,
+    "rank8_image_percent": 79.60183620452881,
+    "rank512_image_percent": 78.07902097702026
+  },
+  {
+    "case": "r128_shapes_mri4",
+    "sample": 0,
+    "rank8_image_percent": 99.34208989143372,
+    "rank512_image_percent": 99.0653395652771
+  },
+  {
+    "case": "r128_shapes_mri4",
+    "sample": 1,
+    "rank8_image_percent": 99.98424649238586,
+    "rank512_image_percent": 99.75630640983582
+  },
+  {
+    "case": "r128_shapes_mri4",
+    "sample": 2,
+    "rank8_image_percent": 100.01718997955322,
+    "rank512_image_percent": 2.3284494876861572
+  },
+  {
+    "case": "r128_shapes_mri4",
+    "sample": 3,
+    "rank8_image_percent": 99.59890246391296,
+    "rank512_image_percent": 99.66300129890442
+  },
+  {
+    "case": "r128_shapes_mri4",
+    "sample": 4,
+    "rank8_image_percent": 73.42426180839539,
+    "rank512_image_percent": 73.20966124534607
+  },
+  {
+    "case": "r160_shapes_ct10",
+    "sample": 0,
+    "rank8_image_percent": 101.52833461761475,
+    "rank512_image_percent": 101.48739814758301
+  },
+  {
+    "case": "r160_shapes_ct10",
+    "sample": 1,
+    "rank8_image_percent": 100.34531354904175,
+    "rank512_image_percent": 99.66511726379395
+  },
+  {
+    "case": "r160_shapes_ct10",
+    "sample": 2,
+    "rank8_image_percent": 99.97194409370422,
+    "rank512_image_percent": 100.54970979690552
+  },
+  {
+    "case": "r160_shapes_ct10",
+    "sample": 3,
+    "rank8_image_percent": 101.91551446914673,
+    "rank512_image_percent": 104.35693264007568
+  },
+  {
+    "case": "r160_shapes_ct10",
+    "sample": 4,
+    "rank8_image_percent": 102.81025171279907,
+    "rank512_image_percent": 1.3445332646369934
+  },
+  {
+    "case": "r160_shapes_mri4",
+    "sample": 0,
+    "rank8_image_percent": 99.63567852973938,
+    "rank512_image_percent": 99.34188723564148
+  },
+  {
+    "case": "r160_shapes_mri4",
+    "sample": 1,
+    "rank8_image_percent": 99.45353865623474,
+    "rank512_image_percent": 1.6092799603939056
+  },
+  {
+    "case": "r160_shapes_mri4",
+    "sample": 2,
+    "rank8_image_percent": 100.24642944335938,
+    "rank512_image_percent": 100.17259120941162
+  },
+  {
+    "case": "r160_shapes_mri4",
+    "sample": 3,
+    "rank8_image_percent": 23.794257640838623,
+    "rank512_image_percent": 3.152170404791832
+  },
+  {
+    "case": "r160_shapes_mri4",
+    "sample": 4,
+    "rank8_image_percent": 73.18572402000427,
+    "rank512_image_percent": 1.7820948734879494
+  },
+  {
+    "case": "r200_shapes_ct10",
+    "sample": 0,
+    "rank8_image_percent": 92.29660630226135,
+    "rank512_image_percent": 52.045512199401855
+  },
+  {
+    "case": "r200_shapes_ct10",
+    "sample": 1,
+    "rank8_image_percent": 100.30144453048706,
+    "rank512_image_percent": 101.49980783462524
+  },
+  {
+    "case": "r200_shapes_ct10",
+    "sample": 2,
+    "rank8_image_percent": 101.2903094291687,
+    "rank512_image_percent": 100.90717077255249
+  },
+  {
+    "case": "r200_shapes_ct10",
+    "sample": 3,
+    "rank8_image_percent": 100.46124458312988,
+    "rank512_image_percent": 99.89868998527527
+  },
+  {
+    "case": "r200_shapes_ct10",
+    "sample": 4,
+    "rank8_image_percent": 31.66365921497345,
+    "rank512_image_percent": 100.21846294403076
+  },
+  {
+    "case": "r200_shapes_mri4",
+    "sample": 0,
+    "rank8_image_percent": 99.68878030776978,
+    "rank512_image_percent": 99.29559826850891
+  },
+  {
+    "case": "r200_shapes_mri4",
+    "sample": 1,
+    "rank8_image_percent": 99.60281252861023,
+    "rank512_image_percent": 99.43793416023254
+  },
+  {
+    "case": "r200_shapes_mri4",
+    "sample": 2,
+    "rank8_image_percent": 97.99752235412598,
+    "rank512_image_percent": 99.83640313148499
+  },
+  {
+    "case": "r200_shapes_mri4",
+    "sample": 3,
+    "rank8_image_percent": 99.68541860580444,
+    "rank512_image_percent": 99.56254363059998
+  },
+  {
+    "case": "r200_shapes_mri4",
+    "sample": 4,
+    "rank8_image_percent": 99.5718777179718,
+    "rank512_image_percent": 99.00317192077637
+  },
+  {
+    "case": "r250_shapes_ct10",
+    "sample": 0,
+    "rank8_image_percent": 82.8370988368988,
+    "rank512_image_percent": 86.9172751903534
+  },
+  {
+    "case": "r250_shapes_ct10",
+    "sample": 1,
+    "rank8_image_percent": 99.98502731323242,
+    "rank512_image_percent": 99.9962866306305
+  },
+  {
+    "case": "r250_shapes_ct10",
+    "sample": 2,
+    "rank8_image_percent": 100.04713535308838,
+    "rank512_image_percent": 99.91617798805237
+  },
+  {
+    "case": "r250_shapes_ct10",
+    "sample": 3,
+    "rank8_image_percent": 111.59322261810303,
+    "rank512_image_percent": 101.4962911605835
+  },
+  {
+    "case": "r250_shapes_ct10",
+    "sample": 4,
+    "rank8_image_percent": 46.66331112384796,
+    "rank512_image_percent": 2.4521827697753906
+  },
+  {
+    "case": "r250_shapes_mri4",
+    "sample": 0,
+    "rank8_image_percent": 99.24660325050354,
+    "rank512_image_percent": 99.14565086364746
+  },
+  {
+    "case": "r250_shapes_mri4",
+    "sample": 1,
+    "rank8_image_percent": 99.48233962059021,
+    "rank512_image_percent": 99.41524863243103
+  },
+  {
+    "case": "r250_shapes_mri4",
+    "sample": 2,
+    "rank8_image_percent": 99.6921181678772,
+    "rank512_image_percent": 99.72419142723083
+  },
+  {
+    "case": "r250_shapes_mri4",
+    "sample": 3,
+    "rank8_image_percent": 99.68916177749634,
+    "rank512_image_percent": 99.63520765304565
+  },
+  {
+    "case": "r250_shapes_mri4",
+    "sample": 4,
+    "rank8_image_percent": 88.59206438064575,
+    "rank512_image_percent": 31.341657042503357
+  }
+]

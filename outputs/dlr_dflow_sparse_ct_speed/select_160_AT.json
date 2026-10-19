@@ -1,0 +1,205 @@
+{
+  "metadata": {
+    "device": "cuda:0",
+    "resolutions": "160",
+    "widths": "16",
+    "kinds": "AT",
+    "variants": "current,current_shared_gn,current_chunked,current_chunked_shared_gn",
+    "execution": "eager,graph",
+    "warmup": 2,
+    "repeat": 3,
+    "threads": 8,
+    "output": "outputs/dlr_dflow_sparse_ct_speed/select_160_AT.json",
+    "torch_version": "2.11.0+cu129",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "cudnn_benchmark": false,
+    "cudnn_allow_tf32": true,
+    "matmul_allow_tf32": false
+  },
+  "rows": [
+    {
+      "resolution": 160,
+      "width": 16,
+      "kind": "AT",
+      "variant": "current",
+      "execution": "eager",
+      "wall_ms": 84.75393522530794,
+      "cuda_ms": 84.57523345947266,
+      "wall_samples_ms": [
+        84.75393522530794,
+        84.48681328445673,
+        85.06140764802694
+      ],
+      "cuda_samples_ms": [
+        84.57523345947266,
+        84.39603424072266,
+        84.98162841796875
+      ],
+      "primal_rel_error": 0.0,
+      "primal_max_abs_error": 0.0,
+      "product_rel_error": 1.880996164731698e-05,
+      "product_max_abs_error": 0.00013853609561920166
+    },
+    {
+      "resolution": 160,
+      "width": 16,
+      "kind": "AT",
+      "variant": "current",
+      "execution": "graph",
+      "wall_ms": 83.08310806751251,
+      "cuda_ms": 83.01052856445312,
+      "wall_samples_ms": [
+        82.36649911850691,
+        83.08310806751251,
+        83.61641131341457
+      ],
+      "cuda_samples_ms": [
+        82.22720336914062,
+        83.01052856445312,
+        83.53382110595703
+      ],
+      "primal_rel_error": 0.0,
+      "primal_max_abs_error": 0.0,
+      "product_rel_error": 1.880997097344881e-05,
+      "product_max_abs_error": 0.00013853609561920166
+    },
+    {
+      "resolution": 160,
+      "width": 16,
+      "kind": "AT",
+      "variant": "current_shared_gn",
+      "execution": "eager",
+      "wall_ms": 82.75075722485781,
+      "cuda_ms": 82.67571258544922,
+      "wall_samples_ms": [
+        82.48825278133154,
+        82.75075722485781,
+        82.9821266233921
+      ],
+      "cuda_samples_ms": [
+        82.38387298583984,
+        82.67571258544922,
+        82.90707397460938
+      ],
+      "primal_rel_error": 0.0,
+      "primal_max_abs_error": 0.0,
+      "product_rel_error": 4.4215142341387724e-08,
+      "product_max_abs_error": 7.152557373046875e-07
+    },
+    {
+      "resolution": 160,
+      "width": 16,
+      "kind": "AT",
+      "variant": "current_shared_gn",
+      "execution": "graph",
+      "wall_ms": 82.31087494641542,
+      "cuda_ms": 82.16473388671875,
+      "wall_samples_ms": [
+        82.31087494641542,
+        82.03138411045074,
+        82.75229949504137
+      ],
+      "cuda_samples_ms": [
+        82.16473388671875,
+        81.94662475585938,
+        82.65411376953125
+      ],
+      "primal_rel_error": 0.0,
+      "primal_max_abs_error": 0.0,
+      "product_rel_error": 4.3678197210062466e-08,
+      "product_max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "resolution": 160,
+      "width": 16,
+      "kind": "AT",
+      "variant": "current_chunked",
+      "execution": "eager",
+      "wall_ms": 81.69449586421251,
+      "cuda_ms": 81.64454650878906,
+      "wall_samples_ms": [
+        82.71745685487986,
+        81.69449586421251,
+        81.66109584271908
+      ],
+      "cuda_samples_ms": [
+        82.63680267333984,
+        81.64454650878906,
+        81.60249328613281
+      ],
+      "primal_rel_error": 0.0,
+      "primal_max_abs_error": 0.0,
+      "product_rel_error": 1.881593995810881e-05,
+      "product_max_abs_error": 0.0001398324966430664
+    },
+    {
+      "resolution": 160,
+      "width": 16,
+      "kind": "AT",
+      "variant": "current_chunked",
+      "execution": "graph",
+      "wall_ms": 78.83019186556339,
+      "cuda_ms": 78.66470336914062,
+      "wall_samples_ms": [
+        78.83019186556339,
+        78.644341789186,
+        79.27606347948313
+      ],
+      "cuda_samples_ms": [
+        78.66470336914062,
+        78.5766372680664,
+        79.20537567138672
+      ],
+      "primal_rel_error": 0.0,
+      "primal_max_abs_error": 0.0,
+      "product_rel_error": 1.881587261783816e-05,
+      "product_max_abs_error": 0.0001399517059326172
+    },
+    {
+      "resolution": 160,
+      "width": 16,
+      "kind": "AT",
+      "variant": "current_chunked_shared_gn",
+      "execution": "eager",
+      "wall_ms": 79.5637471601367,
+      "cuda_ms": 79.51872253417969,
+      "wall_samples_ms": [
+        80.79505246132612,
+        79.2928384616971,
+        79.5637471601367
+      ],
+      "cuda_samples_ms": [
+        80.7198715209961,
+        79.24729919433594,
+        79.51872253417969
+      ],
+      "primal_rel_error": 0.0,
+      "primal_max_abs_error": 0.0,
+      "product_rel_error": 1.7549947481228184e-05,
+      "product_max_abs_error": 0.00013208389282226562
+    },
+    {
+      "resolution": 160,
+      "width": 16,
+      "kind": "AT",
+      "variant": "current_chunked_shared_gn",
+      "execution": "graph",
+      "wall_ms": 77.55091600120068,
+      "cuda_ms": 77.47071838378906,
+      "wall_samples_ms": [
+        78.21856066584587,
+        77.55091600120068,
+        77.00491230934858
+      ],
+      "cuda_samples_ms": [
+        78.05235290527344,
+        77.47071838378906,
+        76.93312072753906
+      ],
+      "primal_rel_error": 0.0,
+      "primal_max_abs_error": 0.0,
+      "product_rel_error": 1.754995802512414e-05,
+      "product_max_abs_error": 0.00013196468353271484
+    }
+  ]
+}

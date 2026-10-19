@@ -1,0 +1,1774 @@
+{
+  "title": "Single Circle Noise Test (October 14, 2026)",
+  "data": "outputs/five_step_single_circle_results_20261014",
+  "run_count": 4320,
+  "runs_sha256": "cd01c7affd300c9be602083f6e82bc3f6d2b149fb19977eafbbe64f8a321597b",
+  "representative_rule": "DLR ranks 1/15/30 within each noise/resolution/problem",
+  "gallery_rule": "Noise 5/10/20%; DLR <=10%, positive D-Flow minus DLR gap; top 3 per noise/resolution/problem",
+  "selections": [
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_ct_r64_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r64_n1_ct10/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_ct_r64_sample003",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r64_n1_ct10/sample_003"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_ct_r64_sample021",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r64_n1_ct10/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_mri_r64_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r64_n1_mri4/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_mri_r64_sample021",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r64_n1_mri4/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_mri_r64_sample004",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r64_n1_mri4/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_ct_r96_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r96_n1_ct10/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_ct_r96_sample016",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r96_n1_ct10/sample_016"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_ct_r96_sample013",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r96_n1_ct10/sample_013"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_mri_r96_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r96_n1_mri4/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_mri_r96_sample021",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r96_n1_mri4/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_mri_r96_sample014",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r96_n1_mri4/sample_014"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_ct_r128_sample018",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r128_n1_ct10/sample_018"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_ct_r128_sample012",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r128_n1_ct10/sample_012"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_ct_r128_sample010",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r128_n1_ct10/sample_010"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_mri_r128_sample018",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r128_n1_mri4/sample_018"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_mri_r128_sample004",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r128_n1_mri4/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_mri_r128_sample005",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r128_n1_mri4/sample_005"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_ct_r160_sample029",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r160_n1_ct10/sample_029"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_ct_r160_sample001",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r160_n1_ct10/sample_001"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_ct_r160_sample020",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r160_n1_ct10/sample_020"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_mri_r160_sample010",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r160_n1_mri4/sample_010"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_mri_r160_sample014",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r160_n1_mri4/sample_014"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_mri_r160_sample012",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r160_n1_mri4/sample_012"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_ct_r200_sample002",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r200_n1_ct10/sample_002"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_ct_r200_sample024",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r200_n1_ct10/sample_024"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_ct_r200_sample014",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r200_n1_ct10/sample_014"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_mri_r200_sample010",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r200_n1_mri4/sample_010"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_mri_r200_sample001",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r200_n1_mri4/sample_001"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_mri_r200_sample007",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r200_n1_mri4/sample_007"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_ct_r250_sample006",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r250_n1_ct10/sample_006"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_ct_r250_sample010",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r250_n1_ct10/sample_010"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_ct_r250_sample023",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r250_n1_ct10/sample_023"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise01_mri_r250_sample015",
+      "rank": 1,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r250_n1_mri4/sample_015"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise01_mri_r250_sample026",
+      "rank": 15,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r250_n1_mri4/sample_026"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise01_mri_r250_sample018",
+      "rank": 30,
+      "source": "outputs/five_step_noise001_n124_20261013/production/r250_n1_mri4/sample_018"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_ct_r64_sample008",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_ct10/sample_008"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_ct_r64_sample002",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_ct10/sample_002"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_ct_r64_sample004",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_ct10/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_mri_r64_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_mri4/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_mri_r64_sample017",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_mri4/sample_017"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_mri_r64_sample004",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_mri4/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_ct_r96_sample005",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_ct10/sample_005"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_ct_r96_sample016",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_ct10/sample_016"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_ct_r96_sample013",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_ct10/sample_013"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_mri_r96_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_mri4/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_mri_r96_sample017",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_mri4/sample_017"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_mri_r96_sample013",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_mri4/sample_013"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_ct_r128_sample009",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_ct10/sample_009"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_ct_r128_sample025",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_ct10/sample_025"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_ct_r128_sample010",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_ct10/sample_010"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_mri_r128_sample020",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_mri4/sample_020"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_mri_r128_sample004",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_mri4/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_mri_r128_sample012",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_mri4/sample_012"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_ct_r160_sample011",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_ct10/sample_011"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_ct_r160_sample007",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_ct10/sample_007"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_ct_r160_sample015",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_ct10/sample_015"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_mri_r160_sample007",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_mri4/sample_007"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_mri_r160_sample027",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_mri4/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_mri_r160_sample012",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_mri4/sample_012"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_ct_r200_sample025",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_ct10/sample_025"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_ct_r200_sample026",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_ct10/sample_026"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_ct_r200_sample014",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_ct10/sample_014"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_mri_r200_sample002",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_mri4/sample_002"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_mri_r200_sample017",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_mri4/sample_017"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_mri_r200_sample007",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_mri4/sample_007"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_ct_r250_sample019",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_ct10/sample_019"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_ct_r250_sample011",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_ct10/sample_011"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_ct_r250_sample023",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_ct10/sample_023"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise05_mri_r250_sample006",
+      "rank": 1,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_mri4/sample_006"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise05_mri_r250_sample022",
+      "rank": 15,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_mri4/sample_022"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise05_mri_r250_sample014",
+      "rank": 30,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_mri4/sample_014"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_ct_r64_sample029",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_ct10/sample_029"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_ct_r64_sample005",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_ct10/sample_005"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_ct_r64_sample015",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_ct10/sample_015"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_mri_r64_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_mri4/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_mri_r64_sample022",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_mri4/sample_022"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_mri_r64_sample004",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_mri4/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_ct_r96_sample005",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_ct10/sample_005"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_ct_r96_sample009",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_ct10/sample_009"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_ct_r96_sample013",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_ct10/sample_013"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_mri_r96_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_mri4/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_mri_r96_sample021",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_mri4/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_mri_r96_sample013",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_mri4/sample_013"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_ct_r128_sample015",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_ct10/sample_015"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_ct_r128_sample022",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_ct10/sample_022"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_ct_r128_sample010",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_ct10/sample_010"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_mri_r128_sample018",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_mri4/sample_018"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_mri_r128_sample022",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_mri4/sample_022"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_mri_r128_sample012",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_mri4/sample_012"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_ct_r160_sample019",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_ct10/sample_019"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_ct_r160_sample004",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_ct10/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_ct_r160_sample020",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_ct10/sample_020"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_mri_r160_sample029",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_mri4/sample_029"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_mri_r160_sample021",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_mri4/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_mri_r160_sample012",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_mri4/sample_012"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_ct_r200_sample025",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_ct10/sample_025"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_ct_r200_sample024",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_ct10/sample_024"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_ct_r200_sample014",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_ct10/sample_014"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_mri_r200_sample000",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_mri4/sample_000"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_mri_r200_sample028",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_mri4/sample_028"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_mri_r200_sample007",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_mri4/sample_007"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_ct_r250_sample019",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_ct10/sample_019"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_ct_r250_sample004",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_ct10/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_ct_r250_sample023",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_ct10/sample_023"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise10_mri_r250_sample015",
+      "rank": 1,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_mri4/sample_015"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise10_mri_r250_sample001",
+      "rank": 15,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_mri4/sample_001"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise10_mri_r250_sample014",
+      "rank": 30,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_mri4/sample_014"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_ct_r64_sample026",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_ct10/sample_026"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_ct_r64_sample005",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_ct10/sample_005"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_ct_r64_sample021",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_ct10/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_mri_r64_sample007",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_mri4/sample_007"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_mri_r64_sample021",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_mri4/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_mri_r64_sample004",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_mri4/sample_004"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_ct_r96_sample021",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_ct10/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_ct_r96_sample023",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_ct10/sample_023"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_ct_r96_sample026",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_ct10/sample_026"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_mri_r96_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_mri4/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_mri_r96_sample016",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_mri4/sample_016"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_mri_r96_sample013",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_mri4/sample_013"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_ct_r128_sample018",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_ct10/sample_018"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_ct_r128_sample017",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_ct10/sample_017"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_ct_r128_sample010",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_ct10/sample_010"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_mri_r128_sample021",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_mri4/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_mri_r128_sample022",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_mri4/sample_022"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_mri_r128_sample010",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_mri4/sample_010"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_ct_r160_sample027",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_ct10/sample_027"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_ct_r160_sample021",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_ct10/sample_021"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_ct_r160_sample020",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_ct10/sample_020"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_mri_r160_sample011",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_mri4/sample_011"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_mri_r160_sample009",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_mri4/sample_009"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_mri_r160_sample012",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_mri4/sample_012"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_ct_r200_sample001",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_ct10/sample_001"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_ct_r200_sample013",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_ct10/sample_013"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_ct_r200_sample014",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_ct10/sample_014"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_mri_r200_sample015",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_mri4/sample_015"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_mri_r200_sample019",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_mri4/sample_019"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_mri_r200_sample007",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_mri4/sample_007"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_ct_r250_sample019",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_ct10/sample_019"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_ct_r250_sample002",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_ct10/sample_002"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_ct_r250_sample023",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_ct10/sample_023"
+    },
+    {
+      "section": "representatives",
+      "label": "Best",
+      "case": "noise20_mri_r250_sample006",
+      "rank": 1,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_mri4/sample_006"
+    },
+    {
+      "section": "representatives",
+      "label": "Median representative",
+      "case": "noise20_mri_r250_sample009",
+      "rank": 15,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_mri4/sample_009"
+    },
+    {
+      "section": "representatives",
+      "label": "Worst",
+      "case": "noise20_mri_r250_sample014",
+      "rank": 30,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_mri4/sample_014"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 99.01\\) percentage points",
+      "case": "noise05_ct_r64_sample015",
+      "gap_percentage_points": 99.0078579634428,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_ct10/sample_015"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 52.47\\) percentage points",
+      "case": "noise05_ct_r64_sample023",
+      "gap_percentage_points": 52.468498796224594,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_ct10/sample_023"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 43.08\\) percentage points",
+      "case": "noise05_ct_r64_sample024",
+      "gap_percentage_points": 43.0807551369071,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_ct10/sample_024"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 5.39\\) percentage points",
+      "case": "noise05_mri_r64_sample008",
+      "gap_percentage_points": 5.391101539134979,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_mri4/sample_008"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 5.11\\) percentage points",
+      "case": "noise05_mri_r64_sample020",
+      "gap_percentage_points": 5.109853111207485,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_mri4/sample_020"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 4.92\\) percentage points",
+      "case": "noise05_mri_r64_sample024",
+      "gap_percentage_points": 4.923956468701363,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r64_n1_mri4/sample_024"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 101.23\\) percentage points",
+      "case": "noise05_ct_r96_sample004",
+      "gap_percentage_points": 101.22876241803169,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_ct10/sample_004"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 48.44\\) percentage points",
+      "case": "noise05_ct_r96_sample027",
+      "gap_percentage_points": 48.44305124133825,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_ct10/sample_027"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 42.63\\) percentage points",
+      "case": "noise05_ct_r96_sample007",
+      "gap_percentage_points": 42.626881040632725,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_ct10/sample_007"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 6.36\\) percentage points",
+      "case": "noise05_mri_r96_sample012",
+      "gap_percentage_points": 6.364872120320797,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_mri4/sample_012"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 5.05\\) percentage points",
+      "case": "noise05_mri_r96_sample022",
+      "gap_percentage_points": 5.054129473865032,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_mri4/sample_022"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 5.02\\) percentage points",
+      "case": "noise05_mri_r96_sample005",
+      "gap_percentage_points": 5.020706728100777,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r96_n1_mri4/sample_005"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 33.91\\) percentage points",
+      "case": "noise05_ct_r128_sample017",
+      "gap_percentage_points": 33.90975259244442,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_ct10/sample_017"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 30.17\\) percentage points",
+      "case": "noise05_ct_r128_sample028",
+      "gap_percentage_points": 30.1748089492321,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_ct10/sample_028"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 30.16\\) percentage points",
+      "case": "noise05_ct_r128_sample007",
+      "gap_percentage_points": 30.163656547665596,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_ct10/sample_007"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 5.20\\) percentage points",
+      "case": "noise05_mri_r128_sample028",
+      "gap_percentage_points": 5.195703357458115,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_mri4/sample_028"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 5.05\\) percentage points",
+      "case": "noise05_mri_r128_sample017",
+      "gap_percentage_points": 5.052340775728226,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_mri4/sample_017"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 4.99\\) percentage points",
+      "case": "noise05_mri_r128_sample001",
+      "gap_percentage_points": 4.993532132357359,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r128_n1_mri4/sample_001"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 99.87\\) percentage points",
+      "case": "noise05_ct_r160_sample020",
+      "gap_percentage_points": 99.86858442425728,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_ct10/sample_020"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 93.09\\) percentage points",
+      "case": "noise05_ct_r160_sample028",
+      "gap_percentage_points": 93.09152457863092,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_ct10/sample_028"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 42.43\\) percentage points",
+      "case": "noise05_ct_r160_sample004",
+      "gap_percentage_points": 42.43058208376169,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_ct10/sample_004"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 11.93\\) percentage points",
+      "case": "noise05_mri_r160_sample015",
+      "gap_percentage_points": 11.934168264269829,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_mri4/sample_015"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 4.68\\) percentage points",
+      "case": "noise05_mri_r160_sample007",
+      "gap_percentage_points": 4.677055682986975,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_mri4/sample_007"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 4.55\\) percentage points",
+      "case": "noise05_mri_r160_sample025",
+      "gap_percentage_points": 4.554875940084457,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r160_n1_mri4/sample_025"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 51.91\\) percentage points",
+      "case": "noise05_ct_r200_sample026",
+      "gap_percentage_points": 51.90540496259928,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_ct10/sample_026"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 44.79\\) percentage points",
+      "case": "noise05_ct_r200_sample024",
+      "gap_percentage_points": 44.79370526969433,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_ct10/sample_024"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 40.08\\) percentage points",
+      "case": "noise05_ct_r200_sample013",
+      "gap_percentage_points": 40.07579367607832,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_ct10/sample_013"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 98.40\\) percentage points",
+      "case": "noise05_mri_r200_sample016",
+      "gap_percentage_points": 98.39703217148781,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_mri4/sample_016"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 5.64\\) percentage points",
+      "case": "noise05_mri_r200_sample020",
+      "gap_percentage_points": 5.641525611281395,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_mri4/sample_020"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 5.53\\) percentage points",
+      "case": "noise05_mri_r200_sample018",
+      "gap_percentage_points": 5.525003187358379,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r200_n1_mri4/sample_018"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 45.11\\) percentage points",
+      "case": "noise05_ct_r250_sample006",
+      "gap_percentage_points": 45.10743077844381,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_ct10/sample_006"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 38.38\\) percentage points",
+      "case": "noise05_ct_r250_sample008",
+      "gap_percentage_points": 38.38230185210705,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_ct10/sample_008"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 38.25\\) percentage points",
+      "case": "noise05_ct_r250_sample016",
+      "gap_percentage_points": 38.25066424906254,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_ct10/sample_016"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 98.32\\) percentage points",
+      "case": "noise05_mri_r250_sample029",
+      "gap_percentage_points": 98.32251109182835,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_mri4/sample_029"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 98.13\\) percentage points",
+      "case": "noise05_mri_r250_sample020",
+      "gap_percentage_points": 98.12819343060255,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_mri4/sample_020"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 5.52\\) percentage points",
+      "case": "noise05_mri_r250_sample006",
+      "gap_percentage_points": 5.515190865844488,
+      "source": "outputs/five_step_noise005_n124_20261013/production/r250_n1_mri4/sample_006"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 98.44\\) percentage points",
+      "case": "noise10_ct_r64_sample022",
+      "gap_percentage_points": 98.43832682818174,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_ct10/sample_022"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 84.55\\) percentage points",
+      "case": "noise10_ct_r64_sample024",
+      "gap_percentage_points": 84.55105200409889,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_ct10/sample_024"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 79.84\\) percentage points",
+      "case": "noise10_ct_r64_sample019",
+      "gap_percentage_points": 79.84004393219948,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_ct10/sample_019"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 12.83\\) percentage points",
+      "case": "noise10_mri_r64_sample002",
+      "gap_percentage_points": 12.834487669169903,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_mri4/sample_002"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 12.76\\) percentage points",
+      "case": "noise10_mri_r64_sample022",
+      "gap_percentage_points": 12.759161926805973,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_mri4/sample_022"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 11.72\\) percentage points",
+      "case": "noise10_mri_r64_sample024",
+      "gap_percentage_points": 11.721358448266983,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r64_n1_mri4/sample_024"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 124.78\\) percentage points",
+      "case": "noise10_ct_r96_sample027",
+      "gap_percentage_points": 124.77642334997654,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_ct10/sample_027"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 111.19\\) percentage points",
+      "case": "noise10_ct_r96_sample009",
+      "gap_percentage_points": 111.19478568434715,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_ct10/sample_009"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 100.89\\) percentage points",
+      "case": "noise10_ct_r96_sample004",
+      "gap_percentage_points": 100.89133754372597,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_ct10/sample_004"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 12.76\\) percentage points",
+      "case": "noise10_mri_r96_sample010",
+      "gap_percentage_points": 12.757892534136772,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_mri4/sample_010"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 12.64\\) percentage points",
+      "case": "noise10_mri_r96_sample011",
+      "gap_percentage_points": 12.636401131749153,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_mri4/sample_011"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 12.39\\) percentage points",
+      "case": "noise10_mri_r96_sample012",
+      "gap_percentage_points": 12.38531656563282,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r96_n1_mri4/sample_012"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 108.48\\) percentage points",
+      "case": "noise10_ct_r128_sample028",
+      "gap_percentage_points": 108.47864896059036,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_ct10/sample_028"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 71.80\\) percentage points",
+      "case": "noise10_ct_r128_sample021",
+      "gap_percentage_points": 71.80432341992855,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_ct10/sample_021"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 70.19\\) percentage points",
+      "case": "noise10_ct_r128_sample027",
+      "gap_percentage_points": 70.19244320690632,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_ct10/sample_027"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 11.67\\) percentage points",
+      "case": "noise10_mri_r128_sample009",
+      "gap_percentage_points": 11.672504525631666,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_mri4/sample_009"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 11.40\\) percentage points",
+      "case": "noise10_mri_r128_sample017",
+      "gap_percentage_points": 11.400608345866203,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_mri4/sample_017"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 10.88\\) percentage points",
+      "case": "noise10_mri_r128_sample028",
+      "gap_percentage_points": 10.877653025090694,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r128_n1_mri4/sample_028"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 106.16\\) percentage points",
+      "case": "noise10_ct_r160_sample006",
+      "gap_percentage_points": 106.15622475743294,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_ct10/sample_006"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 104.74\\) percentage points",
+      "case": "noise10_ct_r160_sample021",
+      "gap_percentage_points": 104.73656989634037,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_ct10/sample_021"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 81.92\\) percentage points",
+      "case": "noise10_ct_r160_sample019",
+      "gap_percentage_points": 81.92085772752762,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_ct10/sample_019"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 88.09\\) percentage points",
+      "case": "noise10_mri_r160_sample005",
+      "gap_percentage_points": 88.0895808339119,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_mri4/sample_005"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 12.50\\) percentage points",
+      "case": "noise10_mri_r160_sample003",
+      "gap_percentage_points": 12.49526496976614,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_mri4/sample_003"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 11.39\\) percentage points",
+      "case": "noise10_mri_r160_sample011",
+      "gap_percentage_points": 11.385122686624527,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r160_n1_mri4/sample_011"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 116.38\\) percentage points",
+      "case": "noise10_ct_r200_sample017",
+      "gap_percentage_points": 116.37661941349506,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_ct10/sample_017"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 99.81\\) percentage points",
+      "case": "noise10_ct_r200_sample000",
+      "gap_percentage_points": 99.8134296387434,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_ct10/sample_000"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 98.87\\) percentage points",
+      "case": "noise10_ct_r200_sample026",
+      "gap_percentage_points": 98.86534828692675,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_ct10/sample_026"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 12.68\\) percentage points",
+      "case": "noise10_mri_r200_sample025",
+      "gap_percentage_points": 12.676061224192381,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_mri4/sample_025"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 12.21\\) percentage points",
+      "case": "noise10_mri_r200_sample010",
+      "gap_percentage_points": 12.209416087716818,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_mri4/sample_010"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 11.94\\) percentage points",
+      "case": "noise10_mri_r200_sample018",
+      "gap_percentage_points": 11.936971452087164,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r200_n1_mri4/sample_018"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 99.71\\) percentage points",
+      "case": "noise10_ct_r250_sample008",
+      "gap_percentage_points": 99.71430506557226,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_ct10/sample_008"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 85.48\\) percentage points",
+      "case": "noise10_ct_r250_sample006",
+      "gap_percentage_points": 85.47821138054132,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_ct10/sample_006"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 84.05\\) percentage points",
+      "case": "noise10_ct_r250_sample003",
+      "gap_percentage_points": 84.04908925294876,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_ct10/sample_003"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 12.74\\) percentage points",
+      "case": "noise10_mri_r250_sample009",
+      "gap_percentage_points": 12.743188347667456,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_mri4/sample_009"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 12.50\\) percentage points",
+      "case": "noise10_mri_r250_sample020",
+      "gap_percentage_points": 12.503780517727137,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_mri4/sample_020"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 11.75\\) percentage points",
+      "case": "noise10_mri_r250_sample006",
+      "gap_percentage_points": 11.746602598577738,
+      "source": "outputs/five_step_noise010_n124_20261013/production/r250_n1_mri4/sample_006"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 220.69\\) percentage points",
+      "case": "noise20_ct_r64_sample001",
+      "gap_percentage_points": 220.69119736552238,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_ct10/sample_001"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 176.31\\) percentage points",
+      "case": "noise20_ct_r64_sample024",
+      "gap_percentage_points": 176.30938589572906,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_ct10/sample_024"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 174.02\\) percentage points",
+      "case": "noise20_ct_r64_sample022",
+      "gap_percentage_points": 174.01765435934067,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_ct10/sample_022"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 29.12\\) percentage points",
+      "case": "noise20_mri_r64_sample029",
+      "gap_percentage_points": 29.11953143775463,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_mri4/sample_029"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 26.23\\) percentage points",
+      "case": "noise20_mri_r64_sample020",
+      "gap_percentage_points": 26.227778382599354,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_mri4/sample_020"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 25.85\\) percentage points",
+      "case": "noise20_mri_r64_sample005",
+      "gap_percentage_points": 25.84677580744028,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r64_n1_mri4/sample_005"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 186.22\\) percentage points",
+      "case": "noise20_ct_r96_sample011",
+      "gap_percentage_points": 186.21570244431496,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_ct10/sample_011"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 181.49\\) percentage points",
+      "case": "noise20_ct_r96_sample007",
+      "gap_percentage_points": 181.4917303621769,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_ct10/sample_007"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 169.44\\) percentage points",
+      "case": "noise20_ct_r96_sample023",
+      "gap_percentage_points": 169.43737268447876,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_ct10/sample_023"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 26.84\\) percentage points",
+      "case": "noise20_mri_r96_sample010",
+      "gap_percentage_points": 26.843520626425743,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_mri4/sample_010"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 25.44\\) percentage points",
+      "case": "noise20_mri_r96_sample011",
+      "gap_percentage_points": 25.440995022654533,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_mri4/sample_011"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 25.08\\) percentage points",
+      "case": "noise20_mri_r96_sample012",
+      "gap_percentage_points": 25.08387416601181,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r96_n1_mri4/sample_012"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 188.11\\) percentage points",
+      "case": "noise20_ct_r128_sample006",
+      "gap_percentage_points": 188.1096951663494,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_ct10/sample_006"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 187.16\\) percentage points",
+      "case": "noise20_ct_r128_sample017",
+      "gap_percentage_points": 187.16460168361664,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_ct10/sample_017"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 186.06\\) percentage points",
+      "case": "noise20_ct_r128_sample027",
+      "gap_percentage_points": 186.06461808085442,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_ct10/sample_027"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 27.81\\) percentage points",
+      "case": "noise20_mri_r128_sample027",
+      "gap_percentage_points": 27.811626717448235,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_mri4/sample_027"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 26.63\\) percentage points",
+      "case": "noise20_mri_r128_sample017",
+      "gap_percentage_points": 26.633720844984055,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_mri4/sample_017"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 25.44\\) percentage points",
+      "case": "noise20_mri_r128_sample018",
+      "gap_percentage_points": 25.4435695707798,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r128_n1_mri4/sample_018"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 250.21\\) percentage points",
+      "case": "noise20_ct_r160_sample006",
+      "gap_percentage_points": 250.20596981048584,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_ct10/sample_006"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 210.59\\) percentage points",
+      "case": "noise20_ct_r160_sample007",
+      "gap_percentage_points": 210.58711037039757,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_ct10/sample_007"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 203.31\\) percentage points",
+      "case": "noise20_ct_r160_sample021",
+      "gap_percentage_points": 203.3093422651291,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_ct10/sample_021"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 24.73\\) percentage points",
+      "case": "noise20_mri_r160_sample003",
+      "gap_percentage_points": 24.7328937985003,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_mri4/sample_003"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 23.55\\) percentage points",
+      "case": "noise20_mri_r160_sample029",
+      "gap_percentage_points": 23.545572254806757,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_mri4/sample_029"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 23.21\\) percentage points",
+      "case": "noise20_mri_r160_sample008",
+      "gap_percentage_points": 23.213990405201912,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r160_n1_mri4/sample_008"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 346.42\\) percentage points",
+      "case": "noise20_ct_r200_sample020",
+      "gap_percentage_points": 346.4168131351471,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_ct10/sample_020"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 259.52\\) percentage points",
+      "case": "noise20_ct_r200_sample026",
+      "gap_percentage_points": 259.51881669461727,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_ct10/sample_026"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 254.00\\) percentage points",
+      "case": "noise20_ct_r200_sample024",
+      "gap_percentage_points": 254.00198884308338,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_ct10/sample_024"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 98.98\\) percentage points",
+      "case": "noise20_mri_r200_sample016",
+      "gap_percentage_points": 98.97500108927488,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_mri4/sample_016"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 26.27\\) percentage points",
+      "case": "noise20_mri_r200_sample025",
+      "gap_percentage_points": 26.271169167011976,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_mri4/sample_025"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 25.44\\) percentage points",
+      "case": "noise20_mri_r200_sample011",
+      "gap_percentage_points": 25.437446869909763,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r200_n1_mri4/sample_011"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 199.66\\) percentage points",
+      "case": "noise20_ct_r250_sample000",
+      "gap_percentage_points": 199.66176003217697,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_ct10/sample_000"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 185.74\\) percentage points",
+      "case": "noise20_ct_r250_sample015",
+      "gap_percentage_points": 185.7384167611599,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_ct10/sample_015"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 170.69\\) percentage points",
+      "case": "noise20_ct_r250_sample020",
+      "gap_percentage_points": 170.6943303346634,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_ct10/sample_020"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 1 \u00b7 \\(\\Delta = 25.87\\) percentage points",
+      "case": "noise20_mri_r250_sample000",
+      "gap_percentage_points": 25.871072709560394,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_mri4/sample_000"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 2 \u00b7 \\(\\Delta = 25.22\\) percentage points",
+      "case": "noise20_mri_r250_sample016",
+      "gap_percentage_points": 25.21862331777811,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_mri4/sample_016"
+    },
+    {
+      "section": "advantages",
+      "label": "Example 3 \u00b7 \\(\\Delta = 25.15\\) percentage points",
+      "case": "noise20_mri_r250_sample006",
+      "gap_percentage_points": 25.15155877918005,
+      "source": "outputs/five_step_noise020_n124_20261013/production/r250_n1_mri4/sample_006"
+    }
+  ]
+}

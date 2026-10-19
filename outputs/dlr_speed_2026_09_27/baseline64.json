@@ -1,0 +1,26 @@
+{
+  "device": "cuda:0",
+  "resolution": 64,
+  "steps": 100,
+  "rank": 8,
+  "trace_probes": 8,
+  "repeats": 3,
+  "threads": 4,
+  "cuda_graphs": true,
+  "skip_exact": true,
+  "source_root": "outputs/dlr_speed_2026_09_27/baseline_source",
+  "attention_mode": null,
+  "output": "outputs/dlr_speed_2026_09_27/baseline64.json",
+  "torch": "2.11.0+cu129",
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "dlr": {
+    "first_call_s": 2.424129298015032,
+    "median_s": 1.710957702016458,
+    "samples_s": [
+      1.7096654850174673,
+      1.710957702016458,
+      1.7132097459980287
+    ],
+    "peak_allocated_gib": 0.06323575973510742
+  }
+}

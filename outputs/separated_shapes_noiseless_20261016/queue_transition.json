@@ -1,0 +1,45 @@
+{
+  "old_controller_pid": 821467,
+  "old_controller_argv": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "outputs/five_step_noise000_n124_20261014",
+    "--additional-out",
+    "outputs/five_step_noise001_n124_20261013",
+    "outputs/five_step_noise005_n124_20261013",
+    "outputs/five_step_noise010_n124_20261013",
+    "outputs/five_step_noise020_n124_20261013"
+  ],
+  "source_before": {
+    "experiments/ct_mri_sweep/run.py": "80375bd8a86fe8d29611e7f1918ace6aac4843cfbee0aff5b90714245ba347e8",
+    "experiments/five_step_pilot/run.py": "d3cd3e1ec1d93fa69bdee10b22392171689333646e1376f300a39637db7e164c",
+    "experiments/five_step_pilot/test_queue.py": "07ba4d6b4f5c6a99fcc4bde0f0451552e7f19db837a12a46d43b1645f18f69d4"
+  },
+  "new_controller_argv": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "outputs/five_step_noise000_n124_20261014",
+    "--additional-out",
+    "outputs/five_step_noise001_n124_20261013",
+    "outputs/five_step_noise005_n124_20261013",
+    "outputs/five_step_noise010_n124_20261013",
+    "outputs/five_step_noise020_n124_20261013",
+    "outputs/separated_shapes_noiseless_20261016",
+    "--priority-out",
+    "outputs/separated_shapes_noiseless_20261016"
+  ],
+  "source_after": {
+    "experiments/ct_mri_sweep/run.py": "a378c66e44ee96b1da82bd6c26dd7dd20ff553b640e158fd4bdbd0e2a126d352",
+    "experiments/five_step_pilot/run.py": "273011e3e98a31c9985eca50c501e3511a1487f2c7c968e0d8c495ecf9e1529a",
+    "experiments/five_step_pilot/test_queue.py": "7333b5094a1045a1672c0fb993f0a56adac3f73485f105ded7d5113af07175a1"
+  },
+  "new_controller_pid": 3338540
+}

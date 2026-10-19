@@ -1,0 +1,1646 @@
+{
+  "terminal_runs": 163,
+  "total_runs": 360,
+  "rows": [
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 966,
+      "image_percent": 29.017087817192078,
+      "residual_percent": 11.266621202230453,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 128,
+      "accepted_updates": 123,
+      "image_percent": 102.43284702301025,
+      "residual_percent": 97.34765291213989,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 739,
+      "accepted_updates": 720,
+      "image_percent": 101.19733810424805,
+      "residual_percent": 95.03604173660278,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 762,
+      "accepted_updates": 738,
+      "image_percent": 102.28193998336792,
+      "residual_percent": 94.26127672195435,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 432,
+      "accepted_updates": 420,
+      "image_percent": 13.567350804805756,
+      "residual_percent": 3.893185779452324,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 974,
+      "image_percent": 109.14627313613892,
+      "residual_percent": 86.10906600952148,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 174,
+      "accepted_updates": 169,
+      "image_percent": 98.19498062133789,
+      "residual_percent": 92.12867617607117,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 981,
+      "image_percent": 78.22840213775635,
+      "residual_percent": 50.79637169837952,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 970,
+      "image_percent": 100.59703588485718,
+      "residual_percent": 94.9119508266449,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 962,
+      "image_percent": 61.630868911743164,
+      "residual_percent": 43.200960755348206,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 965,
+      "image_percent": 64.60965871810913,
+      "residual_percent": 52.26060748100281,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 79,
+      "accepted_updates": 75,
+      "image_percent": 100.79165697097778,
+      "residual_percent": 98.3950674533844,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 940,
+      "image_percent": 101.42048597335815,
+      "residual_percent": 95.61940431594849,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_ct10",
+      "sample": 13,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 980,
+      "image_percent": 77.89950370788574,
+      "residual_percent": 70.09438872337341,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 976,
+      "image_percent": 50.66770911216736,
+      "residual_percent": 48.91728162765503,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 384,
+      "accepted_updates": 375,
+      "image_percent": 99.7801423072815,
+      "residual_percent": 99.4835615158081,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 187,
+      "accepted_updates": 176,
+      "image_percent": 101.8062949180603,
+      "residual_percent": 98.02026748657227,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 794,
+      "accepted_updates": 763,
+      "image_percent": 100.93762874603271,
+      "residual_percent": 98.6393690109253,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 438,
+      "accepted_updates": 426,
+      "image_percent": 6.149329990148544,
+      "residual_percent": 3.5942740738391876,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 973,
+      "image_percent": 72.27258086204529,
+      "residual_percent": 71.39554023742676,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 640,
+      "accepted_updates": 622,
+      "image_percent": 100.34164190292358,
+      "residual_percent": 98.76319766044617,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 699,
+      "accepted_updates": 677,
+      "image_percent": 100.9467363357544,
+      "residual_percent": 98.71246218681335,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 971,
+      "image_percent": 99.6924638748169,
+      "residual_percent": 99.51088428497314,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 973,
+      "image_percent": 59.585171937942505,
+      "residual_percent": 57.322365045547485,
+      "status": "step_limit"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 165,
+      "accepted_updates": 156,
+      "image_percent": 61.3642156124115,
+      "residual_percent": 59.43617224693298,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 990,
+      "accepted_updates": 964,
+      "image_percent": 99.74842071533203,
+      "residual_percent": 99.59418177604675,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 759,
+      "accepted_updates": 740,
+      "image_percent": 99.73984360694885,
+      "residual_percent": 99.4387149810791,
+      "status": "stalled"
+    },
+    {
+      "case": "r64_shapes_mri4",
+      "sample": 13,
+      "method": "DLR D-Flow",
+      "attempts": 348,
+      "accepted_updates": 333,
+      "image_percent": 73.15184473991394,
+      "residual_percent": 75.25627017021179,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 983,
+      "image_percent": 83.34455490112305,
+      "residual_percent": 72.77470827102661,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 192,
+      "accepted_updates": 185,
+      "image_percent": 102.3262619972229,
+      "residual_percent": 95.11268138885498,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 137,
+      "accepted_updates": 131,
+      "image_percent": 100.43885707855225,
+      "residual_percent": 93.96176934242249,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 711,
+      "accepted_updates": 696,
+      "image_percent": 104.83394861221313,
+      "residual_percent": 91.25446081161499,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 980,
+      "image_percent": 79.11895513534546,
+      "residual_percent": 55.47441244125366,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 793,
+      "accepted_updates": 755,
+      "image_percent": 102.44574546813965,
+      "residual_percent": 94.49741244316101,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 978,
+      "image_percent": 105.2497386932373,
+      "residual_percent": 91.98882579803467,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 981,
+      "image_percent": 70.64715027809143,
+      "residual_percent": 42.536914348602295,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 51,
+      "accepted_updates": 48,
+      "image_percent": 100.65174102783203,
+      "residual_percent": 93.73207092285156,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 965,
+      "image_percent": 95.82523107528687,
+      "residual_percent": 81.26764297485352,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 963,
+      "image_percent": 57.863664627075195,
+      "residual_percent": 41.27410054206848,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 51,
+      "accepted_updates": 48,
+      "image_percent": 100.01667737960815,
+      "residual_percent": 95.09836435317993,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 283,
+      "accepted_updates": 270,
+      "image_percent": 99.84526634216309,
+      "residual_percent": 95.05966901779175,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_ct10",
+      "sample": 13,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 968,
+      "image_percent": 42.26527512073517,
+      "residual_percent": 29.663997888565063,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 68,
+      "accepted_updates": 63,
+      "image_percent": 99.83416199684143,
+      "residual_percent": 99.03569221496582,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 302,
+      "accepted_updates": 295,
+      "image_percent": 99.8498022556305,
+      "residual_percent": 99.05186891555786,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 289,
+      "accepted_updates": 269,
+      "image_percent": 99.94530081748962,
+      "residual_percent": 99.07480478286743,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 360,
+      "accepted_updates": 350,
+      "image_percent": 99.58066940307617,
+      "residual_percent": 99.24981594085693,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 972,
+      "image_percent": 70.63575983047485,
+      "residual_percent": 68.21280717849731,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 973,
+      "image_percent": 50.590044260025024,
+      "residual_percent": 49.423131346702576,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 968,
+      "image_percent": 100.4879355430603,
+      "residual_percent": 97.61844277381897,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 940,
+      "accepted_updates": 916,
+      "image_percent": 70.63149213790894,
+      "residual_percent": 68.30722689628601,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 269,
+      "accepted_updates": 258,
+      "image_percent": 4.363924264907837,
+      "residual_percent": 2.3678191006183624,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 978,
+      "image_percent": 81.12614154815674,
+      "residual_percent": 80.42672276496887,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 976,
+      "image_percent": 80.21873235702515,
+      "residual_percent": 78.6886215209961,
+      "status": "step_limit"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 179,
+      "accepted_updates": 167,
+      "image_percent": 99.79676604270935,
+      "residual_percent": 99.47482347488403,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 205,
+      "accepted_updates": 200,
+      "image_percent": 100.05980730056763,
+      "residual_percent": 99.34728741645813,
+      "status": "stalled"
+    },
+    {
+      "case": "r96_shapes_mri4",
+      "sample": 13,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 980,
+      "image_percent": 85.43897271156311,
+      "residual_percent": 82.3359489440918,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 209,
+      "accepted_updates": 197,
+      "image_percent": 100.00274181365967,
+      "residual_percent": 91.07345938682556,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 39,
+      "accepted_updates": 36,
+      "image_percent": 99.99550580978394,
+      "residual_percent": 99.63435530662537,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 952,
+      "image_percent": 105.70756196975708,
+      "residual_percent": 89.58038687705994,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 966,
+      "image_percent": 5.432192236185074,
+      "residual_percent": 2.774459309875965,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 971,
+      "image_percent": 87.35565543174744,
+      "residual_percent": 62.2394859790802,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 579,
+      "accepted_updates": 564,
+      "image_percent": 101.49329900741577,
+      "residual_percent": 91.76514148712158,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 980,
+      "image_percent": 41.822534799575806,
+      "residual_percent": 26.243141293525696,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 975,
+      "image_percent": 83.46711993217468,
+      "residual_percent": 52.2901177406311,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 393,
+      "accepted_updates": 371,
+      "image_percent": 102.85038948059082,
+      "residual_percent": 95.68401575088501,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 965,
+      "image_percent": 108.87731313705444,
+      "residual_percent": 92.4824059009552,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 975,
+      "image_percent": 1.6889085993170738,
+      "residual_percent": 0.3239336656406522,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 987,
+      "image_percent": 4.232662543654442,
+      "residual_percent": 1.173798181116581,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 58,
+      "accepted_updates": 52,
+      "image_percent": 100.72393417358398,
+      "residual_percent": 95.65777778625488,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_ct10",
+      "sample": 13,
+      "method": "DLR D-Flow",
+      "attempts": 229,
+      "accepted_updates": 223,
+      "image_percent": 100.1988410949707,
+      "residual_percent": 94.70523595809937,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 523,
+      "accepted_updates": 511,
+      "image_percent": 99.14082288742065,
+      "residual_percent": 98.64026308059692,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 63,
+      "accepted_updates": 59,
+      "image_percent": 99.89615082740784,
+      "residual_percent": 99.18358325958252,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 959,
+      "image_percent": 99.85562562942505,
+      "residual_percent": 97.6634681224823,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 160,
+      "accepted_updates": 150,
+      "image_percent": 99.62748289108276,
+      "residual_percent": 99.02380108833313,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 964,
+      "image_percent": 73.48368763923645,
+      "residual_percent": 72.26338386535645,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 803,
+      "accepted_updates": 782,
+      "image_percent": 81.02859854698181,
+      "residual_percent": 80.68104982376099,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 984,
+      "image_percent": 92.27667450904846,
+      "residual_percent": 92.43587851524353,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 188,
+      "accepted_updates": 175,
+      "image_percent": 99.66663122177124,
+      "residual_percent": 99.30366277694702,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 920,
+      "accepted_updates": 872,
+      "image_percent": 100.29473304748535,
+      "residual_percent": 99.06737208366394,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 257,
+      "accepted_updates": 248,
+      "image_percent": 99.87093210220337,
+      "residual_percent": 99.80191588401794,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 988,
+      "image_percent": 81.4975917339325,
+      "residual_percent": 80.54831624031067,
+      "status": "step_limit"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 38,
+      "accepted_updates": 34,
+      "image_percent": 99.6988832950592,
+      "residual_percent": 99.25132989883423,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 219,
+      "accepted_updates": 211,
+      "image_percent": 99.7667670249939,
+      "residual_percent": 99.65852499008179,
+      "status": "stalled"
+    },
+    {
+      "case": "r128_shapes_mri4",
+      "sample": 13,
+      "method": "DLR D-Flow",
+      "attempts": 293,
+      "accepted_updates": 280,
+      "image_percent": 100.0453233718872,
+      "residual_percent": 99.09288883209229,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 125,
+      "accepted_updates": 118,
+      "image_percent": 101.49074792861938,
+      "residual_percent": 94.53932046890259,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 16,
+      "accepted_updates": 14,
+      "image_percent": 100.33900737762451,
+      "residual_percent": 96.05863094329834,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 467,
+      "accepted_updates": 444,
+      "image_percent": 100.04228353500366,
+      "residual_percent": 94.2350685596466,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 155,
+      "accepted_updates": 149,
+      "image_percent": 100.92940330505371,
+      "residual_percent": 94.66997981071472,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 979,
+      "image_percent": 43.2094007730484,
+      "residual_percent": 20.305414497852325,
+      "status": "step_limit"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 182,
+      "accepted_updates": 177,
+      "image_percent": 102.17331647872925,
+      "residual_percent": 90.23181200027466,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 436,
+      "accepted_updates": 418,
+      "image_percent": 101.21515989303589,
+      "residual_percent": 93.97477507591248,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 975,
+      "image_percent": 82.30191469192505,
+      "residual_percent": 48.287588357925415,
+      "status": "step_limit"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 121,
+      "accepted_updates": 115,
+      "image_percent": 99.79335069656372,
+      "residual_percent": 94.68635320663452,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 28,
+      "accepted_updates": 24,
+      "image_percent": 104.96236085891724,
+      "residual_percent": 94.83014345169067,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 721,
+      "accepted_updates": 697,
+      "image_percent": 58.65095853805542,
+      "residual_percent": 41.26845300197601,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 575,
+      "accepted_updates": 537,
+      "image_percent": 4.631677642464638,
+      "residual_percent": 0.9986463002860546,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 467,
+      "accepted_updates": 447,
+      "image_percent": 99.87351298332214,
+      "residual_percent": 94.96492743492126,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_ct10",
+      "sample": 13,
+      "method": "DLR D-Flow",
+      "attempts": 189,
+      "accepted_updates": 181,
+      "image_percent": 103.55825424194336,
+      "residual_percent": 94.42244172096252,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 328,
+      "accepted_updates": 320,
+      "image_percent": 99.06643033027649,
+      "residual_percent": 98.49502444267273,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 220,
+      "accepted_updates": 212,
+      "image_percent": 1.9834920763969421,
+      "residual_percent": 1.1447726748883724,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 68,
+      "accepted_updates": 64,
+      "image_percent": 100.1736044883728,
+      "residual_percent": 98.91571402549744,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 171,
+      "accepted_updates": 166,
+      "image_percent": 99.12977814674377,
+      "residual_percent": 98.63554239273071,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 974,
+      "image_percent": 73.36848378181458,
+      "residual_percent": 71.29029631614685,
+      "status": "step_limit"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 294,
+      "accepted_updates": 286,
+      "image_percent": 99.11471605300903,
+      "residual_percent": 98.5574722290039,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 959,
+      "image_percent": 89.79204893112183,
+      "residual_percent": 86.16738319396973,
+      "status": "step_limit"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 533,
+      "accepted_updates": 519,
+      "image_percent": 70.56074738502502,
+      "residual_percent": 69.5796549320221,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 275,
+      "accepted_updates": 265,
+      "image_percent": 99.89596605300903,
+      "residual_percent": 99.36670660972595,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 155,
+      "accepted_updates": 146,
+      "image_percent": 99.31870102882385,
+      "residual_percent": 98.9867627620697,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 975,
+      "image_percent": 53.012096881866455,
+      "residual_percent": 49.788856506347656,
+      "status": "step_limit"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 69,
+      "accepted_updates": 62,
+      "image_percent": 5.016108974814415,
+      "residual_percent": 2.8888773173093796,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 149,
+      "accepted_updates": 139,
+      "image_percent": 99.80156421661377,
+      "residual_percent": 99.55174922943115,
+      "status": "stalled"
+    },
+    {
+      "case": "r160_shapes_mri4",
+      "sample": 13,
+      "method": "DLR D-Flow",
+      "attempts": 119,
+      "accepted_updates": 115,
+      "image_percent": 99.52918291091919,
+      "residual_percent": 99.3791401386261,
+      "status": "paused"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 137,
+      "accepted_updates": 128,
+      "image_percent": 103.14007997512817,
+      "residual_percent": 84.0984582901001,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 190,
+      "accepted_updates": 182,
+      "image_percent": 100.00952482223511,
+      "residual_percent": 95.55360674858093,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 79,
+      "accepted_updates": 71,
+      "image_percent": 101.24120712280273,
+      "residual_percent": 95.51424980163574,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 666,
+      "accepted_updates": 631,
+      "image_percent": 100.38154125213623,
+      "residual_percent": 95.01781463623047,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 183,
+      "accepted_updates": 176,
+      "image_percent": 108.00881385803223,
+      "residual_percent": 77.39443778991699,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 82,
+      "accepted_updates": 77,
+      "image_percent": 103.27543020248413,
+      "residual_percent": 93.61404776573181,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 565,
+      "accepted_updates": 546,
+      "image_percent": 116.77005290985107,
+      "residual_percent": 88.67660164833069,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 256,
+      "accepted_updates": 249,
+      "image_percent": 73.86261224746704,
+      "residual_percent": 37.81088590621948,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 951,
+      "image_percent": 99.91106390953064,
+      "residual_percent": 94.6563720703125,
+      "status": "step_limit"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 654,
+      "accepted_updates": 639,
+      "image_percent": 93.85932683944702,
+      "residual_percent": 63.53215575218201,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 978,
+      "image_percent": 71.7725157737732,
+      "residual_percent": 43.81490647792816,
+      "status": "step_limit"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 627,
+      "accepted_updates": 593,
+      "image_percent": 99.84760880470276,
+      "residual_percent": 96.0298240184784,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_ct10",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 967,
+      "image_percent": 5.441185832023621,
+      "residual_percent": 1.3995553366839886,
+      "status": "step_limit"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 957,
+      "image_percent": 50.8727490901947,
+      "residual_percent": 50.0260591506958,
+      "status": "step_limit"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 955,
+      "image_percent": 99.4604766368866,
+      "residual_percent": 99.30775165557861,
+      "status": "step_limit"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 971,
+      "image_percent": 3.1782377511262894,
+      "residual_percent": 1.6865268349647522,
+      "status": "step_limit"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 950,
+      "image_percent": 99.60363507270813,
+      "residual_percent": 99.47099685668945,
+      "status": "step_limit"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 622,
+      "accepted_updates": 595,
+      "image_percent": 99.44810271263123,
+      "residual_percent": 99.24119710922241,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 227,
+      "accepted_updates": 215,
+      "image_percent": 99.56972002983093,
+      "residual_percent": 99.48847889900208,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 215,
+      "accepted_updates": 203,
+      "image_percent": 99.26698207855225,
+      "residual_percent": 99.13243055343628,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 172,
+      "accepted_updates": 164,
+      "image_percent": 99.28988814353943,
+      "residual_percent": 99.12579655647278,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 953,
+      "image_percent": 99.69596266746521,
+      "residual_percent": 99.46874380111694,
+      "status": "step_limit"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 103,
+      "accepted_updates": 96,
+      "image_percent": 99.60948824882507,
+      "residual_percent": 99.45845603942871,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 710,
+      "accepted_updates": 696,
+      "image_percent": 80.44783473014832,
+      "residual_percent": 76.72097086906433,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 480,
+      "accepted_updates": 458,
+      "image_percent": 99.73413944244385,
+      "residual_percent": 99.6229350566864,
+      "status": "stalled"
+    },
+    {
+      "case": "r200_shapes_mri4",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 953,
+      "image_percent": 4.858873784542084,
+      "residual_percent": 2.851145900785923,
+      "status": "step_limit"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 410,
+      "accepted_updates": 397,
+      "image_percent": 99.2497444152832,
+      "residual_percent": 77.79166102409363,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 100,
+      "accepted_updates": 93,
+      "image_percent": 99.85975623130798,
+      "residual_percent": 96.49483561515808,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 341,
+      "accepted_updates": 324,
+      "image_percent": 100.22696256637573,
+      "residual_percent": 96.68331742286682,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 24,
+      "accepted_updates": 20,
+      "image_percent": 101.61511898040771,
+      "residual_percent": 95.99056839942932,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 367,
+      "accepted_updates": 357,
+      "image_percent": 32.31624960899353,
+      "residual_percent": 18.626949191093445,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 112,
+      "accepted_updates": 103,
+      "image_percent": 107.0333480834961,
+      "residual_percent": 91.19806289672852,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 682,
+      "accepted_updates": 664,
+      "image_percent": 101.58771276473999,
+      "residual_percent": 90.15448093414307,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 461,
+      "accepted_updates": 439,
+      "image_percent": 98.63536953926086,
+      "residual_percent": 70.42363286018372,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 610,
+      "accepted_updates": 589,
+      "image_percent": 99.92173910140991,
+      "residual_percent": 94.65306401252747,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 40,
+      "accepted_updates": 36,
+      "image_percent": 107.92394876480103,
+      "residual_percent": 85.82351803779602,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 986,
+      "image_percent": 58.47361087799072,
+      "residual_percent": 41.17472767829895,
+      "status": "step_limit"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 389,
+      "accepted_updates": 373,
+      "image_percent": 100.49830675125122,
+      "residual_percent": 95.06882429122925,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_ct10",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 28,
+      "accepted_updates": 24,
+      "image_percent": 100.64138174057007,
+      "residual_percent": 95.26568651199341,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "attempts": 109,
+      "accepted_updates": 102,
+      "image_percent": 99.271160364151,
+      "residual_percent": 99.06451106071472,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "attempts": 306,
+      "accepted_updates": 292,
+      "image_percent": 99.46682453155518,
+      "residual_percent": 99.38074350357056,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 2,
+      "method": "DLR D-Flow",
+      "attempts": 462,
+      "accepted_updates": 434,
+      "image_percent": 99.66496229171753,
+      "residual_percent": 99.53188896179199,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 3,
+      "method": "DLR D-Flow",
+      "attempts": 127,
+      "accepted_updates": 120,
+      "image_percent": 99.56117272377014,
+      "residual_percent": 99.4604766368866,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 4,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 961,
+      "image_percent": 66.3409948348999,
+      "residual_percent": 66.43951535224915,
+      "status": "step_limit"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 5,
+      "method": "DLR D-Flow",
+      "attempts": 342,
+      "accepted_updates": 331,
+      "image_percent": 72.10023999214172,
+      "residual_percent": 71.70242667198181,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 6,
+      "method": "DLR D-Flow",
+      "attempts": 799,
+      "accepted_updates": 773,
+      "image_percent": 98.84265065193176,
+      "residual_percent": 98.40050935745239,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 7,
+      "method": "DLR D-Flow",
+      "attempts": 836,
+      "accepted_updates": 808,
+      "image_percent": 45.24938464164734,
+      "residual_percent": 43.41684877872467,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 8,
+      "method": "DLR D-Flow",
+      "attempts": 149,
+      "accepted_updates": 140,
+      "image_percent": 99.71908926963806,
+      "residual_percent": 99.62391257286072,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 9,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 964,
+      "image_percent": 99.010169506073,
+      "residual_percent": 98.85303974151611,
+      "status": "step_limit"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 1000,
+      "accepted_updates": 948,
+      "image_percent": 78.5858690738678,
+      "residual_percent": 74.94634985923767,
+      "status": "step_limit"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 11,
+      "method": "DLR D-Flow",
+      "attempts": 389,
+      "accepted_updates": 375,
+      "image_percent": 99.83320236206055,
+      "residual_percent": 99.62900876998901,
+      "status": "stalled"
+    },
+    {
+      "case": "r250_shapes_mri4",
+      "sample": 12,
+      "method": "DLR D-Flow",
+      "attempts": 354,
+      "accepted_updates": 339,
+      "image_percent": 99.71227049827576,
+      "residual_percent": 99.59696531295776,
+      "status": "stalled"
+    }
+  ]
+}

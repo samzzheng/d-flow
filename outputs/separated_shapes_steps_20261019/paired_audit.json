@@ -1,0 +1,798 @@
+{
+  "audits": [
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 5,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 10,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 20,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 5,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 10,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 20,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 5,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 10,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 20,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 5,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 10,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 20,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 5,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 10,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 20,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 5,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 10,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 20,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 5,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 10,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 20,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 5,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 10,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 20,
+      "bitwise_inputs_paired": true,
+      "noiseless": true
+    }
+  ],
+  "records": [
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 5,
+      "method": "D-Flow",
+      "error_percent": 98.45973253250122,
+      "measurement_percent": 98.0000913143158,
+      "attempts": 1000,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r250_shapes_mri4/sample_000/d_flow.json"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 5,
+      "method": "P-Flow",
+      "error_percent": 1.8315836787223816,
+      "measurement_percent": 0.9309625253081322,
+      "attempts": 128,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r250_shapes_mri4/sample_000/p_flow.json"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 5,
+      "method": "DLR D-Flow",
+      "error_percent": 99.02044534683228,
+      "measurement_percent": 98.68056178092957,
+      "attempts": 253,
+      "path": "outputs/separated_shapes_rank_sweep_20261017/rank_32/production/r250_shapes_mri4/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 10,
+      "method": "D-Flow",
+      "error_percent": 76.26617550849915,
+      "measurement_percent": 75.00085830688477,
+      "attempts": 1000,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r250_shapes_mri4/sample_000/d_flow.json"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 10,
+      "method": "P-Flow",
+      "error_percent": 1.3437984511256218,
+      "measurement_percent": 0.6727496162056923,
+      "attempts": 169,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r250_shapes_mri4/sample_000/p_flow.json"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 10,
+      "method": "DLR D-Flow",
+      "error_percent": 99.90235567092896,
+      "measurement_percent": 99.87726211547852,
+      "attempts": 42,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r250_shapes_mri4/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 20,
+      "method": "D-Flow",
+      "error_percent": 107.06822872161865,
+      "measurement_percent": 106.16793632507324,
+      "attempts": 81,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r250_shapes_mri4/sample_000/d_flow.json"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 20,
+      "method": "P-Flow",
+      "error_percent": 1.005306001752615,
+      "measurement_percent": 0.44475290924310684,
+      "attempts": 189,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r250_shapes_mri4/sample_000/p_flow.json"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_000",
+      "steps": 20,
+      "method": "DLR D-Flow",
+      "error_percent": 108.72224569320679,
+      "measurement_percent": 107.7808141708374,
+      "attempts": 38,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r250_shapes_mri4/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 5,
+      "method": "D-Flow",
+      "error_percent": 100.06643533706665,
+      "measurement_percent": 100.07904767990112,
+      "attempts": 1000,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r64_shapes_mri4/sample_001/d_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 5,
+      "method": "P-Flow",
+      "error_percent": 3.3672310411930084,
+      "measurement_percent": 1.7565999180078506,
+      "attempts": 77,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r64_shapes_mri4/sample_001/p_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 5,
+      "method": "DLR D-Flow",
+      "error_percent": 99.7729480266571,
+      "measurement_percent": 99.28393959999084,
+      "attempts": 660,
+      "path": "outputs/separated_shapes_rank_sweep_20261017/rank_32/production/r64_shapes_mri4/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 10,
+      "method": "D-Flow",
+      "error_percent": 36.08817756175995,
+      "measurement_percent": 29.176515340805054,
+      "attempts": 1000,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r64_shapes_mri4/sample_001/d_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 10,
+      "method": "P-Flow",
+      "error_percent": 2.3400355130434036,
+      "measurement_percent": 1.8318286165595055,
+      "attempts": 35,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r64_shapes_mri4/sample_001/p_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 10,
+      "method": "DLR D-Flow",
+      "error_percent": 99.87658262252808,
+      "measurement_percent": 99.80615973472595,
+      "attempts": 228,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r64_shapes_mri4/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 20,
+      "method": "D-Flow",
+      "error_percent": 99.86080527305603,
+      "measurement_percent": 99.80081915855408,
+      "attempts": 151,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r64_shapes_mri4/sample_001/d_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 20,
+      "method": "P-Flow",
+      "error_percent": 1.6059884801506996,
+      "measurement_percent": 1.042433176189661,
+      "attempts": 42,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r64_shapes_mri4/sample_001/p_flow.json"
+    },
+    {
+      "case": "r64_shapes_mri4/sample_001",
+      "steps": 20,
+      "method": "DLR D-Flow",
+      "error_percent": 100.03092288970947,
+      "measurement_percent": 100.03606081008911,
+      "attempts": 55,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r64_shapes_mri4/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "D-Flow",
+      "error_percent": 99.8203992843628,
+      "measurement_percent": 95.863938331604,
+      "attempts": 17,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r128_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "P-Flow",
+      "error_percent": 4.024112224578857,
+      "measurement_percent": 0.3464925102889538,
+      "attempts": 1000,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r128_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "DLR D-Flow",
+      "error_percent": 100.11523962020874,
+      "measurement_percent": 88.10025453567505,
+      "attempts": 1000,
+      "path": "outputs/separated_shapes_rank_sweep_20261017/rank_32/production/r128_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "D-Flow",
+      "error_percent": 100.81521272659302,
+      "measurement_percent": 94.92224454879761,
+      "attempts": 214,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r128_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "P-Flow",
+      "error_percent": 54.65087294578552,
+      "measurement_percent": 28.66443693637848,
+      "attempts": 45,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r128_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "DLR D-Flow",
+      "error_percent": 111.58356666564941,
+      "measurement_percent": 100.02307891845703,
+      "attempts": 17,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r128_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "D-Flow",
+      "error_percent": 108.73799324035645,
+      "measurement_percent": 100.62001943588257,
+      "attempts": 25,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r128_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "P-Flow",
+      "error_percent": 60.47935485839844,
+      "measurement_percent": 31.347158551216125,
+      "attempts": 45,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r128_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r128_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "DLR D-Flow",
+      "error_percent": 109.74012613296509,
+      "measurement_percent": 98.94957542419434,
+      "attempts": 12,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r128_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 5,
+      "method": "D-Flow",
+      "error_percent": 1.5076365321874619,
+      "measurement_percent": 0.11889840243384242,
+      "attempts": 1000,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r96_shapes_mri4/sample_001/d_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 5,
+      "method": "P-Flow",
+      "error_percent": 3.0119651928544044,
+      "measurement_percent": 1.3825850561261177,
+      "attempts": 142,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r96_shapes_mri4/sample_001/p_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 5,
+      "method": "DLR D-Flow",
+      "error_percent": 99.91167783737183,
+      "measurement_percent": 98.99644255638123,
+      "attempts": 413,
+      "path": "outputs/separated_shapes_rank_sweep_20261017/rank_32/production/r96_shapes_mri4/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 10,
+      "method": "D-Flow",
+      "error_percent": 99.59866404533386,
+      "measurement_percent": 99.45410490036011,
+      "attempts": 212,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r96_shapes_mri4/sample_001/d_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 10,
+      "method": "P-Flow",
+      "error_percent": 1.6637718304991722,
+      "measurement_percent": 0.8624388836324215,
+      "attempts": 50,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r96_shapes_mri4/sample_001/p_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 10,
+      "method": "DLR D-Flow",
+      "error_percent": 99.689382314682,
+      "measurement_percent": 99.59980249404907,
+      "attempts": 61,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r96_shapes_mri4/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 20,
+      "method": "D-Flow",
+      "error_percent": 99.66585636138916,
+      "measurement_percent": 99.57550168037415,
+      "attempts": 46,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r96_shapes_mri4/sample_001/d_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 20,
+      "method": "P-Flow",
+      "error_percent": 99.70378279685974,
+      "measurement_percent": 99.62919354438782,
+      "attempts": 8,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r96_shapes_mri4/sample_001/p_flow.json"
+    },
+    {
+      "case": "r96_shapes_mri4/sample_001",
+      "steps": 20,
+      "method": "DLR D-Flow",
+      "error_percent": 99.68527555465698,
+      "measurement_percent": 99.60271716117859,
+      "attempts": 31,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r96_shapes_mri4/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "D-Flow",
+      "error_percent": 99.4864821434021,
+      "measurement_percent": 86.32581233978271,
+      "attempts": 589,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r160_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "P-Flow",
+      "error_percent": 57.76548981666565,
+      "measurement_percent": 31.194645166397095,
+      "attempts": 37,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r160_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "DLR D-Flow",
+      "error_percent": 101.5683650970459,
+      "measurement_percent": 95.41236162185669,
+      "attempts": 110,
+      "path": "outputs/separated_shapes_rank_sweep_20261017/rank_32/production/r160_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "D-Flow",
+      "error_percent": 100.60796737670898,
+      "measurement_percent": 93.30015182495117,
+      "attempts": 386,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r160_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "P-Flow",
+      "error_percent": 93.27754378318787,
+      "measurement_percent": 78.7327527999878,
+      "attempts": 24,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r160_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "DLR D-Flow",
+      "error_percent": 110.3967547416687,
+      "measurement_percent": 99.33693408966064,
+      "attempts": 10,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r160_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "D-Flow",
+      "error_percent": 99.83773827552795,
+      "measurement_percent": 97.65705466270447,
+      "attempts": 14,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r160_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "P-Flow",
+      "error_percent": 101.15587711334229,
+      "measurement_percent": 73.4562873840332,
+      "attempts": 33,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r160_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r160_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "DLR D-Flow",
+      "error_percent": 101.99631452560425,
+      "measurement_percent": 97.50194549560547,
+      "attempts": 17,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r160_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 5,
+      "method": "D-Flow",
+      "error_percent": 100.50579309463501,
+      "measurement_percent": 97.21733927726746,
+      "attempts": 36,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r200_shapes_ct10/sample_001/d_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 5,
+      "method": "P-Flow",
+      "error_percent": 2.585378661751747,
+      "measurement_percent": 0.5053973756730556,
+      "attempts": 48,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r200_shapes_ct10/sample_001/p_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 5,
+      "method": "DLR D-Flow",
+      "error_percent": 101.50450468063354,
+      "measurement_percent": 94.02274489402771,
+      "attempts": 659,
+      "path": "outputs/separated_shapes_rank_sweep_20261017/rank_32/production/r200_shapes_ct10/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 10,
+      "method": "D-Flow",
+      "error_percent": 103.62929105758667,
+      "measurement_percent": 96.49018049240112,
+      "attempts": 282,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r200_shapes_ct10/sample_001/d_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 10,
+      "method": "P-Flow",
+      "error_percent": 1.9348684698343277,
+      "measurement_percent": 0.42288885451853275,
+      "attempts": 47,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r200_shapes_ct10/sample_001/p_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 10,
+      "method": "DLR D-Flow",
+      "error_percent": 103.12981605529785,
+      "measurement_percent": 97.39413261413574,
+      "attempts": 32,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r200_shapes_ct10/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 20,
+      "method": "D-Flow",
+      "error_percent": 117.2114372253418,
+      "measurement_percent": 105.29963970184326,
+      "attempts": 166,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r200_shapes_ct10/sample_001/d_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 20,
+      "method": "P-Flow",
+      "error_percent": 8.235754817724228,
+      "measurement_percent": 3.1337466090917587,
+      "attempts": 33,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r200_shapes_ct10/sample_001/p_flow.json"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "steps": 20,
+      "method": "DLR D-Flow",
+      "error_percent": 118.69843006134033,
+      "measurement_percent": 106.88697099685669,
+      "attempts": 33,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r200_shapes_ct10/sample_001/dlr_d_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "D-Flow",
+      "error_percent": 1.727883331477642,
+      "measurement_percent": 0.046190942521207035,
+      "attempts": 1000,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r64_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "P-Flow",
+      "error_percent": 4.633054509758949,
+      "measurement_percent": 0.6916825659573078,
+      "attempts": 1000,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r64_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 5,
+      "method": "DLR D-Flow",
+      "error_percent": 4.054168239235878,
+      "measurement_percent": 1.0811897926032543,
+      "attempts": 621,
+      "path": "outputs/separated_shapes_rank_sweep_20261017/rank_32/production/r64_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "D-Flow",
+      "error_percent": 77.80442237854004,
+      "measurement_percent": 66.16144180297852,
+      "attempts": 424,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r64_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "P-Flow",
+      "error_percent": 43.71522665023804,
+      "measurement_percent": 20.900914072990417,
+      "attempts": 26,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r64_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 10,
+      "method": "DLR D-Flow",
+      "error_percent": 85.15162467956543,
+      "measurement_percent": 64.38026428222656,
+      "attempts": 406,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r64_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "D-Flow",
+      "error_percent": 89.57516551017761,
+      "measurement_percent": 74.58660006523132,
+      "attempts": 346,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r64_shapes_ct10/sample_000/d_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "P-Flow",
+      "error_percent": 55.5341899394989,
+      "measurement_percent": 29.011651873588562,
+      "attempts": 28,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r64_shapes_ct10/sample_000/p_flow.json"
+    },
+    {
+      "case": "r64_shapes_ct10/sample_000",
+      "steps": 20,
+      "method": "DLR D-Flow",
+      "error_percent": 95.62063813209534,
+      "measurement_percent": 79.93390560150146,
+      "attempts": 31,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r64_shapes_ct10/sample_000/dlr_d_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 5,
+      "method": "D-Flow",
+      "error_percent": 1.8013332039117813,
+      "measurement_percent": 0.29340486507862806,
+      "attempts": 1000,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r128_shapes_mri4/sample_002/d_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 5,
+      "method": "P-Flow",
+      "error_percent": 99.94142055511475,
+      "measurement_percent": 99.01430010795593,
+      "attempts": 11,
+      "path": "outputs/separated_shapes_noiseless_20261016/production/r128_shapes_mri4/sample_002/p_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 5,
+      "method": "DLR D-Flow",
+      "error_percent": 100.06340742111206,
+      "measurement_percent": 98.83285164833069,
+      "attempts": 105,
+      "path": "outputs/separated_shapes_rank_sweep_20261017/rank_32/production/r128_shapes_mri4/sample_002/dlr_d_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 10,
+      "method": "D-Flow",
+      "error_percent": 99.95763897895813,
+      "measurement_percent": 99.2495059967041,
+      "attempts": 111,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r128_shapes_mri4/sample_002/d_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 10,
+      "method": "P-Flow",
+      "error_percent": 63.39360475540161,
+      "measurement_percent": 54.91124987602234,
+      "attempts": 17,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r128_shapes_mri4/sample_002/p_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 10,
+      "method": "DLR D-Flow",
+      "error_percent": 99.93362426757812,
+      "measurement_percent": 98.89678359031677,
+      "attempts": 87,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_10_rank_32/production/r128_shapes_mri4/sample_002/dlr_d_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 20,
+      "method": "D-Flow",
+      "error_percent": 99.76212978363037,
+      "measurement_percent": 99.67323541641235,
+      "attempts": 118,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r128_shapes_mri4/sample_002/d_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 20,
+      "method": "P-Flow",
+      "error_percent": 58.56306552886963,
+      "measurement_percent": 47.47110903263092,
+      "attempts": 22,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r128_shapes_mri4/sample_002/p_flow.json"
+    },
+    {
+      "case": "r128_shapes_mri4/sample_002",
+      "steps": 20,
+      "method": "DLR D-Flow",
+      "error_percent": 127.44574546813965,
+      "measurement_percent": 126.87067985534668,
+      "attempts": 33,
+      "path": "/home/samzheng/d-flow/outputs/separated_shapes_steps_20261019/steps_20_rank_32/production/r128_shapes_mri4/sample_002/dlr_d_flow.json"
+    }
+  ]
+}

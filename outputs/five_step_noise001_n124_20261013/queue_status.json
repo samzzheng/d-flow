@@ -1,0 +1,9 @@
+{
+  "status": "managed_by_shared_controller",
+  "controller_status": "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013/queue_status.json",
+  "pid": 61651,
+  "run_circles": [
+    1
+  ],
+  "priority_worker": true
+}

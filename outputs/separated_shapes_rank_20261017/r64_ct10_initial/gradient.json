@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "case": "outputs/separated_shapes_noiseless_20261016/production/r64_shapes_ct10/sample_000",
+    "stage": "initial",
+    "protocol": {
+      "manifest_sha256": "6bc980ca7285d09f92de588d36cc73e7b002624f255c5835ba69051fc532783d",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "test_subset_sha256": "34ab9fe5b53eff157018ec3bbbaccaf05f11647fd30893da1441a0abee435504",
+      "job": {
+        "resolution": 64,
+        "circles": 0,
+        "problem": "ct",
+        "level": 10
+      },
+      "sample": 0,
+      "operator": {
+        "kind": "ct",
+        "angle_count": 10,
+        "range_degrees": [
+          0,
+          180
+        ],
+        "normalization": "detector line mean",
+        "align_corners": false
+      },
+      "source_seed": 20901007,
+      "noise_seed": 40901007,
+      "dlr_seed": 50901007,
+      "torch": "2.11.0+cu129",
+      "gpu": "NVIDIA RTX 6000 Ada Generation"
+    },
+    "flow_steps": 5,
+    "device": "cuda:1",
+    "tf32": false,
+    "source_sha256": "429040fe0a01f919524299e2a1fd6b77629bc299fe298b09308e0b1cf15bd23b",
+    "code_sha256": "af0eef4a4740f0aaa59d6da351674c56268355fa57fdf1b2f202834d03d073bb",
+    "native_graph_vs_full_map_relative_errors": [
+      5.336262915989209e-07,
+      1.3989230183142354e-06
+    ],
+    "final_image_relative_l2": 0.01727883331477642,
+    "definition": "J = derivative of the full discrete Euler map with respect to source; not the objective Hessian"
+  },
+  "exact_gradient_norm": 1.2327675819396973,
+  "width": 32,
+  "stages": [
+    {
+      "refinement": 0,
+      "ranks": {
+        "4": {
+          "relative_gradient_error": 0.0026337053269416895,
+          "cosine": 0.9999965320221966,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0009686986873702607,
+          "reference_converged": false
+        },
+        "8": {
+          "relative_gradient_error": 0.001823170340019712,
+          "cosine": 0.9999983382579446,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0011198217226655973,
+          "reference_converged": false
+        },
+        "12": {
+          "relative_gradient_error": 0.0016834994567990137,
+          "cosine": 0.9999985831509528,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0011198217226655973,
+          "reference_converged": false
+        },
+        "16": {
+          "relative_gradient_error": 0.0013770373575664164,
+          "cosine": 0.99999905212711,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0011198217226655973,
+          "reference_converged": false
+        }
+      }
+    },
+    {
+      "refinement": 1,
+      "ranks": {
+        "4": {
+          "relative_gradient_error": 0.002664426946647922,
+          "cosine": 0.9999964504081118,
+          "change_over_exact_norm": 0.0002791151821860835,
+          "triplet_residual": 7.96368581259736e-07,
+          "reference_converged": true
+        },
+        "8": {
+          "relative_gradient_error": 0.0017557957916484496,
+          "cosine": 0.9999984585893431,
+          "change_over_exact_norm": 0.0006836960029346791,
+          "triplet_residual": 2.325481649769542e-05,
+          "reference_converged": true
+        },
+        "12": {
+          "relative_gradient_error": 0.0016660276347496277,
+          "cosine": 0.9999986121749636,
+          "change_over_exact_norm": 0.0007534950775430843,
+          "triplet_residual": 5.951957688992252e-05,
+          "reference_converged": true
+        },
+        "16": {
+          "relative_gradient_error": 0.0009792310191189932,
+          "cosine": 0.9999995205531884,
+          "change_over_exact_norm": 0.00106669200581529,
+          "triplet_residual": 9.770527677658186e-05,
+          "reference_converged": true
+        }
+      }
+    }
+  ],
+  "latest": {
+    "refinement": 1,
+    "ranks": {
+      "4": {
+        "relative_gradient_error": 0.002664426946647922,
+        "cosine": 0.9999964504081118,
+        "change_over_exact_norm": 0.0002791151821860835,
+        "triplet_residual": 7.96368581259736e-07,
+        "reference_converged": true
+      },
+      "8": {
+        "relative_gradient_error": 0.0017557957916484496,
+        "cosine": 0.9999984585893431,
+        "change_over_exact_norm": 0.0006836960029346791,
+        "triplet_residual": 2.325481649769542e-05,
+        "reference_converged": true
+      },
+      "12": {
+        "relative_gradient_error": 0.0016660276347496277,
+        "cosine": 0.9999986121749636,
+        "change_over_exact_norm": 0.0007534950775430843,
+        "triplet_residual": 5.951957688992252e-05,
+        "reference_converged": true
+      },
+      "16": {
+        "relative_gradient_error": 0.0009792310191189932,
+        "cosine": 0.9999995205531884,
+        "change_over_exact_norm": 0.00106669200581529,
+        "triplet_residual": 9.770527677658186e-05,
+        "reference_converged": true
+      }
+    }
+  }
+}

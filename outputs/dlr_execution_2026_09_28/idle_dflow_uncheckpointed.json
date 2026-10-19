@@ -1,0 +1,97 @@
+{
+  "protocol": {
+    "device": "cuda:1",
+    "mode": "flow",
+    "method": "dflow-uncheckpointed",
+    "memory_format": "contiguous",
+    "cudnn_benchmark": false,
+    "disable_conv_tf32": false,
+    "fused_norm": false,
+    "specialized_algebra": false,
+    "source_iterate": 20,
+    "step_jvp_columns": null,
+    "step_vjp_columns": null,
+    "selective_block_chunks": false,
+    "fused_primal": "none",
+    "checkpoint_blocks": false,
+    "resolution": 250,
+    "steps": 100,
+    "repeats": 3,
+    "threads": 4,
+    "memory_fraction": 0.6,
+    "max_seconds": 45,
+    "out": "outputs/dlr_execution_2026_09_28/idle_dflow_uncheckpointed.json",
+    "torch": "2.11.0+cu129",
+    "non_attention": true,
+    "epoch": 100,
+    "seed": 0,
+    "timing": "one warmup excluded; no Armijo or optimization",
+    "peak_memory": "absolute allocator peak including model and graph capture; fresh process per policy",
+    "model": "outputs/fm_unet/circles-250-noattn-ch16-b8/n1",
+    "cudnn_tf32": true,
+    "matmul_tf32": false,
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "source": "saved exact CPU sample0 step20",
+    "rank": 8,
+    "trace_probes": 4,
+    "enrichment_probes": 0,
+    "initialization_oversampling": 8,
+    "terminal_alpha": 0.0,
+    "factor_stride": 1,
+    "full_step_cuda_graphs": true,
+    "initial_product_chunks": [
+      20,
+      16
+    ]
+  },
+  "calls": [
+    {
+      "method": "dflow-uncheckpointed",
+      "warmup": true,
+      "seconds": 2.459641427034512,
+      "allocated_MiB": 12.9794921875,
+      "reserved_MiB": 24186.0,
+      "peak_allocated_MiB": 24148.453125,
+      "peak_reserved_MiB": 24186.0
+    },
+    {
+      "method": "dflow-uncheckpointed",
+      "warmup": false,
+      "seconds": 1.5006437109550461,
+      "allocated_MiB": 13.45703125,
+      "reserved_MiB": 24188.0,
+      "peak_allocated_MiB": 24149.48974609375,
+      "peak_reserved_MiB": 24188.0
+    },
+    {
+      "method": "dflow-uncheckpointed",
+      "warmup": false,
+      "seconds": 1.5684567959979177,
+      "allocated_MiB": 13.45703125,
+      "reserved_MiB": 24188.0,
+      "peak_allocated_MiB": 24149.48974609375,
+      "peak_reserved_MiB": 24188.0
+    },
+    {
+      "method": "dflow-uncheckpointed",
+      "warmup": false,
+      "seconds": 1.4818533689249307,
+      "allocated_MiB": 13.45703125,
+      "reserved_MiB": 24188.0,
+      "peak_allocated_MiB": 24149.48974609375,
+      "peak_reserved_MiB": 24188.0
+    }
+  ],
+  "status": "complete",
+  "capture_memory": {
+    "allocated_MiB": 13.45703125,
+    "reserved_MiB": 24186.0,
+    "peak_allocated_MiB": 24148.453125,
+    "peak_reserved_MiB": 24186.0
+  },
+  "medians": {
+    "dflow-uncheckpointed": 1.5006437109550461
+  },
+  "median_seconds": 1.5006437109550461,
+  "total_seconds": 7.2107571919914335
+}

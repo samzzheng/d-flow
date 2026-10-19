@@ -1,0 +1,143 @@
+{
+  "settings": {
+    "mode": "points",
+    "profiles": [
+      "fast",
+      "sketch32",
+      "trace8",
+      "reference"
+    ],
+    "threads": 16,
+    "sample": 0,
+    "start_step": 20,
+    "source_file": "/home/samzheng/d-flow/outputs/accuracy_fast_euler_2026_09_27/exact_from_z0/sources_sample0_exact.pt",
+    "seed": 0,
+    "outer_steps": 10,
+    "target_tau": 1.0,
+    "keep_terminal_alpha": false,
+    "out": "outputs/fast_accuracy_recovery_2026_09_27/points_step20_seed0"
+  },
+  "protocol": {
+    "device": "cpu",
+    "resolution": 250,
+    "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+    "checkpoint_sha256": "8ddc304ec6f1b70339f55d015b018f0f5571f006ae9b0a23490076aa9d491ae5",
+    "flow_steps": 100,
+    "integrator": "Euler",
+    "noise": 0.01,
+    "base_seed": 20260807,
+    "angles": 15,
+    "source_prior": "none",
+    "objective": "relative_scaled",
+    "factor_refresh": "every gradient",
+    "armijo_initial_step_policy": "first_iteration_only",
+    "optimizer_history_reset_at_start": true,
+    "noise_norm": 0.15301357209682465,
+    "normalized_noise_floor": 0.010000208134638703,
+    "timing_scope": "CPU diagnostic; not a CUDA speed claim"
+  },
+  "runs": [
+    {
+      "profile": "fast",
+      "parameters": {
+        "rank": 8,
+        "trace_probes": 4,
+        "enrichment_probes": 0,
+        "initialization_oversampling": 8
+      },
+      "seconds": 66.8293703069794,
+      "terminal_alpha": -0.0002832363243214786,
+      "zero_alpha": {
+        "relative_error": 0.3734908770562797,
+        "cosine": 0.9276783466339111,
+        "norm_ratio": 0.9187040030922806
+      },
+      "retained_alpha": {
+        "relative_error": 0.3738381706460351,
+        "cosine": 0.9275377988815308,
+        "norm_ratio": 0.9186253667226018
+      },
+      "best_gradient_in_V_relative_error": 0.3708884119987488,
+      "primal_relative_error": 1.4797333847127447e-07
+    },
+    {
+      "profile": "sketch32",
+      "parameters": {
+        "rank": 8,
+        "trace_probes": 4,
+        "enrichment_probes": 0,
+        "initialization_oversampling": 32
+      },
+      "seconds": 67.48452718998305,
+      "terminal_alpha": -0.0002832363243214786,
+      "zero_alpha": {
+        "relative_error": 0.3020005491252343,
+        "cosine": 0.953553318977356,
+        "norm_ratio": 0.9319395573662032
+      },
+      "retained_alpha": {
+        "relative_error": 0.3023328107951681,
+        "cosine": 0.9534481763839722,
+        "norm_ratio": 0.9318303458670912
+      },
+      "best_gradient_in_V_relative_error": 0.28528502583503723,
+      "primal_relative_error": 1.4797333847127447e-07
+    },
+    {
+      "profile": "trace8",
+      "parameters": {
+        "rank": 8,
+        "trace_probes": 8,
+        "enrichment_probes": 0,
+        "initialization_oversampling": 8
+      },
+      "seconds": 70.73090874700574,
+      "terminal_alpha": -1.8722092136158608e-05,
+      "zero_alpha": {
+        "relative_error": 0.34805911839324116,
+        "cosine": 0.9375435709953308,
+        "norm_ratio": 0.9260774154096607
+      },
+      "retained_alpha": {
+        "relative_error": 0.348081794095421,
+        "cosine": 0.9375350475311279,
+        "norm_ratio": 0.9260714844480985
+      },
+      "best_gradient_in_V_relative_error": 0.34358227252960205,
+      "primal_relative_error": 1.4797333847127447e-07
+    },
+    {
+      "profile": "reference",
+      "parameters": {
+        "rank": 8,
+        "trace_probes": 8,
+        "enrichment_probes": 4,
+        "initialization_oversampling": 8
+      },
+      "seconds": 137.01354030001676,
+      "terminal_alpha": -1.8722092136158608e-05,
+      "zero_alpha": {
+        "relative_error": 0.3475736231732894,
+        "cosine": 0.9376839399337769,
+        "norm_ratio": 0.9301043337945167
+      },
+      "retained_alpha": {
+        "relative_error": 0.3475961966175113,
+        "cosine": 0.9376755952835083,
+        "norm_ratio": 0.9300983005749965
+      },
+      "best_gradient_in_V_relative_error": 0.3431038558483124,
+      "primal_relative_error": 1.4797333847127447e-07
+    }
+  ],
+  "initial": {
+    "objective": 19.264251708984375,
+    "residual": 0.01755642379202893,
+    "residual_over_noise": 1.7556064054507314,
+    "image_relative_l2": 0.02687455713748932,
+    "raw_image_relative_l2": 0.03266255185008049,
+    "clamped_noisy_residual": 0.011283370666205883,
+    "clamped_clean_residual": 0.005095456261187792
+  },
+  "exact_gradient_seconds": 13.189757378015202
+}

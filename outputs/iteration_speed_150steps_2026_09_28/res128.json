@@ -1,0 +1,94 @@
+{
+  "protocol": {
+    "resolution": 128,
+    "device": "cuda:0",
+    "steps": 150,
+    "repeats": 3,
+    "out": "outputs/iteration_speed_150steps_2026_09_28/res128.json",
+    "rank": 8,
+    "trace_probes": 0,
+    "dlr": "optimized fast profile, analytic alpha",
+    "gpu_load": "shared with another user's job"
+  },
+  "calls": [
+    {
+      "arm": "dflow",
+      "seconds": 2.4770765940193087
+    },
+    {
+      "arm": "forward_trial",
+      "seconds": 1.1460621879668906
+    },
+    {
+      "arm": "dlr",
+      "seconds": 0.8448293131077662
+    },
+    {
+      "arm": "dlr_checkpointed",
+      "seconds": 1.5559384509688243
+    },
+    {
+      "arm": "dflow_checkpointed",
+      "seconds": 4.346033700043336
+    },
+    {
+      "arm": "forward_trial",
+      "seconds": 1.1348319869721308
+    },
+    {
+      "arm": "dlr",
+      "seconds": 0.8391875830711797
+    },
+    {
+      "arm": "dflow",
+      "seconds": 1.984665179043077
+    },
+    {
+      "arm": "dlr_checkpointed",
+      "seconds": 1.5670583869796246
+    },
+    {
+      "arm": "dflow_checkpointed",
+      "seconds": 4.424461251008324
+    },
+    {
+      "arm": "dflow",
+      "seconds": 1.9296385779744014
+    },
+    {
+      "arm": "dflow_checkpointed",
+      "seconds": 4.216808639001101
+    },
+    {
+      "arm": "dlr_checkpointed",
+      "seconds": 1.5670668800594285
+    },
+    {
+      "arm": "forward_trial",
+      "seconds": 1.1288230130448937
+    },
+    {
+      "arm": "dlr",
+      "seconds": 0.8293712720042095
+    }
+  ],
+  "peak_GiB": {
+    "dflow": 8.862351894378662,
+    "dflow_checkpointed": 0.07985210418701172,
+    "dlr": 0.24782752990722656,
+    "dlr_checkpointed": 0.23682022094726562,
+    "forward_trial": 0.009523391723632812
+  },
+  "grad_rel_err_vs_dflow": {
+    "dlr": 0.05642392486333847,
+    "dlr_checkpointed": 0.056425128132104874
+  },
+  "median_seconds": {
+    "dflow": 1.984665179043077,
+    "dflow_checkpointed": 4.346033700043336,
+    "dlr": 0.8391875830711797,
+    "dlr_checkpointed": 1.5670583869796246,
+    "forward_trial": 1.1348319869721308
+  },
+  "out_of_memory": []
+}

@@ -1,0 +1,76 @@
+{
+  "settings": {
+    "mode": "points",
+    "profiles": [
+      "rank12"
+    ],
+    "threads": 4,
+    "sample": 0,
+    "start_step": 20,
+    "source_file": "/home/samzheng/d-flow/outputs/accuracy_fast_euler_2026_09_27/exact_from_z0/sources_sample0_exact.pt",
+    "seed": 0,
+    "nested_sketch": false,
+    "outer_steps": 10,
+    "history": 100,
+    "target_tau": 1.0,
+    "keep_terminal_alpha": false,
+    "out": "outputs/fast_accuracy_recovery_2026_09_27/points_rank12"
+  },
+  "protocol": {
+    "device": "cpu",
+    "resolution": 250,
+    "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+    "checkpoint_sha256": "8ddc304ec6f1b70339f55d015b018f0f5571f006ae9b0a23490076aa9d491ae5",
+    "flow_steps": 100,
+    "integrator": "Euler",
+    "noise": 0.01,
+    "base_seed": 20260807,
+    "angles": 15,
+    "source_prior": "none",
+    "objective": "relative_scaled",
+    "factor_refresh": "every gradient",
+    "armijo_initial_step_policy": "first_iteration_only",
+    "optimizer_history_reset_at_start": true,
+    "history": 100,
+    "noise_norm": 0.15301357209682465,
+    "normalized_noise_floor": 0.010000208134638703,
+    "timing_scope": "CPU diagnostic; not a CUDA speed claim"
+  },
+  "runs": [
+    {
+      "profile": "rank12",
+      "parameters": {
+        "rank": 12,
+        "trace_probes": 4,
+        "enrichment_probes": 0,
+        "initialization_oversampling": 8
+      },
+      "seconds": 213.12884192197816,
+      "terminal_alpha": -0.0002832423779182136,
+      "zero_alpha": {
+        "relative_error": 0.24053569518544327,
+        "cosine": 0.9709473252296448,
+        "norm_ratio": 0.9465454190713409
+      },
+      "retained_alpha": {
+        "relative_error": 0.24084351632206175,
+        "cosine": 0.9708726406097412,
+        "norm_ratio": 0.9464101321803031
+      },
+      "best_gradient_in_V_relative_error": 0.2119905650615692,
+      "V_orthogonality_defect": 4.802895091415849e-06,
+      "coefficient_component_relative_error": 0.11365529149770737,
+      "primal_relative_error": 1.1899873442189346e-07
+    }
+  ],
+  "initial": {
+    "objective": 19.264236450195312,
+    "residual": 0.01755641716110311,
+    "residual_over_noise": 1.755605626374157,
+    "image_relative_l2": 0.026874523609876633,
+    "raw_image_relative_l2": 0.0326625257730484,
+    "clamped_noisy_residual": 0.011283366940915585,
+    "clamped_clean_residual": 0.005095446947962046
+  },
+  "exact_gradient_seconds": 27.771364645974245
+}

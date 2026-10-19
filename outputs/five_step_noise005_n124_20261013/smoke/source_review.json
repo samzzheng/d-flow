@@ -1,0 +1,54 @@
+{
+  "manifest_sha256": "340b14eb6174d40fa1c927459cb8f46981bb9ff347b7796995fc454299745e4a",
+  "changes": {
+    "experiments/five_step_pilot/run.py": {
+      "before": "994c8b2258d34289cbfb4e46476581e568817694951f81dc075d9eabbcf03711",
+      "after": "624c9de9e5e8822726c4ef3476df3d12c12f29ff45282d7218313d129a9a89bc"
+    },
+    "experiments/five_step_pilot/test_queue.py": {
+      "before": "bf8a4730a4ad3e39bfc8c6da716e726f9252930819806f61b59dd976e5f680c0",
+      "after": "faf5a03e10277568ccbc13ec61fc965ebee796b90fbd95f2a1b98ef0eeaaad60"
+    },
+    "experiments/ct_mri_sweep/run.py": {
+      "before": "80375bd8a86fe8d29611e7f1918ace6aac4843cfbee0aff5b90714245ba347e8",
+      "after": "a94845ca19d61b4697987b1ed40f7389caf4802fecc98fcbfc53e64f57472cd1"
+    },
+    "experiments/ct_mri_sweep/queue.py": {
+      "before": "312181c5372a5c4b890354b7b83118e8a6ad312827c0809aa3cb818bec4a862d",
+      "after": "ae0ff31148657c3ff04085a467a0a6e78a962585f19d416f5b544ece2bd640fe"
+    },
+    "experiments/ct_mri_sweep/validation.py": {
+      "before": null,
+      "after": "db47f0b29f3d23ca8fd2006483922082b33313906baa838d849304387ef65da5"
+    },
+    "experiments/separated_shapes_rank/sweep_report.py": {
+      "before": null,
+      "after": "456de2b4bf463576654622bc38a68c9be8656e3e5f346180bb5fa27838e505e5"
+    },
+    "p_flow/armijo.py": {
+      "before": "2705f2c1904f8178dc7fa0810b642d13bb7f2de776fde929f29537674da58c13",
+      "after": "2c395ec4a824c1c71e3e5c87b7b9af8923ad0a0c82c8081221e3e077476d9712"
+    },
+    "experiments/ct_mri_sweep/optimizer.py": {
+      "before": null,
+      "after": "41a70adf8c050d628632c63242e719f69ce9657fb81853915be928fe4463c997"
+    }
+  },
+  "reason": "Scheduler now applies the manifest worker memory reservation to allocator limits and status. All existing reservations remain 9216 MiB, so existing numerical execution is unchanged. 22 CPU tests pass.",
+  "reviewed_at": "2026-10-16T23:45:31.318849-04:00",
+  "reviews": [
+    {
+      "at": "2026-10-18T22:55:00.114301-04:00",
+      "commit": "5e6af67",
+      "reason": "Reuse accepted D-Flow autograd tape; cache metrics/measurements and CPU checkpoint; coalesce figures and background reports; deduplicate model readiness. Same numerical protocol and persisted optimizer state. Validation in outputs/test_runner_optimization_20261018; CUDA roundoff variability documented."
+    },
+    {
+      "at": "2026-10-18T23:30:21.608577-04:00",
+      "commits": [
+        "fa02bd1",
+        "7482bcf"
+      ],
+      "reason": "Reference backend calibration cached by frozen configuration; full-history LBFGS CUDA replay with exact operation order; graph omitted from checkpoints; mapped loading; independent logical samples grouped at runtime with per-sample recovery, maximum three and one-second admission polling. Same optimizer hyperparameters, gradients, source/measurement seeds, FP32 settings and stopping conditions. Deterministic native-model and CPU equivalence evidence: outputs/test_runner_optimization_20261018."
+    }
+  ]
+}

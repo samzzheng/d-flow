@@ -1,7 +1,20 @@
 .venv/
 data/*
 __pycache__/
-outputs/*
+# Keep output summaries, reports, and aggregate figures; leave raw artifacts local.
+/outputs/**/*.pt
+/outputs/**/sample_[0-9]*/
+/outputs/**/*.log
+/outputs/**/*.lock
+/outputs/**/*.pid
+/outputs/**/shard_*.json
+/outputs/**/backend_validation*.json
+/outputs/**/queue_history.jsonl
+/outputs/**/*snapshot.json
+# Absolute symlinks to reused runs; reuse metadata remains tracked.
+/outputs/five_step_noise001_n124_20261013/production/r*_n1_*
+/outputs/five_step_noise005_n124_20261013/production/r*_n1_*
+/outputs/five_step_noise010_n124_20261013/production/r*_n1_*
 documents/*
 dlr_dflow/outputs/*
 dlr_dflow/notes/*

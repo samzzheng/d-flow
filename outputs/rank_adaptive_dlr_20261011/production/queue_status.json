@@ -1,0 +1,18 @@
+{
+  "status": "finished",
+  "updated": "2026-10-11T17:34:11.564017-04:00",
+  "pid": 2165034,
+  "gpu": 0,
+  "completed": [
+    "r64_n3_ct10/sample_000",
+    "r64_n3_mri4/sample_000",
+    "r64_n2_ct10/sample_000",
+    "r64_n2_mri4/sample_000",
+    "r64_n3_ct10/sample_001",
+    "r64_n3_mri4/sample_001",
+    "r64_n2_ct10/sample_001",
+    "r64_n2_mri4/sample_001"
+  ],
+  "failed": [],
+  "active": null
+}

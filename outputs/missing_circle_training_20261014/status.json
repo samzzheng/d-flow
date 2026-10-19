@@ -1,0 +1,272 @@
+{
+  "pid": 821203,
+  "gpu": 0,
+  "runs": [
+    {
+      "resolution": 200,
+      "circles": 4,
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "train_fm_unet.py",
+        "--data",
+        "data/circles-200-n4.pt",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n4",
+        "--epochs",
+        "200",
+        "--batch",
+        "512",
+        "--micro-batch",
+        "16",
+        "--lr",
+        "0.0002",
+        "--wd",
+        "0.0001",
+        "--ema-decay",
+        "0.999",
+        "--t-alpha",
+        "1.0",
+        "--sample-steps",
+        "100",
+        "--ch",
+        "16",
+        "--ch-mul",
+        "1,2,2,2,2,2",
+        "--att-channels",
+        "0,0,0,0,0,0",
+        "--groups",
+        "4",
+        "--no-mid-attn",
+        "--resume-checkpoint",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n4/checkpoints/epoch_0180.pt",
+        "--start-epoch",
+        "180",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4"
+      ],
+      "checkpoint_sha256": "df6c862f372ecc09597ed718806f59bf2bb85454565668422a9fc310d3726893",
+      "original_config": {
+        "im_size": 200,
+        "data": "data/circles-200-n4.pt",
+        "epochs": 200,
+        "batch": 512,
+        "lr": 0.0002,
+        "wd": 0.0001,
+        "ema_decay": 0.999,
+        "lr_schedule": {
+          "name": "CosineAnnealingLR",
+          "t_max": 200,
+          "eta_min": 1e-05
+        },
+        "checkpoint_sampling": {
+          "samples_per_integrator": 2,
+          "integrators": [
+            "euler",
+            "rk4"
+          ],
+          "steps": 100,
+          "shared_initial_noise": true
+        },
+        "micro_batch": 16,
+        "arch": {
+          "ch": 16,
+          "ch_mul": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "att_channels": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "groups": 4,
+          "mid_attn": false
+        },
+        "params": 736721,
+        "dataset_metadata": {
+          "format_version": 2,
+          "resolution": 200,
+          "n_circles": 4,
+          "split_sizes": {
+            "train": 48000,
+            "val": 1000,
+            "test": 1000
+          },
+          "seed": 2442,
+          "background_value": 0,
+          "circle_value": 1,
+          "storage_dtype": "torch.uint8",
+          "radius_min_fraction": 0.1,
+          "radius_max_fraction": 0.25,
+          "radius_min_pixels": 20.0,
+          "radius_max_pixels": 50.0,
+          "border_gap_pixels": 12,
+          "antialias_width_pixels": 1.0
+        },
+        "t_alpha": 1.0,
+        "started_at": "2026-10-06T09:19:27",
+        "n_circles": 4,
+        "initial_micro_batch": 16,
+        "resumes": [
+          {
+            "checkpoint": "outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n4/checkpoints/epoch_0040.pt",
+            "start_epoch": 40,
+            "resumed_at": "2026-10-06T16:09:45",
+            "micro_batch": 16,
+            "device": "cuda:1",
+            "optimizer_state": "reinitialized; not present in legacy checkpoint",
+            "t_alpha": 1.0
+          }
+        ]
+      },
+      "status": "complete",
+      "started_at": "2026-10-14T13:07:06.053747-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-14T13:32:48.965235-04:00"
+    },
+    {
+      "resolution": 200,
+      "circles": 3,
+      "command": [
+        "/home/samzheng/d-flow/.venv/bin/python",
+        "-u",
+        "train_fm_unet.py",
+        "--data",
+        "data/circles-200-n3.pt",
+        "--out-dir",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n3",
+        "--epochs",
+        "200",
+        "--batch",
+        "512",
+        "--micro-batch",
+        "16",
+        "--lr",
+        "0.0002",
+        "--wd",
+        "0.0001",
+        "--ema-decay",
+        "0.999",
+        "--t-alpha",
+        "1.0",
+        "--sample-steps",
+        "100",
+        "--ch",
+        "16",
+        "--ch-mul",
+        "1,2,2,2,2,2",
+        "--att-channels",
+        "0,0,0,0,0,0",
+        "--groups",
+        "4",
+        "--no-mid-attn",
+        "--resume-checkpoint",
+        "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n3/checkpoints/epoch_0180.pt",
+        "--start-epoch",
+        "180",
+        "--device",
+        "cuda:0",
+        "--threads",
+        "4"
+      ],
+      "checkpoint_sha256": "ac46f42259a737db77d525186fc1112551c095456e5bbaa07943bf5918a1d380",
+      "original_config": {
+        "im_size": 200,
+        "data": "data/circles-200-n3.pt",
+        "epochs": 200,
+        "batch": 512,
+        "lr": 0.0002,
+        "wd": 0.0001,
+        "ema_decay": 0.999,
+        "lr_schedule": {
+          "name": "CosineAnnealingLR",
+          "t_max": 200,
+          "eta_min": 1e-05
+        },
+        "checkpoint_sampling": {
+          "samples_per_integrator": 2,
+          "integrators": [
+            "euler",
+            "rk4"
+          ],
+          "steps": 100,
+          "shared_initial_noise": true
+        },
+        "micro_batch": 16,
+        "arch": {
+          "ch": 16,
+          "ch_mul": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "att_channels": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "groups": 4,
+          "mid_attn": false
+        },
+        "params": 736721,
+        "dataset_metadata": {
+          "format_version": 2,
+          "resolution": 200,
+          "n_circles": 3,
+          "split_sizes": {
+            "train": 48000,
+            "val": 1000,
+            "test": 1000
+          },
+          "seed": 2342,
+          "background_value": 0,
+          "circle_value": 1,
+          "storage_dtype": "torch.uint8",
+          "radius_min_fraction": 0.1,
+          "radius_max_fraction": 0.25,
+          "radius_min_pixels": 20.0,
+          "radius_max_pixels": 50.0,
+          "border_gap_pixels": 12,
+          "antialias_width_pixels": 1.0
+        },
+        "t_alpha": 1.0,
+        "started_at": "2026-10-06T09:19:24",
+        "n_circles": 3,
+        "initial_micro_batch": 16,
+        "resumes": [
+          {
+            "checkpoint": "outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n3/checkpoints/epoch_0040.pt",
+            "start_epoch": 40,
+            "resumed_at": "2026-10-06T16:09:42",
+            "micro_batch": 16,
+            "device": "cuda:1",
+            "optimizer_state": "reinitialized; not present in legacy checkpoint",
+            "t_alpha": 1.0
+          }
+        ]
+      },
+      "status": "complete",
+      "started_at": "2026-10-14T13:32:48.965854-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-14T13:58:44.301214-04:00"
+    }
+  ],
+  "optimizer_resume": "Legacy EMA checkpoints have no AdamW state; existing resume procedure reinitializes it.",
+  "training_source_sha256": "ddf79effb141ef48522ec0cc1cada748f7c6430714be9323902ce0d332707425"
+}

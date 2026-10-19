@@ -1,0 +1,69 @@
+{
+  "im_size": 200,
+  "data": "data/circles-200-n2.pt",
+  "epochs": 200,
+  "batch": 512,
+  "lr": 0.0002,
+  "wd": 0.0001,
+  "ema_decay": 0.999,
+  "lr_schedule": {
+    "name": "CosineAnnealingLR",
+    "t_max": 200,
+    "eta_min": 1e-05
+  },
+  "checkpoint_sampling": {
+    "samples_per_integrator": 2,
+    "integrators": [
+      "euler",
+      "rk4"
+    ],
+    "steps": 100,
+    "shared_initial_noise": true
+  },
+  "micro_batch": 16,
+  "arch": {
+    "ch": 16,
+    "ch_mul": [
+      1,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "att_channels": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "groups": 4,
+    "mid_attn": false
+  },
+  "params": 736721,
+  "dataset_metadata": {
+    "format_version": 2,
+    "resolution": 200,
+    "n_circles": 2,
+    "split_sizes": {
+      "train": 48000,
+      "val": 1000,
+      "test": 1000
+    },
+    "seed": 2242,
+    "background_value": 0,
+    "circle_value": 1,
+    "storage_dtype": "torch.uint8",
+    "radius_min_fraction": 0.1,
+    "radius_max_fraction": 0.25,
+    "radius_min_pixels": 20.0,
+    "radius_max_pixels": 50.0,
+    "border_gap_pixels": 12,
+    "antialias_width_pixels": 1.0
+  },
+  "t_alpha": 1.0,
+  "started_at": "2026-10-06T09:19:21",
+  "n_circles": 2
+}

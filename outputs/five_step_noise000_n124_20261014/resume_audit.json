@@ -1,0 +1,14 @@
+{
+  "smoke_cases": 6,
+  "smoke_method_runs": 18,
+  "smoke_optimizer_attempts": 36,
+  "observations_equal_clean": true,
+  "nonincreasing_objectives": true,
+  "source_hashes_verified": true,
+  "same_settings_except_noise": true,
+  "existing_complete_paired_cases": 1802,
+  "remaining_at_launch": 3598,
+  "training_pending": [
+    "r200_n4"
+  ]
+}

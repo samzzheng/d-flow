@@ -1,0 +1,41 @@
+{
+  "arch": {
+    "ch": 4,
+    "ch_mul": [
+      1,
+      2,
+      2
+    ],
+    "att_channels": [
+      0,
+      0,
+      0
+    ],
+    "groups": 2,
+    "mid_attn": false
+  },
+  "params": 22037,
+  "im_size": 64,
+  "n_circles": 1,
+  "data": "data/circles-64-n1.pt",
+  "epochs": 2,
+  "batch": 512,
+  "lr": 0.0002,
+  "wd": 0.0001,
+  "ema_decay": 0.999,
+  "precision": "BF16 autocast training; FP32 fixed-draw evaluation; TF32 off",
+  "schedule": "cosine per epoch to 1e-5",
+  "gpu": 1,
+  "graph": true,
+  "seed": 20261019,
+  "split_sizes": {
+    "train": 48000,
+    "val": 1000,
+    "test": 1000
+  },
+  "source_sha256": {
+    "experiments/tiny_circles/train.py": "8eaae9e51c8a9196b113c2dffaad695dae5280770eab8b58561cc1abbba57d89",
+    "models/unet/default.py": "d77a723293c19108c865049c3b94b4b7ac151efbd91b899b7c6c782559c4f64c",
+    "models/unet/unet.py": "fb9d630e0b592c4b79309303854d5033aa600240ca7f39933eb2bba94b4958cc"
+  }
+}

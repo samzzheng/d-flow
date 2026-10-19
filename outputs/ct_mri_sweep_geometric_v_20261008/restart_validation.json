@@ -1,0 +1,64 @@
+{
+  "validated_smoke_states": [
+    "outputs/ct_mri_geometric_v_smoke_20261008/r64_ct/worker_0/r64_n3_ct10/sample_000/d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/r64_ct/worker_0/r64_n3_ct10/sample_000/p_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/r64_ct/worker_0/r64_n3_ct10/sample_000/dlr_d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/r128_mri_capacity/worker_0/r128_n3_mri4/sample_000/d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/r128_mri_capacity/worker_0/r128_n3_mri4/sample_000/p_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/r128_mri_capacity/worker_0/r128_n3_mri4/sample_000/dlr_d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/r250_ct/worker_0/r250_n3_ct10/sample_000/d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/r250_ct/worker_0/r250_n3_ct10/sample_000/p_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/r250_ct/worker_0/r250_n3_ct10/sample_000/dlr_d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_0/r250_n3_ct10/sample_000/d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_0/r250_n3_ct10/sample_000/p_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_0/r250_n3_ct10/sample_000/dlr_d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_1/r128_n3_mri4/sample_000/d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_1/r128_n3_mri4/sample_000/p_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_1/r128_n3_mri4/sample_000/dlr_d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_2/r128_n3_mri4/sample_000/d_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_2/r128_n3_mri4/sample_000/p_flow.pt",
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_2/r128_n3_mri4/sample_000/dlr_d_flow.pt"
+  ],
+  "unit_tests_passed": 15,
+  "resume_including_previous_v": "bitwise CPU trajectory match",
+  "basis_gram_max_error_float64_reduction": {
+    "outputs/ct_mri_geometric_v_smoke_20261008/r64_ct/worker_0/r64_n3_ct10/sample_000/dlr_d_flow.pt": 3.3459645254474424e-07,
+    "outputs/ct_mri_geometric_v_smoke_20261008/r128_mri_capacity/worker_0/r128_n3_mri4/sample_000/dlr_d_flow.pt": 5.093429620295353e-07,
+    "outputs/ct_mri_geometric_v_smoke_20261008/r250_ct/worker_0/r250_n3_ct10/sample_000/dlr_d_flow.pt": 2.69662320695474e-07,
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_0/r250_n3_ct10/sample_000/dlr_d_flow.pt": 3.1558829372002606e-07,
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_1/r128_n3_mri4/sample_000/dlr_d_flow.pt": 3.905523311420467e-07,
+    "outputs/ct_mri_geometric_v_smoke_20261008/mixed_capacity/worker_2/r128_n3_mri4/sample_000/dlr_d_flow.pt": 4.123760077856531e-07
+  },
+  "same_scientific_settings_except": [
+    "geometric backtracking",
+    "previous-V DLR initialization"
+  ],
+  "capacity": {
+    "exit_codes": [
+      0,
+      0,
+      0
+    ],
+    "peak_gpu1_memory_mib": 44678,
+    "process_peaks_mib": {
+      "3795488": 29082,
+      "3795490": 7788,
+      "3795489": 7788
+    },
+    "elapsed_seconds": 49.64858524990268,
+    "reservations_mib": {
+      "64": 2816,
+      "128": 8448,
+      "250": 30720
+    },
+    "gpu": 1
+  },
+  "prior_sweep": "outputs/ct_mri_sweep_100steps_noiseless_20261007",
+  "prior_sweep_paused": true,
+  "gpu0_excluded": true,
+  "live_inputs_bitwise_paired_with_prior_sweep": [
+    "r250_n1_ct10/sample_000/inputs.pt",
+    "r128_n1_ct10/sample_005/inputs.pt",
+    "r128_n1_ct10/sample_000/inputs.pt"
+  ]
+}

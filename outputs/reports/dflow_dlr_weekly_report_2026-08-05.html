@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>August 5 D-Flow and DLR Weekly Report</title>
+<style>
+:root{--ink:#17212b;--muted:#5a6774;--line:#d7dde3;--soft:#f4f7f9;--accent:#245b78;--good:#4d7358}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:white}
+main{max-width:1180px;margin:auto;padding:36px 28px 64px} h1{font-size:31px;margin:0 0 6px}
+h2{font-size:23px;margin:42px 0 14px;border-top:1px solid var(--line);padding-top:20px}
+h3{font-size:18px;margin:25px 0 10px} h4{font-size:15px;margin:22px 0 9px} p,li{line-height:1.62}
+.subtitle,.small{color:var(--muted);font-size:13px} .goal{border:1px solid #a9c5d4;border-left:5px solid var(--accent);border-radius:7px;background:#f3f8fa;padding:13px 16px}
+.outcome{border-left:4px solid var(--good);background:#f1f7f2;padding:12px 15px;line-height:1.6}
+.conclusion{border-left:4px solid var(--accent);background:#eef5f8;padding:12px 15px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:14px 0 24px;font-size:13px} th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:right}
+th:first-child,td:first-child{text-align:left} th{background:var(--soft);color:#273442} .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px} figure{border:1px solid var(--line);border-radius:7px;padding:9px;margin:0;background:white}
+figure img{width:100%;height:auto;display:block} figcaption{color:var(--muted);font-size:12px;line-height:1.5;margin-top:8px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace} @media(max-width:800px){main{padding:22px 14px}.gallery,.two{grid-template-columns:1fr}table{display:block;overflow-x:auto}}
+.equation{margin:14px 0;padding:12px;text-align:center;background:var(--soft);font-family:Georgia,"Times New Roman",serif;font-size:18px}
+pre{overflow-x:auto;background:#17212b;color:#f5f7f9;border-radius:7px;padding:15px;line-height:1.5;font-size:12px}
+</style></head><body><main>
+<h1>D-Flow and Dynamic Low-Rank Weekly Report</h1>
+<p class="subtitle">Week of August 5, 2026</p>
+
+<h2>Section 1. D-Flow accuracy and runtime on sparse-view CT</h2>
+<h3>Goal</h3>
+<div class="goal">Verify that D-Flow reconstructs Shepp–Logan images accurately from sparse CT measurements, while quantifying its high per-iteration computational cost at 64×64 and 128×128.</div>
+
+<h3>Figures/Tables</h3>
+<h4>Model training and dataset generation</h4>
+<table><tr><th>Resolution</th><th>Parameters</th><th>Epochs</th><th>Optimizer</th><th>Learning rate</th><th>Batch size</th></tr>
+<tr><td>64×64</td><td>2,705,517</td><td>50</td><td>AdamW</td><td>2×10<sup>−4</sup></td><td>512</td></tr>
+<tr><td>128×128</td><td>2,705,517</td><td>50</td><td>AdamW</td><td>2×10<sup>−4</sup></td><td>512</td></tr></table>
+<p>The datasets were generated reproducibly from <code>skimage.data.shepp_logan_phantom</code>. Random rotation, axis scaling, translation, gamma, and intensity transforms produced 80,000 training, 10,000 validation, and 10,000 test images per resolution.</p>
+
+<h4>Sparse-CT D-Flow experiment</h4>
+<p>Five held-out samples were reconstructed at each resolution from 15 evenly spaced parallel-beam views. D-Flow used 5 Euler steps, LBFGS learning rate 0.3, <code>max_iter=10</code>, history 100, no line search, no TV regularization, and at most 100 outer steps. The stop target was measurement MSE 1e-12.</p>
+
+<table><tr><th>Resolution</th><th>Samples</th><th>Mean image MSE</th><th>Median image MSE</th><th>Best image MSE</th><th>Worst image MSE</th><th>Mean measurement MSE</th></tr>
+<tr><td>64×64</td><td>5</td><td>2.910e-05</td><td>2.634e-05</td><td>2.149e-05</td><td>4.387e-05</td><td>5.869e-08</td></tr><tr><td>128×128</td><td>5</td><td>5.508e-05</td><td>5.213e-05</td><td>5.095e-05</td><td>6.663e-05</td><td>4.728e-08</td></tr></table>
+
+<h4>64×64: best, median, and worst by image MSE</h4><div class="gallery"><figure><img src="../dflow_sparse_ct_shepp_logan/figures/res_64/sample_003.png" alt="Best 64 sparse CT reconstruction"><figcaption><strong>Best: sample 3</strong><br>Image MSE 2.149e-05; measurement MSE 5.156e-08; sample time 433.5 s.</figcaption></figure><figure><img src="../dflow_sparse_ct_shepp_logan/figures/res_64/sample_001.png" alt="Median 64 sparse CT reconstruction"><figcaption><strong>Median: sample 1</strong><br>Image MSE 2.634e-05; measurement MSE 1.119e-08; sample time 302.7 s.</figcaption></figure><figure><img src="../dflow_sparse_ct_shepp_logan/figures/res_64/sample_002.png" alt="Worst 64 sparse CT reconstruction"><figcaption><strong>Worst: sample 2</strong><br>Image MSE 4.387e-05; measurement MSE 1.835e-07; sample time 309.2 s.</figcaption></figure></div><h4>128×128: best, median, and worst by image MSE</h4><div class="gallery"><figure><img src="../dflow_sparse_ct_shepp_logan/figures/res_128/sample_001.png" alt="Best 128 sparse CT reconstruction"><figcaption><strong>Best: sample 1</strong><br>Image MSE 5.095e-05; measurement MSE 1.561e-08; sample time 241.0 s.</figcaption></figure><figure><img src="../dflow_sparse_ct_shepp_logan/figures/res_128/sample_000.png" alt="Median 128 sparse CT reconstruction"><figcaption><strong>Median: sample 0</strong><br>Image MSE 5.213e-05; measurement MSE 3.815e-08; sample time 394.6 s.</figcaption></figure><figure><img src="../dflow_sparse_ct_shepp_logan/figures/res_128/sample_002.png" alt="Worst 128 sparse CT reconstruction"><figcaption><strong>Worst: sample 2</strong><br>Image MSE 6.663e-05; measurement MSE 8.617e-08; sample time 315.4 s.</figcaption></figure></div>
+
+<h4>Observed time per outer iteration</h4>
+<table><tr><th>Resolution</th><th>Samples</th><th>Mean (s)</th><th>Median (s)</th><th>Lowest (s)</th><th>Highest (s)</th></tr>
+<tr><td>64×64</td><td>5</td><td>3.067</td><td>3.695</td><td>0.585</td><td>5.242</td></tr><tr><td>128×128</td><td>5</td><td>3.309</td><td>5.297</td><td>0.582</td><td>5.317</td></tr></table>
+<p class="small">Timing used synchronized CUDA wall time on GPU 1. The GPU was already carrying an unrelated workload at launch, so these values measure the observed shared-GPU runtime rather than isolated-device performance.</p>
+
+<h3>Outcome</h3>
+<div class="outcome"><ul>
+<li>Mean image MSE: 2.910×10<sup>−5</sup> at 64×64 and 5.508×10<sup>−5</sup> at 128×128.</li>
+<li>Mean measurement MSE remained below 6×10<sup>−8</sup> at both resolutions.</li>
+<li>All ten samples used 100 steps; none reached the 10<sup>−12</sup> stop target.</li>
+<li>Median time per outer iteration was 3.695 s at 64×64 and 5.297 s at 128×128.</li>
+</ul></div>
+
+<h3>Conclusion</h3>
+<div class="conclusion">The experiment supports the claim that D-Flow is accurate but computationally slow for sparse-view CT. Reconstruction quality is consistently high, but repeated flow evaluations inside each LBFGS step make the inverse solve expensive, and the current absolute stopping threshold remains ineffective.</div>
+
+<h2>Section 2. Understanding the July toy-ODE accuracy figure</h2>
+<h3>Goal</h3>
+<div class="goal">Confirm that the dynamical low-rank (DLR) solver accurately evolves a known low-rank matrix ODE, and explain why the lower-right plot is near 10<sup>−2</sup> even though the integration error is near 10<sup>−11</sup>.</div>
+
+<h3>Figures/Tables</h3>
+<h4>The complete toy problem</h4>
+<p>We solve the linear matrix ODE</p>
+<div class="equation"><i>A</i>′(<i>t</i>) = <i>L A</i>(<i>t</i>) + <i>A</i>(<i>t</i>)<i>R</i>, &nbsp;&nbsp; <i>A</i>(0) = <i>A</i><sub>0</sub>, &nbsp;&nbsp; 0 ≤ <i>t</i> ≤ 1.</div>
+<p>Its exact dense solution is known:</p>
+<div class="equation"><i>A</i>(<i>t</i>) = exp(<i>tL</i>) <i>A</i><sub>0</sub> exp(<i>tR</i>).</div>
+<p>The matrices <em>L</em> and <em>R</em> are full 40×40 generator matrices. Their skew-symmetric components rotate the singular vectors, while smaller symmetric components change the singular values. Because both matrix exponentials are invertible, they do not change rank: rank(<em>A</em>(<em>t</em>)) = rank(<em>A</em><sub>0</sub>) for all time.</p>
+<p>Rather than evolving all 1,600 entries of <em>A</em>, DLR evolves the rank-4 factorization <em>Y</em>(<em>t</em>) = <em>U</em>(<em>t</em>)<em>S</em>(<em>t</em>)<em>V</em>(<em>t</em>)<sup>T</sup>. The derivative <em>LY + YR</em> is projected onto the tangent space of rank-4 matrices. Both experiments use <strong>n = 40</strong>, <strong>rank r = 4</strong>, and <strong>800 RK4 time steps</strong>.</p>
+
+<h4>Why there are two experiments</h4>
+<table><tr><th>Experiment</th><th>Initial singular values</th><th>Question being tested</th></tr>
+<tr><td>Top row: exactly rank 4</td><td>1.0, 0.8, 0.6, 0.4; every remaining value is zero</td><td>Can DLR reproduce an ODE solution that lies exactly on the rank-4 manifold?</td></tr>
+<tr><td>Bottom row: approximately rank 4</td><td>1.0, 0.8, 0.6, 0.4, followed by a nonzero tail starting at 10<sup>−2</sup></td><td>How well can a rank-4 DLR solution represent a full-rank ODE solution?</td></tr></table>
+
+<p>Three matrices are compared throughout the figure:</p>
+<table><tr><th>Symbol</th><th>Definition</th><th>Role</th></tr>
+<tr><td><em>A</em>(<em>t</em>)</td><td>The exact, dense analytic solution</td><td>Ground truth</td></tr>
+<tr><td><em>X</em>(<em>t</em>)</td><td>The best rank-4 approximation of <em>A</em>(<em>t</em>), computed independently by a truncated SVD at each time</td><td>Best accuracy any rank-4 representation can attain</td></tr>
+<tr><td><em>Y</em>(<em>t</em>)</td><td>The rank-4 solution evolved dynamically by DLR</td><td>Solver output</td></tr></table>
+
+<figure><img src="../../dlra/outputs/dlra_toy.png" alt="DLR toy ODE exact-rank and approximate-rank diagnostics"><figcaption>The figure that prompted the accuracy question. The top row tests integration accuracy for an exactly rank-4 solution. The bottom row tests rank-4 approximation of a deliberately full-rank solution.</figcaption></figure>
+
+<h4>Diagnostics used</h4>
+<table><tr><th>Diagnostic</th><th>What was compared</th><th>Interpretation</th></tr>
+<tr><td>Exact-rank singular values</td><td>The four singular values of exact solution <em>A</em> and DLR solution <em>Y</em></td><td>DLR tracks the evolving singular values of the exactly rank-4 solution.</td></tr>
+<tr><td>Exact-rank integration error</td><td>‖<em>Y−A</em>‖<sub>F</sub></td><td>This is the integration-accuracy test; the error is approximately 10<sup>−11</sup>.</td></tr>
+<tr><td>Approximate-rank singular values</td><td>The four largest singular values of full-rank <em>A</em> and rank-4 <em>Y</em></td><td>DLR tracks the dominant rank-4 structure.</td></tr>
+<tr><td>Approximate-rank errors</td><td>Rank-truncation, DLR-to-best-rank-4, and total errors</td><td>These measure the cost of representing a full-rank solution at rank 4, not only integration accuracy.</td></tr></table>
+
+<h4>Meaning of the three lower-right curves</h4>
+<table><tr><th>Curve</th><th>Meaning</th><th>Observed behavior</th></tr>
+<tr><td>‖<em>X−A</em>‖<sub>F</sub></td><td>Unavoidable rank-truncation error</td><td>Starts near 1.7×10<sup>−2</sup> because <em>A</em> is full rank but <em>X</em> is restricted to rank 4.</td></tr>
+<tr><td>‖<em>Y−X</em>‖<sub>F</sub></td><td>How far DLR is from the best possible rank-4 approximation</td><td>Starts at zero and grows to about 6×10<sup>−3</sup>.</td></tr>
+<tr><td>‖<em>Y−A</em>‖<sub>F</sub></td><td>Total error of DLR against the full-rank truth</td><td>Remains close to the unavoidable ‖<em>X−A</em>‖<sub>F</sub> curve.</td></tr></table>
+
+<h4>Numerical summary</h4>
+<table><tr><th>Experiment</th><th>True solution rank</th><th>max ‖X−A‖/‖A‖<br><span class="small">rank-4 limit</span></th><th>max ‖Y−X‖/‖A‖<br><span class="small">DLR vs best rank 4</span></th><th>max ‖Y−A‖/‖A‖<br><span class="small">total error</span></th></tr>
+<tr><td>Exactly rank 4</td><td>4</td><td>6.184e−15</td><td>2.432e−11</td><td>2.432e−11</td></tr>
+<tr><td>Approximately rank 4</td><td>40</td><td>1.134e−2</td><td>3.088e−3</td><td>1.134e−2</td></tr></table>
+
+<h3>Outcome</h3>
+<div class="outcome"><ul>
+<li>Exact rank-4 integration error: 2.432×10<sup>−11</sup>.</li>
+<li>The bottom row compares a rank-4 DLR approximation against a rank-40 truth.</li>
+<li>Its approximately 10<sup>−2</sup> error comes from rank truncation, not inaccurate integration.</li>
+</ul></div>
+
+<h3>Conclusion</h3>
+<div class="conclusion">The figure supports two separate conclusions. First, DLR integrates an exactly rank-4 solution accurately to approximately 10<sup>−11</sup>. Second, when the truth is full rank, the rank-4 DLR solution stays close to the best possible rank-4 approximation. The lower-right plot measures rank-approximation quality and should not be used to judge the integrator's numerical precision.</div>
+
+<h2>Section 3. CPU runtime: Forward Euler, dense RK4, and DLR</h2>
+<h3>Goal</h3>
+<div class="goal">Compare the time and accuracy of DLR against standard dense Forward Euler and RK4 solvers on the toy matrix ODE.</div>
+
+<h3>Figures/Tables</h3>
+<p>All methods integrated the same exactly rank-4 matrix ODE over t∈[0,1] using 800 steps. The benchmark ran on CPU with one BLAS thread, one warm-up run, and three timed repetitions; the table reports median wall time. Endpoint error was computed against the analytic solution exp(L)A(0)exp(R).</p>
+<table><tr><th>Matrix size</th><th>Rank</th><th>Steps</th><th>Forward Euler (s)</th><th>Dense RK4 (s)</th><th>DLR-RK4 (s)</th><th>RK4 / DLR</th><th>Euler rel. error</th><th>RK4 rel. error</th><th>DLR rel. error</th></tr>
+<tr><td>40×40</td><td>4</td><td>800</td><td>0.006900</td><td>0.031495</td><td>0.117770</td><td>0.27×</td><td>9.180e-03</td><td>6.330e-11</td><td>1.153e-11</td></tr><tr><td>64×64</td><td>4</td><td>800</td><td>0.019184</td><td>0.083034</td><td>0.124259</td><td>0.67×</td><td>8.144e-03</td><td>5.111e-11</td><td>7.461e-12</td></tr><tr><td>128×128</td><td>4</td><td>800</td><td>0.151849</td><td>0.634880</td><td>0.157395</td><td>4.03×</td><td>7.490e-03</td><td>4.506e-11</td><td>6.783e-12</td></tr><tr><td>256×256</td><td>4</td><td>800</td><td>1.070097</td><td>4.359125</td><td>0.273142</td><td>15.96×</td><td>8.331e-03</td><td>5.759e-11</td><td>7.631e-12</td></tr><tr><td>512×512</td><td>4</td><td>800</td><td>8.229879</td><td>33.766476</td><td>1.495533</td><td>22.58×</td><td>8.366e-03</td><td>5.738e-11</td><td>7.353e-12</td></tr></table>
+
+<h3>Outcome</h3>
+<div class="outcome"><ul>
+<li>Forward Euler was fastest, but its relative error was approximately 10<sup>−2</sup>.</li>
+<li>Dense RK4 and DLR-RK4 achieved approximately 10<sup>−11</sup> relative error.</li>
+<li>DLR was slower at 40×40 and 64×64, then 4.03×, 15.96×, and 22.58× faster than RK4 at 128×128, 256×256, and 512×512.</li>
+</ul></div>
+
+<h3>Conclusion</h3>
+<div class="conclusion">Forward Euler has the lowest raw runtime but does not provide comparable accuracy at the tested step count. DLR retains approximately 10<sup>−11</sup> accuracy and becomes substantially faster than equally accurate dense RK4 as matrix size grows, with a clear low-rank scaling advantage from 128×128 onward.</div>
+
+<p class="small">Sources: <code>outputs/dflow_sparse_ct_shepp_logan/</code>, <code>outputs/fm_unet/shepp-logan-*/</code>, <code>dlra/dlra_toy.ipynb</code>, and <code>dlra/outputs/toy_ode_cpu_benchmark/</code>.</p>
+</main></body></html>

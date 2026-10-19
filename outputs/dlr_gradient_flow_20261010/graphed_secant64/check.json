@@ -1,0 +1,13 @@
+{
+  "case": "r64_n1_ct10/sample_000",
+  "device": "cuda:0",
+  "tf32": false,
+  "steps": 100,
+  "rank": 8,
+  "baseline_allocated_mib": 49.08935546875,
+  "baseline_reserved_mib": 326.0,
+  "status": "failed",
+  "error": "RuntimeError('Cannot prepare for replay during capturing stage. during CUDA graph capture. If you need this call to be captured, please file an issue. Current cudaStreamCaptureStatus: cudaStreamCaptureStatusActive')",
+  "peak_allocated_mib": 79.08251953125,
+  "peak_reserved_mib": 352.0
+}

@@ -1,0 +1,5 @@
+{
+  "status": "superseded",
+  "replacement": "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013",
+  "reason": "Expanded all noise levels to1,2,4 circles and all resolutions; no20% GPU jobs had started."
+}

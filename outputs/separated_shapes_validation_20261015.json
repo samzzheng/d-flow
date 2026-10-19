@@ -1,0 +1,52 @@
+{
+  "splits": {
+    "train": {
+      "size": 80000,
+      "shape_counts": {
+        "1": 20068,
+        "4": 19980,
+        "3": 20069,
+        "2": 19883
+      },
+      "types": {
+        "disk": 99913,
+        "triangle": 100048
+      },
+      "cross_split_identical_images": 0
+    },
+    "val": {
+      "size": 10000,
+      "shape_counts": {
+        "3": 2437,
+        "1": 2459,
+        "4": 2518,
+        "2": 2586
+      },
+      "types": {
+        "disk": 12659,
+        "triangle": 12355
+      },
+      "cross_split_identical_images": 0
+    },
+    "test": {
+      "size": 10000,
+      "shape_counts": {
+        "3": 2505,
+        "1": 2497,
+        "4": 2516,
+        "2": 2482
+      },
+      "types": {
+        "disk": 12477,
+        "triangle": 12563
+      },
+      "cross_split_identical_images": 0
+    }
+  },
+  "reproduction_checks": 319,
+  "cross_split_identical_images": 0,
+  "duplicate_isolation_swaps": 9,
+  "unique_binary_images": 99975,
+  "dataset_sha256": "b3e75ba1b30df61b7d0044ff79ff6d046182d64642e66eea08f54600dd075b04",
+  "geometry_sha256": "3625cbdd0748a46dd14b1fcdee87be4889371050e3332448dd2770de7aadebc0"
+}

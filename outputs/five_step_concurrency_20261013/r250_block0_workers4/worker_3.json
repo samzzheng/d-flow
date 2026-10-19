@@ -1,0 +1,20 @@
+{
+  "methods": {
+    "D-Flow": {
+      "seconds": 2.4278098221402615,
+      "gradient_norm": 22.43980248302396,
+      "objective": 80.84810298247751
+    },
+    "P-Flow": {
+      "seconds": 0.950946617173031,
+      "gradient_norm": 1.7310763538998126,
+      "objective": 80.84810298247751
+    },
+    "DLR D-Flow": {
+      "seconds": 5.927558487979695,
+      "gradient_norm": 17.160468403622936,
+      "objective": 80.84810298247751
+    }
+  },
+  "peak_reserved_mib": 2610.0
+}

@@ -1,0 +1,1842 @@
+{
+  "baseline_ref": "f655ad5",
+  "runner_sha256": "67eae1559675ffc8451327ef16c27068754d3c49883b74dd6efb9006d0ba7d8e",
+  "settings": {
+    "version": 1,
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200,
+      250
+    ],
+    "circles": [
+      0
+    ],
+    "ct_angles": [
+      10
+    ],
+    "mri_accelerations": [
+      4
+    ],
+    "mri_pattern": "cartesian",
+    "samples": 30,
+    "epoch": 200,
+    "run_template": "outputs/fm_unet/separated-shapes-{resolution}-noattn-ch16-b8-e200",
+    "noise_relative": 0.0,
+    "flow_steps": 5,
+    "seed": 20261007,
+    "source_projection": false,
+    "optimizer": {
+      "lr": 1.0,
+      "history_size": 100,
+      "max_ls": 30,
+      "c1": 0.0001,
+      "step_cap": 0.01,
+      "backtracking": "geometric"
+    },
+    "stopping": {
+      "min_updates": 6,
+      "max_updates": 6,
+      "window": 50,
+      "plateau_relative": 0.001,
+      "failed_searches": 2
+    },
+    "dlr_reuse_previous_v": true,
+    "dlr": {
+      "rank": 8,
+      "trace_probes": 0,
+      "enrichment_probes": 0,
+      "initialization_oversampling": 8,
+      "factor_stride": 1,
+      "zero_terminal_baseline": true,
+      "speed_profile": "fast"
+    },
+    "execution": {
+      "threads": 2,
+      "checkpoint_every": 10,
+      "cudnn_tf32": false,
+      "matmul_tf32": false,
+      "cudnn_benchmark": false,
+      "memory_fraction": 0.96,
+      "dlr_full_step_graphs": true,
+      "dlr_jvp_columns": 6,
+      "dlr_vjp_columns": 4,
+      "dlr_fused_norm": "triton",
+      "dlr_fused_primal": "full",
+      "dlr_specialized_algebra": true,
+      "dflow_checkpointed": false
+    },
+    "scheduling": {
+      "samples_per_worker": 1,
+      "max_workers_per_gpu": 4,
+      "gpu_headroom_mib": 1024,
+      "worker_memory_mib": {
+        "64": 9216,
+        "96": 9216,
+        "128": 9216,
+        "160": 9216,
+        "200": 9216,
+        "250": 9216
+      }
+    },
+    "dataset_label": "separated shapes: 1\u20134 circles/triangles",
+    "dataset_template": "data/separated-shapes-{resolution}.pt"
+  },
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "rows": [
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.5745269781909883,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9860848188400269
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.3730737450532615,
+      "operator_calls": 7,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9860846996307373
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.5684195109643042,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9860846996307373,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 3.81509494218335e-07,
+            "baseline_repeat_relative_difference": 4.381337532777252e-07,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 1.833147689467296e-05,
+            "baseline_repeat_relative_difference": 2.1802621631650254e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 1.2108631381124724e-05,
+            "baseline_repeat_relative_difference": 1.4137217476672959e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.5670072333887219,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9860845804214478
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.37487744400277734,
+      "operator_calls": 7,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9860846996307373
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.577440288849175,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9860845804214478,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 1.8362926823556336e-07,
+            "baseline_repeat_relative_difference": 4.489213836222916e-07,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 9.683695679996163e-06,
+            "baseline_repeat_relative_difference": 2.2495434677693993e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 6.333130386337871e-06,
+            "baseline_repeat_relative_difference": 1.4646383533545304e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.21303252689540386,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9552328586578369
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.20879363687708974,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9552327394485474
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.20849187159910798,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9552327394485474,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 4.577086798462915e-08,
+            "baseline_repeat_relative_difference": 5.50203331783905e-08,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 3.068329533562064e-06,
+            "baseline_repeat_relative_difference": 4.180361429462209e-06,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 1.6980577584035927e-06,
+            "baseline_repeat_relative_difference": 2.2852123038319405e-06,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.20969508681446314,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9552328586578369
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.20954002300277352,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9552328586578369
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.20873618125915527,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9552328586578369,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 5.057101759575744e-08,
+            "baseline_repeat_relative_difference": 5.1208413509584716e-08,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 1.6771344917287934e-06,
+            "baseline_repeat_relative_difference": 5.719170985685196e-07,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 8.421794177593256e-07,
+            "baseline_repeat_relative_difference": 2.3340723487308424e-07,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.38267013104632497,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0314689874649048
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.36978753190487623,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0315965414047241
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.36971998028457165,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.031599521636963,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 3.604854646255262e-05,
+            "baseline_repeat_relative_difference": 4.390278991195373e-05,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0009185505332425237,
+            "baseline_repeat_relative_difference": 0.0009230280993506312,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.0005680386093445122,
+            "baseline_repeat_relative_difference": 0.0005745420348830521,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.36498920898884535,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.031348705291748
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.3613406182266772,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0311615467071533
+    },
+    {
+      "resolution": 64,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.36313618486747146,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0316057205200195,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 0.00015812409401405603,
+            "baseline_repeat_relative_difference": 9.731959289638326e-05,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0031329162884503603,
+            "baseline_repeat_relative_difference": 0.00180333130992949,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.0019548223353922367,
+            "baseline_repeat_relative_difference": 0.001117820618674159,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.5729772723279893,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9833927750587463
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.37716876761987805,
+      "operator_calls": 7,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.983393132686615
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.5676239118911326,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9833930134773254,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 1.886612466250881e-07,
+            "baseline_repeat_relative_difference": 1.4296426797955064e-07,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 1.177852027467452e-05,
+            "baseline_repeat_relative_difference": 8.64981393533526e-06,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 9.808300092117861e-06,
+            "baseline_repeat_relative_difference": 7.2143457146012224e-06,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.5689669768325984,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9833928942680359
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.3783729230053723,
+      "operator_calls": 7,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9833928942680359
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.5718282391317189,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9833928942680359,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 1.2851571362659797e-08,
+            "baseline_repeat_relative_difference": 1.2308289498719205e-08,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 1.0878598004637752e-06,
+            "baseline_repeat_relative_difference": 9.319993523604353e-07,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 7.912989872238541e-07,
+            "baseline_repeat_relative_difference": 6.832734698036802e-07,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.2131538912653923,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9211138486862183
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.21195416199043393,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9211138486862183
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.212203036993742,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9211138486862183,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.21290314197540283,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9211138486862183
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.21452381508424878,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9211138486862183
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.2125573419034481,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9211138486862183,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.45062462566420436,
+      "operator_calls": 25,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 10,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9823188185691833
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.4549696664325893,
+      "operator_calls": 17,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 10,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9823218584060669
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.4572508246637881,
+      "operator_calls": 25,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 10,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9823175668716431,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 2.355459400860127e-06,
+            "baseline_repeat_relative_difference": 1.1572575431273435e-06,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.00019143846293445677,
+            "baseline_repeat_relative_difference": 9.476137347519398e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.00018653820734471083,
+            "baseline_repeat_relative_difference": 9.258768113795668e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.4486021366901696,
+      "operator_calls": 25,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 10,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9823125600814819
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.45060461619868875,
+      "operator_calls": 17,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 10,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9823179841041565
+    },
+    {
+      "resolution": 64,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.4548211423680186,
+      "operator_calls": 25,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 10,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9823183417320251,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 7.643848789484764e-07,
+            "baseline_repeat_relative_difference": 4.575138063955819e-06,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 3.936046050512232e-05,
+            "baseline_repeat_relative_difference": 0.00038435711758211255,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 3.811955684795976e-05,
+            "baseline_repeat_relative_difference": 0.0003750296600628644,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 1.027258831076324,
+      "operator_calls": 27,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 12,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0542470216751099
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.7696464126929641,
+      "operator_calls": 12,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 12,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0542398691177368
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 1.0282436152920127,
+      "operator_calls": 27,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 12,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.054244041442871,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 1.762985789355298e-06,
+            "baseline_repeat_relative_difference": 7.560558969998965e-07,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0001703624875517562,
+            "baseline_repeat_relative_difference": 7.272775837918743e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 7.751628436380997e-05,
+            "baseline_repeat_relative_difference": 3.093728446401656e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 1.0303856544196606,
+      "operator_calls": 27,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 12,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0542458295822144
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.7694623051211238,
+      "operator_calls": 12,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 12,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0542594194412231
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 1.0388447949662805,
+      "operator_calls": 27,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 12,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0542428493499756,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 3.985315288446145e-06,
+            "baseline_repeat_relative_difference": 9.281972666030924e-07,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0003998668980784714,
+            "baseline_repeat_relative_difference": 7.108877616701648e-05,
+            "within_repeatability_envelope": false
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.00017936681979335845,
+            "baseline_repeat_relative_difference": 3.3304604585282505e-05,
+            "within_repeatability_envelope": false
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 2.6305384100414813,
+      "operator_calls": 78,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 64,
+        "gradients": 6
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9032662510871887
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 2.1793805602937937,
+      "operator_calls": 60,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 53,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9032668471336365
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 2.3291717460379004,
+      "operator_calls": 72,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 57,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9032695293426514,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 8.968877409643028e-06,
+            "baseline_repeat_relative_difference": 6.571990070369793e-06,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 3.7768455513287336e-05,
+            "baseline_repeat_relative_difference": 0.00013024426880292594,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 1.4739543985342607e-05,
+            "baseline_repeat_relative_difference": 4.620228355634026e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": false,
+        "same_status": true,
+        "same_line_search_trials": false
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 2.129302451852709,
+      "operator_calls": 67,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 52,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9032654166221619
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 2.0330149768851697,
+      "operator_calls": 57,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 50,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9032647013664246
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 2.0841946760192513,
+      "operator_calls": 65,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 50,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9032638072967529,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 3.7237721244309796e-06,
+            "baseline_repeat_relative_difference": 6.5775957409641705e-06,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 9.277979552280158e-05,
+            "baseline_repeat_relative_difference": 0.00015621844795532525,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 3.373960862518288e-05,
+            "baseline_repeat_relative_difference": 5.8314439229434356e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": false
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.9622442373074591,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0809022188186646
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.9702868200838566,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0809019804000854
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.9719760962761939,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.080901861190796,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 2.023182332777651e-06,
+            "baseline_repeat_relative_difference": 3.387319111425313e-06,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 9.901338489726186e-05,
+            "baseline_repeat_relative_difference": 0.00024926007608883083,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 3.573142384993844e-05,
+            "baseline_repeat_relative_difference": 8.798098133411258e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.9597891350276768,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.08090341091156
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.9623410832136869,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0809017419815063
+    },
+    {
+      "resolution": 250,
+      "problem": "ct",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.97123530972749,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 1.0809028148651123,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 2.4754338028287748e-06,
+            "baseline_repeat_relative_difference": 1.809163563848415e-06,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.00020067361765541136,
+            "baseline_repeat_relative_difference": 4.59971051895991e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 7.639523391844705e-05,
+            "baseline_repeat_relative_difference": 1.6539390344405547e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 1.1924596563912928,
+      "operator_calls": 31,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 16,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9983760714530945
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.9585048402659595,
+      "operator_calls": 16,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 16,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9983760714530945
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 1.1905444590374827,
+      "operator_calls": 31,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 16,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9983760714530945,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 2.9059835426892278e-08,
+            "baseline_repeat_relative_difference": 2.740224402941749e-08,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 1.722767592582386e-05,
+            "baseline_repeat_relative_difference": 1.7780947018763982e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 1.162607532023685e-05,
+            "baseline_repeat_relative_difference": 1.2844896446040366e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 1.2047120751813054,
+      "operator_calls": 31,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 16,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9983760714530945
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.9544905689544976,
+      "operator_calls": 16,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 16,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9983760714530945
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 1.200273994822055,
+      "operator_calls": 31,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 16,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.998376190662384,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 2.0747256357367405e-08,
+            "baseline_repeat_relative_difference": 3.352591448901876e-08,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 1.9740438801818527e-05,
+            "baseline_repeat_relative_difference": 1.9347455236129463e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 1.6736823454266414e-05,
+            "baseline_repeat_relative_difference": 1.5897023331490345e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.3036278309300542,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.3668833076953888
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.30111814895644784,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.3668833076953888
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.31012309342622757,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.3668833076953888,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.30326231103390455,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.3668833076953888
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.2999720508232713,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.3668833076953888
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "P-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.3048925781622529,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.3668833076953888,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 0.0,
+            "baseline_repeat_relative_difference": 0.0,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "baseline",
+      "seconds": 0.9674538299441338,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9963474869728088
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "optimized",
+      "seconds": 0.9686326771043241,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9963474869728088
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 0,
+      "variant": "baseline_repeat",
+      "seconds": 0.9769822428934276,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9963474869728088,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 1.153847733803559e-06,
+            "baseline_repeat_relative_difference": 1.904405849018076e-06,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 1.1051509318349417e-05,
+            "baseline_repeat_relative_difference": 1.8136994185624644e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 6.5549661485420074e-06,
+            "baseline_repeat_relative_difference": 1.4959703548811376e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "baseline_repeat",
+      "seconds": 0.9723592838272452,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9963474869728088
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.9670444619841874,
+      "operator_calls": 14,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9963474869728088
+    },
+    {
+      "resolution": 250,
+      "problem": "mri",
+      "rank": 8,
+      "method": "DLR D-Flow",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.977193490602076,
+      "operator_calls": 22,
+      "attempts": 6,
+      "evaluations": {
+        "forward_objectives": 7,
+        "gradients": 7
+      },
+      "status": "step_limit",
+      "image_relative_l2": 0.9963474273681641,
+      "equivalence": {
+        "arrays": {
+          "source": {
+            "optimized_relative_difference": 1.815197379073652e-06,
+            "baseline_repeat_relative_difference": 1.4669133179268101e-06,
+            "within_repeatability_envelope": true
+          },
+          "image": {
+            "optimized_relative_difference": 1.4868379366816953e-05,
+            "baseline_repeat_relative_difference": 1.3799882253806572e-05,
+            "within_repeatability_envelope": true
+          },
+          "measurement": {
+            "optimized_relative_difference": 1.1477719453978352e-05,
+            "baseline_repeat_relative_difference": 1.0630170436343178e-05,
+            "within_repeatability_envelope": true
+          }
+        },
+        "same_evaluations": true,
+        "same_status": true,
+        "same_line_search_trials": true
+      }
+    }
+  ]
+}

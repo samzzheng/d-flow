@@ -1,0 +1,48 @@
+{
+  "resolutions": [
+    160
+  ],
+  "samples": 5,
+  "sample_offset": 0,
+  "epoch": 50,
+  "angles": 15,
+  "noise_level": 0.1,
+  "euler_flow_steps": 100,
+  "rk4_flow_steps": 100,
+  "outer_steps": 1200,
+  "closure_budget": 1200,
+  "lbfgs_lr": 1.0,
+  "lbfgs_max_iter": 20,
+  "lbfgs_max_eval": null,
+  "history_size": 100,
+  "lbfgs_line_search": "none",
+  "lbfgs_tolerance_grad": 1e-07,
+  "lbfgs_tolerance_change": 1e-09,
+  "objective": "measurement_mse",
+  "solution_state": "best",
+  "rollback_factor": 1.5,
+  "rollback_policy": "none",
+  "base_seed": 20260807,
+  "cpu_threads": 8,
+  "device": "cuda:1",
+  "deterministic": true,
+  "activation_checkpointing": true,
+  "out_dir": "outputs/dflow_sparse_ct_no_line_search_1200_noise_sweep/noise_010/res160",
+  "device_name": "NVIDIA RTX 6000 Ada Generation",
+  "methods": [
+    "forward_euler",
+    "rk4"
+  ],
+  "effective_lbfgs_max_iter": 1,
+  "effective_lbfgs_max_eval": 1,
+  "analysis_policy": "intention_to_treat_all_runs_included",
+  "velocity_evaluations_per_flow": {
+    "forward_euler": 100,
+    "rk4": 400
+  },
+  "noise_definition": "||noise||_2 / ||clean measurement||_2 = noise_level",
+  "primary_metric": "relative L2 error",
+  "checkpoint_sha256": {
+    "160": "cfa51b58f909be2c64d7df5b54ea9010fd49402a611e4b613498b34541134f23"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "pid": 1074060,
+  "argv": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "/home/samzheng/d-flow/outputs/five_step_noise000_n124_20261014",
+    "--additional-out",
+    "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise005_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise010_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013",
+    "/home/samzheng/d-flow/outputs/separated_shapes_noiseless_20261016",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank16_noiseless_20261017",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_32",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_64",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_128",
+    "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_256",
+    "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_512",
+    "--priority-out",
+    "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_256"
+  ],
+  "started": "2026-10-18T22:55:00.221737-04:00",
+  "commit": "5e6af67"
+}

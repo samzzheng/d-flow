@@ -1,0 +1,35 @@
+{
+  "resolutions": [
+    64,
+    96,
+    128,
+    160
+  ],
+  "samples": 5,
+  "sample_offset": 0,
+  "epoch": 50,
+  "angles": 15,
+  "noise_level": 0.01,
+  "euler_flow_steps": 20,
+  "rk4_flow_steps": 5,
+  "reference_flow_steps": 20,
+  "outer_steps": 50,
+  "lbfgs_lr": 0.1,
+  "lbfgs_max_iter": 5,
+  "history_size": 100,
+  "rollback_factor": 1.5,
+  "base_seed": 20260807,
+  "cpu_threads": 16,
+  "out_dir": "outputs/dflow_sparse_ct_circles_cpu_equal_nfe_lr01_no_early_stop_rerun",
+  "device": "cpu",
+  "methods": [
+    "forward_euler",
+    "rk4"
+  ],
+  "velocity_evaluations_per_flow": {
+    "forward_euler": 20,
+    "rk4": 20
+  },
+  "noise_definition": "||noise||_2 / ||clean measurement||_2 = noise_level",
+  "primary_metric": "relative L2 error"
+}

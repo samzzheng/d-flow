@@ -1,0 +1,77 @@
+{
+  "root": "outputs/ct_mri_sweep_100steps_noiseless_20261007",
+  "cases": [
+    "r64_n1_ct10/sample_003"
+  ],
+  "variants": [
+    "baseline",
+    "combined"
+  ],
+  "policies": {
+    "baseline": {
+      "history_size": 100,
+      "curvature_cosine": 0.0,
+      "geometric": false
+    },
+    "short": {
+      "history_size": 10,
+      "curvature_cosine": 0.0,
+      "geometric": false
+    },
+    "filtered": {
+      "history_size": 10,
+      "curvature_cosine": 0.01,
+      "geometric": false
+    },
+    "geometric": {
+      "history_size": 100,
+      "curvature_cosine": 0.0,
+      "geometric": true
+    },
+    "combined": {
+      "history_size": 10,
+      "curvature_cosine": 0.01,
+      "geometric": true
+    }
+  },
+  "max_steps": 2,
+  "workers": 2,
+  "threads_per_worker": 1,
+  "selection": "Same eight diagnostic cases as the previous-V pilot; selected, not population-unbiased",
+  "source_sha256": {
+    "dlr_dflow/__init__.py": "46f628b687c80cf68853c21426578773e3bcd5c8bba6b893725a054b949fe587",
+    "dlr_dflow/api.py": "63b303b9cd52c05675012dadacfbf8b108965ff860636f74861c64e60ad63195",
+    "dlr_dflow/dlr_dflow.py": "3bb79cc824e84470f5259670c5255e532cc2942069a5cb52c7259c618bdcbb4c",
+    "dlr_dflow/implementation/__init__.py": "32c579c4441992aa8cfbf2676e047a4ae4c6f328ba64bff3538633de9cbb2d85",
+    "dlr_dflow/implementation/_fused_norm_triton.py": "9f32e45764a4f39aa89a16e371777822e030b1cd827a8f5e83e24cebef7b9584",
+    "dlr_dflow/implementation/_fused_primal_triton.py": "22da98c7992efaaaeb587194710be2ef13d0a7434df51c387bdce70f61f2a132",
+    "dlr_dflow/implementation/dlr_dflow_diagnostics.py": "be3f8f1bdc643be36355b77d181dd6974540cd4923a95df05a02516a31d24db7",
+    "dlr_dflow/implementation/enriched.py": "215f6177cd1143e91321923ba8b6c2814e613ea5659a44859e2c196e3702d985",
+    "dlr_dflow/implementation/fused_norm.py": "3dd0798f4380fc0f28ae68058a2e5b804a57701a8fd2d3b0d29bb7191e89cdac",
+    "dlr_dflow/implementation/fused_primal.py": "8801aa638ca7fdc30262ada77a4fc730b135c7845c8a4b9e6d491b2ca4cb7d7b",
+    "dlr_dflow/implementation/graphed_evolution.py": "40fa2475df05f29d2626eb3b9df849cf0f207c8e92be772e7c472e12a313e570",
+    "dlr_dflow/implementation/graphed_products.py": "1697786d670400d01fa15b2550fd768c76dc28f54614e9bbd4525f2e6bddde32",
+    "dlr_dflow/implementation/model_io.py": "1ccba9d75268229dc6a6f33136ccc8ec0d653f69d8667aada29b16f5e775ad00",
+    "dlr_dflow/implementation/optimizer_adapters.py": "bcca86c512d0cc033c3add4fd28886e06950ef891a0f87ca9c6119d1c1bcdff6",
+    "dlr_dflow/implementation/tangent_unet.py": "23b227d87d6d483c53b51d22cf9c03d49d84efa8ec0fe50946274f880bd944d1",
+    "dlr_dflow/implementation/types.py": "9e2a4b03b70335b89a0df07cde03941d3fc595674214dfbf9d62d93b74f62a99",
+    "dlr_dflow/optimization.py": "2ee16d829f2e825c03f6399a98fdc92c92a63b59003760ac1e23aaed569745dc",
+    "experiments/ct_mri_sweep/__init__.py": "3490701354689453b62d6da5f5fa8ca8452fb74ca21943e5d206cda97746ba00",
+    "experiments/ct_mri_sweep/operators.py": "3aca59fba4d4ce7364a78cd45fe866290f6d7d8d6b8a387089c0c17129f97ba9",
+    "experiments/ct_mri_sweep/queue.py": "791385214a674eb32d5a7b32421859d42128825a9b5d244612bdcf9a1b315a5d",
+    "experiments/ct_mri_sweep/run.py": "e02935278dd60376b292da459c8def4d392525a6d5ff174035a42380d7c47935",
+    "models/unet/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "models/unet/default.py": "d77a723293c19108c865049c3b94b4b7ac151efbd91b899b7c6c782559c4f64c",
+    "models/unet/unet.py": "fb9d630e0b592c4b79309303854d5033aa600240ca7f39933eb2bba94b4958cc",
+    "p_flow/__init__.py": "b76ef14426fc9f9405e3107da79c475f2103c58817fee9b5bb8e2f66d2398be7",
+    "p_flow/armijo.py": "2f1607f65d02da1440f45139f0ce9de1b5e604688383c6d30501a1ce752cfe25",
+    "p_flow/p_flow.py": "8293480e9fcab94554b7a389ac02db2f6a07e0f01ca3d4e717cc201cfce31d69",
+    "sampler/ode_samplers.py": "7738267d43ed8dfd7b3b3fcb4b3d677fb8c3f163d298f744b3e5a951724e6594",
+    "sampler/optimizer_state.py": "f3f7b79a41071f03757da1102155fda63a4c3ebcddb9ef2f7f45e07b5a9806e3",
+    "scripts/reconstruction_figures.py": "45ffa2a24cfbfe17085bc3f1d5a94b76ad3189dd35ad9a213ad8b87d54042f50"
+  },
+  "experiment_sha256": {
+    "experiments/ct_mri_sweep/run_optimizer_ablation.py": "70ee52fab86ead1691ead1eaa600a4039f79109fc8e691e4063b1e50e9861d21",
+    "experiments/ct_mri_sweep/optimizer_ablation.py": "d0ab6f10978962e8db06c81a94b3a02af5c22ba60aeab535d59f831441ee6301"
+  }
+}

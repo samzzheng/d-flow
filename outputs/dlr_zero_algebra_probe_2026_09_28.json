@@ -1,0 +1,125 @@
+{
+  "device": "cpu",
+  "threads": 4,
+  "dimension": 62500,
+  "rank": 8,
+  "trace_probes": 4,
+  "enrichment": 0,
+  "steps": 100,
+  "caveat": "Synthetic linear velocity and CPU timings; not model or GPU speed estimates.",
+  "validation": [
+    {
+      "dtype": "torch.float32",
+      "initial_core_condition": 1.0,
+      "one_step_action_relative_error": 3.342045715726272e-07,
+      "100_step_action_relative_error": 2.86626323031669e-06,
+      "100_step_trace_sensitivity_relative_error": 0.0,
+      "alpha_abs_difference": 0.0,
+      "candidate_u_orthogonality": 6.275970463320846e-07,
+      "candidate_v_orthogonality": 3.761355742426531e-07
+    },
+    {
+      "dtype": "torch.float32",
+      "initial_core_condition": 1000.0,
+      "one_step_action_relative_error": 2.84946906958794e-07,
+      "100_step_action_relative_error": 3.2232296689471696e-06,
+      "100_step_trace_sensitivity_relative_error": 0.0,
+      "alpha_abs_difference": 0.0,
+      "candidate_u_orthogonality": 4.7586118512299436e-07,
+      "candidate_v_orthogonality": 5.08380139763176e-07
+    },
+    {
+      "dtype": "torch.float32",
+      "initial_core_condition": 1000000.0,
+      "one_step_action_relative_error": 2.6389486151856545e-07,
+      "100_step_action_relative_error": 3.600362788347411e-06,
+      "100_step_trace_sensitivity_relative_error": 0.0,
+      "alpha_abs_difference": 0.0,
+      "candidate_u_orthogonality": 4.598564942170924e-07,
+      "candidate_v_orthogonality": 3.7135896491236053e-07
+    },
+    {
+      "dtype": "torch.float64",
+      "initial_core_condition": 1.0,
+      "one_step_action_relative_error": 5.820378782459204e-16,
+      "100_step_action_relative_error": 8.188840893294258e-15,
+      "100_step_trace_sensitivity_relative_error": 0.0,
+      "alpha_abs_difference": 0.0,
+      "candidate_u_orthogonality": 1.1359642264299564e-15,
+      "candidate_v_orthogonality": 7.114308460121505e-16
+    },
+    {
+      "dtype": "torch.float64",
+      "initial_core_condition": 1000.0,
+      "one_step_action_relative_error": 9.344295399039124e-16,
+      "100_step_action_relative_error": 3.9306860040010724e-15,
+      "100_step_trace_sensitivity_relative_error": 0.0,
+      "alpha_abs_difference": 0.0,
+      "candidate_u_orthogonality": 6.422472514077651e-16,
+      "candidate_v_orthogonality": 1.076828113101275e-15
+    },
+    {
+      "dtype": "torch.float64",
+      "initial_core_condition": 1000000.0,
+      "one_step_action_relative_error": 5.188075985212025e-16,
+      "100_step_action_relative_error": 5.314052613565459e-15,
+      "100_step_trace_sensitivity_relative_error": 0.0,
+      "alpha_abs_difference": 0.0,
+      "candidate_u_orthogonality": 9.294557082599725e-16,
+      "candidate_v_orthogonality": 1.3203433821079478e-15
+    }
+  ],
+  "timing": {
+    "production": {
+      "median_ms": 27.501679491251707,
+      "samples_ms": [
+        27.84459595568478,
+        27.878748020157218,
+        27.82103093340993,
+        27.58703799918294,
+        27.356800972484052,
+        27.351312921382487,
+        27.198100928217173,
+        27.11999393068254,
+        25.961868930608034,
+        27.979908976703882,
+        27.682231971994042,
+        27.416320983320475
+      ]
+    },
+    "specialized_qr_core": {
+      "median_ms": 19.249574572313577,
+      "samples_ms": [
+        19.89320502616465,
+        18.963624024763703,
+        18.989283009432256,
+        19.328333903104067,
+        19.263936090283096,
+        20.017271977849305,
+        19.076955039054155,
+        20.221618935465813,
+        19.58532107528299,
+        18.507828004658222,
+        18.97498092148453,
+        19.235213054344058
+      ]
+    },
+    "specialized_direct_core": {
+      "median_ms": 19.589306553825736,
+      "samples_ms": [
+        19.35111789498478,
+        20.19559103064239,
+        20.04990098066628,
+        19.48269607964903,
+        20.412757992744446,
+        19.378449069336057,
+        18.34680396132171,
+        19.69591702800244,
+        19.218046916648746,
+        20.062760915607214,
+        19.799644011072814,
+        19.37133795581758
+      ]
+    }
+  }
+}

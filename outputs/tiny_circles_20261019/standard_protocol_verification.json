@@ -1,0 +1,8 @@
+{
+  "migration_epoch": 135,
+  "preserved_updates": 12690,
+  "model_ema_adam_exact": true,
+  "standard_trainer_smoke_epoch": 137,
+  "standard_trainer_updates": 12878,
+  "adam_steps_preserved": true
+}

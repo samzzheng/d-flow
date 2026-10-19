@@ -1,0 +1,42 @@
+{
+  "deterministic": true,
+  "worker_seconds": {
+    "separate": [
+      55.6810635458678,
+      31.15472781797871
+    ],
+    "grouped": [
+      76.11754941660911
+    ]
+  },
+  "total_seconds": {
+    "separate": 86.83579136384651,
+    "grouped": 76.11754941660911
+  },
+  "comparisons": [
+    {
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "relative_differences": {
+        "source": 0.0,
+        "image": 0.0,
+        "measurement": 0.0
+      },
+      "same_phi": true,
+      "same_evaluations": true,
+      "same_status": true
+    },
+    {
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "relative_differences": {
+        "source": 0.0,
+        "image": 0.0,
+        "measurement": 0.0
+      },
+      "same_phi": true,
+      "same_evaluations": true,
+      "same_status": true
+    }
+  ]
+}

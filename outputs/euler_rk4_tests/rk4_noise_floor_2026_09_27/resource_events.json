@@ -1,0 +1,14 @@
+[
+  {
+    "utc": "2026-09-27 15:22:39 UTC",
+    "event": "Pinned every existing thread of the two owned CPU workers",
+    "rk4_pid": 1375228,
+    "rk4_cpu_affinity": "8-15",
+    "euler_pid": 1375217,
+    "euler_cpu_affinity": "16-23",
+    "previous_cpu_affinity": "0-63",
+    "intraop_threads_unchanged": 8,
+    "reason": "Coordinate disjoint physical CPU groups with the other CPU studies; avoid scheduling and NUMA contention",
+    "note": "Existing memory placements were not migrated; timings remain contended diagnostics. No training process was changed."
+  }
+]

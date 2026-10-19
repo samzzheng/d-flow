@@ -1,0 +1,25 @@
+{
+  "pid": 61651,
+  "gpu": 1,
+  "updated_at": "2026-10-14T04:53:27.157618-04:00",
+  "status": "finished",
+  "active": {},
+  "preflight_passed": true,
+  "pending": [],
+  "failures": {},
+  "training_pending": [],
+  "outputs": [
+    "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013"
+  ],
+  "run_circles": [
+    1
+  ],
+  "priority_out": "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013",
+  "shared_controllers": {},
+  "external": [],
+  "memory_total_used_mib": [
+    49140,
+    2
+  ]
+}

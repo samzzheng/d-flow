@@ -1,0 +1,43 @@
+{
+  "protocol": {},
+  "method": "D-Flow",
+  "status": "step_limit",
+  "history": [
+    {
+      "step": 0,
+      "phi": 35.97065856668246,
+      "elapsed_seconds": 0.0,
+      "image_relative_l2": 1.2261157035827637,
+      "measurement_relative_l2_clean": 1.2154768705368042,
+      "measurement_relative_l2_noisy": 1.2154768705368042,
+      "residual_over_noise": null
+    },
+    {
+      "step": 1,
+      "phi": 29.676082528677128,
+      "source_step_norm": 0.08550525456666946,
+      "line_search_trials": 1,
+      "elapsed_seconds": 0.46744858706369996,
+      "image_relative_l2": 1.102126955986023,
+      "measurement_relative_l2_clean": 1.1040170192718506,
+      "measurement_relative_l2_noisy": 1.1040170192718506,
+      "residual_over_noise": null
+    },
+    {
+      "step": 2,
+      "phi": 27.02203157631959,
+      "source_step_norm": 0.03545554727315903,
+      "line_search_trials": 1,
+      "elapsed_seconds": 0.5431593740358949,
+      "image_relative_l2": 1.0728967189788818,
+      "measurement_relative_l2_clean": 1.053492546081543,
+      "measurement_relative_l2_noisy": 1.053492546081543,
+      "residual_over_noise": null
+    }
+  ],
+  "evaluations": {
+    "forward_objectives": 3,
+    "gradients": 3
+  },
+  "elapsed_seconds": 0.5433289101347327
+}

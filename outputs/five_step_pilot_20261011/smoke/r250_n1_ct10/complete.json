@@ -1,0 +1,48 @@
+{
+  "job": {
+    "resolution": 250,
+    "circles": 1,
+    "problem": "ct",
+    "level": 10
+  },
+  "samples": 1,
+  "methods": {
+    "D-Flow": {
+      "mean_image_relative_l2": 0.933514416217804,
+      "std_image_relative_l2": 0.0,
+      "median_image_relative_l2": 0.933514416217804,
+      "elapsed_seconds": 0.6214993610046804,
+      "mean_updates": 2,
+      "statuses": {
+        "objective_plateau": 0,
+        "stalled": 0,
+        "step_limit": 1
+      }
+    },
+    "P-Flow": {
+      "mean_image_relative_l2": 0.8877757787704468,
+      "std_image_relative_l2": 0.0,
+      "median_image_relative_l2": 0.8877757787704468,
+      "elapsed_seconds": 0.3265759740024805,
+      "mean_updates": 2,
+      "statuses": {
+        "objective_plateau": 0,
+        "stalled": 0,
+        "step_limit": 1
+      }
+    },
+    "DLR D-Flow": {
+      "mean_image_relative_l2": 0.9483354687690735,
+      "std_image_relative_l2": 0.0,
+      "median_image_relative_l2": 0.9483354687690735,
+      "elapsed_seconds": 1.1165083860978484,
+      "mean_updates": 2,
+      "statuses": {
+        "objective_plateau": 0,
+        "stalled": 0,
+        "step_limit": 1
+      }
+    }
+  },
+  "checkpoint_sha256": "2d97ccb4daa40e2fbfe7391c83d8a9583d5d90712071803c6e133cb3ab944b21"
+}

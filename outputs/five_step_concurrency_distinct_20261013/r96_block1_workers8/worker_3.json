@@ -1,0 +1,22 @@
+{
+  "sample": 3,
+  "source_seed": 21221210,
+  "methods": {
+    "D-Flow": {
+      "seconds": 2.895529279951006,
+      "gradient_norm": 2.1704316309849343,
+      "objective": 13.817859524727012
+    },
+    "P-Flow": {
+      "seconds": 1.0515890391543508,
+      "gradient_norm": 0.7152302459794706,
+      "objective": 13.817859524727012
+    },
+    "DLR D-Flow": {
+      "seconds": 4.484516020165756,
+      "gradient_norm": 1.3228465047868376,
+      "objective": 13.817859524727012
+    }
+  },
+  "peak_reserved_mib": 418.0
+}

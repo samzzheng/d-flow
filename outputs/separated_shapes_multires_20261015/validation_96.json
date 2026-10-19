@@ -1,0 +1,27 @@
+{
+  "resolution": 96,
+  "supersample": 8,
+  "sample_regenerations": 30,
+  "splits": {
+    "train": {
+      "size": 80000,
+      "paired_seeds_match_64": true,
+      "cross_split_duplicates": 0,
+      "all_images_antialiased": true
+    },
+    "val": {
+      "size": 10000,
+      "paired_seeds_match_64": true,
+      "cross_split_duplicates": 0,
+      "all_images_antialiased": true
+    },
+    "test": {
+      "size": 10000,
+      "paired_seeds_match_64": true,
+      "cross_split_duplicates": 0,
+      "all_images_antialiased": true
+    }
+  },
+  "unique_images": 100000,
+  "dataset_sha256": "479c2acf8510ec98b09624926be756b2776c5c3e9507a267ead1f4369053f01a"
+}

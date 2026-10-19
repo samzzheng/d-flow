@@ -1,0 +1,14 @@
+{
+  "pid": 1892382,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "scripts/train_separated_shapes.py",
+    "--small-model",
+    "--device",
+    "cuda:1",
+    "--epochs",
+    "1000"
+  ],
+  "output": "/home/samzheng/d-flow/outputs/fm_unet/separated-shapes-64-noattn-ch4-e1000"
+}

@@ -1,0 +1,126 @@
+{
+  "task": "benchmark",
+  "case": "r128_n1_ct10/sample_000",
+  "device": "cuda:0",
+  "settings": {
+    "version": 1,
+    "resolutions": [
+      64,
+      128,
+      250
+    ],
+    "circles": [
+      1,
+      2,
+      3
+    ],
+    "ct_angles": [
+      10
+    ],
+    "mri_accelerations": [
+      4
+    ],
+    "mri_pattern": "cartesian",
+    "samples": 30,
+    "epoch": 200,
+    "run_template": "outputs/fm_unet/circles-{resolution}-noattn-ch16-b8-e200/n{circles}",
+    "noise_relative": 0.0,
+    "flow_steps": 100,
+    "seed": 20261007,
+    "source_projection": false,
+    "optimizer": {
+      "lr": 1.0,
+      "history_size": 100,
+      "max_ls": 30,
+      "c1": 0.0001,
+      "step_cap": 0.01,
+      "backtracking": "geometric"
+    },
+    "stopping": {
+      "min_updates": 100,
+      "max_updates": 100,
+      "window": 50,
+      "plateau_relative": 0.001,
+      "failed_searches": 2
+    },
+    "dlr_reuse_previous_v": true,
+    "dlr": {
+      "rank": 8,
+      "trace_probes": 0,
+      "enrichment_probes": 0,
+      "initialization_oversampling": 8,
+      "factor_stride": 1,
+      "zero_terminal_baseline": true,
+      "speed_profile": "fast"
+    },
+    "execution": {
+      "threads": 2,
+      "checkpoint_every": 10,
+      "cudnn_tf32": false,
+      "matmul_tf32": false,
+      "cudnn_benchmark": false,
+      "memory_fraction": 0.96,
+      "dlr_full_step_graphs": true,
+      "dlr_jvp_columns": 6,
+      "dlr_vjp_columns": 4,
+      "dlr_fused_norm": "triton",
+      "dlr_fused_primal": "full",
+      "dlr_specialized_algebra": true,
+      "dflow_checkpointed": false
+    },
+    "scheduling": {
+      "samples_per_worker": 5,
+      "max_workers_per_gpu": 20,
+      "gpu_headroom_mib": 1024,
+      "worker_memory_mib": {
+        "64": 2816,
+        "128": 8448,
+        "250": 30720
+      }
+    }
+  },
+  "optimizer": "lbfgs",
+  "max_attempts": 100,
+  "refresh_every": 5,
+  "source_protocol": {
+    "manifest_sha256": "01ce9cfbbd0b2396a52e251032d6eea1056f4f0152d275084c1f31d186791e6c",
+    "checkpoint_sha256": "f9fe9248473c987c44f20bb9d3c2b6fc7dbb6f505862c1ec1fe4df2ef9cd0e48",
+    "test_subset_sha256": "8a090c3efcc75f0c4246826da9597e9a22604c480490cf4223f2891869e141eb",
+    "job": {
+      "resolution": 128,
+      "circles": 1,
+      "problem": "ct",
+      "level": 10
+    },
+    "sample": 0,
+    "operator": {
+      "kind": "ct",
+      "angle_count": 10,
+      "range_degrees": [
+        0,
+        180
+      ],
+      "normalization": "detector line mean",
+      "align_corners": false
+    },
+    "source_seed": 21541107,
+    "noise_seed": 41541107,
+    "dlr_seed": 51541107,
+    "torch": "2.11.0+cu129",
+    "gpu": "NVIDIA RTX 6000 Ada Generation"
+  },
+  "torch": "2.11.0+cu129",
+  "tf32": false,
+  "inputs_sha256": "c575cbc81ec0b96099453bb7d183ace1e9b7b1bcac97d064ac4e80ea3b032969",
+  "source_sha256": {
+    "/home/samzheng/d-flow/dlr_gradient_flow/__init__.py": "96e11daeff2358cae397db68a60adbbfd50606fc1a54cf7d6da3ff63625fc3ea",
+    "/home/samzheng/d-flow/dlr_gradient_flow/experiment.py": "9ffa3830072725db95308ef5f48085dd05aebbc0e448a9da983a85ad9b7b2391",
+    "/home/samzheng/d-flow/dlr_gradient_flow/report.py": "bbd210b1a774f5a99e73874446eca2b511bea7eeea5efc826c17934730d2da2e",
+    "/home/samzheng/d-flow/dlr_gradient_flow/secant.py": "f7e4cc62564214e2959c0356ce31557e27decf067b405cae821130a0f64693d7",
+    "/home/samzheng/d-flow/dlr_gradient_flow/secant_transport.py": "5e65801013d585de6e2b685e79535b65bc78645a4681c71ac366435cfcd93de2",
+    "/home/samzheng/d-flow/dlr_gradient_flow/test_secant_transport.py": "6807b6cb1ed037843d859166e9ce9cd8dbac56d653f1bef2f92dd8bb716905fe",
+    "/home/samzheng/d-flow/dlr_gradient_flow/test_transport.py": "3d17d267dfafca790f9c256c2101a91cb06b308d3e652f4d531eeba54894339f",
+    "/home/samzheng/d-flow/dlr_gradient_flow/transport.py": "c67a5fb5db0bf8fce695ab88587c3d1f4c7c8894e98e7a86e8be68ea8f0185b4"
+  },
+  "methods": {}
+}

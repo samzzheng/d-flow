@@ -1,0 +1,27 @@
+{
+  "96": {
+    "micro_batch": 64,
+    "finite_loss": 1.1161564588546753,
+    "peak_allocated_mib": 2322.04931640625
+  },
+  "128": {
+    "micro_batch": 32,
+    "finite_loss": 1.1541441679000854,
+    "peak_allocated_mib": 2065.55419921875
+  },
+  "160": {
+    "micro_batch": 32,
+    "finite_loss": 1.1528072357177734,
+    "peak_allocated_mib": 3233.69873046875
+  },
+  "200": {
+    "micro_batch": 16,
+    "finite_loss": 1.4399441480636597,
+    "peak_allocated_mib": 2553.56103515625
+  },
+  "250": {
+    "micro_batch": 16,
+    "finite_loss": 1.278546690940857,
+    "peak_allocated_mib": 3955.83544921875
+  }
+}

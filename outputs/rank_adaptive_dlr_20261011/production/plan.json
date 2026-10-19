@@ -1,0 +1,35 @@
+{
+  "cases": [
+    "r64_n3_ct10/sample_000",
+    "r64_n3_mri4/sample_000",
+    "r64_n2_ct10/sample_000",
+    "r64_n2_mri4/sample_000",
+    "r64_n3_ct10/sample_001",
+    "r64_n3_mri4/sample_001",
+    "r64_n2_ct10/sample_001",
+    "r64_n2_mri4/sample_001"
+  ],
+  "variants": {
+    "fixed8": [
+      8,
+      null
+    ],
+    "fixed32": [
+      32,
+      null
+    ],
+    "adaptive05": [
+      8,
+      0.05
+    ],
+    "adaptive01": [
+      8,
+      0.01
+    ]
+  },
+  "gpu": 0,
+  "memory_cap_mib": 4000,
+  "threads": 1,
+  "flow_steps": 100,
+  "optimizer_attempts": 100
+}

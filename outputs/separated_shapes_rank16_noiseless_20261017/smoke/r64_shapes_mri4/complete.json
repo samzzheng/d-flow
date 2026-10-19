@@ -1,0 +1,24 @@
+{
+  "job": {
+    "resolution": 64,
+    "circles": 0,
+    "problem": "mri",
+    "level": 4
+  },
+  "samples": 1,
+  "methods": {
+    "DLR D-Flow": {
+      "mean_image_relative_l2": 1.1044626235961914,
+      "std_image_relative_l2": 0.0,
+      "median_image_relative_l2": 1.1044626235961914,
+      "elapsed_seconds": 0.3460622760467231,
+      "mean_updates": 2,
+      "statuses": {
+        "objective_plateau": 0,
+        "stalled": 0,
+        "step_limit": 1
+      }
+    }
+  },
+  "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8"
+}

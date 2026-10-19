@@ -1,0 +1,28 @@
+{
+  "device": "cuda:1",
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "torch": "2.11.0+cu129",
+  "resolution": 250,
+  "flow_steps": 100,
+  "rank": 8,
+  "trace_probes": 32,
+  "initialization_oversampling": 8,
+  "enrichment_probes": 4,
+  "angles": 15,
+  "noise_levels": [
+    0.05
+  ],
+  "n_samples_per_level": 30,
+  "source_prior": null,
+  "stop_multiple_of_noise": 2.0,
+  "max_outer_steps": 150,
+  "optimizer": "LBFGS",
+  "lbfgs_lr": 1.0,
+  "lbfgs_max_iter": 1,
+  "lbfgs_history_size": 100,
+  "lbfgs_line_search": null,
+  "checkpoint_epoch": 100,
+  "run_dir": "outputs/fm_unet/circles-250-noattn-ch16-b8/n1",
+  "dflow_gradient_checkpointing": true,
+  "dlr_cuda_graphs": true
+}

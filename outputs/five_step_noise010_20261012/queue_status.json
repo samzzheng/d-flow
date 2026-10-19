@@ -1,0 +1,16 @@
+{
+  "pid": 3156936,
+  "gpu": 1,
+  "updated_at": "2026-10-13T01:05:42.606475-04:00",
+  "status": "finished",
+  "active": {},
+  "preflight_passed": true,
+  "pending": [],
+  "failures": {},
+  "shared_controllers": {},
+  "external": [],
+  "memory_total_used_mib": [
+    49140,
+    2
+  ]
+}

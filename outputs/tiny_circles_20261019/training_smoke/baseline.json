@@ -1,0 +1,7 @@
+{
+  "parameters": 472017,
+  "checkpoint": "outputs/fm_unet/circles-64-noattn-ch16-b8-e200/n1/checkpoints/epoch_0200.pt",
+  "checkpoint_sha256": "94df4baa4fc92e3a8131f462d77dc57363026c3280207715a9c6dc6063a097db",
+  "validation_loss": 0.01643025130033493,
+  "test_loss": 0.017106158658862114
+}

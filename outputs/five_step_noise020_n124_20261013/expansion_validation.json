@@ -1,0 +1,180 @@
+{
+  "at": "2026-10-13T01:04:52.762462-04:00",
+  "noise_levels": [
+    0.01,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "circles": [
+    1,
+    2,
+    4
+  ],
+  "resolutions": [
+    64,
+    96,
+    128,
+    160,
+    200,
+    250
+  ],
+  "paired_cases": 4320,
+  "method_runs": 12960,
+  "models": {
+    "r250_n1": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch16-b8-e200/n1/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "2d97ccb4daa40e2fbfe7391c83d8a9583d5d90712071803c6e133cb3ab944b21",
+      "test_subset_sha256": "fd1c10c41d955af25b8d18934d9a13df20db69a012adb10a8c9e30fc184d0b0f"
+    },
+    "r250_n2": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch16-b8-e200/n2/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "2aa387b0e56b6e77508b59453b4504063485c9f543eefc3dd9e7a04ad118b8a4",
+      "test_subset_sha256": "0dc245452002056ea189ab73d4dba25f08b693ad970504c7d63727cbeaf7bee1"
+    },
+    "r250_n4": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch16-b8-e200/n4/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "0209c813c007740af18bb7cb4b4534d300d6cf2d5c675cde6cd1fa6197b417a9",
+      "test_subset_sha256": "3ac5bd74fa05f9ef9ca92b9cc31fd1d6e9231821f57eca1b7f8447df4f427210"
+    },
+    "r200_n1": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n1/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "80080433ece0e6d34aba3044a4dfe52dc273257e8b625a60c64d83bee73800fc",
+      "test_subset_sha256": "7eba8d386b85820d62548e028927a9dcc816bcfedc4e1d13702c1b9040961732"
+    },
+    "r200_n2": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n2/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "77560aabe8bd62af89aa6760a59b6dd60a1df65d393918fe70dcf93a9815acd9",
+      "test_subset_sha256": "5df596d0e79910c596580962b480973a7191a33da23e59194aa9550ac54139dc"
+    },
+    "r200_n4": {
+      "ready": false,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch16-b8-e200/n4/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": null,
+      "test_subset_sha256": "c519a21183748d84554f13a5390b3b8c4e192e7b1e1fd1c4fa15d54501a185df"
+    },
+    "r160_n1": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch16-b8-e200/n1/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "6b478a433d7d6be11f3371541c7be97f6641988fc73acd42268d525ebdf913ee",
+      "test_subset_sha256": "0003d9f3d1c87c810f72c4aad48c036937bd3097c64cf0bd4d296776d1215b3b"
+    },
+    "r160_n2": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch16-b8-e200/n2/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "2bc7a75cc413325d6cda2ca738e9730f916c8e929fa840d112601a34c7eee878",
+      "test_subset_sha256": "470e54c58e5fb779ada9033f49a7263a43695873b179664bb4f4dd267653f973"
+    },
+    "r160_n4": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch16-b8-e200/n4/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "0e71162dd5003dfbac492b053b39a33c82deb5b4527a601e6ed448ffa83ace85",
+      "test_subset_sha256": "9dbe68b700ad6920c1a84c39df7c6a59e86f53f2b9da8632cb91e86345a52db0"
+    },
+    "r128_n1": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch16-b8-e200/n1/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "f9fe9248473c987c44f20bb9d3c2b6fc7dbb6f505862c1ec1fe4df2ef9cd0e48",
+      "test_subset_sha256": "8a090c3efcc75f0c4246826da9597e9a22604c480490cf4223f2891869e141eb"
+    },
+    "r128_n2": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch16-b8-e200/n2/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "adcec46ff8b67cfbd504ded5a4050bce67dd6c4722e45df1cbec1428f48040d7",
+      "test_subset_sha256": "da1c4980d39933cee19d114b76c2e1551a44d08fb7587b241368b4d8a81582bf"
+    },
+    "r128_n4": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch16-b8-e200/n4/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "eb761004fca53e6abc0154470a0f646017d006bb0d54dcd4cf6b50604bcadfe2",
+      "test_subset_sha256": "a5ab9031a4ff2136f7692de9b8d9220d5549402ce51f3c73cdfd58e3e2891e7d"
+    },
+    "r96_n1": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch16-b8-e200/n1/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "507be560acf0cc0f075e66cec137b9b66cdddbe6b640ecb42a1709b08d438048",
+      "test_subset_sha256": "b2d2443ef97f27c1b1183c67aa72452b9f3c05b211af2e58739b3793ac838c02"
+    },
+    "r96_n2": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch16-b8-e200/n2/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "057fa71b634b370bd39289ba0e8daee36d3e345ec43919006d613d45f513c4cd",
+      "test_subset_sha256": "0faa1ae7cbcc70eb65f82ef1f4bf489960edde59b5c29f643c6cbf4e524331f0"
+    },
+    "r96_n4": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch16-b8-e200/n4/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "3a7ae1df3a12c97354156d055109d55f08a300cb904caf9a645a31f7a6ea3080",
+      "test_subset_sha256": "4facefe138158be00c389b4ec8698f997b66d798b6f4fbd2873f3004ea4c5b24"
+    },
+    "r64_n1": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch16-b8-e200/n1/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "94df4baa4fc92e3a8131f462d77dc57363026c3280207715a9c6dc6063a097db",
+      "test_subset_sha256": "fda5ce88c749fe0d57fff6a9c4263e2ec7a2aba3a0ad2d3ece6c2a81537cedb7"
+    },
+    "r64_n2": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch16-b8-e200/n2/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "772fdd630c481893c750b80ad0abdccb5c90625314d257b7d9ddd8feb9a6a261",
+      "test_subset_sha256": "aa80682e54b4cc2f691279409a2c3634da085ee707fc3695b81a66dfb52ac8ca"
+    },
+    "r64_n4": {
+      "ready": true,
+      "checkpoint": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch16-b8-e200/n4/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "b3a9431d08043c2380646005ad30c6b0a01d0440f3eb5dbd809621583370290b",
+      "test_subset_sha256": "fe29fab1a566d161d7341796291d2e85dd91adcaf209ab58e525e45c01237ad1"
+    }
+  },
+  "reused": [
+    {
+      "source": "/home/samzheng/d-flow/outputs/five_step_noise001_20261011",
+      "source_manifest_sha256": "7a9aa9932f8109b2348ea5940861427cdbe004d751a58b0755c2c77f62f2fe03",
+      "settings_differences": [
+        "circles",
+        "resolutions",
+        "scheduling"
+      ],
+      "completed_cases_validated_now": 180,
+      "eventual_reused_cases": 180,
+      "mechanism": "Linked original n1 acquisition directories. Original checkpoints/protocol hashes retained; dependency requires original10% run to finish before new admission."
+    },
+    {
+      "source": "/home/samzheng/d-flow/outputs/five_step_noise005_20261012",
+      "source_manifest_sha256": "3e5380eba3f4efb4d75528bbdbb6142b86d85f6e691914deb7831e6f8610b449",
+      "settings_differences": [
+        "circles"
+      ],
+      "completed_cases_validated_now": 360,
+      "eventual_reused_cases": 360,
+      "mechanism": "Linked original n1 acquisition directories. Original checkpoints/protocol hashes retained; dependency requires original10% run to finish before new admission."
+    },
+    {
+      "source": "/home/samzheng/d-flow/outputs/five_step_noise010_20261012",
+      "source_manifest_sha256": "192cc64b8e1326711bac402d6bb6953587c305e9e1e413150fac42a2da22adbd",
+      "settings_differences": [
+        "circles"
+      ],
+      "completed_cases_validated_now": 357,
+      "eventual_reused_cases": 360,
+      "mechanism": "Linked original n1 acquisition directories. Original checkpoints/protocol hashes retained; dependency requires original10% run to finish before new admission."
+    }
+  ],
+  "eventual_reused_method_runs": 2700,
+  "new_method_runs": 10260,
+  "pending_training_method_runs": 720,
+  "outputs": {
+    "001": "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013",
+    "005": "/home/samzheng/d-flow/outputs/five_step_noise005_n124_20261013",
+    "010": "/home/samzheng/d-flow/outputs/five_step_noise010_n124_20261013",
+    "020": "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013"
+  },
+  "gpu": 1,
+  "max_workers": 4,
+  "prerequisite": "/home/samzheng/d-flow/outputs/five_step_noise010_20261012"
+}

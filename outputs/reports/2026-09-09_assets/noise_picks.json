@@ -1,0 +1,110 @@
+[
+ {
+  "res": 200,
+  "method": "euler",
+  "label": "best",
+  "sample": 1,
+  "file": "noise01_res200_euler_best.jpg",
+  "image_rel": 0.10627629607915878,
+  "meas_rel": 0.04185085743665695
+ },
+ {
+  "res": 200,
+  "method": "euler",
+  "label": "median",
+  "sample": 3,
+  "file": "noise01_res200_euler_median.jpg",
+  "image_rel": 0.18109546601772308,
+  "meas_rel": 0.05377114564180374
+ },
+ {
+  "res": 200,
+  "method": "euler",
+  "label": "worst",
+  "sample": 4,
+  "file": "noise01_res200_euler_worst.jpg",
+  "image_rel": 0.4091789424419403,
+  "meas_rel": 0.17882372438907623
+ },
+ {
+  "res": 200,
+  "method": "rk4",
+  "label": "best",
+  "sample": 3,
+  "file": "noise01_res200_rk4_best.jpg",
+  "image_rel": 0.06542564183473587,
+  "meas_rel": 0.019642677158117294
+ },
+ {
+  "res": 200,
+  "method": "rk4",
+  "label": "median",
+  "sample": 1,
+  "file": "noise01_res200_rk4_median.jpg",
+  "image_rel": 0.10860075801610947,
+  "meas_rel": 0.04436926916241646
+ },
+ {
+  "res": 200,
+  "method": "rk4",
+  "label": "worst",
+  "sample": 0,
+  "file": "noise01_res200_rk4_worst.jpg",
+  "image_rel": 0.1754733920097351,
+  "meas_rel": 0.052594978362321854
+ },
+ {
+  "res": 250,
+  "method": "euler",
+  "label": "best",
+  "sample": 0,
+  "file": "noise01_res250_euler_best.jpg",
+  "image_rel": 0.08670245110988617,
+  "meas_rel": 0.021752702072262764
+ },
+ {
+  "res": 250,
+  "method": "euler",
+  "label": "median",
+  "sample": 3,
+  "file": "noise01_res250_euler_median.jpg",
+  "image_rel": 0.14750096201896667,
+  "meas_rel": 0.04362925887107849
+ },
+ {
+  "res": 250,
+  "method": "euler",
+  "label": "worst",
+  "sample": 4,
+  "file": "noise01_res250_euler_worst.jpg",
+  "image_rel": 0.2720824182033539,
+  "meas_rel": 0.08067011088132858
+ },
+ {
+  "res": 250,
+  "method": "rk4",
+  "label": "best",
+  "sample": 2,
+  "file": "noise01_res250_rk4_best.jpg",
+  "image_rel": 0.12913289666175842,
+  "meas_rel": 0.03497382253408432
+ },
+ {
+  "res": 250,
+  "method": "rk4",
+  "label": "median",
+  "sample": 1,
+  "file": "noise01_res250_rk4_median.jpg",
+  "image_rel": 0.14024785161018372,
+  "meas_rel": 0.04058797284960747
+ },
+ {
+  "res": 250,
+  "method": "rk4",
+  "label": "worst",
+  "sample": 3,
+  "file": "noise01_res250_rk4_worst.jpg",
+  "image_rel": 0.2364657074213028,
+  "meas_rel": 0.07482516020536423
+ }
+]

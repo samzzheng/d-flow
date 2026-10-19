@@ -1,0 +1,71 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "case": "r250_n1_ct10",
+      "backend": {
+        "passed": true,
+        "gradient_relative_error_graph_vs_eager_dlr": 1.002507360681193e-05,
+        "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.392031572322594e-05,
+        "endpoint_relative_error_fast_vs_native": 2.195158231188543e-06,
+        "terminal_alpha": 0.0,
+        "checkpoint_sha256": "2d97ccb4daa40e2fbfe7391c83d8a9583d5d90712071803c6e133cb3ab944b21",
+        "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+      },
+      "noise_exactly_zero": true,
+      "methods": [
+        {
+          "method": "D-Flow",
+          "accepted": 2
+        },
+        {
+          "method": "DLR D-Flow",
+          "accepted": 2
+        },
+        {
+          "method": "P-Flow",
+          "accepted": 2
+        }
+      ],
+      "memory": {
+        "sample_start": 0,
+        "sample_stop": 1,
+        "peak_allocated_mib": 2429.4111328125,
+        "peak_reserved_mib": 4850.0
+      }
+    },
+    {
+      "case": "r250_n1_mri4",
+      "backend": {
+        "passed": true,
+        "gradient_relative_error_graph_vs_eager_dlr": 1.3605346794065554e-05,
+        "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.3414382920018397e-05,
+        "endpoint_relative_error_fast_vs_native": 2.195158231188543e-06,
+        "terminal_alpha": 0.0,
+        "checkpoint_sha256": "2d97ccb4daa40e2fbfe7391c83d8a9583d5d90712071803c6e133cb3ab944b21",
+        "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+      },
+      "noise_exactly_zero": true,
+      "methods": [
+        {
+          "method": "D-Flow",
+          "accepted": 2
+        },
+        {
+          "method": "DLR D-Flow",
+          "accepted": 2
+        },
+        {
+          "method": "P-Flow",
+          "accepted": 2
+        }
+      ],
+      "memory": {
+        "sample_start": 0,
+        "sample_stop": 1,
+        "peak_allocated_mib": 2423.5322265625,
+        "peak_reserved_mib": 4836.0
+      }
+    }
+  ]
+}

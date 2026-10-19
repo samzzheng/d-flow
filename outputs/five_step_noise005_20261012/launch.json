@@ -1,0 +1,16 @@
+{
+  "pid": 2649428,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-m",
+    "experiments.five_step_pilot.after",
+    "--out",
+    "outputs/five_step_noise005_20261012",
+    "--after",
+    "outputs/five_step_noise001_20261011"
+  ],
+  "at": "2026-10-12T00:18:48.748155-04:00",
+  "gpu": 1,
+  "prerequisite": "outputs/five_step_noise001_20261011",
+  "note": "Timestamp is queue submission, not GPU execution start; dependency_satisfied.json records handoff."
+}

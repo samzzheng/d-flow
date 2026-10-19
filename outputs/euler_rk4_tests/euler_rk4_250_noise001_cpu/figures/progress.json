@@ -1,0 +1,11 @@
+{
+  "pairs_complete": 30,
+  "rk4_wins": 16,
+  "euler_wins": 14,
+  "median_error_ratio_euler_over_rk4": 1.022135902466934,
+  "median_euler_image_pct": 99.31657016277313,
+  "median_rk4_image_pct": 17.443156614899635,
+  "median_rk4_cost_multiple": 0.27865258916007474,
+  "samples_overfit_euler": 17,
+  "samples_overfit_rk4": 17
+}

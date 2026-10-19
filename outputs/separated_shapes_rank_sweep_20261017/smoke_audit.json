@@ -1,0 +1,254 @@
+[
+  {
+    "rank": 32,
+    "case": "r250_shapes_ct10",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 5.408762262959499e-06,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 8.609339602116961e-06,
+      "endpoint_relative_error_fast_vs_native": 9.500238320470089e-07,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "c5ff51f2e830d432cec63cf36cad957d2f576a8486a53e27db94a223ce885db4",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 1353.5810546875,
+      "peak_reserved_mib": 4398.0
+    }
+  },
+  {
+    "rank": 32,
+    "case": "r250_shapes_mri4",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 7.3211990638810676e-06,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 5.600766144198133e-06,
+      "endpoint_relative_error_fast_vs_native": 9.500238320470089e-07,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "c5ff51f2e830d432cec63cf36cad957d2f576a8486a53e27db94a223ce885db4",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 1345.08642578125,
+      "peak_reserved_mib": 4396.0
+    }
+  },
+  {
+    "rank": 32,
+    "case": "r64_shapes_ct10",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 1.5136576621443965e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.0921152352239005e-05,
+      "endpoint_relative_error_fast_vs_native": 0.0,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 132.287109375,
+      "peak_reserved_mib": 414.0
+    }
+  },
+  {
+    "rank": 32,
+    "case": "r64_shapes_mri4",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 5.738719482906163e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.1603863640630152e-05,
+      "endpoint_relative_error_fast_vs_native": 0.0,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 132.0224609375,
+      "peak_reserved_mib": 414.0
+    }
+  },
+  {
+    "rank": 64,
+    "case": "r250_shapes_ct10",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 1.367003824270796e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 8.404259460803587e-06,
+      "endpoint_relative_error_fast_vs_native": 9.500238320470089e-07,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "c5ff51f2e830d432cec63cf36cad957d2f576a8486a53e27db94a223ce885db4",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 1786.13427734375,
+      "peak_reserved_mib": 5524.0
+    }
+  },
+  {
+    "rank": 64,
+    "case": "r250_shapes_mri4",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 1.3204279639467131e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 9.27876590139931e-06,
+      "endpoint_relative_error_fast_vs_native": 9.500238320470089e-07,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "c5ff51f2e830d432cec63cf36cad957d2f576a8486a53e27db94a223ce885db4",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 1778.05908203125,
+      "peak_reserved_mib": 5548.0
+    }
+  },
+  {
+    "rank": 64,
+    "case": "r64_shapes_ct10",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 3.771340925595723e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.6653524653520435e-05,
+      "endpoint_relative_error_fast_vs_native": 0.0,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 143.759765625,
+      "peak_reserved_mib": 464.0
+    }
+  },
+  {
+    "rank": 64,
+    "case": "r64_shapes_mri4",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 2.3722390324110165e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.748614522512071e-05,
+      "endpoint_relative_error_fast_vs_native": 0.0,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 143.4951171875,
+      "peak_reserved_mib": 464.0
+    }
+  },
+  {
+    "rank": 128,
+    "case": "r250_shapes_ct10",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 5.5218999477801844e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.1054726201109588e-05,
+      "endpoint_relative_error_fast_vs_native": 9.500238320470089e-07,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "c5ff51f2e830d432cec63cf36cad957d2f576a8486a53e27db94a223ce885db4",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 1931.642578125,
+      "peak_reserved_mib": 5932.0
+    }
+  },
+  {
+    "rank": 128,
+    "case": "r250_shapes_mri4",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 6.0069502069382e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.0150563866773155e-05,
+      "endpoint_relative_error_fast_vs_native": 9.500238320470089e-07,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "c5ff51f2e830d432cec63cf36cad957d2f576a8486a53e27db94a223ce885db4",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 1928.732421875,
+      "peak_reserved_mib": 5928.0
+    }
+  },
+  {
+    "rank": 128,
+    "case": "r64_shapes_ct10",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 3.094662679359317e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 2.8671069230767898e-05,
+      "endpoint_relative_error_fast_vs_native": 0.0,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 166.76806640625,
+      "peak_reserved_mib": 512.0
+    }
+  },
+  {
+    "rank": 128,
+    "case": "r64_shapes_mri4",
+    "paired_inputs_exact": true,
+    "observations_noiseless": true,
+    "validation": {
+      "passed": true,
+      "gradient_relative_error_graph_vs_eager_dlr": 2.153283821826335e-05,
+      "seeded_gradient_relative_error_graph_vs_eager_dlr": 1.617385532881599e-05,
+      "endpoint_relative_error_fast_vs_native": 0.0,
+      "terminal_alpha": 0.0,
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "note": "Execution equivalence, not DLR vs exact gradient accuracy."
+    },
+    "memory": {
+      "sample_start": 0,
+      "sample_stop": 1,
+      "peak_allocated_mib": 166.50341796875,
+      "peak_reserved_mib": 512.0
+    }
+  }
+]

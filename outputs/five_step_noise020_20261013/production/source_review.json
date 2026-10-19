@@ -1,0 +1,19 @@
+{
+  "manifest_sha256": "737a62c8ae6cefa9d05da63d103949ce8a48ad6589f1aeaee13cd197f054b9d5",
+  "changes": {
+    "experiments/five_step_pilot/run.py": {
+      "before": "9ac0356f47b68953537181c6e0dd641be9307883249086c97df80d694990c4f9",
+      "after": "d3cd3e1ec1d93fa69bdee10b22392171689333646e1376f300a39637db7e164c"
+    },
+    "experiments/five_step_pilot/test_queue.py": {
+      "before": "e43168c76f014f3760928b68b0109264f53de745379b9ea558e4dd4781de27bd",
+      "after": "07ba4d6b4f5c6a99fcc4bde0f0451552e7f19db837a12a46d43b1645f18f69d4"
+    },
+    "experiments/five_step_pilot/after.py": {
+      "before": "d65dca3138df95fe4dbcadaecc09396ff9d1e590b173ea92969fffaccce9be3f",
+      "after": "eb2a5231fccbc068a08f82f78bf4cebd141b4332e86c432b1b5d7404d7947ba1"
+    }
+  },
+  "reason": " Scheduler-only extension: configurable circles, model-readiness admission, and shared multi-sweep admission; existing frozen solver settings unchanged. Scheduler-only: optional circle admission filter and reserve one worker for selected priority sweep. Frozen solver protocol unchanged.",
+  "reviewed_at": "2026-10-13T16:33:18.331384-04:00"
+}

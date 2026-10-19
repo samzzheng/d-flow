@@ -1,0 +1,249 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>DLR-D-Flow: Algorithm and 5-Sample Benchmark</title><script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]],processEscapes:true},svg:{fontCache:"global"},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script><script defer src="vendor/node_modules/mathjax/es5/tex-svg.js"></script><style>:root{--ink:#17212b;--muted:#5a6774;--line:#d7dde3;--soft:#f4f7f9;--accent:#245b78;--accent-2:#7a4b2d}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:white}
+main{max-width:1180px;margin:0 auto;padding:36px 28px 64px}
+h1{font-size:32px;margin:0 0 10px;line-height:1.15}
+h2{font-size:22px;margin:38px 0 14px;padding-top:8px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:24px 0 10px}h4{font-size:15px;margin:18px 0 10px}
+p{line-height:1.68;margin:12px 0}ol,ul{line-height:1.68}li{margin:5px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:12.5px;line-height:1.55}
+.subtitle{color:var(--muted);font-size:15px;margin-bottom:24px}
+.status-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0 26px}
+.status{border:1px solid var(--line);border-radius:8px;padding:14px;background:var(--soft)}
+.status strong{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}
+.status span{font-size:18px;font-weight:650}
+.note{border-left:4px solid var(--accent);padding:12px 16px;background:#eef5f8;margin:22px 0;line-height:1.62}
+.warn{border-left-color:var(--accent-2);background:#fbf3ed}
+.note.interpretation{border-left-color:#4d7358;background:#f1f7f2}
+table{width:100%;border-collapse:collapse;margin:18px 0 28px;font-size:13px;line-height:1.45}
+th,td{border-bottom:1px solid var(--line);padding:11px 9px;text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--soft);font-weight:650;color:#273442}
+.compact-table{width:auto;max-width:100%;display:table}.settings-table{max-width:660px}
+.compact-table th,.compact-table td{white-space:nowrap}
+.grp-head{text-align:center}
+.nz-grid{display:grid;grid-template-columns:104px repeat(3,minmax(0,1fr));gap:10px;align-items:start;margin:14px 0 26px}
+.nz-meth{font-weight:650;font-size:12.5px;color:#273442;padding-top:14px}
+.nz-grid figure{margin:0}
+.nz-grid figcaption{font-size:11px;line-height:1.4;margin-top:5px}
+.algo{border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:6px;padding:6px 20px 16px;margin:20px 0 28px;background:#fcfdfe;font-size:13.5px}
+.algo .algo-title{font-weight:700;font-size:14px;margin:12px 0 4px;color:#273442}
+.algo .algo-io{background:var(--soft);border-radius:5px;padding:10px 14px;margin:12px 0;line-height:1.7}
+.algo ol{margin:10px 0;padding-left:26px;line-height:1.85}
+.algo ol ol{margin:6px 0;padding-left:24px;list-style-type:lower-alpha}
+.algo li{margin:6px 0}
+.algo .cmt{color:var(--muted);font-style:italic}
+.algo .step{background:#eef5f8;border-radius:4px;padding:1px 6px;font-weight:650;font-size:12px;color:#1d4a61;margin-right:6px}
+.samp-head{font-size:13px;font-weight:650;color:#273442;background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:8px;text-align:center}
+th.ge,td.ge{background:#e8f1f6}
+th.gr,td.gr{background:#f9efe7}
+th.ge,th.gr{color:#273442}
+.settings-table td:nth-child(2),.settings-table th:nth-child(2){text-align:left}
+figure img{width:100%;height:auto;display:block;border-radius:4px}
+.card{border:1px solid var(--line);border-radius:8px;padding:12px;background:white;margin:0 0 22px}
+figcaption{color:var(--muted);font-size:13px;line-height:1.55;margin-top:10px}
+.small{color:var(--muted);font-size:13px}
+.math-block{overflow-x:auto;margin:18px 0;text-align:center;line-height:1.8}
+.win{font-weight:700}
+@media(max-width:850px){main{padding:24px 16px 44px}.status-grid{grid-template-columns:1fr}table{font-size:12px;display:block;overflow-x:auto}.compact-table{display:table}.nz-grid{grid-template-columns:1fr}}</style></head><body><main>
+<h1>DLR-D-Flow: Algorithm and 5-Sample Benchmark</h1>
+<p class="subtitle">Report of 16 September 2026. Part 1 is unchanged from last week: the RK4-versus-Euler noise study at 200&times;200 and 250&times;250, 1% noise, carried over verbatim. Part 2 states the DLR-D-Flow algorithm in pseudocode, then reports a 5-sample benchmark against exact-gradient D-Flow at four resolutions (64&ndash;200).</p>
+<section class="status-grid"><div class="status"><strong>Noise test</strong><span>1% at 200 and 250 (unchanged)</span></div><div class="status"><strong>Integrators</strong><span>Euler / RK4, 100 steps</span></div><div class="status"><strong>DLR benchmark</strong><span>64 &rarr; 200, rank 8, 5 samples</span></div><div class="status"><strong>Cost ratio</strong><span>1.8&ndash;22&times; per iteration</span></div></section>
+<h2>1. Noise Test at 200&times;200 and 250&times;250: RK4 versus Forward Euler</h2>
+<p><strong>Goal.</strong> Unchanged from the 9 September report: at 128 and 160 with matched step counts there was no clear advantage for RK4, so the study was extended to the two largest grids, 200&times;200 and 250&times;250, at 1% measurement noise. RK4 uses four velocity evaluations per step against Euler's one, so at matched step count it costs about four times as much; the question is whether the reduced time-discretization error buys a corresponding gain in reconstruction quality. This section is carried over verbatim &mdash; no new runs this week &mdash; while effort went into Part 2's speed optimizations.</p>
+<h3>1.1 Experimental Setup</h3>
+<table class="compact-table settings-table"><tr><th>Setting</th><th>Value</th></tr><tr><td>Forward operator</td><td>Parallel-beam Radon, 15 angles over \([0,\pi)\)</td></tr><tr><td>Resolutions</td><td>200&times;200, 250&times;250</td></tr><tr><td>Noise level \(\delta\)</td><td>1% relative \(L_2\), added to the sinogram</td></tr><tr><td>Integrators</td><td>Forward Euler and RK4, both 100 time steps</td></tr><tr><td>Velocity evaluations per solve</td><td>100 (Euler), 400 (RK4)</td></tr><tr><td>Optimizer</td><td>LBFGS on the source point \(z\), lr 1.0, no line search</td></tr><tr><td>LBFGS max_iter / history</td><td>1 / 100</td></tr><tr><td>Source prior</td><td>\(\lambda\|z\|_2^2\) with \(\lambda=10^{-3}\)</td></tr><tr><td>Outer iterations</td><td>150 (fixed budget; the 2% target was reached once)</td></tr><tr><td>Selection rule</td><td>Best measurement-objective iterate</td></tr><tr><td>Samples per cell</td><td>5 (matched across integrators: same image, same noise, same \(z_0\))</td></tr><tr><td>Error metric</td><td>Image relative \(L_2\), \(\|\hat{x}-x_\star\|_2/\|x_\star\|_2\)</td></tr><tr><td>Total reconstructions</td><td>20</td></tr></table>
+<h3>1.2 Numerical Results</h3>
+<p><strong>Table 1. Image relative \(L_2\) error as a percentage, with cost.</strong> Best, median and worst are over the five matched samples in each cell, <strong>ranked by image relative \(L_2\) error</strong> (not measurement error). The lower median of each pair is shown in bold.</p>
+<table><tr><th rowspan="2">Resolution</th><th class="ge grp-head" colspan="4">Forward Euler</th><th class="gr grp-head" colspan="4">RK4</th></tr><tr><th class="ge">Best (%)</th><th class="ge">Median (%)</th><th class="ge">Worst (%)</th><th class="ge">s / iter</th><th class="gr">Best (%)</th><th class="gr">Median (%)</th><th class="gr">Worst (%)</th><th class="gr">s / iter</th></tr>
+<tr><td>200&times;200</td><td class="ge">10.63</td><td class="ge">18.11</td><td class="ge">40.92</td><td class="ge">3.08</td><td class="gr">6.54</td><td class="gr"><span class="win">10.86</span></td><td class="gr">17.55</td><td class="gr">12.51</td></tr>
+<tr><td>250&times;250</td><td class="ge">8.67</td><td class="ge">14.75</td><td class="ge">27.21</td><td class="ge">6.00</td><td class="gr">12.91</td><td class="gr"><span class="win">14.02</span></td><td class="gr">23.65</td><td class="gr">24.23</td></tr>
+</table>
+<p><strong>Table 2. Per-sample image relative \(L_2\) error (%).</strong> Each row is one matched pair; the winner of the pair is shown in bold.</p>
+<table class="compact-table"><tr><th>Resolution</th><th>Sample</th><th class="ge">Forward Euler</th><th class="gr">RK4</th><th>Winner</th></tr>
+<tr><td>200&times;200</td><td>0</td><td class="ge">19.06</td><td class="gr"><span class="win">17.55</span></td><td>RK4</td></tr>
+<tr><td>200&times;200</td><td>1</td><td class="ge"><span class="win">10.63</span></td><td class="gr">10.86</td><td>Euler</td></tr>
+<tr><td>200&times;200</td><td>2</td><td class="ge">14.50</td><td class="gr"><span class="win">7.83</span></td><td>RK4</td></tr>
+<tr><td>200&times;200</td><td>3</td><td class="ge">18.11</td><td class="gr"><span class="win">6.54</span></td><td>RK4</td></tr>
+<tr><td>200&times;200</td><td>4</td><td class="ge">40.92</td><td class="gr"><span class="win">12.96</span></td><td>RK4</td></tr>
+<tr><td>250&times;250</td><td>0</td><td class="ge"><span class="win">8.67</span></td><td class="gr">18.71</td><td>Euler</td></tr>
+<tr><td>250&times;250</td><td>1</td><td class="ge">14.67</td><td class="gr"><span class="win">14.02</span></td><td>RK4</td></tr>
+<tr><td>250&times;250</td><td>2</td><td class="ge">18.41</td><td class="gr"><span class="win">12.91</span></td><td>RK4</td></tr>
+<tr><td>250&times;250</td><td>3</td><td class="ge"><span class="win">14.75</span></td><td class="gr">23.65</td><td>Euler</td></tr>
+<tr><td>250&times;250</td><td>4</td><td class="ge">27.21</td><td class="gr"><span class="win">13.65</span></td><td>RK4</td></tr>
+</table>
+<div class="note"><strong>Outcome.</strong> The two resolutions disagree. At 200&times;200 RK4 wins 4 of the 5 matched pairs and roughly halves the mean image error (11.15% against 20.64%), with the median falling from 18.11% to 10.86%. At 250&times;250 the means are indistinguishable (16.59% against 16.74%) and RK4 wins 3 of 5. What does hold at both sizes is the worst case: Euler produced one badly wrong reconstruction at each resolution (40.9% at 200, 27.2% at 250) while RK4's worst was 17.5% and 23.6%. All of this costs a measured 4.0&ndash;4.1&times; per iteration, matching the velocity-evaluation count exactly. Neither arm was run to convergence: both stopped at the 150-iteration budget with residuals of 2&ndash;8% against a 1% noise floor.</div>
+<h3>1.3 Reconstructions</h3>
+<p>Best, median and worst of the five samples in each cell, ranked by image relative \(L_2\), with forward Euler on the top row and RK4 below it. Each panel is the standard diagnostic layout: ground truth, reconstruction and absolute image error on the top row; observed noisy \(Ax\), reconstructed \(Ax\) and absolute measurement residual on the bottom. Error panels use a fixed \([0,1]\) scale so panels are comparable across cells.</p>
+<h4>1% noise, 200&times;200</h4>
+<div class="nz-grid"><div></div><div class="samp-head">Best</div><div class="samp-head">Median</div><div class="samp-head">Worst</div>
+<div class="nz-meth">Forward Euler</div>
+<figure class="card"><img src="2026-09-09_assets/noise01_res200_euler_best.jpg" alt="Forward Euler best at 1% noise, 200x200"><figcaption><strong>Sample 1</strong><br>image rel. \(L_2\) = 10.63%<br>measurement rel. \(L_2\) = 4.19%</figcaption></figure>
+<figure class="card"><img src="2026-09-09_assets/noise01_res200_euler_median.jpg" alt="Forward Euler median at 1% noise, 200x200"><figcaption><strong>Sample 3</strong><br>image rel. \(L_2\) = 18.11%<br>measurement rel. \(L_2\) = 5.38%</figcaption></figure>
+<figure class="card"><img src="2026-09-09_assets/noise01_res200_euler_worst.jpg" alt="Forward Euler worst at 1% noise, 200x200"><figcaption><strong>Sample 4</strong><br>image rel. \(L_2\) = 40.92%<br>measurement rel. \(L_2\) = 17.88%</figcaption></figure>
+<div class="nz-meth">RK4</div>
+<figure class="card"><img src="2026-09-09_assets/noise01_res200_rk4_best.jpg" alt="RK4 best at 1% noise, 200x200"><figcaption><strong>Sample 3</strong><br>image rel. \(L_2\) = 6.54%<br>measurement rel. \(L_2\) = 1.96%</figcaption></figure>
+<figure class="card"><img src="2026-09-09_assets/noise01_res200_rk4_median.jpg" alt="RK4 median at 1% noise, 200x200"><figcaption><strong>Sample 1</strong><br>image rel. \(L_2\) = 10.86%<br>measurement rel. \(L_2\) = 4.44%</figcaption></figure>
+<figure class="card"><img src="2026-09-09_assets/noise01_res200_rk4_worst.jpg" alt="RK4 worst at 1% noise, 200x200"><figcaption><strong>Sample 0</strong><br>image rel. \(L_2\) = 17.55%<br>measurement rel. \(L_2\) = 5.26%</figcaption></figure>
+</div>
+<h4>1% noise, 250&times;250</h4>
+<div class="nz-grid"><div></div><div class="samp-head">Best</div><div class="samp-head">Median</div><div class="samp-head">Worst</div>
+<div class="nz-meth">Forward Euler</div>
+<figure class="card"><img src="2026-09-09_assets/noise01_res250_euler_best.jpg" alt="Forward Euler best at 1% noise, 250x250"><figcaption><strong>Sample 0</strong><br>image rel. \(L_2\) = 8.67%<br>measurement rel. \(L_2\) = 2.18%</figcaption></figure>
+<figure class="card"><img src="2026-09-09_assets/noise01_res250_euler_median.jpg" alt="Forward Euler median at 1% noise, 250x250"><figcaption><strong>Sample 3</strong><br>image rel. \(L_2\) = 14.75%<br>measurement rel. \(L_2\) = 4.36%</figcaption></figure>
+<figure class="card"><img src="2026-09-09_assets/noise01_res250_euler_worst.jpg" alt="Forward Euler worst at 1% noise, 250x250"><figcaption><strong>Sample 4</strong><br>image rel. \(L_2\) = 27.21%<br>measurement rel. \(L_2\) = 8.07%</figcaption></figure>
+<div class="nz-meth">RK4</div>
+<figure class="card"><img src="2026-09-09_assets/noise01_res250_rk4_best.jpg" alt="RK4 best at 1% noise, 250x250"><figcaption><strong>Sample 2</strong><br>image rel. \(L_2\) = 12.91%<br>measurement rel. \(L_2\) = 3.50%</figcaption></figure>
+<figure class="card"><img src="2026-09-09_assets/noise01_res250_rk4_median.jpg" alt="RK4 median at 1% noise, 250x250"><figcaption><strong>Sample 1</strong><br>image rel. \(L_2\) = 14.02%<br>measurement rel. \(L_2\) = 4.06%</figcaption></figure>
+<figure class="card"><img src="2026-09-09_assets/noise01_res250_rk4_worst.jpg" alt="RK4 worst at 1% noise, 250x250"><figcaption><strong>Sample 3</strong><br>image rel. \(L_2\) = 23.65%<br>measurement rel. \(L_2\) = 7.48%</figcaption></figure>
+</div>
+<h2>2. From D-Flow to DLR-D-Flow</h2>
+<p>The two methods solve the same optimization problem with the same outer loop. They differ in exactly one step. This section states D-Flow first, then that one step, then the machinery behind it, and finally the numerical comparison.</p>
+<h3>2.1 D-Flow</h3>
+<p>A pretrained flow-matching model transports a source point into an image along</p>
+<div class="math-block">\[\dot x_t=v_\theta(t,x_t),\qquad x_0=z,\qquad t\in[0,1],\]</div>
+<p>discretized here as \(N=100\) forward-Euler steps of size \(h=1/N\). Given noisy, incomplete data \(y_\delta=\mathcal{A}(x_\star)+\eta\), D-Flow does not optimize the image. It optimizes the <em>source point</em>, so that every candidate is by construction something the flow can generate &mdash; that is what enforces the prior:</p>
+<div class="math-block">\[\min_z\ \Phi(z),\qquad \Phi(z)=\tfrac12\big\|\mathcal{A}(x_1(z))-y_\delta\big\|_2^2 .\]</div>
+<p>The chain rule splits the gradient of \(\Phi\) into a cheap piece and an expensive one:</p>
+<div class="math-block">\[\nabla_z\Phi=\underbrace{J_1^{\top}g_x}_{\text{expensive}},\qquad g_x=\underbrace{D\mathcal{A}(x_1)^{*}\big(\mathcal{A}(x_1)-y_\delta\big)}_{\text{cheap: no flow involved}} .\]</div>
+<ul><li>\(g_x\in\mathbb{R}^{d}\) is the <em>terminal gradient</em>: the derivative of \(\Phi\) with respect to the generated image, holding the flow fixed.</li><li>\(J_t=\partial x_t/\partial z\in\mathbb{R}^{d\times d}\) is the <em>flow sensitivity</em>: how a perturbation of the source point changes the state at time \(t\). Applying \(J_1^{\top}\) to \(g_x\) pulls the image-space gradient back through the entire flow into source space.</li></ul>
+<p>D-Flow performs that pullback <strong>exactly</strong>, by reverse-mode differentiation through the ODE solver: the forward pass records every intermediate activation of all \(N\) steps, and the backward pass sweeps through them. This is the classical adjoint computation, and it never forms \(J_1\).</p>
+<div class="algo">
+<div class="algo-title">Algorithm 1 &mdash; D-Flow (exact gradient)</div>
+<div class="algo-io"><strong>Input:</strong> data \(y_\delta\); operator \(\mathcal{A}\); velocity field \(v_\theta\); initial source \(z_0\); flow steps \(N\); outer steps \(K\)<br><strong>Output:</strong> the iterate with the smallest measurement misfit</div>
+<ol>
+<li><span class="step">outer</span> <strong>for</strong> \(k=1,\dots,K\):<ol>
+<li><em>Generate.</em> Run the flow \(x_1=\operatorname{flow}(z)\), recording the activation tape for all \(N\) steps. <span class="cmt">\(N\) network evaluations</span></li>
+<li><em>Terminal gradient.</em> \(g_x=D\mathcal{A}(x_1)^{*}\big(\mathcal{A}(x_1)-y_\delta\big)\).</li>
+<li><em>Exact pullback.</em> \(\nabla_z\Phi=J_1^{\top}g_x\) by reverse-mode differentiation over the tape. <span class="cmt">about \(2N\) further network evaluations</span></li>
+<li><em>Step.</em> \(z\leftarrow\operatorname{LBFGS}(z,\nabla_z\Phi)\); keep \(x_1\) if its misfit is the smallest seen.</li>
+</ol></li></ol>
+</div>
+<div class="note warn"><strong>What this costs.</strong> About \(3N\approx300\) network evaluations per outer iteration, and an activation tape for the whole flow &mdash; 25.7 GB at 128&times;128, and beyond the card above that, which is why the runs at 160 and larger use activation checkpointing (recompute instead of store, at roughly double the compute).</div>
+<h3>2.2 DLR-D-Flow: approximating the sensitivity</h3>
+<p>DLR-D-Flow keeps Algorithm 1 intact and replaces step (c). Instead of differentiating back through the solver, it carries a cheap surrogate for the sensitivity <em>forward</em> alongside the state, so that at \(t=1\) an approximate pullback is available immediately. The surrogate is a scalar multiple of the identity plus a rank-\(r\) correction,</p>
+<div class="math-block">\[J_t\ \approx\ \alpha_tI+Y_t,\qquad Y_t=U_tS_tV_t^{\top},\qquad U_t,V_t\in\mathbb{R}^{d\times r},\ S_t\in\mathbb{R}^{r\times r},\ r\ll d,\]</div>
+<p>with \(\alpha_t\in\mathbb{R}\) a single tracked scalar. Transposing and applying it to \(g_x\) gives the approximate gradient that replaces the exact one:</p>
+<div class="math-block">\[\widehat{\nabla_z\Phi}\ =\ \alpha_1g_x\;+\;V_1S_1^{\top}U_1^{\top}g_x .\]</div>
+<p>Read right to left, the second term costs three skinny matrix&ndash;vector products: \(U_1^{\top}g_x\) compresses the image-space gradient to \(r\) numbers, \(S_1^{\top}\) mixes them, and \(V_1\) expands back to source space. The first term passes \(g_x\) straight through, scaled. Nothing of size \(d\times d\) is ever formed, and no tape is kept.</p>
+<div class="algo">
+<div class="algo-title">Algorithm 2 &mdash; DLR-D-Flow (approximate gradient)</div>
+<div class="algo-io"><strong>Input:</strong> as Algorithm 1, plus rank \(r\)<br><strong>Output:</strong> the iterate with the smallest measurement misfit</div>
+<ol>
+<li><span class="step">outer</span> <strong>for</strong> \(k=1,\dots,K\):<ol>
+<li><em>Generate and evolve together.</em> Run the flow \(x_1=\operatorname{flow}(z)\) with <strong>no tape</strong>, and on the same time grid evolve the factors \((U_t,S_t,V_t)\) and the scalar \(\alpha_t\) from \(\alpha_0=1,\ Y_0=0\). <span class="cmt">detailed in &sect;2.3&ndash;2.4</span></li>
+<li><em>Terminal gradient.</em> \(g_x=D\mathcal{A}(x_1)^{*}\big(\mathcal{A}(x_1)-y_\delta\big)\). <span class="cmt">identical to Algorithm 1</span></li>
+<li><em>Approximate pullback.</em> \(\widehat{\nabla_z\Phi}=\alpha_1g_x+V_1S_1^{\top}U_1^{\top}g_x\). <span class="cmt">three skinny mat-vecs; this is the only step that differs</span></li>
+<li><em>Safeguarded step.</em> \(z\leftarrow\operatorname{LBFGS}(z,\widehat{\nabla_z\Phi})\); if \(\Phi\) is not finite or exceeds four times the best value so far, roll back to the best iterate, halve the step size and discard the curvature history.</li>
+</ol></li></ol>
+</div>
+<h3>2.3 How the approximation is built</h3>
+<h4>Why a plain rank-\(r\) model is not enough</h4>
+<p>The obvious idea is to compress the sensitivity directly, \(J_t\approx U_tS_tV_t^{\top}\). This fails at the very first step. The flow map of a smooth ODE is locally invertible, so \(J_t\) is generally of full rank, and at \(t=0\)</p>
+<div class="math-block">\[J_0=I,\]</div>
+<p>because the state <em>is</em> the source point there, so perturbing \(z\) perturbs \(x_0\) one-for-one. No rank-\(r\) matrix approximates the identity when \(r\ll d\).</p>
+<p>The assumption that <em>is</em> justified is weaker: not that \(J_t\) is rank-deficient, but that its <em>action</em> is effectively low-rank &mdash; the part that matters here, \(J_t^{\top}g_x\), is concentrated in a few directions. That is the same intuition that makes D-Flow work at all, namely that differentiating through the flow projects the terminal gradient onto dominant data-manifold directions. Hence a low-rank <em>plus baseline</em> model: the scalar carries the full-rank part the factorization structurally cannot, and the rank-\(r\) residual carries the directional structure.</p>
+<h4>The scalar</h4>
+<p>Starting from \(\alpha_0=1,\ Y_0=0\) reproduces \(J_0=I\) exactly, so the residual only has to describe how the sensitivity <em>deviates</em> from a multiple of the identity. Holding \(\alpha_t\equiv1\) gives a poor sensitivity action on these flows, which are strongly contractive; instead \(\alpha_t\) is the scalar that best matches \(J_t\) in Frobenius norm, which is the mean diagonal entry</p>
+<div class="math-block">\[\alpha_t=\frac{\operatorname{tr}(J_t)}{d}.\]</div>
+<p>The trace is not directly available, so it is estimated stochastically: draw \(k_p\) fixed \(\pm1\) probes \(p_i\), carry them along the flow by the same sensitivity equation so that \(q_i(t)=J_tp_i\), and take</p>
+<div class="math-block">\[\alpha_t\approx\frac{1}{k_pd}\sum_{i=1}^{k_p}p_i^{\top}q_i(t),\qquad\dot\alpha_t\approx\frac{1}{k_pd}\sum_{i=1}^{k_p}p_i^{\top}A_tq_i(t),\]</div>
+<p>unbiased because \(\mathbb{E}\,p^{\top}Mp=\operatorname{tr}(M)\) for such probes. Propagating the probes costs one extra Jacobian product per flow step, and \(\dot\alpha_t\) comes free from that same product.</p>
+<h4>What the residual has to satisfy</h4>
+<p>Differentiating the flow ODE with respect to \(z\) shows that the sensitivity obeys its own matrix-valued ODE, the variational equation,</p>
+<div class="math-block">\[\dot J_t=A_tJ_t,\qquad J_0=I,\qquad A_t=\partial_xv_\theta(t,x_t),\]</div>
+<p>where \(A_t\) is the Jacobian of the velocity field along the current trajectory. At 250&times;250, \(d=62{,}500\), so \(A_t\) and \(J_t\) are each \(62{,}500\times62{,}500\) and neither can be formed &mdash; \(A_t\) is a neural network Jacobian and is never available as an array. What <em>is</em> cheap is its action on a few vectors: \(A_tQ\) by a forward-mode derivative (JVP) and \(A_t^{\top}Q\) by a reverse-mode one (VJP), for skinny \(Q\). Everything below uses only those two products.</p>
+<p>Substituting the surrogate into the variational equation gives the dynamics the residual must follow:</p>
+<div class="math-block">\[\dot Y_t=F(t,Y_t):=A_t\big(\alpha_tI+Y_t\big)-\dot\alpha_tI.\]</div>
+<h4>Keeping the residual on the rank-\(r\) manifold</h4>
+<p>\(F\) generally points off the rank-\(r\) manifold \(\mathcal{M}_r\), so the Koch&ndash;Lubich construction takes the velocity <em>within</em> the tangent space closest to the true one,</p>
+<div class="math-block">\[\dot Y_t=P_{T_{Y_t}\mathcal{M}_r}F(t,Y_t),\qquad P_Y(Z)=ZVV^{\top}-UU^{\top}ZVV^{\top}+UU^{\top}Z.\]</div>
+<p>Expanding this factor by factor, with the gauge conditions \(U^{\top}\dot U=0\) and \(V^{\top}\dot V=0\) that make the representation unique and preserve orthonormality, gives</p>
+<div class="math-block">\[\dot S=U^{\top}ZV,\qquad\dot U=(I-UU^{\top})ZVS^{-1},\qquad\dot V=(I-VV^{\top})Z^{\top}US^{-\top},\qquad Z:=F(t,Y).\]</div>
+<div class="note warn"><strong>Why these are not integrated directly.</strong> Both factor equations contain \(S^{-1}\), and the core is ill-conditioned exactly when the approximation is nearly of lower rank &mdash; the normal situation here, and precisely the situation at \(t=0\) where \(Y_0=0\). A direct integrator would need a step size tied to the smallest singular value of \(S\).</div>
+<p>The Lubich&ndash;Oseledets projector-splitting integrator removes \(S^{-1}\) entirely by splitting the projection into its three terms and integrating each in turn over one flow step, with \(A_t\) and \(\alpha_t\) frozen:</p>
+<div class="math-block">\[P_Y(Z)=\underbrace{ZVV^{\top}}_{\text{K-step}}\underbrace{-\,UU^{\top}ZVV^{\top}}_{\text{S-step}}+\underbrace{UU^{\top}Z}_{\text{L-step}}\]</div>
+<p>The K-step finds the new column space, the L-step the new row space, and the S-step runs <em>backwards</em> between them to remove the double counting. For the scalar-plus-low-rank model the three substeps are</p>
+<div class="math-block">\[\dot K=\alpha_tA_tV+A_tK-\dot\alpha_tV,\qquad \dot S=-\alpha_tU_1^{\top}A_tV-(U_1^{\top}A_tU_1)S+\dot\alpha_tU_1^{\top}V,\]</div>
+<div class="math-block">\[\dot L=\alpha_tA_t^{\top}U_1+L\,(U_1^{\top}A_t^{\top}U_1)-\dot\alpha_tU_1,\]</div>
+<p>each started from the current factors and closed by a thin QR factorization. Every occurrence of \(A_t\) acts on a matrix with only \(r\) columns.</p>
+<h4>Starting the recursion</h4>
+<p>One difficulty remains at \(t=0\): the residual starts at \(Y_0=0\), which has no singular vectors, so the factorization is undefined there. Seeding \(S_0=\varepsilon I\) on a random basis fails badly &mdash; with \(S\approx0\) the tangent projection is degenerate and the basis never rotates toward the directions that carry the gradient. The implementation instead defers initialization by one Euler step and forms a randomized sketch of the first genuinely nonzero residual,</p>
+<div class="math-block">\[Y_h\approx hA_0+(1-\alpha_h)I,\]</div>
+<p>then at each subsequent step augments the bases with fresh forcing directions before recompressing back to rank \(r\), which keeps the basis from going stale as the trajectory turns. This single change reduced the relative gradient error at 64&times;64 from 0.85 to 0.13.</p>
+<h3>2.4 One flow step of the factor evolution</h3>
+<p>This is step (a) of Algorithm 2, expanded. It is what runs 100 times per outer iteration.</p>
+<div class="algo">
+<div class="algo-title">Algorithm 3 &mdash; factor evolution, one step from \(t\) to \(t+h\)</div>
+<div class="algo-io"><strong>Have:</strong> state \(x\), factors \((U,S,V)\), scalar \(\alpha\), probes \(Q\)<br><strong>Use only:</strong> \(A_tQ\) (JVP) and \(A_t^{\top}Q\) (VJP)</div>
+<ol>
+<li><em>K-step.</em> \(K_1=US+h\big(\alpha A_tV+A_tUS-\dot\alpha V\big)\), then \(U_1\hat S=\operatorname{qr}(K_1)\). <span class="cmt">new column space</span></li>
+<li><em>S-step.</em> with \(M=U_1^{\top}A_tU_1\), \(\tilde S=\hat S+h\big(-\alpha U_1^{\top}A_tV-M\hat S+\dot\alpha U_1^{\top}V\big)\). <span class="cmt">backward substep</span></li>
+<li><em>L-step.</em> \(L_1=V\tilde S^{\top}+h\big(\alpha A_t^{\top}U_1+V\tilde S^{\top}M^{\top}-\dot\alpha U_1\big)\), then \(V_1S_1^{\top}=\operatorname{qr}(L_1)\). <span class="cmt">new row space</span></li>
+<li><em>Enrich and recompress.</em> Augment \(U_1,V_1\) with \(p\) fresh forcing directions and truncate the augmented core back to rank \(r\) by a small SVD.</li>
+<li><em>Advance.</em> \(x\leftarrow x+h\,v_\theta(t,x)\); propagate the probes and update \(\alpha,\dot\alpha\) by the Hutchinson estimates above.</li>
+</ol>
+<p class="small" style="margin:4px 0 0">Per step: \(O(r+k_p+p)\) Jacobian products through the velocity network, two thin QR factorizations of \(d\times r\) matrices, and \(r\times r\) core algebra. Storage \(O(dr+r^2)\), independent of \(N\).</p>
+</div>
+<p><strong>Settings used in the experiment below:</strong> \(r=8\), \(N=100\), \(K=100\), \(k_p=8\) probes, \(p=4\) enrichment directions, \(\lambda=10^{-3}\), LBFGS learning rate 1.0 with history 100. The terminal scalar is set to \(\alpha_1=0\) in the pullback: these flows are strongly contractive, \(\alpha_t\) decays from 1 to order \(10^{-3}\) by \(t=1\), and there \(J_1\) is numerically low rank so the identity term is mostly error. A diagnostic this week qualifies that default &mdash; at iterates that have drifted off the data distribution the spectrum of \(J_1\) flattens, and retaining \(\alpha_1\) halves the gradient action error (relative error 0.23 &rarr; 0.10, cosine 0.976 &rarr; 0.995) at no extra cost, since \(\alpha_t\) is already tracked.</p>
+<h3>2.5 How close the surrogate gradient is, and what the method claims</h3>
+<p>The quantity to check is not how well \(\alpha_1I+Y_1\) approximates \(J_1\) as a matrix, but how well its action reproduces the gradient. On fresh factors at rank 8 the relative action error</p>
+<div class="math-block">\[\frac{\big\|J_1^{\top}g_x-\big(\alpha_1g_x+V_1S_1^{\top}U_1^{\top}g_x\big)\big\|_2}{\|J_1^{\top}g_x\|_2}\]</div>
+<p>is 0.066 with cosine 0.998 against the exact gradient, falling to 0.030 and 0.9997 at rank 16. The direction is therefore accurate where the factors are fresh, which is why they are rebuilt from \(t=0\) at every outer iteration: measurements show the alignment decays within about two iterations if they are reused.</p>
+<div class="note warn"><strong>The comparison to keep in mind.</strong> For a single scalar objective and a single gradient evaluation, the classical adjoint equation \(\dot a_t=-A_t^{\top}a_t,\ a_1=g_x\), already returns the exact gradient without ever forming \(J_t\) &mdash; and that is precisely what reverse-mode differentiation implements in Algorithm 1. DLR-D-Flow should therefore not be advertised as automatically cheaper than one exact adjoint gradient when \(r>1\). Its computational role is more specific: it removes the full-Jacobian and repeated-SVD bottleneck, and it produces a <em>reusable</em> low-rank sensitivity operator, so several gradient or trial-step applications can be made cheaply once the factors exist. The experiment below measures it against the single-vector adjoint, which is the hardest baseline for this method and the one that matters in practice.</div>
+<div class="note interpretation"><strong>What it does and does not guarantee.</strong> The method removes the full-SVD bottleneck; it does <em>not</em> make the exact flow Jacobian low rank. It is useful when the update only needs the dominant sensitivity directions, and if the forward operator needs information in directions the rank-\(r\) model discards the update becomes biased. The factors are therefore best treated as an approximate gradient mechanism or a structured preconditioner, and an objective-decrease check must stay in the solver &mdash; which is the safeguard in step (d) of Algorithm 2.</div>
+<h3>2.6 Numerical Experiment</h3>
+<p><strong>Protocol.</strong> Five independent samples per resolution (matching Part 1's design), each method started from the same source point per sample. Rank 8, 32 trace probes, 4 enrichment probes, factors re-evolved from \(t=0\) every outer iteration. LBFGS (lr 1.0, max_iter 1, history 100, no line search) minimises the data misfit alone &mdash; <em>no source prior this week</em>, unlike Part 1 and the 9 September benchmark, which both used \(\lambda\|z\|_2^2\) with \(\lambda=10^{-3}\). Each run stops at a 1% relative measurement residual (the stop loss) or a 200-iteration budget, whichever comes first. D-Flow uses activation checkpointing at 160&times;160 and above; DLR-D-Flow uses CUDA-graph replay of the product calls. 250&times;250 is excluded: its DLR-D-Flow arm has not finished (each attempt approaches ten hours at this configuration).</p>
+<p><strong>Table 4. Per-iteration cost, averaged over 5 samples.</strong> &ldquo;Reached stop loss&rdquo; counts samples that reached the 1% measurement-residual stop loss before the 200-iteration budget ran out. The lower mean seconds/iteration of each pair is shown in bold.</p>
+<table><tr><th rowspan="2">Resolution</th><th class="ge grp-head" colspan="2">D-Flow (exact gradient)</th><th class="gr grp-head" colspan="2">DLR-D-Flow (rank 8)</th><th rowspan="2">Cost ratio<br><span class="small">(s/iter, DLR &divide; D-Flow)</span></th></tr><tr><th class="ge">Mean s / iter</th><th class="ge">Reached stop loss<br><span class="small">(of 5 samples)</span></th><th class="gr">Mean s / iter</th><th class="gr">Reached stop loss<br><span class="small">(of 5 samples)</span></th></tr>
+<tr><td>64&times;64</td><td class="ge"><span class="win">1.24</span></td><td class="ge">5/5</td><td class="gr">2.2</td><td class="gr">4/5</td><td>1.8&times;</td></tr>
+<tr><td>96&times;96</td><td class="ge"><span class="win">1.21</span></td><td class="ge">5/5</td><td class="gr">6.4</td><td class="gr">2/5</td><td>5.3&times;</td></tr>
+<tr><td>128&times;128</td><td class="ge"><span class="win">1.18</span></td><td class="ge">3/5</td><td class="gr">15.4</td><td class="gr">3/5</td><td>13.1&times;</td></tr>
+<tr><td>160&times;160</td><td class="ge"><span class="win">2.45</span></td><td class="ge">4/5</td><td class="gr">32.1</td><td class="gr">2/5</td><td>13.1&times;</td></tr>
+<tr><td>200&times;200</td><td class="ge"><span class="win">3.08</span></td><td class="ge">4/5</td><td class="gr">69.3</td><td class="gr">0/5</td><td>22.5&times;</td></tr>
+</table>
+<p><strong>Table 5. Image relative \(L_2\) error as a percentage, with peak memory.</strong> <strong>Best, median and worst are the three samples chosen by ranking DLR-D-Flow's image relative \(L_2\) error</strong> (not measurement error) across the five samples at each resolution; D-Flow's value in each column is for that <em>same</em> sample, not D-Flow's own ranking, so every row is a matched pair. The lower median image error of each pair is shown in bold.</p>
+<table><tr><th rowspan="2">Resolution</th><th class="ge grp-head" colspan="4">D-Flow <span class="small">(matched to DLR's sample)</span></th><th class="gr grp-head" colspan="4">DLR-D-Flow <span class="small">(ranking anchor)</span></th></tr><tr><th class="ge">DLR's best sample (%)</th><th class="ge">DLR's median sample (%)</th><th class="ge">DLR's worst sample (%)</th><th class="ge">Peak mem (GB)</th><th class="gr">Best image error (%)</th><th class="gr">Median image error (%)</th><th class="gr">Worst image error (%)</th><th class="gr">Peak mem (GB)</th></tr>
+<tr><td>64&times;64</td><td class="ge">2.02</td><td class="ge">2.62</td><td class="ge">2.35</td><td class="ge">4.90</td><td class="gr">1.54</td><td class="gr"><span class="win">2.26</span></td><td class="gr">6.31</td><td class="gr">0.43</td></tr>
+<tr><td>96&times;96</td><td class="ge">2.55</td><td class="ge"><span class="win">2.05</span></td><td class="ge">2.42</td><td class="ge">12.33</td><td class="gr">2.10</td><td class="gr">2.39</td><td class="gr">5.00</td><td class="gr">0.91</td></tr>
+<tr><td>128&times;128</td><td class="ge">3.41</td><td class="ge">195.49</td><td class="ge">4.97</td><td class="ge">25.82</td><td class="gr">2.26</td><td class="gr"><span class="win">2.77</span></td><td class="gr">19.37</td><td class="gr">1.62</td></tr>
+<tr><td>160&times;160</td><td class="ge">3.49</td><td class="ge"><span class="win">3.60</span></td><td class="ge">3.26</td><td class="ge">0.74&nbsp;<span class='small'>(ckpt)</span></td><td class="gr">2.15</td><td class="gr">7.79</td><td class="gr">63.36</td><td class="gr">3.11</td></tr>
+<tr><td>200&times;200</td><td class="ge">1.63</td><td class="ge"><span class="win">3.34</span></td><td class="ge">173.11</td><td class="ge">1.34&nbsp;<span class='small'>(ckpt)</span></td><td class="gr">5.70</td><td class="gr">11.43</td><td class="gr">14.21</td><td class="gr">4.82</td></tr>
+</table>
+<p class="small"><strong>(ckpt)</strong> &mdash; at 160&times;160 and 200&times;200 D-Flow recomputes each step's forward pass during the backward pass instead of storing the activation tape, which is why its peak memory (0.7&ndash;1.3 GB) is now <em>lower</em> than DLR-D-Flow's (3.1&ndash;4.8 GB) at those two resolutions &mdash; the reverse of the pattern at 64&ndash;128, where D-Flow holds the full tape (4.9&ndash;25.8 GB) and DLR-D-Flow does not (0.4&ndash;1.6 GB).</p>
+<div class="note"><strong>Outcome.</strong> The per-iteration cost ratio runs 1.8&ndash;22&times; and grows with resolution. DLR-D-Flow has the lower <em>median</em> image error (of the three samples DLR ranks best/median/worst) in 2 of the 5 resolutions. The more striking pattern is in the worst case, checked across <em>all five</em> samples at each resolution (not just the three in Table 5): with no source prior this week, D-Flow's LBFGS iterate occasionally locks onto a source point that fits the sparse 15-view sinogram to under 1% residual while reconstructing a non-physical image &mdash; 4 such reconstructions (image error 164&ndash;195%) occur across 3 of the 5 resolutions (128, 160 and 200), against 0 for DLR-D-Flow at any resolution. Two of these are visible in Table 5 and the gallery below, because they happen to be DLR's median sample at 128&times;128 and DLR's worst sample at 200&times;200. DLR-D-Flow is not immune to large errors either (its own worst sample reaches 63% at 160&times;160), but none of its errors are of this non-physical, sinogram-fitting kind. Neither arm reliably reaches the 1% stop loss above 96&times;96 within the 200-iteration budget.</div>
+<div class="note warn"><strong>Where the cost comes from.</strong> The ratio is arithmetic, not implementation slack, and it grows with resolution because the model's attention blocks, at the deepest level, dominate the per-column cost there. D-Flow propagates a single vector backward once through the flow; DLR-D-Flow propagates an operator forward and backward across roughly 60 columns at every one of the 100 flow steps. The memory picture (Table 5) favours DLR-D-Flow at every resolution shown, including 160 and 200 where checkpointed D-Flow was cheaper in the 9 September comparison &mdash; that comparison used a fixed 100-iteration budget, while the stop-loss protocol here lets D-Flow's checkpointed runs finish (and re-peak) at very different iteration counts per sample.</div>
+<h3>2.7 Reconstructions</h3>
+<p>Best, median and worst of the five samples in each cell, ranked by DLR-D-Flow image relative \(L_2\) (same ranking convention as Part 1). Each panel is the standard diagnostic layout: ground truth and both reconstructions on the top row; observed sinogram, both reconstructed sinograms and both absolute image errors below. Error panels use a fixed \([0,1]\) scale.</p>
+<h4>circles-64&times;64, samples 0&ndash;4</h4>
+<div class="nz-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+<figure class="card"><img src="2026-09-16_assets/dlr5_res64_best.png" alt="DLR-D-Flow best at circles-64, sample 3"><figcaption><strong>Best (sample 3)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res64_median.png" alt="DLR-D-Flow median at circles-64, sample 0"><figcaption><strong>Median (sample 0)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res64_worst.png" alt="DLR-D-Flow worst at circles-64, sample 2"><figcaption><strong>Worst (sample 2)</strong></figcaption></figure>
+</div>
+<h4>circles-96&times;96, samples 0&ndash;4</h4>
+<div class="nz-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+<figure class="card"><img src="2026-09-16_assets/dlr5_res96_best.png" alt="DLR-D-Flow best at circles-96, sample 3"><figcaption><strong>Best (sample 3)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res96_median.png" alt="DLR-D-Flow median at circles-96, sample 2"><figcaption><strong>Median (sample 2)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res96_worst.png" alt="DLR-D-Flow worst at circles-96, sample 4"><figcaption><strong>Worst (sample 4)</strong></figcaption></figure>
+</div>
+<h4>circles-128&times;128, samples 0&ndash;4</h4>
+<div class="nz-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+<figure class="card"><img src="2026-09-16_assets/dlr5_res128_best.png" alt="DLR-D-Flow best at circles-128, sample 3"><figcaption><strong>Best (sample 3)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res128_median.png" alt="DLR-D-Flow median at circles-128, sample 2"><figcaption><strong>Median (sample 2)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res128_worst.png" alt="DLR-D-Flow worst at circles-128, sample 0"><figcaption><strong>Worst (sample 0)</strong></figcaption></figure>
+</div>
+<h4>circles-160&times;160, samples 0&ndash;4</h4>
+<div class="nz-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+<figure class="card"><img src="2026-09-16_assets/dlr5_res160_best.png" alt="DLR-D-Flow best at circles-160, sample 1"><figcaption><strong>Best (sample 1)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res160_median.png" alt="DLR-D-Flow median at circles-160, sample 2"><figcaption><strong>Median (sample 2)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res160_worst.png" alt="DLR-D-Flow worst at circles-160, sample 4"><figcaption><strong>Worst (sample 4)</strong></figcaption></figure>
+</div>
+<h4>circles-200&times;200, samples 0&ndash;4</h4>
+<div class="nz-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+<figure class="card"><img src="2026-09-16_assets/dlr5_res200_best.png" alt="DLR-D-Flow best at circles-200, sample 0"><figcaption><strong>Best (sample 0)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res200_median.png" alt="DLR-D-Flow median at circles-200, sample 4"><figcaption><strong>Median (sample 4)</strong></figcaption></figure>
+<figure class="card"><img src="2026-09-16_assets/dlr5_res200_worst.png" alt="DLR-D-Flow worst at circles-200, sample 1"><figcaption><strong>Worst (sample 1)</strong></figcaption></figure>
+</div>
+<p class="small">Data and scripts: <code>outputs/reports/2026-09-09_assets/</code> holds the unchanged Part 1 noise-test data; <code>outputs/reports/2026-09-16_assets/</code> holds the Part 2 5-sample benchmark (<code>bench5.json</code>, aggregated from <code>outputs/dflow_vs_dlr_sparse_ct_100step_lbfgs_1pct/</code>) and reconstruction galleries; <code>scripts/build_dlr_dflow_report_2026_09_16.py</code> and <code>scripts/benchmark_dflow_vs_dlr_sparse_ct.py</code> regenerate this page.</p>
+</main></body></html>

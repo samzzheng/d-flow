@@ -1,0 +1,180 @@
+{
+  "metadata": {
+    "case": "outputs/separated_shapes_noiseless_20261016/production/r128_shapes_ct10/sample_000",
+    "stage": "final",
+    "protocol": {
+      "manifest_sha256": "6bc980ca7285d09f92de588d36cc73e7b002624f255c5835ba69051fc532783d",
+      "checkpoint_sha256": "0b9557b21eecf520f15a4b59395d215116a1d7106855a5868d76e8f35cd6e9d4",
+      "test_subset_sha256": "bacdf2cfd9c1efec865660b55edce616e6dc9d9345629d41703ddc97eabde248",
+      "job": {
+        "resolution": 128,
+        "circles": 0,
+        "problem": "ct",
+        "level": 10
+      },
+      "sample": 0,
+      "operator": {
+        "kind": "ct",
+        "angle_count": 10,
+        "range_degrees": [
+          0,
+          180
+        ],
+        "normalization": "detector line mean",
+        "align_corners": false
+      },
+      "source_seed": 21541007,
+      "noise_seed": 41541007,
+      "dlr_seed": 51541007,
+      "torch": "2.11.0+cu129",
+      "gpu": "NVIDIA RTX 6000 Ada Generation"
+    },
+    "flow_steps": 5,
+    "device": "cuda:1",
+    "tf32": false,
+    "source_sha256": "147bd4a65956d3e78bfe06fb96ee5b37f2507ea8dea2d451ea6ff96ee640b361",
+    "code_sha256": "af0eef4a4740f0aaa59d6da351674c56268355fa57fdf1b2f202834d03d073bb",
+    "native_graph_vs_full_map_relative_errors": [
+      2.355544381771324e-07,
+      6.139612196420785e-07
+    ],
+    "final_image_relative_l2": 0.9982039928436279,
+    "definition": "J = derivative of the full discrete Euler map with respect to source; not the objective Hessian"
+  },
+  "exact_gradient_norm": 0.048771511763334274,
+  "width": 32,
+  "stages": [
+    {
+      "refinement": 0,
+      "ranks": {
+        "4": {
+          "relative_gradient_error": 0.6191482035967799,
+          "cosine": 0.7857323266245251,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0001248135371816404,
+          "reference_converged": false
+        },
+        "8": {
+          "relative_gradient_error": 0.4557637458642654,
+          "cosine": 0.8901594252490013,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0001248135371816404,
+          "reference_converged": false
+        },
+        "12": {
+          "relative_gradient_error": 0.24868267692969329,
+          "cosine": 0.9703284935303754,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0001248135371816404,
+          "reference_converged": false
+        },
+        "16": {
+          "relative_gradient_error": 0.24863780108311107,
+          "cosine": 0.9703405208133074,
+          "change_over_exact_norm": null,
+          "triplet_residual": 0.0001248135371816404,
+          "reference_converged": false
+        }
+      }
+    },
+    {
+      "refinement": 1,
+      "ranks": {
+        "4": {
+          "relative_gradient_error": 0.613334601821158,
+          "cosine": 0.7898231755104649,
+          "change_over_exact_norm": 0.09998213343957385,
+          "triplet_residual": 4.2351404473492037e-07,
+          "reference_converged": false
+        },
+        "8": {
+          "relative_gradient_error": 0.43785412504554627,
+          "cosine": 0.8990460288412851,
+          "change_over_exact_norm": 0.14234122622327092,
+          "triplet_residual": 7.700152941553491e-07,
+          "reference_converged": false
+        },
+        "12": {
+          "relative_gradient_error": 0.02748960419496911,
+          "cosine": 0.9996220906004252,
+          "change_over_exact_norm": 0.24765274382979185,
+          "triplet_residual": 2.972764686678129e-06,
+          "reference_converged": false
+        },
+        "16": {
+          "relative_gradient_error": 0.020338533641334068,
+          "cosine": 0.9997931514530642,
+          "change_over_exact_norm": 0.24751842543359134,
+          "triplet_residual": 7.164986117482173e-06,
+          "reference_converged": false
+        }
+      }
+    },
+    {
+      "refinement": 2,
+      "ranks": {
+        "4": {
+          "relative_gradient_error": 0.6133345156456178,
+          "cosine": 0.7898232299256689,
+          "change_over_exact_norm": 0.00018242012163380606,
+          "triplet_residual": 3.851850762720037e-07,
+          "reference_converged": true
+        },
+        "8": {
+          "relative_gradient_error": 0.43786054370292277,
+          "cosine": 0.8990428941091393,
+          "change_over_exact_norm": 0.0002458356558669267,
+          "triplet_residual": 3.851850762720037e-07,
+          "reference_converged": true
+        },
+        "12": {
+          "relative_gradient_error": 0.027371331560404825,
+          "cosine": 0.9996253352184507,
+          "change_over_exact_norm": 0.0013568821594493827,
+          "triplet_residual": 3.851850762720037e-07,
+          "reference_converged": true
+        },
+        "16": {
+          "relative_gradient_error": 0.020094396795803344,
+          "cosine": 0.9997980875636391,
+          "change_over_exact_norm": 0.0018498974138082347,
+          "triplet_residual": 1.4209038358614004e-06,
+          "reference_converged": true
+        }
+      }
+    }
+  ],
+  "latest": {
+    "refinement": 2,
+    "ranks": {
+      "4": {
+        "relative_gradient_error": 0.6133345156456178,
+        "cosine": 0.7898232299256689,
+        "change_over_exact_norm": 0.00018242012163380606,
+        "triplet_residual": 3.851850762720037e-07,
+        "reference_converged": true
+      },
+      "8": {
+        "relative_gradient_error": 0.43786054370292277,
+        "cosine": 0.8990428941091393,
+        "change_over_exact_norm": 0.0002458356558669267,
+        "triplet_residual": 3.851850762720037e-07,
+        "reference_converged": true
+      },
+      "12": {
+        "relative_gradient_error": 0.027371331560404825,
+        "cosine": 0.9996253352184507,
+        "change_over_exact_norm": 0.0013568821594493827,
+        "triplet_residual": 3.851850762720037e-07,
+        "reference_converged": true
+      },
+      "16": {
+        "relative_gradient_error": 0.020094396795803344,
+        "cosine": 0.9997980875636391,
+        "change_over_exact_norm": 0.0018498974138082347,
+        "triplet_residual": 1.4209038358614004e-06,
+        "reference_converged": true
+      }
+    }
+  }
+}

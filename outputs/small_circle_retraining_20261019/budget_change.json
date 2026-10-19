@@ -1,0 +1,13 @@
+{
+  "from": 1000,
+  "to": 500,
+  "at": "2026-10-19T15:51:21.497759-04:00",
+  "preserved_runs": [
+    {
+      "from": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e1000-mbtuned-20261019/n1",
+      "to": "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n1",
+      "epoch": 35,
+      "updates": 3290
+    }
+  ]
+}

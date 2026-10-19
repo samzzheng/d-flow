@@ -1,0 +1,23 @@
+{
+  "manifest_sha256": "8a24ce99a273f6ab3996770009aa5d965675fd320bbe122f33d9fe94f6b6aae2",
+  "changes": {
+    "experiments/five_step_pilot/run.py": {
+      "before": "4a8140953f14d1738ac3900bbd5f878435513a31632f60033474f94d44648941",
+      "after": "d3cd3e1ec1d93fa69bdee10b22392171689333646e1376f300a39637db7e164c"
+    },
+    "scripts/reconstruction_figures.py": {
+      "before": "95c5ccf21ae6ea16acf997c487140f4fe29fbe5edf2d8636ba96f44491b22dd3",
+      "after": "3e5f0f03dfc639407d95ca56134b761761e13675c50d8099cc7c623f08600f6f"
+    },
+    "experiments/ct_mri_sweep/run.py": {
+      "before": "b014b2aa4e451f855c17f04627d808938e99f0c4665e23dc481d1c0ceccf3c58",
+      "after": "80375bd8a86fe8d29611e7f1918ace6aac4843cfbee0aff5b90714245ba347e8"
+    },
+    "experiments/five_step_pilot/test_queue.py": {
+      "before": "e43168c76f014f3760928b68b0109264f53de745379b9ea558e4dd4781de27bd",
+      "after": "07ba4d6b4f5c6a99fcc4bde0f0451552e7f19db837a12a46d43b1645f18f69d4"
+    }
+  },
+  "reason": "Display-only: fixed training image scale with under/over indicators, remove GT history, label attempts; runner honors source reviews. Historical pilot runner additionally generalized scheduling/reporting; existing frozen numerical settings unchanged. Display-only follow-up: use endpoint colors for image values outside [0,1]; raw metrics and error maps unchanged. Display-only follow-up: two rows (images and clean-reference measurements), concise acquisition title; no changes to optimization or saved numerical results. Display-only: fixed measurement scales CT 0..1 and MRI log(1+magnitude) 0..5 across figures; raw arrays and errors unchanged. Scheduler-only extension: configurable circles, model-readiness admission, and shared multi-sweep admission; existing frozen solver settings unchanged. Scheduler-only: optional circle admission filter and reserve one worker for selected priority sweep. Frozen solver protocol unchanged.",
+  "reviewed_at": "2026-10-13T16:33:18.287551-04:00"
+}

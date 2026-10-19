@@ -1,0 +1,51 @@
+{
+  "old_pid": 3449068,
+  "old_argv": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "outputs/five_step_noise000_n124_20261014",
+    "--additional-out",
+    "outputs/five_step_noise001_n124_20261013",
+    "outputs/five_step_noise005_n124_20261013",
+    "outputs/five_step_noise010_n124_20261013",
+    "outputs/five_step_noise020_n124_20261013",
+    "outputs/separated_shapes_noiseless_20261016",
+    "--priority-out",
+    "outputs/separated_shapes_noiseless_20261016",
+    "--shared-controller",
+    "3447228",
+    "4096"
+  ],
+  "outputs": [
+    "/home/samzheng/d-flow/outputs/five_step_noise000_n124_20261014",
+    "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise005_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise010_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013",
+    "/home/samzheng/d-flow/outputs/separated_shapes_noiseless_20261016"
+  ],
+  "new_pid": 3470508,
+  "new_argv": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "/home/samzheng/d-flow/outputs/five_step_noise000_n124_20261014",
+    "--additional-out",
+    "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise005_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise010_n124_20261013",
+    "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013",
+    "/home/samzheng/d-flow/outputs/separated_shapes_noiseless_20261016",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank16_noiseless_20261017",
+    "--priority-out",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank16_noiseless_20261017"
+  ],
+  "initial_launch_failure": "Resolved Python symlink bypassed the virtual environment; relaunched with the virtual-environment path."
+}

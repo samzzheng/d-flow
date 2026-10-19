@@ -1,0 +1,482 @@
+[
+  {
+    "steps": 10,
+    "case": "r250_shapes_mri4/sample_000",
+    "method": "D-Flow",
+    "status": "step_limit",
+    "attempts": 1000,
+    "image_error_percent": 76.26617550849915,
+    "measurement_error_percent": 75.00085830688477,
+    "seconds": 242.47884977795184
+  },
+  {
+    "steps": 10,
+    "case": "r250_shapes_mri4/sample_000",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 169,
+    "image_error_percent": 1.3437984511256218,
+    "measurement_error_percent": 0.6727496162056923,
+    "seconds": 204.06507862731814
+  },
+  {
+    "steps": 10,
+    "case": "r250_shapes_mri4/sample_000",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 42,
+    "image_error_percent": 99.90235567092896,
+    "measurement_error_percent": 99.87726211547852,
+    "seconds": 84.62243172200397
+  },
+  {
+    "steps": 10,
+    "case": "r64_shapes_mri4/sample_001",
+    "method": "D-Flow",
+    "status": "step_limit",
+    "attempts": 1000,
+    "image_error_percent": 36.08817756175995,
+    "measurement_error_percent": 29.176515340805054,
+    "seconds": 143.99522814294323
+  },
+  {
+    "steps": 10,
+    "case": "r64_shapes_mri4/sample_001",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 35,
+    "image_error_percent": 2.3400355130434036,
+    "measurement_error_percent": 1.8318286165595055,
+    "seconds": 19.33609353005886
+  },
+  {
+    "steps": 10,
+    "case": "r64_shapes_mri4/sample_001",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 228,
+    "image_error_percent": 99.87658262252808,
+    "measurement_error_percent": 99.80615973472595,
+    "seconds": 111.75836926931515
+  },
+  {
+    "steps": 20,
+    "case": "r250_shapes_mri4/sample_000",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 81,
+    "image_error_percent": 107.06822872161865,
+    "measurement_error_percent": 106.16793632507324,
+    "seconds": 144.6229966180399
+  },
+  {
+    "steps": 20,
+    "case": "r250_shapes_mri4/sample_000",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 189,
+    "image_error_percent": 1.005306001752615,
+    "measurement_error_percent": 0.44475290924310684,
+    "seconds": 395.40515383984894
+  },
+  {
+    "steps": 20,
+    "case": "r250_shapes_mri4/sample_000",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 38,
+    "image_error_percent": 108.72224569320679,
+    "measurement_error_percent": 107.7808141708374,
+    "seconds": 181.33962298184633
+  },
+  {
+    "steps": 20,
+    "case": "r64_shapes_mri4/sample_001",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 151,
+    "image_error_percent": 99.86080527305603,
+    "measurement_error_percent": 99.80081915855408,
+    "seconds": 68.43861891981214
+  },
+  {
+    "steps": 20,
+    "case": "r64_shapes_mri4/sample_001",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 42,
+    "image_error_percent": 1.6059884801506996,
+    "measurement_error_percent": 1.042433176189661,
+    "seconds": 51.391600421164185
+  },
+  {
+    "steps": 20,
+    "case": "r64_shapes_mri4/sample_001",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 55,
+    "image_error_percent": 100.03092288970947,
+    "measurement_error_percent": 100.03606081008911,
+    "seconds": 50.714302313979715
+  },
+  {
+    "steps": 10,
+    "case": "r128_shapes_ct10/sample_000",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 214,
+    "image_error_percent": 100.81521272659302,
+    "measurement_error_percent": 94.92224454879761,
+    "seconds": 45.650572868064046
+  },
+  {
+    "steps": 10,
+    "case": "r128_shapes_ct10/sample_000",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 45,
+    "image_error_percent": 54.65087294578552,
+    "measurement_error_percent": 28.66443693637848,
+    "seconds": 34.44017360592261
+  },
+  {
+    "steps": 10,
+    "case": "r128_shapes_ct10/sample_000",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 17,
+    "image_error_percent": 111.58356666564941,
+    "measurement_error_percent": 100.02307891845703,
+    "seconds": 22.189280389342457
+  },
+  {
+    "steps": 10,
+    "case": "r96_shapes_mri4/sample_001",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 212,
+    "image_error_percent": 99.59866404533386,
+    "measurement_error_percent": 99.45410490036011,
+    "seconds": 55.15210228133947
+  },
+  {
+    "steps": 10,
+    "case": "r96_shapes_mri4/sample_001",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 50,
+    "image_error_percent": 1.6637718304991722,
+    "measurement_error_percent": 0.8624388836324215,
+    "seconds": 38.7371103418991
+  },
+  {
+    "steps": 10,
+    "case": "r96_shapes_mri4/sample_001",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 61,
+    "image_error_percent": 99.689382314682,
+    "measurement_error_percent": 99.59980249404907,
+    "seconds": 65.88277184590697
+  },
+  {
+    "steps": 20,
+    "case": "r128_shapes_ct10/sample_000",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 25,
+    "image_error_percent": 108.73799324035645,
+    "measurement_error_percent": 100.62001943588257,
+    "seconds": 59.67111024726182
+  },
+  {
+    "steps": 20,
+    "case": "r128_shapes_ct10/sample_000",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 45,
+    "image_error_percent": 60.47935485839844,
+    "measurement_error_percent": 31.347158551216125,
+    "seconds": 82.08605491090566
+  },
+  {
+    "steps": 20,
+    "case": "r128_shapes_ct10/sample_000",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 12,
+    "image_error_percent": 109.74012613296509,
+    "measurement_error_percent": 98.94957542419434,
+    "seconds": 35.240015489049256
+  },
+  {
+    "steps": 20,
+    "case": "r96_shapes_mri4/sample_001",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 46,
+    "image_error_percent": 99.66585636138916,
+    "measurement_error_percent": 99.57550168037415,
+    "seconds": 43.3440134068951
+  },
+  {
+    "steps": 20,
+    "case": "r96_shapes_mri4/sample_001",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 8,
+    "image_error_percent": 99.70378279685974,
+    "measurement_error_percent": 99.62919354438782,
+    "seconds": 16.091863826848567
+  },
+  {
+    "steps": 20,
+    "case": "r96_shapes_mri4/sample_001",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 31,
+    "image_error_percent": 99.68527555465698,
+    "measurement_error_percent": 99.60271716117859,
+    "seconds": 60.90903136180714
+  },
+  {
+    "steps": 10,
+    "case": "r160_shapes_ct10/sample_000",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 386,
+    "image_error_percent": 100.60796737670898,
+    "measurement_error_percent": 93.30015182495117,
+    "seconds": 93.05672303214669
+  },
+  {
+    "steps": 10,
+    "case": "r160_shapes_ct10/sample_000",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 24,
+    "image_error_percent": 93.27754378318787,
+    "measurement_error_percent": 78.7327527999878,
+    "seconds": 22.406010940205306
+  },
+  {
+    "steps": 10,
+    "case": "r160_shapes_ct10/sample_000",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 10,
+    "image_error_percent": 110.3967547416687,
+    "measurement_error_percent": 99.33693408966064,
+    "seconds": 20.02290242118761
+  },
+  {
+    "steps": 10,
+    "case": "r200_shapes_ct10/sample_001",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 282,
+    "image_error_percent": 103.62929105758667,
+    "measurement_error_percent": 96.49018049240112,
+    "seconds": 87.01258625416085
+  },
+  {
+    "steps": 10,
+    "case": "r200_shapes_ct10/sample_001",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 47,
+    "image_error_percent": 1.9348684698343277,
+    "measurement_error_percent": 0.42288885451853275,
+    "seconds": 50.5910200891085
+  },
+  {
+    "steps": 10,
+    "case": "r200_shapes_ct10/sample_001",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 32,
+    "image_error_percent": 103.12981605529785,
+    "measurement_error_percent": 97.39413261413574,
+    "seconds": 52.02320575714111
+  },
+  {
+    "steps": 20,
+    "case": "r160_shapes_ct10/sample_000",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 14,
+    "image_error_percent": 99.83773827552795,
+    "measurement_error_percent": 97.65705466270447,
+    "seconds": 34.935686280950904
+  },
+  {
+    "steps": 20,
+    "case": "r160_shapes_ct10/sample_000",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 33,
+    "image_error_percent": 101.15587711334229,
+    "measurement_error_percent": 73.4562873840332,
+    "seconds": 58.916672294959426
+  },
+  {
+    "steps": 20,
+    "case": "r160_shapes_ct10/sample_000",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 17,
+    "image_error_percent": 101.99631452560425,
+    "measurement_error_percent": 97.50194549560547,
+    "seconds": 56.5150978686288
+  },
+  {
+    "steps": 20,
+    "case": "r200_shapes_ct10/sample_001",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 166,
+    "image_error_percent": 117.2114372253418,
+    "measurement_error_percent": 105.29963970184326,
+    "seconds": 153.4752439078875
+  },
+  {
+    "steps": 20,
+    "case": "r200_shapes_ct10/sample_001",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 33,
+    "image_error_percent": 8.235754817724228,
+    "measurement_error_percent": 3.1337466090917587,
+    "seconds": 66.20841769920662
+  },
+  {
+    "steps": 20,
+    "case": "r200_shapes_ct10/sample_001",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 33,
+    "image_error_percent": 118.69843006134033,
+    "measurement_error_percent": 106.88697099685669,
+    "seconds": 82.04214549716562
+  },
+  {
+    "steps": 10,
+    "case": "r128_shapes_mri4/sample_002",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 111,
+    "image_error_percent": 99.95763897895813,
+    "measurement_error_percent": 99.2495059967041,
+    "seconds": 37.21214796975255
+  },
+  {
+    "steps": 10,
+    "case": "r128_shapes_mri4/sample_002",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 17,
+    "image_error_percent": 63.39360475540161,
+    "measurement_error_percent": 54.91124987602234,
+    "seconds": 14.83111485093832
+  },
+  {
+    "steps": 10,
+    "case": "r128_shapes_mri4/sample_002",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 87,
+    "image_error_percent": 99.93362426757812,
+    "measurement_error_percent": 98.89678359031677,
+    "seconds": 75.71190861007199
+  },
+  {
+    "steps": 10,
+    "case": "r64_shapes_ct10/sample_000",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 424,
+    "image_error_percent": 77.80442237854004,
+    "measurement_error_percent": 66.16144180297852,
+    "seconds": 59.99332913290709
+  },
+  {
+    "steps": 10,
+    "case": "r64_shapes_ct10/sample_000",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 26,
+    "image_error_percent": 43.71522665023804,
+    "measurement_error_percent": 20.900914072990417,
+    "seconds": 14.149213255848736
+  },
+  {
+    "steps": 10,
+    "case": "r64_shapes_ct10/sample_000",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 406,
+    "image_error_percent": 85.15162467956543,
+    "measurement_error_percent": 64.38026428222656,
+    "seconds": 210.2358606918715
+  },
+  {
+    "steps": 20,
+    "case": "r128_shapes_mri4/sample_002",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 118,
+    "image_error_percent": 99.76212978363037,
+    "measurement_error_percent": 99.67323541641235,
+    "seconds": 124.33267951617017
+  },
+  {
+    "steps": 20,
+    "case": "r128_shapes_mri4/sample_002",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 22,
+    "image_error_percent": 58.56306552886963,
+    "measurement_error_percent": 47.47110903263092,
+    "seconds": 43.908130718860775
+  },
+  {
+    "steps": 20,
+    "case": "r128_shapes_mri4/sample_002",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 33,
+    "image_error_percent": 127.44574546813965,
+    "measurement_error_percent": 126.87067985534668,
+    "seconds": 78.78695585206151
+  },
+  {
+    "steps": 20,
+    "case": "r64_shapes_ct10/sample_000",
+    "method": "D-Flow",
+    "status": "stalled",
+    "attempts": 346,
+    "image_error_percent": 89.57516551017761,
+    "measurement_error_percent": 74.58660006523132,
+    "seconds": 118.52858998067677
+  },
+  {
+    "steps": 20,
+    "case": "r64_shapes_ct10/sample_000",
+    "method": "P-Flow",
+    "status": "stalled",
+    "attempts": 28,
+    "image_error_percent": 55.5341899394989,
+    "measurement_error_percent": 29.011651873588562,
+    "seconds": 24.810534454882145
+  },
+  {
+    "steps": 20,
+    "case": "r64_shapes_ct10/sample_000",
+    "method": "DLR D-Flow",
+    "status": "stalled",
+    "attempts": 31,
+    "image_error_percent": 95.62063813209534,
+    "measurement_error_percent": 79.93390560150146,
+    "seconds": 47.298048357944936
+  }
+]

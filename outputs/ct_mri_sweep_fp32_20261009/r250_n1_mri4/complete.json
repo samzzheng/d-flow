@@ -1,0 +1,48 @@
+{
+  "job": {
+    "resolution": 250,
+    "circles": 1,
+    "problem": "mri",
+    "level": 4
+  },
+  "samples": 30,
+  "methods": {
+    "D-Flow": {
+      "mean_image_relative_l2": 0.2907664853769044,
+      "std_image_relative_l2": 0.4936914173362228,
+      "median_image_relative_l2": 0.010250353254377842,
+      "elapsed_seconds": 13783.067020531511,
+      "mean_updates": 74.4,
+      "statuses": {
+        "objective_plateau": 0,
+        "stalled": 13,
+        "step_limit": 17
+      }
+    },
+    "P-Flow": {
+      "mean_image_relative_l2": 0.009077704232186078,
+      "std_image_relative_l2": 0.004804103876888399,
+      "median_image_relative_l2": 0.00806386535987258,
+      "elapsed_seconds": 52524.477635476505,
+      "mean_updates": 80.1,
+      "statuses": {
+        "objective_plateau": 0,
+        "stalled": 15,
+        "step_limit": 15
+      }
+    },
+    "DLR D-Flow": {
+      "mean_image_relative_l2": 0.25143305597205956,
+      "std_image_relative_l2": 0.4533292564223987,
+      "median_image_relative_l2": 0.010832568630576134,
+      "elapsed_seconds": 26261.024688013596,
+      "mean_updates": 78.53333333333333,
+      "statuses": {
+        "objective_plateau": 0,
+        "stalled": 11,
+        "step_limit": 19
+      }
+    }
+  },
+  "checkpoint_sha256": "2d97ccb4daa40e2fbfe7391c83d8a9583d5d90712071803c6e133cb3ab944b21"
+}

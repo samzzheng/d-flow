@@ -1,0 +1,54 @@
+{
+  "supersample": 8,
+  "splits": {
+    "train": {
+      "size": 80000,
+      "shape_counts": {
+        "4": 19983,
+        "2": 19886,
+        "3": 20072,
+        "1": 20059
+      },
+      "types": {
+        "triangle": 100064,
+        "disk": 99915
+      },
+      "cross_split_identical_images": 0,
+      "all_images_have_fractional_boundary_pixels": true
+    },
+    "val": {
+      "size": 10000,
+      "shape_counts": {
+        "3": 2436,
+        "1": 2462,
+        "4": 2517,
+        "2": 2585
+      },
+      "types": {
+        "disk": 12659,
+        "triangle": 12349
+      },
+      "cross_split_identical_images": 0,
+      "all_images_have_fractional_boundary_pixels": true
+    },
+    "test": {
+      "size": 10000,
+      "shape_counts": {
+        "3": 2503,
+        "1": 2503,
+        "4": 2514,
+        "2": 2480
+      },
+      "types": {
+        "disk": 12475,
+        "triangle": 12553
+      },
+      "cross_split_identical_images": 0,
+      "all_images_have_fractional_boundary_pixels": true
+    }
+  },
+  "reproduction_checks": 303,
+  "unique_images": 100000,
+  "dataset_sha256": "67d6c0b0238449c239a51a98842dfbf6ed56964defb8b88021298ff34f111ffb",
+  "geometry_sha256": "4e48f35156b5c33c77cb0d1b9e4ab1f90914cc6adcdfef3088ecd32c1c5f3404"
+}

@@ -1,0 +1,46 @@
+{
+  "resolutions": [
+    128
+  ],
+  "samples": 3,
+  "sample_offset": 0,
+  "epoch": 50,
+  "angles": 15,
+  "noise_level": 0.05,
+  "euler_flow_steps": 100,
+  "rk4_flow_steps": 100,
+  "outer_steps": 600,
+  "closure_budget": 600,
+  "lbfgs_lr": 1.0,
+  "lbfgs_max_iter": 20,
+  "history_size": 100,
+  "lbfgs_line_search": "strong_wolfe",
+  "lbfgs_tolerance_grad": 1e-07,
+  "lbfgs_tolerance_change": 1e-09,
+  "objective": "measurement_mse",
+  "solution_state": "final",
+  "rollback_factor": 1.5,
+  "rollback_policy": "none",
+  "base_seed": 20260807,
+  "cpu_threads": 8,
+  "device": "cuda:0",
+  "deterministic": true,
+  "activation_checkpointing": true,
+  "out_dir": "/home/samzheng/d-flow/outputs/dflow_sparse_ct_fixed_closure_budget_5pct/res128",
+  "device_name": "NVIDIA RTX 6000 Ada Generation",
+  "methods": [
+    "forward_euler",
+    "rk4"
+  ],
+  "effective_lbfgs_max_iter": 1,
+  "analysis_policy": "intention_to_treat_all_runs_included",
+  "velocity_evaluations_per_flow": {
+    "forward_euler": 100,
+    "rk4": 400
+  },
+  "noise_definition": "||noise||_2 / ||clean measurement||_2 = noise_level",
+  "primary_metric": "relative L2 error",
+  "checkpoint_sha256": {
+    "128": "793636cbb3daa07783058d3ca920465f69980089b137935a8ad21b44cafaa17e"
+  }
+}

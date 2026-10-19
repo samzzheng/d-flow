@@ -1,0 +1,15 @@
+{
+  "exit_code": 143,
+  "interpretation": "Consistent with SIGTERM; external cause unknown",
+  "last_atomic_results_mtime_utc": "2026-09-27T16:26:46.952649+00:00",
+  "termination_confirmed_utc": "2026-09-27T16:30:09+00:00",
+  "last_accepted_index": 70,
+  "recorded_elapsed_seconds": 5607.963617753994,
+  "discarded_uncheckpointed_elapsed_seconds_lower_bound": 0.0,
+  "discarded_uncheckpointed_elapsed_seconds_upper_bound": 202.047351,
+  "timing_caveat": "Cumulative120-minute continuation budget counts checkpointed elapsed time plus resumed execution. Unknown discarded partial work and the confirmed paused wall time are reported separately and excluded from recorded elapsed; this is not an exact total CPU allocation time.",
+  "original_resume_checkpoint_sha256": "8f4b9be9500262aebecd7986d70e6ff431b02e99fc2267998c3034dc10a0ad41",
+  "original_results_snapshot": "interrupted_results_step00070.json",
+  "original_checkpoint_snapshot": "interrupted_resume_step00070.pt",
+  "restart_limit": "One explicitly compatible CPU continuation only; no restart after another SIGTERM"
+}

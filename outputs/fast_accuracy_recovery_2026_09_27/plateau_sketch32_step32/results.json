@@ -1,0 +1,86 @@
+{
+  "protocol": {
+    "device": "cpu",
+    "resolution": 250,
+    "model": "circles-250-noattn-ch16-b8/n1 epoch 100",
+    "checkpoint_sha256": "8ddc304ec6f1b70339f55d015b018f0f5571f006ae9b0a23490076aa9d491ae5",
+    "flow_steps": 100,
+    "integrator": "Euler",
+    "noise": 0.01,
+    "base_seed": 20260807,
+    "angles": 15,
+    "source_prior": "none",
+    "objective": "relative_scaled",
+    "factor_refresh": "every gradient",
+    "armijo_initial_step_policy": "first_iteration_only",
+    "optimizer_history_reset_at_start": true,
+    "history": 100,
+    "noise_norm": 0.15301357209682465,
+    "normalized_noise_floor": 0.010000208134638703,
+    "timing_scope": "CPU diagnostic; not a CUDA speed claim",
+    "sample": 0,
+    "threads": 8,
+    "cpu_affinity": [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ],
+    "exact_gradient_evaluations": 1,
+    "dlr_evaluations": 0,
+    "exact_activation_checkpointing": false,
+    "gradient_comparison": "native exact Euler derivative versus cached accepted-source optimizer.g"
+  },
+  "source_run": "/home/samzheng/d-flow/outputs/fast_accuracy_recovery_2026_09_27/fresh_sketch32_s0",
+  "source_step": 32,
+  "stop_reason": "in_progress_snapshot",
+  "metrics": {
+    "objective": 10.890276908874512,
+    "residual": 0.013200167772329694,
+    "residual_over_noise": 1.3199896343861806,
+    "image_relative_l2": 0.013187691569328308,
+    "raw_image_relative_l2": 0.016306988894939423
+  },
+  "validation": {
+    "native_image_relative_difference": 0.0,
+    "native_image_max_absolute_difference": 0.0,
+    "metric_differences": {
+      "objective": 0.0,
+      "residual": 0.0,
+      "residual_over_noise": 0.0,
+      "image_relative_l2": 0.0,
+      "raw_image_relative_l2": 0.0
+    }
+  },
+  "gradient": {
+    "exact_gradient_norm": 6.242199720367234,
+    "approximate_gradient_norm": 4.870304522612449,
+    "relative_error": 0.5851826010963547,
+    "cosine": 0.8115047145979873,
+    "norm_ratio": 0.7802224761763831,
+    "exact_dot_approximate": 24.67089040935208,
+    "true_derivative_along_negative_approximate": -24.67089040935208,
+    "predicted_derivative_along_negative_approximate": -23.71986614297921,
+    "beta": 1.0400939980284991,
+    "negative_approximate_is_true_descent": true
+  },
+  "cached_next_lbfgs_direction": {
+    "non_descent_fallback": false,
+    "history_size": 28,
+    "norm": 0.13210512733038995,
+    "true_directional_derivative": 0.0825403491394967,
+    "approximate_directional_derivative": -0.027933701246280508,
+    "is_true_descent": false,
+    "configured_lr": 1.0,
+    "step_cap": 2.5,
+    "capped_initial_step_size": 1.0,
+    "capped_initial_source_step_norm": 0.13210512733038995,
+    "true_linear_change_at_capped_initial_trial": 0.0825403491394967
+  },
+  "exact_gradient_seconds": 12.28347926796414,
+  "status": "complete"
+}

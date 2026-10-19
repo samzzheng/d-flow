@@ -1,0 +1,54 @@
+{
+  "measure": "Aggregate gradient-plus-one-forward evaluations per second; fixed source per worker, distinct sample indices; not full optimizer throughput",
+  "results": [
+    {
+      "resolution": 96,
+      "method": "D-Flow",
+      "four_per_second": 32.94679535331183,
+      "eight_per_second": 33.14102859238502,
+      "percent_change": 0.5895360595477905,
+      "max_gradient_norm_relative_spread": 4.3316236313489195e-07
+    },
+    {
+      "resolution": 96,
+      "method": "P-Flow",
+      "four_per_second": 92.23829642130815,
+      "eight_per_second": 91.14466759377142,
+      "percent_change": -1.1856559259740274,
+      "max_gradient_norm_relative_spread": 5.809267332096119e-10
+    },
+    {
+      "resolution": 96,
+      "method": "DLR D-Flow",
+      "four_per_second": 21.34077613187882,
+      "eight_per_second": 21.397776636906883,
+      "percent_change": 0.26709668231286177,
+      "max_gradient_norm_relative_spread": 0.001382239021439111
+    },
+    {
+      "resolution": 250,
+      "method": "D-Flow",
+      "four_per_second": 19.761098410345912,
+      "eight_per_second": 19.855529109717562,
+      "percent_change": 0.47786159155105423,
+      "max_gradient_norm_relative_spread": 2.8983502394394596e-07
+    },
+    {
+      "resolution": 250,
+      "method": "P-Flow",
+      "four_per_second": 50.357775598281094,
+      "eight_per_second": 50.83213007037502,
+      "percent_change": 0.9419686760550938,
+      "max_gradient_norm_relative_spread": 4.1485308535323493e-10
+    },
+    {
+      "resolution": 250,
+      "method": "DLR D-Flow",
+      "four_per_second": 8.08192102962807,
+      "eight_per_second": 8.09857393065576,
+      "percent_change": 0.20605127130841616,
+      "max_gradient_norm_relative_spread": 0.015801385029747088
+    }
+  ],
+  "decision": "Keep four production workers; eight yielded less than1% gain or slight slowdown. Gradient-norm spreads reported, not asserted equal."
+}

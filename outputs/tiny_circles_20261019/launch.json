@@ -1,0 +1,18 @@
+{
+  "pid": 1889614,
+  "training_pid": 1889617,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "scripts/train_small_circle_models.py",
+    "--out-dir",
+    "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e1000/n1",
+    "--epochs",
+    "1000",
+    "--device",
+    "cuda:1"
+  ],
+  "status": "training_complete",
+  "training_returncode": 0,
+  "reconstruction_controller_pid": 1942155
+}

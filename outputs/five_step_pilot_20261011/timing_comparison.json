@@ -1,0 +1,406 @@
+{
+  "paired_runs": [
+    {
+      "case": "r128_n1_ct10",
+      "method": "D-Flow",
+      "five": {
+        "attempts": 737,
+        "seconds": 109.81813687621616,
+        "seconds_per_attempt": 0.14900696998129737,
+        "line_search_trials": 810,
+        "status": "stalled",
+        "final_image_percent": 1.8299635499715805
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 294.5978980679065,
+        "seconds_per_attempt": 2.945978980679065,
+        "line_search_trials": 249,
+        "status": "step_limit",
+        "final_image_percent": 146.32102251052856
+      }
+    },
+    {
+      "case": "r128_n1_ct10",
+      "method": "DLR D-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 329.04108262690715,
+        "seconds_per_attempt": 0.3290410826269072,
+        "line_search_trials": 4192,
+        "status": "step_limit",
+        "final_image_percent": 3.107141889631748
+      },
+      "hundred": {
+        "attempts": 23,
+        "seconds": 222.94965163292363,
+        "seconds_per_attempt": 9.693463114474941,
+        "line_search_trials": 253,
+        "status": "stalled",
+        "final_image_percent": 146.66037559509277
+      }
+    },
+    {
+      "case": "r128_n1_ct10",
+      "method": "P-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 161.47474166401662,
+        "seconds_per_attempt": 0.16147474166401662,
+        "line_search_trials": 2793,
+        "status": "step_limit",
+        "final_image_percent": 2.4324364960193634
+      },
+      "hundred": {
+        "attempts": 16,
+        "seconds": 196.96111169783399,
+        "seconds_per_attempt": 12.310069481114624,
+        "line_search_trials": 281,
+        "status": "stalled",
+        "final_image_percent": 125.01159906387329
+      }
+    },
+    {
+      "case": "r128_n1_mri4",
+      "method": "D-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 155.23476533195935,
+        "seconds_per_attempt": 0.15523476533195935,
+        "line_search_trials": 1078,
+        "status": "step_limit",
+        "final_image_percent": 1.2366834096610546
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 336.18835739511997,
+        "seconds_per_attempt": 3.3618835739511996,
+        "line_search_trials": 311,
+        "status": "step_limit",
+        "final_image_percent": 144.10524368286133
+      }
+    },
+    {
+      "case": "r128_n1_mri4",
+      "method": "DLR D-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 355.54121685400605,
+        "seconds_per_attempt": 0.355541216854006,
+        "line_search_trials": 4352,
+        "status": "step_limit",
+        "final_image_percent": 2.3133859038352966
+      },
+      "hundred": {
+        "attempts": 29,
+        "seconds": 242.74542781198397,
+        "seconds_per_attempt": 8.370531993516689,
+        "line_search_trials": 276,
+        "status": "stalled",
+        "final_image_percent": 145.81810235977173
+      }
+    },
+    {
+      "case": "r128_n1_mri4",
+      "method": "P-Flow",
+      "five": {
+        "attempts": 19,
+        "seconds": 10.360735232941806,
+        "seconds_per_attempt": 0.5453018543653583,
+        "line_search_trials": 228,
+        "status": "stalled",
+        "final_image_percent": 3.9273958653211594
+      },
+      "hundred": {
+        "attempts": 22,
+        "seconds": 209.4300212841481,
+        "seconds_per_attempt": 9.519546422006732,
+        "line_search_trials": 310,
+        "status": "stalled",
+        "final_image_percent": 95.78942656517029
+      }
+    },
+    {
+      "case": "r250_n1_ct10",
+      "method": "D-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 215.25139278988354,
+        "seconds_per_attempt": 0.21525139278988353,
+        "line_search_trials": 1162,
+        "status": "step_limit",
+        "final_image_percent": 1.0715112090110779
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 317.8651889010798,
+        "seconds_per_attempt": 3.178651889010798,
+        "line_search_trials": 123,
+        "status": "step_limit",
+        "final_image_percent": 0.7872737012803555
+      }
+    },
+    {
+      "case": "r250_n1_ct10",
+      "method": "DLR D-Flow",
+      "five": {
+        "attempts": 267,
+        "seconds": 91.11715527088381,
+        "seconds_per_attempt": 0.3412627538235349,
+        "line_search_trials": 853,
+        "status": "stalled",
+        "final_image_percent": 1.9001450389623642
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 652.4004907270428,
+        "seconds_per_attempt": 6.524004907270427,
+        "line_search_trials": 191,
+        "status": "step_limit",
+        "final_image_percent": 0.8974196389317513
+      }
+    },
+    {
+      "case": "r250_n1_ct10",
+      "method": "P-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 773.0827400449198,
+        "seconds_per_attempt": 0.7730827400449197,
+        "line_search_trials": 13399,
+        "status": "step_limit",
+        "final_image_percent": 1.199041586369276
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 1139.733810990816,
+        "seconds_per_attempt": 11.39733810990816,
+        "line_search_trials": 1089,
+        "status": "step_limit",
+        "final_image_percent": 0.8555137552320957
+      }
+    },
+    {
+      "case": "r250_n1_mri4",
+      "method": "D-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 156.08623315719888,
+        "seconds_per_attempt": 0.15608623315719888,
+        "line_search_trials": 1146,
+        "status": "step_limit",
+        "final_image_percent": 0.7124419324100018
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 316.97151779802516,
+        "seconds_per_attempt": 3.1697151779802515,
+        "line_search_trials": 125,
+        "status": "step_limit",
+        "final_image_percent": 0.7737426087260246
+      }
+    },
+    {
+      "case": "r250_n1_mri4",
+      "method": "DLR D-Flow",
+      "five": {
+        "attempts": 225,
+        "seconds": 103.01327787199989,
+        "seconds_per_attempt": 0.4578367905422217,
+        "line_search_trials": 1169,
+        "status": "stalled",
+        "final_image_percent": 1.5472225844860077
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 657.1313186290208,
+        "seconds_per_attempt": 6.571313186290208,
+        "line_search_trials": 184,
+        "status": "step_limit",
+        "final_image_percent": 0.8046555332839489
+      }
+    },
+    {
+      "case": "r250_n1_mri4",
+      "method": "P-Flow",
+      "five": {
+        "attempts": 49,
+        "seconds": 28.974897348089144,
+        "seconds_per_attempt": 0.5913244356752887,
+        "line_search_trials": 628,
+        "status": "stalled",
+        "final_image_percent": 1.0478125885128975
+      },
+      "hundred": {
+        "attempts": 71,
+        "seconds": 1062.1020448680501,
+        "seconds_per_attempt": 14.959183730535917,
+        "line_search_trials": 1012,
+        "status": "stalled",
+        "final_image_percent": 0.7292578928172588
+      }
+    },
+    {
+      "case": "r64_n1_ct10",
+      "method": "D-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 134.6384547308553,
+        "seconds_per_attempt": 0.1346384547308553,
+        "line_search_trials": 1179,
+        "status": "step_limit",
+        "final_image_percent": 1.347566582262516
+      },
+      "hundred": {
+        "attempts": 32,
+        "seconds": 208.70198158291169,
+        "seconds_per_attempt": 6.52193692446599,
+        "line_search_trials": 203,
+        "status": "stalled",
+        "final_image_percent": 53.79732847213745
+      }
+    },
+    {
+      "case": "r64_n1_ct10",
+      "method": "DLR D-Flow",
+      "five": {
+        "attempts": 486,
+        "seconds": 117.67271891795099,
+        "seconds_per_attempt": 0.24212493604516663,
+        "line_search_trials": 1656,
+        "status": "stalled",
+        "final_image_percent": 8.955903351306915
+      },
+      "hundred": {
+        "attempts": 47,
+        "seconds": 386.33543309685774,
+        "seconds_per_attempt": 8.219902831848037,
+        "line_search_trials": 342,
+        "status": "stalled",
+        "final_image_percent": 50.99159479141235
+      }
+    },
+    {
+      "case": "r64_n1_ct10",
+      "method": "P-Flow",
+      "five": {
+        "attempts": 632,
+        "seconds": 371.44955088593997,
+        "seconds_per_attempt": 0.5877366311486392,
+        "line_search_trials": 10249,
+        "status": "stalled",
+        "final_image_percent": 21.98871076107025
+      },
+      "hundred": {
+        "attempts": 25,
+        "seconds": 318.4076944999397,
+        "seconds_per_attempt": 12.736307779997587,
+        "line_search_trials": 390,
+        "status": "stalled",
+        "final_image_percent": 55.54784536361694
+      }
+    },
+    {
+      "case": "r64_n1_mri4",
+      "method": "D-Flow",
+      "five": {
+        "attempts": 1000,
+        "seconds": 148.14532046206295,
+        "seconds_per_attempt": 0.14814532046206297,
+        "line_search_trials": 1257,
+        "status": "step_limit",
+        "final_image_percent": 1.2503664940595627
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 323.9259387999773,
+        "seconds_per_attempt": 3.239259387999773,
+        "line_search_trials": 115,
+        "status": "step_limit",
+        "final_image_percent": 1.5531675890088081
+      }
+    },
+    {
+      "case": "r64_n1_mri4",
+      "method": "DLR D-Flow",
+      "five": {
+        "attempts": 49,
+        "seconds": 14.509238029131666,
+        "seconds_per_attempt": 0.2961068985537075,
+        "line_search_trials": 234,
+        "status": "stalled",
+        "final_image_percent": 77.46286392211914
+      },
+      "hundred": {
+        "attempts": 100,
+        "seconds": 800.3285491929855,
+        "seconds_per_attempt": 8.003285491929855,
+        "line_search_trials": 408,
+        "status": "step_limit",
+        "final_image_percent": 19.552765786647797
+      }
+    },
+    {
+      "case": "r64_n1_mri4",
+      "method": "P-Flow",
+      "five": {
+        "attempts": 155,
+        "seconds": 71.21378893521614,
+        "seconds_per_attempt": 0.4594437995820396,
+        "line_search_trials": 1889,
+        "status": "stalled",
+        "final_image_percent": 1.8742691725492477
+      },
+      "hundred": {
+        "attempts": 14,
+        "seconds": 226.46062142006122,
+        "seconds_per_attempt": 16.175758672861516,
+        "line_search_trials": 197,
+        "status": "stalled",
+        "final_image_percent": 65.97961187362671
+      }
+    }
+  ],
+  "aggregates": {
+    "D-Flow": {
+      "five": {
+        "seconds": 919.1743033481762,
+        "attempts": 5737,
+        "seconds_per_attempt": 0.16021863401571834
+      },
+      "hundred": {
+        "seconds": 1798.2508825450204,
+        "attempts": 532,
+        "seconds_per_attempt": 3.380170831851542
+      },
+      "observed_per_attempt_ratio": 21.097239110900972
+    },
+    "P-Flow": {
+      "five": {
+        "seconds": 1416.5564541111235,
+        "attempts": 2855,
+        "seconds_per_attempt": 0.4961668841019697
+      },
+      "hundred": {
+        "seconds": 3153.095304760849,
+        "attempts": 248,
+        "seconds_per_attempt": 12.714093970809875
+      },
+      "observed_per_attempt_ratio": 25.6246323126171
+    },
+    "DLR D-Flow": {
+      "five": {
+        "seconds": 1010.8946895708796,
+        "attempts": 3027,
+        "seconds_per_attempt": 0.33395926315522945
+      },
+      "hundred": {
+        "seconds": 2961.8908710908145,
+        "attempts": 399,
+        "seconds_per_attempt": 7.423285391205049
+      },
+      "observed_per_attempt_ratio": 22.228116450701926
+    }
+  },
+  "pilot_elapsed_seconds": 6051.570925
+}

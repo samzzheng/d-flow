@@ -1,0 +1,7 @@
+{
+  "status": "complete",
+  "epochs": 2,
+  "best_validation_loss": 1.1796962022781372,
+  "best_checkpoint_test_loss": 1.1802088022232056,
+  "elapsed_seconds": 22.16240409994498
+}

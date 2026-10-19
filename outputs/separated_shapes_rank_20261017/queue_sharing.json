@@ -1,0 +1,24 @@
+{
+  "old_pid": 3338540,
+  "new_pid": 3449068,
+  "argv": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "outputs/five_step_noise000_n124_20261014",
+    "--additional-out",
+    "outputs/five_step_noise001_n124_20261013",
+    "outputs/five_step_noise005_n124_20261013",
+    "outputs/five_step_noise010_n124_20261013",
+    "outputs/five_step_noise020_n124_20261013",
+    "outputs/separated_shapes_noiseless_20261016",
+    "--priority-out",
+    "outputs/separated_shapes_noiseless_20261016",
+    "--shared-controller",
+    "3447228",
+    "4096"
+  ]
+}

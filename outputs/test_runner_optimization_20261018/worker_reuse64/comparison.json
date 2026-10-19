@@ -1,0 +1,90 @@
+{
+  "deterministic": true,
+  "worker_seconds": {
+    "separate": [
+      8.209666823036969,
+      7.531552581116557
+    ],
+    "grouped": [
+      10.188409356866032
+    ]
+  },
+  "total_seconds": {
+    "separate": 15.741219404153526,
+    "grouped": 10.188409356866032
+  },
+  "comparisons": [
+    {
+      "sample": 0,
+      "method": "D-Flow",
+      "relative_differences": {
+        "source": 0.0,
+        "image": 0.0,
+        "measurement": 0.0
+      },
+      "same_phi": true,
+      "same_evaluations": true,
+      "same_status": true
+    },
+    {
+      "sample": 0,
+      "method": "P-Flow",
+      "relative_differences": {
+        "source": 0.0,
+        "image": 0.0,
+        "measurement": 0.0
+      },
+      "same_phi": true,
+      "same_evaluations": true,
+      "same_status": true
+    },
+    {
+      "sample": 0,
+      "method": "DLR D-Flow",
+      "relative_differences": {
+        "source": 0.0,
+        "image": 0.0,
+        "measurement": 0.0
+      },
+      "same_phi": true,
+      "same_evaluations": true,
+      "same_status": true
+    },
+    {
+      "sample": 1,
+      "method": "D-Flow",
+      "relative_differences": {
+        "source": 0.0,
+        "image": 0.0,
+        "measurement": 0.0
+      },
+      "same_phi": true,
+      "same_evaluations": true,
+      "same_status": true
+    },
+    {
+      "sample": 1,
+      "method": "P-Flow",
+      "relative_differences": {
+        "source": 0.0,
+        "image": 0.0,
+        "measurement": 0.0
+      },
+      "same_phi": true,
+      "same_evaluations": true,
+      "same_status": true
+    },
+    {
+      "sample": 1,
+      "method": "DLR D-Flow",
+      "relative_differences": {
+        "source": 0.0,
+        "image": 0.0,
+        "measurement": 0.0
+      },
+      "same_phi": true,
+      "same_evaluations": true,
+      "same_status": true
+    }
+  ]
+}

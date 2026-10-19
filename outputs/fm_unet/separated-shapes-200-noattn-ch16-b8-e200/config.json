@@ -1,0 +1,113 @@
+{
+  "im_size": 200,
+  "data": "/home/samzheng/d-flow/data/separated-shapes-200.pt",
+  "epochs": 200,
+  "batch": 512,
+  "lr": 0.0002,
+  "wd": 0.0001,
+  "ema_decay": 0.999,
+  "lr_schedule": {
+    "name": "CosineAnnealingLR",
+    "t_max": 200,
+    "eta_min": 1e-05
+  },
+  "checkpoint_sampling": {
+    "samples_per_integrator": 2,
+    "integrators": [
+      "euler",
+      "rk4"
+    ],
+    "steps": 100,
+    "shared_initial_noise": true
+  },
+  "micro_batch": 16,
+  "arch": {
+    "ch": 16,
+    "ch_mul": [
+      1,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "att_channels": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "groups": 4,
+    "mid_attn": false
+  },
+  "params": 736721,
+  "dataset_metadata": {
+    "format_version": 1,
+    "resolution": 200,
+    "split_sizes": {
+      "train": 80000,
+      "val": 10000,
+      "test": 10000
+    },
+    "domain": [
+      [
+        -1,
+        1
+      ],
+      [
+        -1,
+        1
+      ]
+    ],
+    "separation": 0.05,
+    "count_distribution": "Uniform integers 1..4",
+    "type_distribution": "Independent disk/triangle, probability 1/2 each",
+    "disk_radius_range": [
+      0.1,
+      0.2
+    ],
+    "triangle_side_range": [
+      0.2,
+      0.3
+    ],
+    "triangle_orientation_range": [
+      0.0,
+      6.283185307179586
+    ],
+    "placement": "Joint uniform center rejection with fixed shape parameters; enclosing disks",
+    "rasterization": "Mean subpixel coverage",
+    "supersample": 8,
+    "storage": "uint8 [0,255], NCHW, row=y, column=x; divide by 255 to obtain [0,1]",
+    "geometry_file": "separated-shapes-200.geometry.jsonl",
+    "geometry_order": "One JSON line per sample, train then val then test, in tensor order",
+    "seed": 202610150000,
+    "initial_split_seed_ranges": {
+      "train": [
+        202610150000,
+        202610229999
+      ],
+      "val": [
+        202610230000,
+        202610239999
+      ],
+      "test": [
+        202610240000,
+        202610249999
+      ]
+    },
+    "rng": "default_rng/PCG64",
+    "split_policy": "Independent seeds, then swap exact cross-split raster duplicates into one split",
+    "seed_lookup": "sample_seeds[split][index] in the .pt file; geometry JSONL follows final tensor order",
+    "numpy_version": "2.4.4",
+    "source_sha256": {
+      "generate_separated_shapes.py": "8a71309b0508229b1e242759320d858d4effa5c6f9960ff28d16f73805499c36",
+      "separated_shapes.py": "b15d03b3bcc19f7df292d06d0076c4e171c283774b23f977618819727c7c4037"
+    },
+    "created_at": "2026-10-15T09:48:07.150638-04:00",
+    "cross_split_duplicate_swaps": 0
+  },
+  "t_alpha": 1.0,
+  "started_at": "2026-10-15T18:26:50"
+}

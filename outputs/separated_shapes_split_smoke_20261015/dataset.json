@@ -1,0 +1,63 @@
+{
+  "format_version": 1,
+  "resolution": 64,
+  "split_sizes": {
+    "train": 512,
+    "val": 32,
+    "test": 32
+  },
+  "domain": [
+    [
+      -1,
+      1
+    ],
+    [
+      -1,
+      1
+    ]
+  ],
+  "separation": 0.05,
+  "count_distribution": "Uniform integers 1..4",
+  "type_distribution": "Independent disk/triangle, probability 1/2 each",
+  "disk_radius_range": [
+    0.1,
+    0.2
+  ],
+  "triangle_side_range": [
+    0.2,
+    0.3
+  ],
+  "triangle_orientation_range": [
+    0.0,
+    6.283185307179586
+  ],
+  "placement": "Joint uniform center rejection with fixed shape parameters; enclosing disks",
+  "rasterization": "Binary pixel centers; row=y, column=x; no antialiasing",
+  "storage": "uint8 0/255, NCHW; divide by 255 to obtain binary 0/1",
+  "geometry_file": "dataset.geometry.jsonl",
+  "geometry_order": "One JSON line per sample, train then val then test, in tensor order",
+  "seed": 202610150000,
+  "split_seed_ranges": {
+    "train": [
+      202610150000,
+      202610150511
+    ],
+    "val": [
+      202610150512,
+      202610150543
+    ],
+    "test": [
+      202610150544,
+      202610150575
+    ]
+  },
+  "rng": "default_rng/PCG64",
+  "numpy_version": "2.4.4",
+  "source_sha256": {
+    "generate_separated_shapes.py": "cb8fc191ab3240999a0589cb0041a5d759e345fac7ec4f950c96912dde9ba3e2",
+    "separated_shapes.py": "7d0a7784beb88981ac53e336c1bcb48321dfda680da23b2b8171569d5e2f0b41"
+  },
+  "created_at": "2026-10-15T00:24:14.269647-04:00",
+  "generation_seconds": 2.105004743905738,
+  "dataset_bytes": 2362593
+}

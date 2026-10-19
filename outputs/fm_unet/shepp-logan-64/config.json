@@ -1,0 +1,65 @@
+{
+  "im_size": 64,
+  "data": "data/shepp-logan-64.pt",
+  "epochs": 50,
+  "batch": 512,
+  "lr": 0.0002,
+  "wd": 0.0001,
+  "ema_decay": 0.999,
+  "euler_steps": 200,
+  "micro_batch": 64,
+  "arch": {
+    "ch": 44,
+    "ch_mul": [
+      1,
+      2,
+      2
+    ],
+    "att_channels": [
+      0,
+      0,
+      1
+    ],
+    "groups": 4
+  },
+  "params": 2705517,
+  "dataset_metadata": {
+    "name": "transformed Shepp-Logan phantom",
+    "source": "skimage.data.shepp_logan_phantom",
+    "resolution": 64,
+    "split_sizes": {
+      "train": 80000,
+      "val": 10000,
+      "test": 10000
+    },
+    "seed": 42,
+    "storage_dtype": "uint8",
+    "value_range": [
+      0.0,
+      1.0
+    ],
+    "augmentation": {
+      "rotation_degrees": [
+        -15.0,
+        15.0
+      ],
+      "axis_scale": [
+        0.9,
+        1.1
+      ],
+      "translation_fraction": [
+        -0.08,
+        0.08
+      ],
+      "gamma": [
+        0.85,
+        1.15
+      ],
+      "intensity": [
+        0.9,
+        1.0
+      ]
+    }
+  },
+  "started_at": "2026-07-31T14:18:55"
+}

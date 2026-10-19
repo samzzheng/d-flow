@@ -1,0 +1,20 @@
+{
+  "sample": 1,
+  "source_step": 44,
+  "rows": [
+    {
+      "profile": "fast",
+      "span_error_gram_corrected": 0.07719930131264113,
+      "coefficient_error_gram_corrected": 0.03932823166736242,
+      "original_span_error": 0.07719976454973221
+    },
+    {
+      "profile": "sketch32",
+      "span_error_gram_corrected": 0.07550958189687892,
+      "coefficient_error_gram_corrected": 0.03572035767006198,
+      "original_span_error": 0.07551005482673645
+    }
+  ],
+  "relative_action_error_reduction": 0.035866008443654174,
+  "relative_span_error_reduction": 0.021887755290934563
+}

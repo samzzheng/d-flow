@@ -1,0 +1,48 @@
+{
+  "initial_source_bitwise_equal": true,
+  "shared_protocol_equal_except_integrator": true,
+  "crossings": {
+    "sample1_euler": {
+      "1.1": {
+        "accepted_index": 42,
+        "image_relative_l2_absolute_recompute_difference": 0.0,
+        "raw_ratio_absolute_recompute_difference": 0.0,
+        "first_crossing_verified": true
+      },
+      "1.05": {
+        "accepted_index": 44,
+        "image_relative_l2_absolute_recompute_difference": 0.0,
+        "raw_ratio_absolute_recompute_difference": 0.0,
+        "first_crossing_verified": true
+      },
+      "1.0": {
+        "accepted_index": 96,
+        "image_relative_l2_absolute_recompute_difference": 0.0,
+        "raw_ratio_absolute_recompute_difference": 0.0,
+        "first_crossing_verified": true
+      }
+    },
+    "sample1_rk4": {
+      "1.1": {
+        "accepted_index": 37,
+        "image_relative_l2_absolute_recompute_difference": 0.0,
+        "raw_ratio_absolute_recompute_difference": 0.0,
+        "first_crossing_verified": true
+      },
+      "1.05": {
+        "accepted_index": 38,
+        "image_relative_l2_absolute_recompute_difference": 0.0,
+        "raw_ratio_absolute_recompute_difference": 0.0,
+        "first_crossing_verified": true
+      },
+      "1.0": {
+        "accepted_index": 94,
+        "image_relative_l2_absolute_recompute_difference": 0.0,
+        "raw_ratio_absolute_recompute_difference": 0.0,
+        "first_crossing_verified": true
+      }
+    }
+  },
+  "original_step70_preserved": true,
+  "model_evaluations_used": 0
+}

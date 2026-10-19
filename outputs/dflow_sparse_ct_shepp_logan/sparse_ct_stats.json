@@ -1,0 +1,22 @@
+{
+  "64": {
+    "completed_samples": 5,
+    "mean_image_mse": 2.910435141529888e-05,
+    "median_image_mse": 2.6343481295043603e-05,
+    "mean_measurement_mse": 5.869127974733601e-08,
+    "median_iteration_time_s": 3.695463439449668,
+    "mean_iteration_time_s": 3.0673539510415866,
+    "minimum_iteration_time_s": 0.5854737847112119,
+    "maximum_iteration_time_s": 5.242269976995885
+  },
+  "128": {
+    "completed_samples": 5,
+    "mean_image_mse": 5.507849855348468e-05,
+    "median_image_mse": 5.2131526899756864e-05,
+    "mean_measurement_mse": 4.728327205327787e-08,
+    "median_iteration_time_s": 5.29696531384252,
+    "mean_iteration_time_s": 3.308510983767919,
+    "minimum_iteration_time_s": 0.5815481101162732,
+    "maximum_iteration_time_s": 5.317021504044533
+  }
+}

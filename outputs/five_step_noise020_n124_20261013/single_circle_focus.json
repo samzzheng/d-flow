@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-13T16:33:37.733957-04:00",
+  "pid": 61651,
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013",
+    "--additional-out",
+    "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013",
+    "--run-circles",
+    "1",
+    "--priority-out",
+    "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013"
+  ],
+  "circles": [
+    1
+  ],
+  "noise_levels": [
+    0.01,
+    0.2
+  ],
+  "allocation": "One worker prioritized to1%, remaining workers20%; all four may serve either sweep when the other has no eligible work.",
+  "paused_circles": [
+    2,
+    4
+  ],
+  "paused_noise_levels": [
+    0.05,
+    0.1
+  ],
+  "preserve_manifests_and_checkpoints": true
+}

@@ -1,0 +1,52 @@
+{
+  "pid": 821467,
+  "at": "2026-10-14T13:07:32.668578-04:00",
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "outputs/five_step_noise000_n124_20261014",
+    "--additional-out",
+    "outputs/five_step_noise001_n124_20261013",
+    "outputs/five_step_noise005_n124_20261013",
+    "outputs/five_step_noise010_n124_20261013",
+    "outputs/five_step_noise020_n124_20261013"
+  ],
+  "gpu": 1,
+  "scope": {
+    "circles": [
+      1,
+      2,
+      4
+    ],
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200,
+      250
+    ],
+    "noise_percent": [
+      0,
+      1,
+      5,
+      10,
+      20
+    ],
+    "samples": 30,
+    "methods": [
+      "D-Flow",
+      "P-Flow",
+      "DLR D-Flow"
+    ],
+    "flow_steps": 5,
+    "max_optimizer_attempts": 1000
+  },
+  "existing_complete_paired_cases": 1802,
+  "remaining_paired_cases": 3598,
+  "max_workers": 4
+}

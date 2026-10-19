@@ -1,0 +1,13 @@
+{
+  "completed_at": "2026-10-09T10:34:15.035356-04:00",
+  "commit": "faa3e25",
+  "residual_vmax": {
+    "ct": 1.0,
+    "mri": 25.0
+  },
+  "fp32_regenerated_cases": 171,
+  "tf32_regenerated_cases": 325,
+  "tests_passed": 14,
+  "curves_changed": false,
+  "measurements_or_optimizer_settings_changed": false
+}

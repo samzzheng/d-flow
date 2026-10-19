@@ -1,0 +1,29 @@
+[
+  {
+    "case": "r128_n1_ct10/sample_000/inputs.pt",
+    "equal_tensors": {
+      "truth": true,
+      "clean": true,
+      "observed": true,
+      "initial": true
+    }
+  },
+  {
+    "case": "r128_n1_ct10/sample_005/inputs.pt",
+    "equal_tensors": {
+      "truth": true,
+      "clean": true,
+      "observed": true,
+      "initial": true
+    }
+  },
+  {
+    "case": "r250_n1_ct10/sample_000/inputs.pt",
+    "equal_tensors": {
+      "truth": true,
+      "clean": true,
+      "observed": true,
+      "initial": true
+    }
+  }
+]

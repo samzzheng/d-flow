@@ -1,0 +1,13 @@
+{
+  "pid": 3156936,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-m",
+    "experiments.five_step_pilot.run",
+    "run",
+    "--out",
+    "outputs/five_step_noise010_20261012"
+  ],
+  "at": "2026-10-12T15:49:57.077765-04:00",
+  "gpu": 1
+}

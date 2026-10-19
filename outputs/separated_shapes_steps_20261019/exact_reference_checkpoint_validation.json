@@ -1,0 +1,6 @@
+{
+  "resolution": 128,
+  "steps": 20,
+  "endpoint_relative_error": 0.0,
+  "gradient_relative_error": 1.14310090282288e-07
+}
