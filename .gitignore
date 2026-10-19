@@ -6,3 +6,5 @@ documents/*
 dlr_dflow/outputs/*
 dlr_dflow/notes/*
 AGENTS.md
+tests/*
+experiments/*
