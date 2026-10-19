@@ -1,4 +1,4 @@
-"""Train the 22k circles-64 pilot through the standard FM trainer."""
+"""Train a 22k circle model through the standard FM trainer."""
 from __future__ import annotations
 
 import argparse
@@ -15,20 +15,31 @@ import torch
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--out-dir', type=Path, default=Path('outputs/fm_unet/circles-64-noattn-ch4-e1000/n1'))
+    parser.add_argument('--out-dir', type=Path)
+    parser.add_argument('--resolution', type=int, choices=(64, 96, 128, 160, 200, 250), default=64)
+    parser.add_argument('--n-circles', type=int, choices=(1, 2, 3, 4), default=1)
+    parser.add_argument('--micro-batch', type=int, help='Override the calibrated microbatch; effective batch stays 512')
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--device', default='cuda:1')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     os.chdir(root)
     sys.path.insert(0, str(root))
+    data_path = Path(f'data/circles-{args.resolution}-n{args.n_circles}.pt')
+    args.out_dir = args.out_dir or Path(f'outputs/fm_unet/circles-{args.resolution}-noattn-ch4-e{args.epochs}/n{args.n_circles}')
+    profile = json.loads((root / 'experiments/tiny_circles/microbatch_profile.json').read_text())
+    micro_batch = args.micro_batch or profile['micro_batches'][str(args.resolution)]
+    if args.micro_batch is not None and not 1 <= args.micro_batch <= 512:
+        parser.error('--micro-batch must be between 1 and 512')
+    if not data_path.exists():
+        parser.error(f'Missing dataset: {data_path}')
     torch.manual_seed(20261019)
     torch.backends.cudnn.benchmark = True
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
-    command = ['train_fm_unet.py', '--data', 'data/circles-64-n1.pt',
+    command = ['train_fm_unet.py', '--data', str(data_path),
         '--out-dir', str(args.out_dir), '--device', args.device, '--epochs', str(args.epochs),
-        '--batch', '512', '--micro-batch', '512', '--lr', '0.0002', '--wd', '0.0001',
+        '--batch', '512', '--micro-batch', str(micro_batch), '--lr', '0.0002', '--wd', '0.0001',
         '--ema-decay', '0.999', '--t-alpha', '1', '--sample-steps', '100',
         '--ch', '4', '--ch-mul', '1,2,2', '--att-channels', '0,0,0', '--groups', '2',
         '--no-mid-attn', '--num-workers', '0', '--threads', '4', '--no-compile',
@@ -36,6 +47,11 @@ def main() -> None:
     checkpoint = args.out_dir / 'checkpoints/training_state.pt'
     if checkpoint.exists():
         state = torch.load(checkpoint, weights_only=True, map_location='cpu', mmap=True)
+        config = json.loads((args.out_dir / 'config.json').read_text())
+        if config['epochs'] != args.epochs or Path(config['data']).resolve() != data_path.resolve():
+            parser.error('Resume settings do not match the existing run')
+        if state['epoch'] >= args.epochs:
+            parser.error('Training has already reached the requested epoch count')
         command.extend(['--resume-training-state', str(checkpoint), '--start-epoch', str(state['epoch'])])
         del state
     elif (args.out_dir / 'config.json').exists():

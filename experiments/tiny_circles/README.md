@@ -1,6 +1,6 @@
-# Small circles-64 flow-matching pilot
+# Small circle flow-matching models
 
-The active 22,037-parameter model now uses the standard `train_fm_unet.py` trainer
+The 22,037-parameter model uses the standard `train_fm_unet.py` trainer
 and the normal FM output layout:
 
 ```
@@ -23,9 +23,25 @@ Run/resume with:
 .venv/bin/python scripts/train_small_circle_models.py --device cuda:1
 ```
 
-Do not launch a duplicate trainer. The active supervisor is
-`experiments.tiny_circles.launch`; it restores the previous reconstruction queue
-when training exits.
+Choose `--resolution` from 64/96/128/160/200/250 and `--n-circles` from 1/2/3/4.
+Output folders include the resolution, epoch budget and circle count. Do not
+launch a duplicate trainer; completed runs are rejected rather than overwritten.
+
+Microbatch defaults come from `microbatch_profile.json`, calibrated on a 48 GiB
+RTX 6000 Ada with BF16, channels-last, fused AdamW and GPU-resident uint8 data.
+The effective batch stays 512: microbatches accumulate gradients before one
+optimizer/EMA update. `--micro-batch` overrides the calibrated setting for a
+different GPU or available memory budget. Changing chunking can change random
+draw assignment and floating-point roundoff, so it is not a bitwise-identical
+training trajectory. The benchmark keeps noise/time draws fixed when verifying
+gradient accumulation, and includes partial chunks.
+
+Calibration uses `python -m experiments.tiny_circles.tune_microbatches` on GPU 1.
+It waits for other GPU jobs, checks for contention, and measures three rounds
+per candidate, each with two warmup updates and four timed updates. It chooses
+the lowest-memory candidate within 2% of the fastest median. Measurements
+include data gathering, normalization, forward/backward, Adam, EMA and loss
+collection; they exclude validation, checkpoint I/O and sample plotting.
 
 - Single-circle 64² dataset: 48,000/1,000/1,000 train/validation/test images.
 - Channels 4/8/8, no attention, GroupNorm groups 2; 22,037 parameters versus

@@ -1,0 +1,69 @@
+{
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "effective_batch": 512,
+  "parameters": 22037,
+  "settings": {
+    "parameters": 22037,
+    "ch_mul": [
+      1,
+      2,
+      2
+    ],
+    "precision": "bf16",
+    "tf32": false,
+    "channels_last": true,
+    "fused_adam": true,
+    "gpu_resident": true,
+    "threads": 4
+  },
+  "micro_batches": {
+    "64": 512,
+    "96": 128,
+    "128": 128,
+    "160": 64,
+    "200": 32,
+    "250": 32
+  },
+  "selection_rule": "Lowest peak reserved memory within 2% of the fastest median across the tested candidates",
+  "evidence": "outputs/microbatch_tuning_20261019/results.json",
+  "timing_scope": "Gather and normalize data, forward/backward, AdamW, EMA and loss collection; excludes validation, checkpoint and plotting",
+  "memory_scope": "Peak PyTorch reserved memory including warmup and resident uint8 train/val/test data; excludes CUDA context",
+  "measurements": {
+    "64": {
+      "micro_batch": 512,
+      "median_ms": 33.08306448161602,
+      "peak_reserved_gib": 3.408203125,
+      "peak_allocated_gib": 3.162447929382324
+    },
+    "96": {
+      "micro_batch": 128,
+      "median_ms": 74.35143645852804,
+      "peak_reserved_gib": 1.76953125,
+      "peak_allocated_gib": 1.601590633392334
+    },
+    "128": {
+      "micro_batch": 128,
+      "median_ms": 126.0167087893933,
+      "peak_reserved_gib": 3.02734375,
+      "peak_allocated_gib": 2.8167009353637695
+    },
+    "160": {
+      "micro_batch": 64,
+      "median_ms": 193.92111722845584,
+      "peak_reserved_gib": 3.78125,
+      "peak_allocated_gib": 3.6556100845336914
+    },
+    "200": {
+      "micro_batch": 32,
+      "median_ms": 308.2898906432092,
+      "peak_reserved_gib": 3.927734375,
+      "peak_allocated_gib": 3.840383529663086
+    },
+    "250": {
+      "micro_batch": 32,
+      "median_ms": 491.3066140143201,
+      "peak_reserved_gib": 6.134765625,
+      "peak_allocated_gib": 5.9759521484375
+    }
+  }
+}
