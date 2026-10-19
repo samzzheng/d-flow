@@ -38,7 +38,7 @@ class TrainingQueueTest(unittest.TestCase):
                         (out / f'n{command[1]}/run_summary.json').write_text(json.dumps(dict(status='complete', epochs_completed=1000)))
                 return SimpleNamespace(pid=7777, returncode=code, poll=lambda: code)
 
-            with patch.object(queue.sys, 'argv', ['queue', '--out', str(out)]), \
+            with patch.object(queue.sys, 'argv', ['queue', '--out', str(out), '--epochs', '1000']), \
                  patch.object(queue, 'find_controller', return_value=None), \
                  patch.object(queue.signal, 'signal'), \
                  patch.object(queue.subprocess, 'Popen', side_effect=start):

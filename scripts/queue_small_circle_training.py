@@ -37,7 +37,7 @@ def find_controller(command: list[str]) -> int | None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, default=Path('outputs/small_circle_retraining_20261019'))
-    parser.add_argument('--epochs', type=int, default=1000)
+    parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--prepare-only', action='store_true')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
