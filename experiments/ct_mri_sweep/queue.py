@@ -61,7 +61,7 @@ def fitting_task(remaining: list[Task], running: list[Task], settings: Settings,
 
 
 def source_hashes() -> dict[str, str]:
-    paths = [*(ROOT / "experiments/ct_mri_sweep" / name for name in ("__init__.py", "run.py", "queue.py", "operators.py", "validation.py")),
+    paths = [*(ROOT / "experiments/ct_mri_sweep" / name for name in ("__init__.py", "run.py", "queue.py", "operators.py", "optimizer.py", "validation.py")),
              *(ROOT / "p_flow" / name for name in ("__init__.py", "p_flow.py", "armijo.py")),
              *Path(ROOT / "dlr_dflow").glob("*.py"),
              *Path(ROOT / "dlr_dflow/implementation").glob("*.py"),

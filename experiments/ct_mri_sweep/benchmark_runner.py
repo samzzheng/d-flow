@@ -41,6 +41,9 @@ def main() -> None:
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--device", default="cuda:1")
     parser.add_argument("--methods", nargs="+", default=list(run.METHODS))
+    parser.add_argument("--problems", nargs="+", choices=("ct", "mri"), default=["ct", "mri"])
+    parser.add_argument("--deterministic", action="store_true",
+                        help="Controlled equivalence benchmark only; requires CUBLAS_WORKSPACE_CONFIG on CUDA")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     baseline_source = subprocess.check_output(
@@ -61,6 +64,8 @@ def main() -> None:
     torch.backends.cudnn.allow_tf32 = execution["cudnn_tf32"]
     torch.backends.cuda.matmul.allow_tf32 = execution["matmul_tf32"]
     torch.backends.cudnn.benchmark = execution["cudnn_benchmark"]
+    torch.use_deterministic_algorithms(args.deterministic)
+    torch.backends.cudnn.deterministic = args.deterministic
     rows = []
     for resolution in args.resolutions:
         circles = settings["circles"][0]
@@ -82,7 +87,7 @@ def main() -> None:
         products = run.GraphedAProducts(model, source, share_linearization=True,
             full_step_graphs=execution["dlr_full_step_graphs"], max_jvp_columns=20, max_vjp_columns=16,
             max_step_jvp_columns=execution["dlr_jvp_columns"], max_step_vjp_columns=execution["dlr_vjp_columns"])
-        for problem in ("ct", "mri"):
+        for problem in args.problems:
             operator = (run.CT(resolution, settings["ct_angles"][0], device) if problem == "ct" else
                         run.MRI(resolution, settings["mri_accelerations"][0], seed + 10000000, device,
                                 settings["mri_pattern"]))
@@ -113,6 +118,7 @@ def main() -> None:
                         rows.append({"resolution": resolution, "problem": problem, "rank": args.rank,
                             "method": method, "repeat": repeat, "variant": label, "seconds": seconds,
                             "operator_calls": counted.calls, "attempts": result["history"][-1]["step"],
+                            "history_length": len(result["optimizer"]["S"]),
                             "evaluations": result["evaluations"], "status": result["status"],
                             "image_relative_l2": result["history"][-1]["image_relative_l2"]})
                     old, new = results["baseline"], results["optimized"]
@@ -133,6 +139,7 @@ def main() -> None:
                                                    [h.get("line_search_trials") for h in new["history"]]}
                     run.write_json(args.out / "timings.json", {"baseline_ref": args.baseline_ref,
                         "runner_sha256": hashlib.sha256(Path(run.__file__).read_bytes()).hexdigest(),
+                        "deterministic": args.deterministic,
                         "settings": settings, "gpu": torch.cuda.get_device_name(device), "rows": rows})
         del evaluator, products, model
         torch.cuda.empty_cache()

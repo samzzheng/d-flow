@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from contextlib import suppress
 from dataclasses import asdict, dataclass
+import fcntl
 import hashlib
 import json
 import math
@@ -23,10 +24,10 @@ from dlr_dflow.api import approx_source_gradient, load_flow_model, sensitivity_f
 from dlr_dflow.implementation import enriched, tangent_unet
 from dlr_dflow.implementation.graphed_products import GraphedAProducts
 from p_flow import endpoint_gradient
-from p_flow.armijo import ArmijoLBFGS
 from sampler.ode_samplers import euler_flow
 from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
 from .operators import CT, MRI, noisy_measurement
+from .optimizer import SweepLBFGS
 from .validation import ChunkedEagerProducts
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -194,13 +195,13 @@ def solve(evaluator: Evaluator, method: str, initial: torch.Tensor, truth: torch
     settings = evaluator.settings
     evaluator.method = method
     source = initial.detach().clone().requires_grad_(True)
-    optimizer = ArmijoLBFGS(source, evaluator.objective, **{
+    optimizer = SweepLBFGS(source, evaluator.objective, **{
         **settings["optimizer"], "step_cap": settings["optimizer"]["step_cap"] * math.sqrt(source.numel()),
         "project": settings["source_projection"]})
     history: list[Settings] = []
     prior_seconds = 0.0
     if path.exists():
-        saved = torch.load(path, map_location="cpu", weights_only=True)
+        saved = torch.load(path, map_location="cpu", weights_only=True, mmap=True)
         if saved["protocol"] != protocol:
             raise ValueError(f"Resume protocol mismatch: {path}")
         if saved["status"] in TERMINAL:
@@ -263,7 +264,8 @@ def solve(evaluator: Evaluator, method: str, initial: torch.Tensor, truth: torch
                      "source": source.detach(), "image": evaluator.image,
                      "measurement": evaluator.measurement,
                      "previous_v": evaluator.previous_v,
-                     "optimizer": {key: value for key, value in vars(optimizer).items() if key not in {"source", "objective"}},
+                     "optimizer": {key: value for key, value in vars(optimizer).items()
+                                   if key not in {"source", "objective", "_direction_graph"}},
                      "history": history, "evaluations": evaluator.counts,
                      "elapsed_seconds": prior_seconds + time.monotonic() - started}
             saved = save_tensor(path, saved)
@@ -288,7 +290,8 @@ def main() -> None:
     sample_stop = settings["samples"] if args.sample_stop is None else args.sample_stop
     if not 0 <= args.sample_start < sample_stop <= settings["samples"]:
         parser.error("Sample interval must lie inside the configured test subset")
-    for name, expected in reviewed_source_hashes(args.manifest, manifest).items():
+    source_hashes = reviewed_source_hashes(args.manifest, manifest)
+    for name, expected in source_hashes.items():
         if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != expected:
             raise ValueError(f"Source changed after queuing: {name}")
     job = next(job for job in jobs(settings) if job.name == args.job)
@@ -353,42 +356,67 @@ def main() -> None:
                     "dlr_seed": dlr_seed, "torch": str(torch.__version__),
                     "gpu": torch.cuda.get_device_name(device)}
         if sample == args.sample_start:
-            # Validate the fastest backend on this checkpoint before any reconstructions.
-            with torch.no_grad():
-                canonical = euler_flow(model, initial, settings["flow_steps"])
-            _, gx = endpoint_gradient(canonical, operator, observed)
-            fast_image, fast_factors, alpha = sensitivity_factors(
-                model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed, products=products)
-            reference_products = ChunkedEagerProducts(model) if settings["dlr"]["rank"] > 16 else None
-            _, reference_factors, _ = sensitivity_factors(
-                model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed, products=reference_products)
-            fast_gradient = approx_source_gradient(fast_factors, gx, alpha)
-            reference_gradient = approx_source_gradient(reference_factors, gx, alpha)
-            error = float((fast_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
-            endpoint_error = float((fast_image - canonical).norm() / canonical.norm().clamp_min(1e-20))
-            passed = math.isfinite(error) and error < 0.01 and math.isfinite(endpoint_error) and endpoint_error < 0.005 and alpha == 0
-            seeded_error = None
-            if settings.get("dlr_reuse_previous_v", False):
-                seed_basis = fast_factors[2].detach().clone()
-                _, seeded_fast, seeded_alpha = sensitivity_factors(
-                    model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed,
-                    products=products, seed_basis=seed_basis)
-                _, seeded_reference, _ = sensitivity_factors(
-                    model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed,
-                    seed_basis=seed_basis, products=reference_products)
-                seeded_gradient = approx_source_gradient(seeded_fast, gx, seeded_alpha)
-                reference_gradient = approx_source_gradient(seeded_reference, gx, seeded_alpha)
-                seeded_error = float((seeded_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
-                passed = passed and math.isfinite(seeded_error) and seeded_error < 0.01 and seeded_alpha == 0
-                del seed_basis, seeded_fast, seeded_reference, seeded_gradient
+            # Calibration is shared by workers of this frozen acquisition. The
+            # actual reconstruction always recomputes its own seeded factors.
+            validation_key = hashlib.sha256(json.dumps({
+                "manifest": protocol["manifest_sha256"], "job": protocol["job"],
+                "checkpoint": checkpoint_hash, "test_subset": test_hash,
+                "sources": source_hashes, "torch": str(torch.__version__),
+                "cuda": torch.version.cuda, "cudnn": torch.backends.cudnn.version(),
+                "gpu": protocol["gpu"],
+            }, sort_keys=True).encode()).hexdigest()
+            cache_path = output / "backend_validation_cache.json"
+            validation_started = time.monotonic()
+            with (output / "backend_validation.lock").open("a") as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX)
+                validation = {}
+                with suppress(FileNotFoundError, json.JSONDecodeError):
+                    validation = json.loads(cache_path.read_text())
+                reused = (isinstance(validation, dict) and validation.get("cache_key") == validation_key
+                          and validation.get("passed") is True)
+                if not reused:
+                    with torch.no_grad():
+                        canonical = euler_flow(model, initial, settings["flow_steps"])
+                    _, gx = endpoint_gradient(canonical, operator, observed)
+                    fast_image, fast_factors, alpha = sensitivity_factors(
+                        model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed, products=products)
+                    reference_products = ChunkedEagerProducts(model) if settings["dlr"]["rank"] > 16 else None
+                    _, reference_factors, _ = sensitivity_factors(
+                        model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed, products=reference_products)
+                    fast_gradient = approx_source_gradient(fast_factors, gx, alpha)
+                    reference_gradient = approx_source_gradient(reference_factors, gx, alpha)
+                    error = float((fast_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
+                    endpoint_error = float((fast_image - canonical).norm() / canonical.norm().clamp_min(1e-20))
+                    passed = math.isfinite(error) and error < 0.01 and math.isfinite(endpoint_error) and endpoint_error < 0.005 and alpha == 0
+                    seeded_error = None
+                    if settings.get("dlr_reuse_previous_v", False):
+                        seed_basis = fast_factors[2].detach().clone()
+                        _, seeded_fast, seeded_alpha = sensitivity_factors(
+                            model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed,
+                            products=products, seed_basis=seed_basis)
+                        _, seeded_reference, _ = sensitivity_factors(
+                            model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed,
+                            seed_basis=seed_basis, products=reference_products)
+                        seeded_gradient = approx_source_gradient(seeded_fast, gx, seeded_alpha)
+                        reference_gradient = approx_source_gradient(seeded_reference, gx, seeded_alpha)
+                        seeded_error = float((seeded_gradient - reference_gradient).norm() / reference_gradient.norm().clamp_min(1e-20))
+                        passed = passed and math.isfinite(seeded_error) and seeded_error < 0.01 and seeded_alpha == 0
+                        del seed_basis, seeded_fast, seeded_reference, seeded_gradient
+                    validation = {"cache_key": validation_key, "reference_sample": sample,
+                        "passed": passed, "gradient_relative_error_graph_vs_eager_dlr": error if math.isfinite(error) else None,
+                        "seeded_gradient_relative_error_graph_vs_eager_dlr": seeded_error if seeded_error is not None and math.isfinite(seeded_error) else None,
+                        "endpoint_relative_error_fast_vs_native": endpoint_error if math.isfinite(endpoint_error) else None, "terminal_alpha": float(alpha),
+                        "checkpoint_sha256": checkpoint_hash, "note": "Reference-sample execution equivalence, not DLR vs exact gradient accuracy."}
+                    write_json(output / f"backend_validation_{args.sample_start:03d}.json", validation)
+                    if not passed:
+                        raise RuntimeError("Fast backend validation failed; see backend_validation output")
+                    del fast_image, fast_factors, reference_factors, fast_gradient, reference_gradient, reference_products, canonical, gx
+                    write_json(cache_path, validation)
             write_json(output / f"backend_validation_{args.sample_start:03d}.json", {
-                "passed": passed, "gradient_relative_error_graph_vs_eager_dlr": error if math.isfinite(error) else None,
-                "seeded_gradient_relative_error_graph_vs_eager_dlr": seeded_error if seeded_error is not None and math.isfinite(seeded_error) else None,
-                "endpoint_relative_error_fast_vs_native": endpoint_error if math.isfinite(endpoint_error) else None, "terminal_alpha": float(alpha),
-                "checkpoint_sha256": checkpoint_hash, "note": "Execution equivalence, not DLR vs exact gradient accuracy."})
-            if not passed:
-                raise RuntimeError("Fast backend validation failed; see backend_validation output")
-            del fast_image, fast_factors, reference_factors, fast_gradient, reference_gradient, reference_products, canonical, gx
+                **validation, "reused": reused,
+                "calibration_seconds": time.monotonic() - validation_started,
+                "reference_path": str(cache_path),
+            })
         if not (case / "inputs.pt").exists():
             save_tensor(case / "inputs.pt", {"protocol": protocol, "truth": truth, "clean": clean,
                                             "observed": observed, "initial": initial, "mask": getattr(operator, "mask", None)})
@@ -401,7 +429,7 @@ def main() -> None:
                 control_path = baseline_case / f"{stem}.pt"
                 if not control_path.exists():
                     continue
-                control = torch.load(control_path, map_location="cpu", weights_only=True)
+                control = torch.load(control_path, map_location="cpu", weights_only=True, mmap=True)
                 if control["status"] not in TERMINAL:
                     continue
                 if any(control["protocol"][key] != value for key, value in protocol.items()

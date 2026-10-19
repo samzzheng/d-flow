@@ -18,6 +18,23 @@ Closure = Callable[[], torch.Tensor]
 Objective = Callable[[torch.Tensor], float]
 
 
+def lbfgs_direction(gradient: torch.Tensor, displacements: list[torch.Tensor],
+                    changes: list[torch.Tensor]) -> torch.Tensor:
+    """Literal two-loop recursion shared by eager and captured execution."""
+    direction = -gradient.clone()
+    coefficients = []
+    for s, y in reversed(list(zip(displacements, changes))):
+        rho = 1. / y.dot(s)
+        coefficient = rho * s.dot(direction)
+        direction -= coefficient * y
+        coefficients.append((rho, coefficient))
+    if displacements:
+        direction *= displacements[-1].dot(changes[-1]) / changes[-1].dot(changes[-1])
+    for (s, y), (rho, coefficient) in zip(zip(displacements, changes), reversed(coefficients)):
+        direction += s * (coefficient - rho * y.dot(direction))
+    return direction
+
+
 class ArmijoLBFGS:
     """Ambient LBFGS directions with optional sphere projection and line search.
 
@@ -52,6 +69,9 @@ class ArmijoLBFGS:
         self.last_function_evaluations = 0
         self.capped_steps = 0
 
+    def _direction(self) -> torch.Tensor:
+        return lbfgs_direction(self.g, self.S, self.Y)
+
     def step(self, closure: Closure) -> float:
         if not self.state:
             self.S, self.Y, self.f, self.g = [], [], None, None
@@ -61,17 +81,7 @@ class ArmijoLBFGS:
             self.g = self.source.grad.detach().flatten().clone()
             self.state["initialized"] = True
         f, g = self.f, self.g
-        direction = -g.clone()
-        coefficients = []
-        for s, y in reversed(list(zip(self.S, self.Y))):
-            rho = 1. / y.dot(s)
-            coefficient = rho * s.dot(direction)
-            direction -= coefficient * y
-            coefficients.append((rho, coefficient))
-        if self.S:
-            direction *= self.S[-1].dot(self.Y[-1]) / self.Y[-1].dot(self.Y[-1])
-        for (s, y), (rho, coefficient) in zip(zip(self.S, self.Y), reversed(coefficients)):
-            direction += s * (coefficient - rho * y.dot(direction))
+        direction = self._direction()
         z = self.source.detach().flatten().clone()
         if self.project:
             direction -= z * z.dot(direction) / z.dot(z)
