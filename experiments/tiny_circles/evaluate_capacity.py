@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import NDArray
 from scipy.ndimage import label
+from scipy.spatial.distance import cdist
+from skimage.measure import find_contours
 import torch
 
 from dlr_dflow.api import load_flow_model
@@ -29,6 +31,7 @@ def morphology(images: NDArray[np.float32]) -> dict[str, Any]:
     yy, xx = np.indices(images.shape[-2:])
     for image in images:
         counts, disk_ious = {}, []
+        gap = None
         for threshold in (.25, .5, .75):
             labels, count = label(image > threshold, structure=np.ones((3, 3)))
             sizes = np.bincount(labels.ravel())
@@ -41,9 +44,17 @@ def morphology(images: NDArray[np.float32]) -> dict[str, Any]:
                     radius = math.sqrt(float(region.sum()) / math.pi)
                     disk = (yy - cy) ** 2 + (xx - cx) ** 2 <= radius ** 2
                     disk_ious.append(float((disk & region).sum() / (disk | region).sum()))
+                if len(components) == 2:
+                    contours = [
+                        np.concatenate(find_contours(
+                            np.pad((labels == index).astype(float), 1), .5))
+                        for index in components
+                    ]
+                    gap = float(cdist(*contours).min())
         foreground = image > .75
         background = image < .25
         records.append(dict(counts=counts,
+                            minimum_gap_pixels=gap,
                             mean_disk_iou=float(np.mean(disk_ious)) if disk_ious else None,
                             minimum_disk_iou=min(disk_ious) if disk_ious else None,
                             foreground_rms_from_one=float(np.sqrt(np.mean((image[foreground] - 1) ** 2))) if foreground.any() else None,
@@ -51,6 +62,9 @@ def morphology(images: NDArray[np.float32]) -> dict[str, Any]:
                             minimum=float(image.min()), maximum=float(image.max())))
     minimum_ious = [r["minimum_disk_iou"] for r in records if r["minimum_disk_iou"] is not None]
     return dict(samples=len(records),
+                two_components_with_gap_at_least_4_fraction=sum(
+                    r["minimum_gap_pixels"] is not None and r["minimum_gap_pixels"] >= 4
+                    for r in records) / len(records),
                 two_component_fraction={str(t): sum(r["counts"][str(t)] == 2 for r in records) / len(records)
                                         for t in (.25, .5, .75)},
                 count_histogram=dict(Counter(r["counts"]["0.5"] for r in records)),
@@ -65,12 +79,13 @@ def main() -> None:
         "outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n2"))
     parser.add_argument("--trainer-pid", type=int)
     parser.add_argument("--candidate-label", default="49k")
+    parser.add_argument("--baseline-label", default="22k")
     parser.add_argument("--device", default="cuda:1")
     parser.add_argument("--samples", type=int, default=128)
     parser.add_argument("--seed", type=int, default=20261020)
     args = parser.parse_args()
-    if args.candidate_label == "22k":
-        parser.error("--candidate-label must differ from the baseline label '22k'")
+    if args.candidate_label == args.baseline_label:
+        parser.error("Candidate and baseline labels must differ")
     out = args.run / "capacity_evaluation"
     out.mkdir(exist_ok=True)
     while not (args.run / "run_summary.json").exists():
@@ -94,10 +109,10 @@ def main() -> None:
     result = dict(seed=args.seed, samples=args.samples, euler_steps=100, rk4_steps=100,
                   precision="FP32, TF32 disabled",
                   initial_noise_sha256=hashlib.sha256(initial.numpy().tobytes()).hexdigest(),
-                  metrics_note="8-connected components with area>=8 pixels; thresholds0.25/0.5/0.75. Disk IoU uses centroid and equal-area disk at threshold0.5. Morphology proxies, not a complete generation-quality score.",
+                  metrics_note="8-connected components with area>=8 pixels; thresholds0.25/0.5/0.75. Disk IoU uses centroid and equal-area disk at threshold0.5. Gap is minimum distance between contour vertices of the two binary regions at threshold0.5, in pixels; a raster spacing proxy, not a certified continuous circle gap. Morphology proxies, not a complete generation-quality score.",
                   reference=morphology(reference), models={})
     samples = {}
-    for name, run in (("22k", args.baseline), (args.candidate_label, args.run)):
+    for name, run in ((args.baseline_label, args.baseline), (args.candidate_label, args.run)):
         model, _ = load_flow_model(run_dir=run, epoch=500, device=args.device)
         config = json.loads((run / "config.json").read_text())
         result["models"][name] = dict(parameters=config["params"], run=str(run),
@@ -120,8 +135,8 @@ def main() -> None:
         del model
         torch.cuda.empty_cache()
     torch.save(dict(initial=initial, generated=samples), out / "paired_samples.pt")
-    order = ("22k_euler", f"{args.candidate_label}_euler",
-             "22k_rk4", f"{args.candidate_label}_rk4")
+    order = (f"{args.baseline_label}_euler", f"{args.candidate_label}_euler",
+             f"{args.baseline_label}_rk4", f"{args.candidate_label}_rk4")
     for start in range(0, min(args.samples, 16), 8):
         figure, axes = plt.subplots(4, min(8, args.samples - start), figsize=(15, 8), squeeze=False,
                                     layout="constrained")
