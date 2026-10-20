@@ -31,6 +31,7 @@ def main() -> None:
     model_group.add_argument("--small-model", action="store_true", help="22,037-parameter capacity pilot")
     model_group.add_argument("--deeper-model", action="store_true", help="52,593 parameters; four levels and 32 time features")
     model_group.add_argument("--model-100k", action="store_true", help="102,793 parameters; four levels and 32 time features")
+    model_group.add_argument("--model-117k", action="store_true", help="116,617 parameters; four levels and 32 time features")
     model_group.add_argument("--model-200k", action="store_true", help="205,793 parameters; four levels and 32 time features")
     parser.add_argument("--comparison-baseline", type=Path,
                         help="Override the reference run for the final paired evaluation")
@@ -41,9 +42,9 @@ def main() -> None:
     os.chdir(root)
     sys.path.insert(0, str(root))
     data_path = root / f"data/separated-shapes-{args.resolution}.pt"
-    multiscale_model = args.deeper_model or args.model_100k or args.model_200k
+    multiscale_model = args.deeper_model or args.model_100k or args.model_117k or args.model_200k
     compact_model = args.small_model or multiscale_model
-    compact_ch = 8 if args.model_200k else 4
+    compact_ch = 8 if args.model_200k else 6 if args.model_117k else 4
     compact_multipliers = [1, 2, 4, 5] if args.model_100k else [1, 2, 3, 3] if multiscale_model else [1, 2, 2]
     epochs = args.epochs or (500 if multiscale_model else 1000 if args.small_model else 200)
     if args.small_model and args.resolution != 64:
@@ -52,7 +53,7 @@ def main() -> None:
         parser.error("--micro-batch must be between1 and512")
     name = f"separated-shapes-{args.resolution}-noattn-ch4-e{epochs}" if args.small_model else f"separated-shapes-{args.resolution}-noattn-ch16-b8-e{epochs}"
     if multiscale_model:
-        size = "200k" if args.model_200k else "100k" if args.model_100k else "53k"
+        size = "200k" if args.model_200k else "117k" if args.model_117k else "100k" if args.model_100k else "53k"
         name = f"separated-shapes-{args.resolution}-{size}-time32-e{epochs}"
     out_dir = args.out_dir or Path("outputs/fm_unet") / name
     if not data_path.exists():
