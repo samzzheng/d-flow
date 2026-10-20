@@ -1,0 +1,23 @@
+[
+  {
+    "rank": 8,
+    "dimension": 4096,
+    "canonical_seconds": 0.00018708198331296444,
+    "general_owned_seconds": 3.9199599996209145e-05,
+    "action_relative_difference": 1.7132521179519244e-06
+  },
+  {
+    "rank": 256,
+    "dimension": 4096,
+    "canonical_seconds": 0.01625451655127108,
+    "general_owned_seconds": 0.0015962605830281973,
+    "action_relative_difference": 1.7472241324867355e-06
+  },
+  {
+    "rank": 512,
+    "dimension": 4096,
+    "canonical_seconds": 0.06658015889115632,
+    "general_owned_seconds": 0.0023225995246320963,
+    "action_relative_difference": 2.042466576313018e-06
+  }
+]

@@ -148,6 +148,34 @@ class UntruncatedCoreTests(unittest.TestCase):
         torch.testing.assert_close(reconstruct(actual[1]), reconstruct(reference[1]),
                                    atol=2e-11, rtol=2e-11)
 
+    def test_general_terminal_core_actions_and_callbacks(self) -> None:
+        for dtype in (torch.float32, torch.float64):
+            model, z, gx = self.problem(32, dtype)
+            tolerance = 8e-5 if dtype == torch.float32 else 2e-11
+            observed = []
+
+            def callback(step: int, alpha: float, factors: tuple[torch.Tensor, ...]) -> None:
+                self.assert_canonical(factors, tolerance)
+                observed.append(step)
+
+            with patch.object(torch.linalg, "svd", wraps=torch.linalg.svd) as svd:
+                raw = self.run_evolution(model, z, True, _canonicalize_terminal=False)
+            self.assertEqual(svd.call_count, 1)  # Initialization remains necessary.
+            canonical = self.run_evolution(model, z, True)
+            self.assertGreater(float((raw[1][1] - torch.diag(raw[1][1].diag())).norm()), 1e-6)
+            torch.testing.assert_close(raw[0], canonical[0], rtol=0, atol=0)
+            torch.testing.assert_close(reconstruct(raw[1]), reconstruct(canonical[1]),
+                                       rtol=tolerance, atol=tolerance)
+            torch.testing.assert_close(core.approx_source_gradient(raw[1], gx, raw[2]),
+                                       core.approx_source_gradient(canonical[1], gx, canonical[2]),
+                                       rtol=tolerance, atol=tolerance)
+            with_callbacks = self.run_evolution(
+                model, z, True, _canonicalize_terminal=False,
+                factor_callback=callback, return_diagnostics=True)
+            self.assertEqual(observed, list(range(21)))
+            for actual, expected in zip(with_callbacks[1], raw[1]):
+                torch.testing.assert_close(actual, expected, atol=0, rtol=0)
+
 
 if __name__ == "__main__":
     unittest.main()

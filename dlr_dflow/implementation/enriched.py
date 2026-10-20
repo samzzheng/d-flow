@@ -417,6 +417,7 @@ def evolve_trace_centered_enriched(
     factor_callback=None,
     alpha_rate=None,
     checkpoint_blocks: bool = False,
+    _canonicalize_terminal: bool = True,
 ):
     """Evolve J ~= a I + U S V^T with trace centering and basis enrichment.
 
@@ -437,6 +438,9 @@ def evolve_trace_centered_enriched(
     not change the evolution. Callback and returned factors have a diagonal
     core of descending nonnegative singular values, even when the evolution
     uses a general square core internally.
+    Internal gradient-only callers may set _canonicalize_terminal=False to
+    retain that core at return, avoiding an SVD and two tall basis rotations.
+    Callback factors remain canonical; graph-backed outputs remain owned.
 
     The zero residual at t=0 is handled by delaying factor initialization until
     after one Euler step and sketching that first nonzero residual. Subsequent
@@ -644,8 +648,10 @@ def evolve_trace_centered_enriched(
         # The provider can reset/replay for the next source. Return owned
         # tensors; canonicalization below also creates independent factors.
         x = x.clone()
-    if untruncated_core and n_steps > 1:
+    if untruncated_core and n_steps > 1 and _canonicalize_terminal:
         factors = _canonicalize_factors(factors)
+    elif whole_step is not None:
+        factors = tuple(value.clone() for value in factors)
     result = (x, factors, alpha)
     if return_diagnostics:
         return (*result, diagnostics)

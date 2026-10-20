@@ -15,6 +15,7 @@ from sampler.ode_samplers import euler_flow
 from sampler.optimizer_state import reset_optimizer_history
 
 from . import dlr_dflow as core
+from .implementation.objectives import squared_data_misfit
 from .implementation.types import OptimizationResult, TensorOperator
 
 OptimizerFactory = Callable[[list[torch.Tensor]], torch.optim.Optimizer]
@@ -24,7 +25,7 @@ def objective(model: torch.nn.Module, z: torch.Tensor, n_steps: int,
               A_op: TensorOperator, y: torch.Tensor) -> float:
     """Phi(z) = 0.5 ||A(x_1(z)) - y||^2, one forward flow solve."""
     with torch.no_grad():
-        return 0.5 * (A_op(euler_flow(model, z, n_steps)) - y).pow(2).sum().item()
+        return squared_data_misfit(A_op(euler_flow(model, z, n_steps)) - y).item()
 
 
 def optimize(model: torch.nn.Module, z0: torch.Tensor, A_op: TensorOperator,
@@ -51,7 +52,8 @@ def optimize(model: torch.nn.Module, z0: torch.Tensor, A_op: TensorOperator,
     Choose max_iter=1 when each internal update needs a sensitivity refresh.
 
     History and stopping use the initial measurement misfit of each outer
-    step. Return the best of those evaluated sources, rather than the final
+    step; image metrics use that same source, or the best source on rollback.
+    Return the best of those evaluated sources, rather than the final
     unevaluated update. Regularizers contribute to both closure loss and
     gradient, while measurement reporting remains separate.
 
@@ -117,7 +119,7 @@ def optimize(model: torch.nn.Module, z0: torch.Tensor, A_op: TensorOperator,
                     x1 = euler_flow(model, z, n_steps)
             g_x = core.terminal_gradient(x1, A_op, y)
             with torch.no_grad():
-                loss = 0.5 * (A_op(x1) - y).pow(2).sum()
+                loss = squared_data_misfit(A_op(x1) - y)
             if initial_phi is None:
                 initial_phi = float(loss)
             penalty = loss.new_zeros(())
@@ -196,7 +198,7 @@ def optimize(model: torch.nn.Module, z0: torch.Tensor, A_op: TensorOperator,
                "time_s": _time.perf_counter() - outer_t0}
         if x_true is not None:
             with torch.no_grad():
-                xk = euler_flow(model, z, n_steps)
+                xk = euler_flow(model, best_z if rolled_back else z_eval, n_steps)
                 row["image_mse"] = (xk.clamp(0, 1) - x_true).pow(2).mean().item()
         history.append(row)
         if target_phi is not None and phi <= target_phi:

@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 import torch
 
 from .implementation.types import EvolutionResult, Factors, TensorOperator
+from .implementation.objectives import squared_data_misfit
 
 if TYPE_CHECKING:
     from .implementation.tangent_unet import UnetLinearization
@@ -98,7 +99,7 @@ def make_A_products(model: torch.nn.Module, t: float, x_img: torch.Tensor,
 def terminal_gradient(x1: torch.Tensor, A_op: TensorOperator, y: torch.Tensor) -> torch.Tensor:
     """g_x = DA(x1)^* (A(x1) - y) for the squared data misfit (Gamma = I)."""
     x = x1.detach().requires_grad_(True)
-    cost = 0.5 * (A_op(x) - y).pow(2).sum()
+    cost = squared_data_misfit(A_op(x) - y)
     (g,) = torch.autograd.grad(cost, x)
     return g
 

@@ -1,0 +1,18 @@
+{
+  "modules": [
+    "test_dlr_optimization",
+    "test_untruncated_core",
+    "test_graphed_evolution",
+    "test_enriched_products",
+    "test_enriched_orthogonality",
+    "test_zero_enrichment_specialization",
+    "p_flow.test_p_flow",
+    "p_flow.test_armijo"
+  ],
+  "run": 35,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 1,
+  "device": "cpu",
+  "legacy_checkpoint_test": "Blocked by pre-existing removed parallel_bug import in an old benchmark script"
+}

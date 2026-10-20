@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-19T23:53:57.606096-04:00",
+  "manifests": [
+    "/home/samzheng/d-flow/outputs/five_step_noise000_n124_20261014/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/five_step_noise001_n124_20261013/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/five_step_noise005_n124_20261013/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/five_step_noise010_n124_20261013/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/five_step_noise020_n124_20261013/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/separated_shapes_noiseless_20261016/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank16_noiseless_20261017/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_32/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_64/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/separated_shapes_rank_sweep_20261017/rank_128/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_256/production/manifest.json",
+    "/home/samzheng/d-flow/outputs/separated_shapes_high_rank_20261017/rank_512/production/manifest.json"
+  ],
+  "count": 12,
+  "frozen_factor_contract": "canonical",
+  "source_hashes_match": true
+}

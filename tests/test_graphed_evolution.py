@@ -125,12 +125,13 @@ class EagerWholeStepTests(unittest.TestCase):
                     self.backend.reset(x, factors, sensitivities, alpha, probes)
                 return self.backend
 
-        def run(source, provider=None):
+        def run(source, provider=None, canonicalize=True):
             with patch.multiple(core, SHARE_LINEARIZATION=True, HAND_JVP=True, HAND_VJP=True):
                 return enriched.evolve_trace_centered_enriched(
                     model, source, n_steps=5, rank=3, trace_probes=2,
                     enrichment_probes=0, initialization_oversampling=2,
-                    return_alpha_path=True, products=provider)
+                    return_alpha_path=True, products=provider,
+                    _canonicalize_terminal=canonicalize)
 
         provider = Provider()
         reference = run(z)
@@ -145,6 +146,14 @@ class EagerWholeStepTests(unittest.TestCase):
         self.assertEqual(provider.preparations, 2)
         torch.testing.assert_close(actual[0], original[0], atol=0, rtol=0)
         for value, saved in zip(actual[1], original[1]):
+            torch.testing.assert_close(value, saved, atol=0, rtol=0)
+        raw = run(z, provider, canonicalize=False)
+        saved_raw = (raw[0].clone(), tuple(value.clone() for value in raw[1]))
+        torch.testing.assert_close(reconstruct(raw[1]), reconstruct(reference[1]),
+                                   atol=3e-6, rtol=3e-5)
+        run(.2 * z, provider, canonicalize=False)
+        torch.testing.assert_close(raw[0], saved_raw[0], atol=0, rtol=0)
+        for value, saved in zip(raw[1], saved_raw[1]):
             torch.testing.assert_close(value, saved, atol=0, rtol=0)
 
     def test_disabled_shared_primal_uses_velocity_override_and_product_fallback(self):

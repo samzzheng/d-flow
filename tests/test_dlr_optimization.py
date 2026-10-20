@@ -125,6 +125,62 @@ class DLROptimizationTests(unittest.TestCase):
         self.assertEqual(len(resets), 2)
         self.assertIs(resets[0], resets[1])
 
+    def test_complex_misfit_and_gradient(self) -> None:
+        operator = lambda x: (1 + 2j) * self.operator(x)
+        observed = self.y * (0.2 - 0.7j)
+        variable = self.z.clone().requires_grad_(True)
+        expected_loss = .5 * (operator(variable) - observed).abs().square().sum()
+        expected_gradient, = torch.autograd.grad(expected_loss, variable)
+        torch.testing.assert_close(core.terminal_gradient(self.z, operator, observed), expected_gradient)
+        self.assertEqual(optimization.objective(self.model, self.z, 1, operator, observed),
+                         float(.5 * (operator(2 * self.z) - observed).abs().square().sum()))
+        self.assertEqual(optimization.objective(
+            self.model, torch.zeros_like(self.z), 1, lambda x: x.to(torch.complex128),
+            torch.full_like(self.z, 1j, dtype=torch.complex128)), 2.)
+        optimizers = []
+
+        def factory(parameters: list[torch.Tensor]) -> ProbeOptimizer:
+            optimizer = ProbeOptimizer(parameters)
+            optimizers.append(optimizer)
+            return optimizer
+
+        with patch.object(core, "sensitivity_factors", side_effect=self.sensitivity):
+            optimization.optimize(self.model, self.z, operator, observed, optimizer_factory=factory,
+                                  n_steps=1, outer_steps=2, safeguard=False)
+        for source, loss, gradient in optimizers[0].evaluations:
+            variable = source.requires_grad_(True)
+            expected_loss = .5 * (operator(2 * variable) - observed).abs().square().sum()
+            expected_gradient, = torch.autograd.grad(expected_loss, variable)
+            torch.testing.assert_close(loss, expected_loss)
+            torch.testing.assert_close(gradient, expected_gradient)
+
+    def test_history_metrics_use_same_source_including_rollback_and_projection(self) -> None:
+        for lr, project in ((.02, False), (.02, True), (2., False)):
+            with self.subTest(lr=lr, project=project):
+                optimizers = []
+
+                def factory(parameters: list[torch.Tensor]) -> ProbeOptimizer:
+                    optimizer = ProbeOptimizer(parameters, lr=lr)
+                    optimizers.append(optimizer)
+                    return optimizer
+
+                with patch.object(core, "sensitivity_factors", side_effect=self.sensitivity):
+                    _, history = optimization.optimize(
+                        self.model, self.z, self.operator, self.y, optimizer_factory=factory,
+                        n_steps=1, outer_steps=3, refresh_every=1, x_true=self.y,
+                        shell_project=project, blowup_factor=1.01)
+                best_phi, best_source = float("inf"), self.z
+                for row, (source, _, _) in zip(history, optimizers[0].evaluations[::2]):
+                    phi = float(.5 * (self.operator(2 * source) - self.y).square().sum())
+                    if phi < best_phi:
+                        best_phi, best_source = phi, source
+                    reported_source = best_source if row["rolled_back"] else source
+                    self.assertAlmostEqual(row["phi"], best_phi if row["rolled_back"] else phi)
+                    expected_mse = float(((2 * reported_source).clamp(0, 1) - self.y).square().mean())
+                    self.assertAlmostEqual(row["image_mse"], expected_mse)
+                if lr == 2.:
+                    self.assertTrue(any(row["rolled_back"] for row in history))
+
     def test_lbfgs_adapter_preserves_lifetime_initial_step_scaling(self) -> None:
         original_step = torch.optim.LBFGS.step
         sources, counters = [], []

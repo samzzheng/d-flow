@@ -19,7 +19,9 @@ notebooks = [
 
 [build-system]
 requires = ["setuptools>=68.0"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["models*", "sampler*", "dataset*"]
+namespaces = false
+include = ["models*", "sampler*", "dataset*", "dlr_dflow*", "p_flow*"]
+exclude = ["dlr_dflow.experiments*"]
