@@ -1,0 +1,76 @@
+{
+  "models": {
+    "53k": {
+      "parameters": 52593,
+      "epochs": 500,
+      "checkpoint": "outputs/fm_unet/separated-shapes-64-53k-time32-e500-20261020/checkpoints/epoch_0500.pt",
+      "checkpoint_sha256": "b1fd4cff8fa4d00f61c0d8ba85c53a06fed925000fd4c801b0281bb024cc9932",
+      "val_fm_mse": 0.022614753298178504,
+      "test_fm_mse": 0.0226873323038409,
+      "generation": {
+        "5": {
+          "samples": 1024,
+          "count_outside_one_to_four": 67,
+          "template_outlier_images": 617,
+          "four_components": 58
+        },
+        "100": {
+          "samples": 1024,
+          "count_outside_one_to_four": 48,
+          "template_outlier_images": 413,
+          "four_components": 142
+        }
+      }
+    },
+    "200k": {
+      "parameters": 205793,
+      "epochs": 500,
+      "checkpoint": "outputs/fm_unet/separated-shapes-64-200k-time32-e500-20261020/checkpoints/epoch_0500.pt",
+      "checkpoint_sha256": "6c94c7db688675b55bd7317dc93d247c7640bff493a5dc07f53b344c6c123716",
+      "val_fm_mse": 0.01994406314024442,
+      "test_fm_mse": 0.019893006103325492,
+      "generation": {
+        "5": {
+          "samples": 1024,
+          "count_outside_one_to_four": 11,
+          "template_outlier_images": 329,
+          "four_components": 70
+        },
+        "100": {
+          "samples": 1024,
+          "count_outside_one_to_four": 1,
+          "template_outlier_images": 126,
+          "four_components": 220
+        }
+      }
+    },
+    "original": {
+      "parameters": 472017,
+      "epochs": 200,
+      "checkpoint": "outputs/fm_unet/separated-shapes-64-noattn-ch16-b8-e200/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "val_fm_mse": 0.019858044583963442,
+      "test_fm_mse": 0.01989189926770669,
+      "generation": {
+        "5": {
+          "samples": 1024,
+          "count_outside_one_to_four": 34,
+          "template_outlier_images": 343,
+          "four_components": 57
+        },
+        "100": {
+          "samples": 1024,
+          "count_outside_one_to_four": 15,
+          "template_outlier_images": 117,
+          "four_components": 196
+        }
+      }
+    }
+  },
+  "source_sha256": "20daa3085a66cd7c4299b5c4dfe00407a76f75c64c63a7b2ffb96c88a0849f7f",
+  "source_seed": 4271,
+  "template_iou_cutoff": 0.8799757361412048,
+  "real_reference_outlier_images": 26,
+  "real_reference_images": 1024,
+  "limitation": "Template outliers and detected object counts are descriptive diagnostics, not certified shape validity or inverse-reconstruction accuracy. Original model trained200 epochs; small models500. This establishes a200k candidate, not minimum possible capacity."
+}
