@@ -1,6 +1,6 @@
 {
-  "pid": 2349917,
-  "status": "running",
+  "pid": 2377096,
+  "status": "cancelled",
   "device": "cuda:1",
   "jobs": [
     {
@@ -25,9 +25,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n1"
       ],
-      "status": "running",
-      "pid": 2350049,
-      "started_at": "2026-10-19T15:51:45.723242-04:00"
+      "status": "complete",
+      "pid": 2377187,
+      "started_at": "2026-10-19T16:13:15.521617-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T16:36:05.547432-04:00"
     },
     {
       "resolution": 64,
@@ -51,7 +53,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n2"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2396132,
+      "started_at": "2026-10-19T16:36:05.549114-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T17:02:45.578413-04:00"
     },
     {
       "resolution": 64,
@@ -75,7 +81,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n3"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2415936,
+      "started_at": "2026-10-19T17:02:45.580533-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T17:29:20.609884-04:00"
     },
     {
       "resolution": 64,
@@ -99,7 +109,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n4"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2469602,
+      "started_at": "2026-10-19T17:29:20.611609-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T17:55:55.640456-04:00"
     },
     {
       "resolution": 96,
@@ -123,7 +137,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n1"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2480146,
+      "started_at": "2026-10-19T17:55:55.642197-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T18:53:00.703535-04:00"
     },
     {
       "resolution": 96,
@@ -147,7 +165,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n2"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2504342,
+      "started_at": "2026-10-19T18:53:00.705192-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T19:50:15.766980-04:00"
     },
     {
       "resolution": 96,
@@ -171,7 +193,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n3"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2526669,
+      "started_at": "2026-10-19T19:50:15.769137-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T20:47:20.842654-04:00"
     },
     {
       "resolution": 96,
@@ -195,7 +221,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n4"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2540856,
+      "started_at": "2026-10-19T20:47:20.844666-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T21:44:30.921079-04:00"
     },
     {
       "resolution": 128,
@@ -219,7 +249,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n1"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2553039,
+      "started_at": "2026-10-19T21:44:30.923101-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-19T23:23:56.053674-04:00"
     },
     {
       "resolution": 128,
@@ -243,7 +277,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n2"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2574210,
+      "started_at": "2026-10-19T23:23:56.055668-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-20T01:03:41.184030-04:00"
     },
     {
       "resolution": 128,
@@ -267,7 +305,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n3"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2628278,
+      "started_at": "2026-10-20T01:03:41.186031-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-20T02:44:31.317345-04:00"
     },
     {
       "resolution": 128,
@@ -291,7 +333,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n4"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2792112,
+      "started_at": "2026-10-20T02:44:31.319257-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-20T04:24:26.447294-04:00"
     },
     {
       "resolution": 160,
@@ -315,7 +361,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n1"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 2940237,
+      "started_at": "2026-10-20T04:24:26.449326-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-20T06:56:16.645268-04:00"
     },
     {
       "resolution": 160,
@@ -339,7 +389,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n2"
       ],
-      "status": "pending"
+      "status": "complete",
+      "pid": 3026235,
+      "started_at": "2026-10-20T06:56:16.647211-04:00",
+      "returncode": 0,
+      "finished_at": "2026-10-20T09:28:06.843308-04:00"
     },
     {
       "resolution": 160,
@@ -363,7 +417,9 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n3"
       ],
-      "status": "pending"
+      "status": "cancelled",
+      "pid": 3075516,
+      "started_at": "2026-10-20T09:28:06.845269-04:00"
     },
     {
       "resolution": 160,
@@ -387,7 +443,7 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n4"
       ],
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "resolution": 200,
@@ -411,7 +467,7 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n1"
       ],
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "resolution": 200,
@@ -435,7 +491,7 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n2"
       ],
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "resolution": 200,
@@ -459,7 +515,7 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n3"
       ],
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "resolution": 200,
@@ -483,7 +539,7 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-200-noattn-ch4-e500-mbtuned-20261019/n4"
       ],
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "resolution": 250,
@@ -507,7 +563,7 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n1"
       ],
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "resolution": 250,
@@ -531,7 +587,7 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n2"
       ],
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "resolution": 250,
@@ -555,7 +611,7 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n3"
       ],
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "resolution": 250,
@@ -579,8 +635,11 @@
         "--out-dir",
         "/home/samzheng/d-flow/outputs/fm_unet/circles-250-noattn-ch4-e500-mbtuned-20261019/n4"
       ],
-      "status": "pending"
+      "status": "cancelled"
     }
   ],
-  "updated_at": "2026-10-19T15:51:45.723333-04:00"
+  "updated_at": "2026-10-20T09:37:02.302059-04:00",
+  "cancelled_at": "2026-10-20T09:32:16.522615-04:00",
+  "reason": "User cancelled 22k model sweep; replace with a single approximately 50k 64x64 n2 pilot",
+  "cancellation_verified": true
 }

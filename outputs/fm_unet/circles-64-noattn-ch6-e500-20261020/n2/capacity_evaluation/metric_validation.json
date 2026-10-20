@@ -1,0 +1,27 @@
+{
+  "reference": {
+    "samples": 1000,
+    "two_component_fraction": {
+      "0.25": 1.0,
+      "0.5": 1.0,
+      "0.75": 1.0
+    },
+    "count_histogram": {
+      "2": 1000
+    },
+    "median_minimum_disk_iou": 1.0
+  },
+  "blank_control": {
+    "samples": 2,
+    "two_component_fraction": {
+      "0.25": 0.0,
+      "0.5": 0.0,
+      "0.75": 0.0
+    },
+    "count_histogram": {
+      "0": 2
+    },
+    "median_minimum_disk_iou": null
+  },
+  "status": "passed"
+}
