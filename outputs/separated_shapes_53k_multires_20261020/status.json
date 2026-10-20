@@ -1,14 +1,14 @@
 {
   "pid": 3273712,
   "device": "cuda:1",
-  "status": "waiting_for_previous_run",
+  "status": "cancelled",
   "jobs": [
     {
       "resolution": 96,
       "dataset": "data/separated-shapes-96.pt",
       "run": "outputs/fm_unet/separated-shapes-96-53k-time32-e500-20261020",
       "generate": "complete",
-      "train": "pending",
+      "train": "cancelled",
       "generate_command": [
         "/home/samzheng/d-flow/.venv/bin/python3",
         "-u",
@@ -34,14 +34,15 @@
         "--deeper-model"
       ],
       "generate_log": "outputs/separated_shapes_53k_multires_20261020/generate_96.log",
-      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_96.log"
+      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_96.log",
+      "train_cancelled_at": "2026-10-20T16:50:14.883189-04:00"
     },
     {
       "resolution": 128,
       "dataset": "data/separated-shapes-128.pt",
       "run": "outputs/fm_unet/separated-shapes-128-53k-time32-e500-20261020",
       "generate": "complete",
-      "train": "pending",
+      "train": "cancelled",
       "generate_command": [
         "/home/samzheng/d-flow/.venv/bin/python3",
         "-u",
@@ -67,14 +68,15 @@
         "--deeper-model"
       ],
       "generate_log": "outputs/separated_shapes_53k_multires_20261020/generate_128.log",
-      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_128.log"
+      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_128.log",
+      "train_cancelled_at": "2026-10-20T16:50:14.883189-04:00"
     },
     {
       "resolution": 160,
       "dataset": "data/separated-shapes-160.pt",
       "run": "outputs/fm_unet/separated-shapes-160-53k-time32-e500-20261020",
       "generate": "complete",
-      "train": "pending",
+      "train": "cancelled",
       "generate_command": [
         "/home/samzheng/d-flow/.venv/bin/python3",
         "-u",
@@ -100,14 +102,15 @@
         "--deeper-model"
       ],
       "generate_log": "outputs/separated_shapes_53k_multires_20261020/generate_160.log",
-      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_160.log"
+      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_160.log",
+      "train_cancelled_at": "2026-10-20T16:50:14.883189-04:00"
     },
     {
       "resolution": 200,
       "dataset": "data/separated-shapes-200.pt",
       "run": "outputs/fm_unet/separated-shapes-200-53k-time32-e500-20261020",
       "generate": "complete",
-      "train": "pending",
+      "train": "cancelled",
       "generate_command": [
         "/home/samzheng/d-flow/.venv/bin/python3",
         "-u",
@@ -133,14 +136,15 @@
         "--deeper-model"
       ],
       "generate_log": "outputs/separated_shapes_53k_multires_20261020/generate_200.log",
-      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_200.log"
+      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_200.log",
+      "train_cancelled_at": "2026-10-20T16:50:14.883189-04:00"
     },
     {
       "resolution": 250,
       "dataset": "data/separated-shapes-250.pt",
       "run": "outputs/fm_unet/separated-shapes-250-53k-time32-e500-20261020",
       "generate": "complete",
-      "train": "pending",
+      "train": "cancelled",
       "generate_command": [
         "/home/samzheng/d-flow/.venv/bin/python3",
         "-u",
@@ -166,9 +170,12 @@
         "--deeper-model"
       ],
       "generate_log": "outputs/separated_shapes_53k_multires_20261020/generate_250.log",
-      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_250.log"
+      "train_log": "outputs/separated_shapes_53k_multires_20261020/train_250.log",
+      "train_cancelled_at": "2026-10-20T16:50:14.883189-04:00"
     }
   ],
-  "updated_at": "2026-10-20T16:09:40.830824-04:00",
-  "after_run": "outputs/fm_unet/separated-shapes-64-53k-time32-e500-20261020"
+  "updated_at": "2026-10-20T16:50:14.883189-04:00",
+  "after_run": "outputs/fm_unet/separated-shapes-64-53k-time32-e500-20261020",
+  "cancelled_at": "2026-10-20T16:50:14.883189-04:00",
+  "cancellation_reason": "User requested cancellation of queued53k runs to prioritize100k pilot"
 }
