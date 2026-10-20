@@ -357,6 +357,8 @@ def main():
     pa.add_argument("--threads", type=int, default=None,
                     help="torch intra-op threads (CPU training); also set OMP_NUM_THREADS")
     pa.add_argument("--ch", type=int, default=ARCH["ch"])
+    pa.add_argument("--time-embed-dim", type=int, default=None,
+                    help="Sinusoidal time feature count (default: base channel width)")
     pa.add_argument("--ch-mul", type=str, default=",".join(map(str, ARCH["ch_mul"])),
                     help="comma-separated channel multipliers, one per resolution level")
     pa.add_argument("--att-channels", type=str, default=None,
@@ -418,8 +420,12 @@ def main():
         att_channels = [0] * (len(ch_mul) - 1) + [1]
     if len(att_channels) != len(ch_mul):
         pa.error("--att-channels must have one entry per --ch-mul level")
+    if args.time_embed_dim is not None and args.time_embed_dim < 2:
+        pa.error("--time-embed-dim must be at least 2")
     arch = {"ch": args.ch, "ch_mul": ch_mul, "att_channels": att_channels,
             "groups": args.groups, "mid_attn": args.mid_attn}
+    if args.time_embed_dim is not None:
+        arch["time_embed_dim"] = args.time_embed_dim
     print(f"Architecture: {arch}")
 
     splits     = load_dataset(data_path)
@@ -449,6 +455,7 @@ def main():
     model = Unet(ch=arch["ch"], ch_mul=arch["ch_mul"],
                  att_channels=arch["att_channels"],
                  groups=arch["groups"], mid_attn=arch["mid_attn"],
+                 time_embed_dim=arch.get("time_embed_dim"),
                  dropout=0.0).to(device)
     if args.channels_last:
         model.to(memory_format=torch.channels_last)

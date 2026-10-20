@@ -22,7 +22,8 @@ class Unet(nn.Module):
             dropout: float = 0.1,
             scale_shift: bool = True,
             mid_attn: bool = True,
-        ):
+            time_embed_dim: int | None = None,
+        ) -> None:
         super().__init__()
         assert len(att_channels) == len(ch_mul), 'Attention bool must be defined for each channel'
 
@@ -38,10 +39,11 @@ class Unet(nn.Module):
         self.mid_attn = mid_attn
 
         self.temb_dim = self.ch * 4
+        self.time_embed_dim = ch if time_embed_dim is None else time_embed_dim
         
         self.input_proj = nn.Conv2d(1, self.ch, 3, 1, 1)
 
-        self.time_proj = nn.Sequential(nn.Linear(self.ch, self.temb_dim),
+        self.time_proj = nn.Sequential(nn.Linear(self.time_embed_dim, self.temb_dim),
                                        nn.SiLU(),
                                        nn.Linear(self.temb_dim, self.temb_dim))
         
@@ -63,7 +65,7 @@ class Unet(nn.Module):
         # Scale t from [0,1] → [0,1000]: the sinusoidal embedding was designed
         # for integer DDPM timesteps up to ~1000; without scaling, t∈[0,1] leaves
         # almost all frequency components near-constant and the time signal is lost.
-        temb = get_timestep_embedding(t * 1000.0, self.ch)
+        temb = get_timestep_embedding(t * 1000.0, self.time_embed_dim)
         emb = self.time_proj(temb)
 
         x = self.input_proj(x)

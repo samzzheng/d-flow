@@ -27,6 +27,7 @@ def load_flow_model(resolution: int = 64, n_circles: int = 1, epoch: int = 50,
     # its default (True) is what those checkpoints were trained with.
     model = Unet(ch=arch["ch"], ch_mul=arch["ch_mul"], att_channels=arch["att_channels"],
                  groups=arch["groups"], mid_attn=arch.get("mid_attn", True),
+                 time_embed_dim=arch.get("time_embed_dim"),
                  dropout=0.0).to(device)
     state = torch.load(run / f"checkpoints/epoch_{epoch:04d}.pt",
                        map_location=device, weights_only=True)
