@@ -18,6 +18,7 @@ TRAINING_LAYOUT = {
     64: (4, 64), 96: (5, 64), 128: (5, 32),
     160: (5, 32), 200: (6, 16), 250: (6, 16),
 }
+DEEPER_MICROBATCHES = {64: 512, 96: 128, 128: 128, 160: 64, 200: 32, 250: 32}
 
 
 def main() -> None:
@@ -30,6 +31,7 @@ def main() -> None:
     model_group.add_argument("--small-model", action="store_true", help="22,037-parameter capacity pilot")
     model_group.add_argument("--deeper-model", action="store_true", help="52,593 parameters; four levels and 32 time features")
     parser.add_argument("--epochs", type=int)
+    parser.add_argument("--micro-batch", type=int)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     os.chdir(root)
@@ -37,11 +39,13 @@ def main() -> None:
     data_path = root / f"data/separated-shapes-{args.resolution}.pt"
     compact_model = args.small_model or args.deeper_model
     epochs = args.epochs or (500 if args.deeper_model else 1000 if args.small_model else 200)
-    if compact_model and args.resolution != 64:
+    if args.small_model and args.resolution != 64:
         parser.error("The small-model pilot currently targets resolution 64")
+    if args.micro_batch is not None and not 1 <= args.micro_batch <= 512:
+        parser.error("--micro-batch must be between1 and512")
     name = f"separated-shapes-{args.resolution}-noattn-ch4-e{epochs}" if args.small_model else f"separated-shapes-{args.resolution}-noattn-ch16-b8-e{epochs}"
     if args.deeper_model:
-        name = f"separated-shapes-{args.resolution}-noattn-ch4-mul1-2-3-3-time32-e{epochs}"
+        name = f"separated-shapes-{args.resolution}-53k-time32-e{epochs}"
     out_dir = args.out_dir or Path("outputs/fm_unet") / name
     if not data_path.exists():
         parser.error(f"Missing dataset: {data_path}")
@@ -72,10 +76,12 @@ def main() -> None:
     torch.manual_seed(args.seed)
     levels, micro_batch = TRAINING_LAYOUT[args.resolution]
     if compact_model:
-        levels, micro_batch = (4 if args.deeper_model else 3), 512
+        levels, micro_batch = (4, DEEPER_MICROBATCHES[args.resolution]) if args.deeper_model else (3, 512)
         torch.backends.cudnn.benchmark = True
         torch.backends.cuda.matmul.allow_tf32 = False
         torch.backends.cudnn.allow_tf32 = False
+    if args.micro_batch is not None:
+        micro_batch = args.micro_batch
     command = [
         "train_fm_unet.py", "--data", str(data_path), "--out-dir", str(out_dir),
         "--device", args.device, "--epochs", str(epochs), "--batch", "512", "--micro-batch", str(micro_batch),
@@ -106,7 +112,8 @@ def main() -> None:
     runpy.run_path(str(root / command[0]), run_name="__main__")
     if compact_model and (out_dir / "run_summary.json").exists():
         from scripts.compare_small_fm_models import compare_models
-        compare_models(root / "outputs/fm_unet/separated-shapes-64-noattn-ch16-b8-e200", out_dir, args.device)
+        compare_models(root / f"outputs/fm_unet/separated-shapes-{args.resolution}-noattn-ch16-b8-e200",
+                       out_dir, args.device, micro_batch=min(128, micro_batch))
 
 
 if __name__ == "__main__":

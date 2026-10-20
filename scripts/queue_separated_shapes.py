@@ -26,9 +26,14 @@ def save_state(path: Path, state: dict[str, Any]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--device", default="cuda:1")
+    parser.add_argument("--deeper-model", action="store_true")
+    parser.add_argument("--epochs", type=int)
+    parser.add_argument("--run-tag", default="")
+    parser.add_argument("--after-run", type=Path, help="Wait for this trainer and its final comparison to exit")
     parser.add_argument("--output", type=Path,
                         default=Path("outputs/separated_shapes_multires_20261015"))
     args = parser.parse_args()
+    epochs = args.epochs or (500 if args.deeper_model else 200)
     root = Path(__file__).resolve().parents[1]
     os.chdir(root)
     args.output.mkdir(parents=True, exist_ok=True)
@@ -42,7 +47,9 @@ def main() -> None:
     state: dict[str, Any] = {"pid": os.getpid(), "device": args.device, "status": "running", "jobs": []}
     for resolution in (96, 128, 160, 200, 250):
         dataset = Path(f"data/separated-shapes-{resolution}.pt")
-        run = Path(f"outputs/fm_unet/separated-shapes-{resolution}-noattn-ch16-b8-e200")
+        architecture = "53k-time32" if args.deeper_model else "noattn-ch16-b8"
+        tag = f"-{args.run_tag}" if args.run_tag else ""
+        run = Path(f"outputs/fm_unet/separated-shapes-{resolution}-{architecture}-e{epochs}{tag}")
         ready = dataset.with_suffix(".json")
         summary = run / "run_summary.json"
         dataset_complete = False
@@ -55,7 +62,7 @@ def main() -> None:
         training_complete = False
         if summary.exists():
             result = json.loads(summary.read_text())
-            training_complete = result["status"] == "complete" and result["epochs_completed"] == 200
+            training_complete = result["status"] == "complete" and result["epochs_completed"] == epochs
         # Existing live training belongs to another controller: do not duplicate it.
         launch = run / "launch.json"
         if launch.exists() and not training_complete:
@@ -70,13 +77,31 @@ def main() -> None:
             "generate_command": [sys.executable, "-u", "-m", "dataset.generate_separated_shapes",
                                  "--resolution", str(resolution), "--workers", "4"],
             "train_command": [sys.executable, "-u", "scripts/train_separated_shapes.py",
-                              "--resolution", str(resolution), "--device", args.device],
+                              "--resolution", str(resolution), "--device", args.device,
+                              "--epochs", str(epochs), "--out-dir", str(run)]
+                              + (["--deeper-model"] if args.deeper_model else []),
             "generate_log": str(args.output / f"generate_{resolution}.log"),
             "train_log": str(args.output / f"train_{resolution}.log"),
         })
     state_path = args.output / "status.json"
     active: dict[str, tuple[subprocess.Popen[bytes], dict[str, Any]]] = {}
     save_state(state_path, state)
+    if args.after_run is not None:
+        state.update(status="waiting_for_previous_run", after_run=str(args.after_run))
+        save_state(state_path, state)
+        pid = json.loads((args.after_run / "launch.json").read_text())["pid"]
+        while True:
+            command_line = Path(f"/proc/{pid}/cmdline")
+            if not command_line.exists() or b"train_separated_shapes.py" not in command_line.read_bytes():
+                break
+            time.sleep(10)
+        summary = args.after_run / "run_summary.json"
+        if not summary.exists() or json.loads(summary.read_text())["status"] != "complete":
+            state["status"] = "blocked_previous_training_incomplete"
+            save_state(state_path, state)
+            raise RuntimeError("Previous trainer exited without completing; queued training not started")
+        state["status"] = "running"
+        save_state(state_path, state)
     while True:
         changed = False
         for stage, (process, job) in list(active.items()):
@@ -89,7 +114,7 @@ def main() -> None:
                 complete = summary.exists()
                 if complete:
                     result = json.loads(summary.read_text())
-                    complete = result["status"] == "complete" and result["epochs_completed"] == 200
+                    complete = result["status"] == "complete" and result["epochs_completed"] == epochs
             if complete and stage == "generate":
                 complete = Path(job["dataset"]).with_suffix(".json").exists()
             job[stage] = "complete" if complete else "failed"

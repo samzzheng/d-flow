@@ -17,7 +17,7 @@ from train_fm_unet import evaluate_split
 
 
 @torch.no_grad()
-def compare_models(baseline: Path, candidate: Path, device: str) -> None:
+def compare_models(baseline: Path, candidate: Path, device: str, micro_batch: int = 128) -> None:
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -49,7 +49,7 @@ def compare_models(baseline: Path, candidate: Path, device: str) -> None:
         for split, seed in [('val', 193), ('test', 194)]:
             # The same batch partition, t and source draws for both networks.
             torch.manual_seed(seed)
-            record[split + '_fm_mse'] = evaluate_split(model, data[split], device, batch=128, micro_batch=128)
+            record[split + '_fm_mse'] = evaluate_split(model, data[split], device, batch=128, micro_batch=micro_batch)
         def velocity(t: torch.Tensor, x: torch.Tensor) -> torch.Tensor:
             return model(x, t.expand(len(x)))
         for steps in (5, 100):
@@ -60,7 +60,7 @@ def compare_models(baseline: Path, candidate: Path, device: str) -> None:
         del model, state
     report = dict(models=records, validation_ratio=records['small']['val_fm_mse']/records['baseline']['val_fm_mse'],
                   test_ratio=records['small']['test_fm_mse']/records['baseline']['test_fm_mse'],
-                  protocol='Final EMA checkpoints; paired full validation/test sets, batch 128; standard BF16 FM evaluation, FP32 Euler samples; TF32 off.',
+                  protocol=f'Final EMA checkpoints; paired full validation/test sets, batch128 and microbatch{micro_batch}; standard BF16 FM evaluation, FP32 Euler samples; TF32 off.',
                   limitation='Unequal training epochs are intentional. FM loss and unconditional samples do not establish inverse-reconstruction accuracy.')
     (candidate / 'baseline_comparison.json').write_text(json.dumps(report, indent=2))
     torch.save(generated, candidate / 'eval' / 'capacity_comparison_samples.pt')
