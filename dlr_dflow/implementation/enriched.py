@@ -418,6 +418,7 @@ def evolve_trace_centered_enriched(
     alpha_rate=None,
     checkpoint_blocks: bool = False,
     _canonicalize_terminal: bool = True,
+    residual_sketch_steps: int | None = None,
 ):
     """Evolve J ~= a I + U S V^T with trace centering and basis enrichment.
 
@@ -442,6 +443,12 @@ def evolve_trace_centered_enriched(
     retain that core at return, avoiding an SVD and two tall basis rotations.
     Callback factors remain canonical; graph-backed outputs remain owned.
 
+    residual_sketch_steps=2 opts into a Gaussian sketch of the exact two-step
+    Euler residual; 1 provides a matched Gaussian control. Requires analytical
+    alpha, fixed rank, zero enrichment and factor_stride=1. Numerically zero
+    sketches extend the exact prefix on the original grid; unresolved rank is
+    not filled with arbitrary QR directions. None preserves legacy startup.
+
     The zero residual at t=0 is handled by delaying factor initialization until
     after one Euler step and sketching that first nonzero residual. Subsequent
     steps use projector splitting, augment its bases with fresh forcing
@@ -459,6 +466,11 @@ def evolve_trace_centered_enriched(
     dimension = height * width
     if rank + enrichment_probes > dimension:
         raise ValueError("rank plus enrichment probes exceeds the state dimension")
+    if residual_sketch_steps is not None:
+        if not 1 <= residual_sketch_steps <= n_steps:
+            raise ValueError("residual_sketch_steps must lie between 1 and n_steps")
+        if trace_probes or alpha_rate is not None or adaptive_rank or enrichment_probes or factor_stride != 1:
+            raise ValueError("residual sketch startup requires analytical alpha, fixed rank, zero enrichment and stride 1")
     step_size = 1.0 / n_steps
     untruncated_core = (SKIP_UNTRUNCATED_SVD and enrichment_probes == 0
                         and not adaptive_rank and alpha_rate is None)
@@ -477,75 +489,88 @@ def evolve_trace_centered_enriched(
         empty = z.new_zeros(dimension, 0)
         factor_callback(0, 1.0, (empty, z.new_zeros(0, 0), empty))
 
-    # First step: Y_0=0 has no singular vectors. Sketch the first nonzero
-    # residual Y_h ~= h A_0 + (1-a_h) I instead of inserting epsilon noise.
-    # The probe derivative and the sketch image share one batched JVP.
-    if products is not None:
-        products.set_state(0.0, x)
-        A, AT = products.A, products.AT
+    startup_steps = 1
+    if residual_sketch_steps is not None:
+        from .residual_startup import residual_sketch_startup
+        x, factors, startup_steps = residual_sketch_startup(
+            model, z, n_steps, rank, initialization_oversampling,
+            residual_sketch_steps, generator, checkpoint_blocks=checkpoint_blocks,
+            products=products, seed_basis=seed_basis,
+            factor_callback=factor_callback, diagnostics=diagnostics)
+        alpha = 1.0 - startup_steps * step_size
+        alpha_path = [1.0 - index * step_size for index in range(startup_steps + 1)]
+        if products is not None:
+            A, AT = products.A, products.AT
     else:
-        A, AT = core.make_A_products(model, 0.0, x, checkpoint_blocks=checkpoint_blocks)
-    sketch_rank = rank_max if adaptive_rank else rank
-    sketch_size = min(dimension, sketch_rank + initialization_oversampling)
-    sketch = _rademacher(dimension, sketch_size, generator, z.device, z.dtype)
-    if seed_basis is not None and seed_basis.numel() > 0:
-        # Notes Sec. 9 options A/C: give supplied directions range-finding
-        # priority. Columns are scaled to the Rademacher norm sqrt(d) so the
-        # (1 - alpha) identity correction treats them like the random probes.
-        seeds = seed_basis.detach().reshape(dimension, -1).to(z.dtype)
-        norms = seeds.norm(dim=0, keepdim=True).clamp_min(1e-12)
-        seeds = seeds / norms * dimension ** 0.5
-        k = min(seeds.shape[1], sketch_size)
-        sketch = torch.cat([seeds[:, :k], sketch[:, k:]], dim=1)
-    first = A(torch.cat([sensitivities, sketch], dim=1))
-    sensitivity_derivative = first[:, :trace_probes]
-    sketch_image = first[:, trace_probes:]
-    sensitivities = (sensitivities + step_size * sensitivity_derivative).detach()
-    if alpha_rate is None and trace_probes == 0:
-        next_alpha = 1.0 - step_size
-    elif alpha_rate is None:
-        next_alpha = (probes * sensitivities).sum() / (
-            trace_probes * dimension)
-    else:
-        next_alpha = alpha + step_size * alpha_rate(
-            0, sensitivity_derivative, z.new_zeros(dimension, 0))
-    range_basis, _ = torch.linalg.qr(
-        step_size * sketch_image + (1.0 - next_alpha) * sketch, mode="reduced")
-    transpose_image = (
-        step_size * AT(range_basis) + (1.0 - next_alpha) * range_basis)
-    right_vectors, singular_values, left_coordinates_t = _thin_svd(transpose_image)
-    if adaptive_rank:
-        keep = int((singular_values >= rank_tol * singular_values[0]).sum().item())
-        retained = max(rank_min, min(keep, rank_max, singular_values.numel()))
-    else:
-        retained = min(rank, singular_values.numel())
-    factors = (
-        range_basis @ left_coordinates_t.T[:, :retained],
-        torch.diag(singular_values[:retained]),
-        right_vectors[:, :retained],
-    )
-    with torch.no_grad():
-        velocity_here = getattr(A, "last_primal", None) if SHARE_PRIMAL else None
-        if velocity_here is None:
-            velocity_here = core.velocity(model, 0.0, x)
-        x = x + step_size * velocity_here.reshape_as(x)
-    alpha = next_alpha
-    alpha_path.append(alpha)
-    if factor_callback is not None:
-        factor_callback(1, float(alpha), factors)
-    if return_diagnostics:
-        diagnostics.append({
-            "t": step_size,
-            "alpha": float(alpha),
-            "residual_singular_values": torch.diag(factors[1]).detach().cpu().tolist(),
-        })
+        # First step: Y_0=0 has no singular vectors. Sketch the first nonzero
+        # residual Y_h ~= h A_0 + (1-a_h) I instead of inserting epsilon noise.
+        # The probe derivative and the sketch image share one batched JVP.
+        if products is not None:
+            products.set_state(0.0, x)
+            A, AT = products.A, products.AT
+        else:
+            A, AT = core.make_A_products(model, 0.0, x, checkpoint_blocks=checkpoint_blocks)
+        sketch_rank = rank_max if adaptive_rank else rank
+        sketch_size = min(dimension, sketch_rank + initialization_oversampling)
+        sketch = _rademacher(dimension, sketch_size, generator, z.device, z.dtype)
+        if seed_basis is not None and seed_basis.numel() > 0:
+            # Notes Sec. 9 options A/C: give supplied directions range-finding
+            # priority. Columns are scaled to the Rademacher norm sqrt(d) so the
+            # (1 - alpha) identity correction treats them like the random probes.
+            seeds = seed_basis.detach().reshape(dimension, -1).to(z.dtype)
+            norms = seeds.norm(dim=0, keepdim=True).clamp_min(1e-12)
+            seeds = seeds / norms * dimension ** 0.5
+            k = min(seeds.shape[1], sketch_size)
+            sketch = torch.cat([seeds[:, :k], sketch[:, k:]], dim=1)
+        first = A(torch.cat([sensitivities, sketch], dim=1))
+        sensitivity_derivative = first[:, :trace_probes]
+        sketch_image = first[:, trace_probes:]
+        sensitivities = (sensitivities + step_size * sensitivity_derivative).detach()
+        if alpha_rate is None and trace_probes == 0:
+            next_alpha = 1.0 - step_size
+        elif alpha_rate is None:
+            next_alpha = (probes * sensitivities).sum() / (
+                trace_probes * dimension)
+        else:
+            next_alpha = alpha + step_size * alpha_rate(
+                0, sensitivity_derivative, z.new_zeros(dimension, 0))
+        range_basis, _ = torch.linalg.qr(
+            step_size * sketch_image + (1.0 - next_alpha) * sketch, mode="reduced")
+        transpose_image = (
+            step_size * AT(range_basis) + (1.0 - next_alpha) * range_basis)
+        right_vectors, singular_values, left_coordinates_t = _thin_svd(transpose_image)
+        if adaptive_rank:
+            keep = int((singular_values >= rank_tol * singular_values[0]).sum().item())
+            retained = max(rank_min, min(keep, rank_max, singular_values.numel()))
+        else:
+            retained = min(rank, singular_values.numel())
+        factors = (
+            range_basis @ left_coordinates_t.T[:, :retained],
+            torch.diag(singular_values[:retained]),
+            right_vectors[:, :retained],
+        )
+        with torch.no_grad():
+            velocity_here = getattr(A, "last_primal", None) if SHARE_PRIMAL else None
+            if velocity_here is None:
+                velocity_here = core.velocity(model, 0.0, x)
+            x = x + step_size * velocity_here.reshape_as(x)
+        alpha = next_alpha
+        alpha_path.append(alpha)
+        if factor_callback is not None:
+            factor_callback(1, float(alpha), factors)
+        if return_diagnostics:
+            diagnostics.append({
+                "t": step_size,
+                "alpha": float(alpha),
+                "residual_singular_values": torch.diag(factors[1]).detach().cpu().tolist(),
+            })
 
     # An explicitly enabled provider can capture the complete fixed-rank,
     # zero-enrichment step, including QR/core algebra and the state update.
     # The initial randomized sketch remains outside that graph.
     whole_step = None
     if (getattr(products, "full_step_graphs", False) and SHARE_PRIMAL and untruncated_core
-            and factor_stride == 1 and n_steps > 1):
+            and factor_stride == 1 and n_steps > startup_steps):
         whole_step = products.prepare_step_graph(
             x, factors, sensitivities, probes, alpha, step_size)
 
@@ -553,8 +578,8 @@ def evolve_trace_centered_enriched(
     # fine grid every step, while the factor/trace ODEs take Euler steps of
     # h = stride*dt evaluated at the fine trajectory's current (t, x). A
     # remainder step below lands the factor time exactly on t = 1.
-    factor_time = step_size
-    for index in range(1, n_steps):
+    factor_time = startup_steps * step_size
+    for index in range(startup_steps, n_steps):
         t = index * step_size
         if whole_step is not None:
             whole_step.run(t)
@@ -648,7 +673,7 @@ def evolve_trace_centered_enriched(
         # The provider can reset/replay for the next source. Return owned
         # tensors; canonicalization below also creates independent factors.
         x = x.clone()
-    if untruncated_core and n_steps > 1 and _canonicalize_terminal:
+    if untruncated_core and n_steps > startup_steps and _canonicalize_terminal:
         factors = _canonicalize_factors(factors)
     elif whole_step is not None:
         factors = tuple(value.clone() for value in factors)

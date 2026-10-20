@@ -26,3 +26,4 @@ Dated log header:
 
 | Time | Experiment | Motivation | What Tried / Evidence | Correctness | Timing | Merge decision |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-20 | [Experiments](experiments/experiments-2026-10-20.md) |
