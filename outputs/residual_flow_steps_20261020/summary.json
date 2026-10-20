@@ -1,0 +1,282 @@
+[
+  {
+    "problem": "ct",
+    "flow_steps": 5,
+    "status": "stalled",
+    "attempts": 137,
+    "image_error_percent": 2.609289437532425,
+    "clean_measurement_error_percent": 0.6979390047490597,
+    "observed_residual_percent": 4.975453391671181,
+    "elapsed_seconds": 18.151979302056134,
+    "gradient_relative_error": 0.09064019471406937,
+    "graph_vs_eager_relative": 1.3803447700411198e-06,
+    "endpoint_relative_error": 3.049286760870018e-06,
+    "evaluations": {
+      "forward_objectives": 515,
+      "gradients": 133
+    },
+    "gradient_seconds": 0.026674570608884098,
+    "gradient_batch_seconds": [
+      0.027595678437501193,
+      0.026674570608884098,
+      0.026818257104605437,
+      0.026655024103820323,
+      0.026419153809547423
+    ],
+    "objective_seconds": 0.028159132366999982,
+    "objective_batch_seconds": [
+      0.028605657210573555,
+      0.028201036574319004,
+      0.027980539295822383,
+      0.028024167008697986,
+      0.028159132366999982
+    ],
+    "common_attempt": 82,
+    "common_image_error_percent": 2.9396474361419678
+  },
+  {
+    "problem": "ct",
+    "flow_steps": 4,
+    "status": "stalled",
+    "attempts": 221,
+    "image_error_percent": 3.0175553634762764,
+    "clean_measurement_error_percent": 0.7591607980430126,
+    "observed_residual_percent": 5.011223256587982,
+    "elapsed_seconds": 21.097295288927853,
+    "gradient_relative_error": 0.18223385512828827,
+    "graph_vs_eager_relative": 1.6056249023677083e-06,
+    "endpoint_relative_error": 4.406684013247286e-07,
+    "evaluations": {
+      "forward_objectives": 724,
+      "gradients": 213
+    },
+    "gradient_seconds": 0.022093398915603756,
+    "gradient_batch_seconds": [
+      0.02356613096781075,
+      0.022093398915603756,
+      0.022092190105468035,
+      0.022126325592398643,
+      0.02208468378521502
+    ],
+    "objective_seconds": 0.021750444220378994,
+    "objective_batch_seconds": [
+      0.02178301033563912,
+      0.021762103727087378,
+      0.021750444220378994,
+      0.021716494020074605,
+      0.021740627428516745
+    ],
+    "common_attempt": 82,
+    "common_image_error_percent": 3.3035773783922195
+  },
+  {
+    "problem": "ct",
+    "flow_steps": 3,
+    "status": "stalled",
+    "attempts": 127,
+    "image_error_percent": 3.7204042077064514,
+    "clean_measurement_error_percent": 0.8867318741977215,
+    "observed_residual_percent": 5.031056702136993,
+    "elapsed_seconds": 11.289168280083686,
+    "gradient_relative_error": 0.2208578735589981,
+    "graph_vs_eager_relative": 7.43295203164962e-08,
+    "endpoint_relative_error": 5.027597467233136e-07,
+    "evaluations": {
+      "forward_objectives": 536,
+      "gradients": 122
+    },
+    "gradient_seconds": 0.017976999562233687,
+    "gradient_batch_seconds": [
+      0.017976999562233687,
+      0.017983709694817662,
+      0.017994954669848084,
+      0.01797105767764151,
+      0.017973335133865474
+    ],
+    "objective_seconds": 0.01644296320155263,
+    "objective_batch_seconds": [
+      0.016302399383857847,
+      0.016284234030172227,
+      0.01644296320155263,
+      0.016911698505282402,
+      0.016931129805743694
+    ],
+    "common_attempt": 82,
+    "common_image_error_percent": 3.673851117491722
+  },
+  {
+    "problem": "ct",
+    "flow_steps": 2,
+    "status": "stalled",
+    "attempts": 82,
+    "image_error_percent": 6.887345761060715,
+    "clean_measurement_error_percent": 1.4585516415536404,
+    "observed_residual_percent": 5.183352157473564,
+    "elapsed_seconds": 3.0745399142615497,
+    "gradient_relative_error": 0.11781777441501617,
+    "graph_vs_eager_relative": 1.7876223834534244e-09,
+    "endpoint_relative_error": 8.263623385573737e-07,
+    "evaluations": {
+      "forward_objectives": 168,
+      "gradients": 79
+    },
+    "gradient_seconds": 0.013465900579467416,
+    "gradient_batch_seconds": [
+      0.01424716878682375,
+      0.013465861603617669,
+      0.013465900579467416,
+      0.013465630076825618,
+      0.013515192922204733
+    ],
+    "objective_seconds": 0.010938917007297277,
+    "objective_batch_seconds": [
+      0.010954366438090802,
+      0.010937566123902797,
+      0.010938232066109776,
+      0.010960916196927429,
+      0.010938917007297277
+    ],
+    "common_attempt": 82,
+    "common_image_error_percent": 6.887345761060715
+  },
+  {
+    "problem": "mri",
+    "flow_steps": 5,
+    "status": "stalled",
+    "attempts": 138,
+    "image_error_percent": 100.07717609405518,
+    "clean_measurement_error_percent": 94.90850567817688,
+    "observed_residual_percent": 94.92713212966919,
+    "elapsed_seconds": 15.730372738093138,
+    "gradient_relative_error": 0.1970359832048416,
+    "graph_vs_eager_relative": 1.1640381671895739e-06,
+    "endpoint_relative_error": 3.049286760870018e-06,
+    "evaluations": {
+      "forward_objectives": 432,
+      "gradients": 134
+    },
+    "gradient_seconds": 0.026367918495088814,
+    "gradient_batch_seconds": [
+      0.026370716700330376,
+      0.026367918495088814,
+      0.026369322603568435,
+      0.026365041080862284,
+      0.02636204557493329
+    ],
+    "objective_seconds": 0.027186132315546275,
+    "objective_batch_seconds": [
+      0.02722047921270132,
+      0.027231342485174538,
+      0.027186132315546275,
+      0.02714997688308358,
+      0.02718091649003327
+    ],
+    "common_attempt": 79,
+    "common_image_error_percent": 99.57093596458435
+  },
+  {
+    "problem": "mri",
+    "flow_steps": 4,
+    "status": "stalled",
+    "attempts": 285,
+    "image_error_percent": 2.413209155201912,
+    "clean_measurement_error_percent": 1.5169408172369003,
+    "observed_residual_percent": 5.231790989637375,
+    "elapsed_seconds": 30.364972253330052,
+    "gradient_relative_error": 0.25601738691329956,
+    "graph_vs_eager_relative": 1.2405433835738222e-06,
+    "endpoint_relative_error": 4.406684013247286e-07,
+    "evaluations": {
+      "forward_objectives": 1068,
+      "gradients": 276
+    },
+    "gradient_seconds": 0.022160651301965116,
+    "gradient_batch_seconds": [
+      0.022159723797813058,
+      0.022161133028566836,
+      0.022149665839970113,
+      0.022160651301965116,
+      0.022160667274147273
+    ],
+    "objective_seconds": 0.021842149272561073,
+    "objective_batch_seconds": [
+      0.02183614932000637,
+      0.021781640220433475,
+      0.021842149272561073,
+      0.022143621603026985,
+      0.022620790591463446
+    ],
+    "common_attempt": 79,
+    "common_image_error_percent": 86.55753135681152
+  },
+  {
+    "problem": "mri",
+    "flow_steps": 3,
+    "status": "step_limit",
+    "attempts": 1000,
+    "image_error_percent": 97.36928343772888,
+    "clean_measurement_error_percent": 96.30289673805237,
+    "observed_residual_percent": 96.31563425064087,
+    "elapsed_seconds": 36.98668630607426,
+    "gradient_relative_error": 0.11210735887289047,
+    "graph_vs_eager_relative": 7.02244307149158e-08,
+    "endpoint_relative_error": 5.027597467233136e-07,
+    "evaluations": {
+      "forward_objectives": 1063,
+      "gradients": 1000
+    },
+    "gradient_seconds": 0.01800224161706865,
+    "gradient_batch_seconds": [
+      0.018444402888417245,
+      0.018003627797588705,
+      0.01800224161706865,
+      0.017997585609555243,
+      0.01800072640180588
+    ],
+    "objective_seconds": 0.01709730117581785,
+    "objective_batch_seconds": [
+      0.016414370108395814,
+      0.016604047967121005,
+      0.01715352078899741,
+      0.017120744474232195,
+      0.01709730117581785
+    ],
+    "common_attempt": 79,
+    "common_image_error_percent": 111.05471849441528
+  },
+  {
+    "problem": "mri",
+    "flow_steps": 2,
+    "status": "stalled",
+    "attempts": 79,
+    "image_error_percent": 5.895727500319481,
+    "clean_measurement_error_percent": 3.7799928337335587,
+    "observed_residual_percent": 6.283412128686905,
+    "elapsed_seconds": 3.790161447133869,
+    "gradient_relative_error": 0.0760473683476448,
+    "graph_vs_eager_relative": 0.0,
+    "endpoint_relative_error": 8.263623385573737e-07,
+    "evaluations": {
+      "forward_objectives": 231,
+      "gradients": 77
+    },
+    "gradient_seconds": 0.013455985626205803,
+    "gradient_batch_seconds": [
+      0.013487514061853289,
+      0.013474895106628536,
+      0.013437086110934615,
+      0.013453900488093496,
+      0.013455985626205803
+    ],
+    "objective_seconds": 0.010988425696268678,
+    "objective_batch_seconds": [
+      0.011023314204066992,
+      0.011006999714300036,
+      0.010985902883112431,
+      0.01097316867671907,
+      0.010988425696268678
+    ],
+    "common_attempt": 79,
+    "common_image_error_percent": 5.895727500319481
+  }
+]
