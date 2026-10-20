@@ -26,17 +26,22 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=20261015)
     parser.add_argument("--resolution", type=int, choices=TRAINING_LAYOUT, default=64)
     parser.add_argument("--out-dir", type=Path)
-    parser.add_argument("--small-model", action="store_true", help="22,037-parameter capacity pilot")
+    model_group = parser.add_mutually_exclusive_group()
+    model_group.add_argument("--small-model", action="store_true", help="22,037-parameter capacity pilot")
+    model_group.add_argument("--deeper-model", action="store_true", help="52,593 parameters; four levels and 32 time features")
     parser.add_argument("--epochs", type=int)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     os.chdir(root)
     sys.path.insert(0, str(root))
     data_path = root / f"data/separated-shapes-{args.resolution}.pt"
-    epochs = args.epochs or (1000 if args.small_model else 200)
-    if args.small_model and args.resolution != 64:
+    compact_model = args.small_model or args.deeper_model
+    epochs = args.epochs or (500 if args.deeper_model else 1000 if args.small_model else 200)
+    if compact_model and args.resolution != 64:
         parser.error("The small-model pilot currently targets resolution 64")
     name = f"separated-shapes-{args.resolution}-noattn-ch4-e{epochs}" if args.small_model else f"separated-shapes-{args.resolution}-noattn-ch16-b8-e{epochs}"
+    if args.deeper_model:
+        name = f"separated-shapes-{args.resolution}-noattn-ch4-mul1-2-3-3-time32-e{epochs}"
     out_dir = args.out_dir or Path("outputs/fm_unet") / name
     if not data_path.exists():
         parser.error(f"Missing dataset: {data_path}")
@@ -49,11 +54,15 @@ def main() -> None:
     del dataset
     checkpoint = out_dir / "checkpoints/training_state.pt"
     resume_epoch = 0
-    if args.small_model and checkpoint.exists():
+    if compact_model and checkpoint.exists():
         resume_epoch = int(torch.load(checkpoint, weights_only=True, map_location="cpu", mmap=True)["epoch"])
         config = json.loads((out_dir / "config.json").read_text())
         if config["epochs"] != epochs or Path(config["data"]).resolve() != data_path.resolve():
             parser.error("Resume settings do not match the existing run")
+        if (config["arch"]["ch"] != 4
+                or config["arch"]["ch_mul"] != ([1, 2, 3, 3] if args.deeper_model else [1, 2, 2])
+                or config["arch"].get("time_embed_dim", 4) != (32 if args.deeper_model else 4)):
+            parser.error("Resume architecture does not match the existing run")
         if resume_epoch >= epochs:
             parser.error("Training has already reached the requested epoch count")
     else:
@@ -62,8 +71,8 @@ def main() -> None:
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     levels, micro_batch = TRAINING_LAYOUT[args.resolution]
-    if args.small_model:
-        levels, micro_batch = 3, 512
+    if compact_model:
+        levels, micro_batch = (4 if args.deeper_model else 3), 512
         torch.backends.cudnn.benchmark = True
         torch.backends.cuda.matmul.allow_tf32 = False
         torch.backends.cudnn.allow_tf32 = False
@@ -71,12 +80,14 @@ def main() -> None:
         "train_fm_unet.py", "--data", str(data_path), "--out-dir", str(out_dir),
         "--device", args.device, "--epochs", str(epochs), "--batch", "512", "--micro-batch", str(micro_batch),
         "--lr", "0.0002", "--wd", "0.0001", "--ema-decay", "0.999", "--t-alpha", "1",
-        "--sample-steps", "100", "--ch", "4" if args.small_model else "16", "--ch-mul", ",".join(map(str, [1] + [2] * (levels - 1))),
-        "--att-channels", ",".join(["0"] * levels), "--groups", "2" if args.small_model else "4", "--no-mid-attn",
-        "--num-workers", "0" if args.small_model else "2", "--threads", "4", "--no-compile" if args.small_model else "--compile",
+        "--sample-steps", "100", "--ch", "4" if compact_model else "16", "--ch-mul", ",".join(map(str, [1, 2, 3, 3] if args.deeper_model else [1] + [2] * (levels - 1))),
+        "--att-channels", ",".join(["0"] * levels), "--groups", "2" if compact_model else "4", "--no-mid-attn",
+        "--num-workers", "0" if compact_model else "2", "--threads", "4", "--no-compile" if compact_model else "--compile",
     ]
-    if args.small_model:
+    if compact_model:
         command.extend(["--gpu-resident", "--channels-last", "--fused-adam", "--save-training-state"])
+    if args.deeper_model:
+        command.extend(["--time-embed-dim", "32", "--graph-microbatches"])
     if resume_epoch:
         command.extend(["--resume-training-state", str(checkpoint), "--start-epoch", str(resume_epoch)])
     with data_path.open("rb") as dataset_file:
@@ -93,7 +104,7 @@ def main() -> None:
     print(json.dumps(launch, indent=2), flush=True)
     sys.argv = command
     runpy.run_path(str(root / command[0]), run_name="__main__")
-    if args.small_model and (out_dir / "run_summary.json").exists():
+    if compact_model and (out_dir / "run_summary.json").exists():
         from scripts.compare_small_fm_models import compare_models
         compare_models(root / "outputs/fm_unet/separated-shapes-64-noattn-ch16-b8-e200", out_dir, args.device)
 

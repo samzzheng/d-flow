@@ -1,6 +1,6 @@
 {
-  "started_at": "2026-10-19T10:40:09.097341-04:00",
-  "pid": 1892382,
+  "started_at": "2026-10-20T16:01:12.610340-04:00",
+  "pid": 3267947,
   "seed": 20261015,
   "device": "cuda:1",
   "command": [
@@ -8,11 +8,11 @@
     "--data",
     "/home/samzheng/d-flow/data/separated-shapes-64.pt",
     "--out-dir",
-    "outputs/fm_unet/separated-shapes-64-noattn-ch4-e1000",
+    "outputs/fm_unet/separated-shapes-64-noattn-ch4-mul1-2-3-3-time32-e500-20261020",
     "--device",
     "cuda:1",
     "--epochs",
-    "1000",
+    "500",
     "--batch",
     "512",
     "--micro-batch",
@@ -30,9 +30,9 @@
     "--ch",
     "4",
     "--ch-mul",
-    "1,2,2",
+    "1,2,3,3",
     "--att-channels",
-    "0,0,0",
+    "0,0,0,0",
     "--groups",
     "2",
     "--no-mid-attn",
@@ -44,10 +44,13 @@
     "--gpu-resident",
     "--channels-last",
     "--fused-adam",
-    "--save-training-state"
+    "--save-training-state",
+    "--time-embed-dim",
+    "32",
+    "--graph-microbatches"
   ],
   "dataset_sha256": "67d6c0b0238449c239a51a98842dfbf6ed56964defb8b88021298ff34f111ffb",
-  "trainer_sha256": "f894b348a656164ccf5b40f9fb046feb5fa47a31aad1d4fe31434ed5b126d0a8",
+  "trainer_sha256": "78dfcd756236b0fc016336afcee5c30a339d580cab20948a2128cbd5486a198a",
   "torch_version": "2.11.0+cu129",
   "compile_threads": null
 }

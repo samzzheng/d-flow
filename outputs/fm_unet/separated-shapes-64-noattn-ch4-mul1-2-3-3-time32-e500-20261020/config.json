@@ -1,14 +1,14 @@
 {
   "im_size": 64,
   "data": "/home/samzheng/d-flow/data/separated-shapes-64.pt",
-  "epochs": 1000,
+  "epochs": 500,
   "batch": 512,
   "lr": 0.0002,
   "wd": 0.0001,
   "ema_decay": 0.999,
   "lr_schedule": {
     "name": "CosineAnnealingLR",
-    "t_max": 1000,
+    "t_max": 500,
     "eta_min": 1e-05
   },
   "checkpoint_sampling": {
@@ -26,17 +26,20 @@
     "ch_mul": [
       1,
       2,
-      2
+      3,
+      3
     ],
     "att_channels": [
+      0,
       0,
       0,
       0
     ],
     "groups": 2,
-    "mid_attn": false
+    "mid_attn": false,
+    "time_embed_dim": 32
   },
-  "params": 22037,
+  "params": 52593,
   "dataset_metadata": {
     "format_version": 1,
     "resolution": 64,
@@ -103,5 +106,12 @@
     "cross_split_duplicate_swaps": 0
   },
   "t_alpha": 1.0,
-  "started_at": "2026-10-19T10:40:09"
+  "started_at": "2026-10-20T16:01:13",
+  "execution": {
+    "graph_microbatches": true,
+    "compile": false,
+    "channels_last": true,
+    "fused_adam": true,
+    "gpu_resident": true
+  }
 }
