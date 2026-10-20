@@ -22,12 +22,12 @@
   },
   "micro_batch": 512,
   "arch": {
-    "ch": 4,
+    "ch": 8,
     "ch_mul": [
       1,
       2,
-      4,
-      5
+      3,
+      3
     ],
     "att_channels": [
       0,
@@ -39,7 +39,7 @@
     "mid_attn": false,
     "time_embed_dim": 32
   },
-  "params": 102793,
+  "params": 205793,
   "dataset_metadata": {
     "format_version": 1,
     "resolution": 64,
@@ -106,7 +106,7 @@
     "cross_split_duplicate_swaps": 0
   },
   "t_alpha": 1.0,
-  "started_at": "2026-10-20T16:46:15",
+  "started_at": "2026-10-20T17:33:21",
   "execution": {
     "graph_microbatches": true,
     "compile": false,
