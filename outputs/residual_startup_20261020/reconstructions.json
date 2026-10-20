@@ -1,0 +1,74 @@
+[
+  {
+    "dataset": "circles",
+    "problem": "ct",
+    "variant": "legacy",
+    "status": "stalled",
+    "steps": 109,
+    "gradient_seconds": 0.02304802881553769,
+    "elapsed_seconds": 11.283481763210148,
+    "image_relative_l2": 0.03623166307806969,
+    "measurement_relative_l2_clean": 0.006818441674113274,
+    "phi": 0.018976814725701452
+  },
+  {
+    "dataset": "circles",
+    "problem": "ct",
+    "variant": "gaussian_one",
+    "status": "stalled",
+    "steps": 111,
+    "gradient_seconds": 0.025804656185209753,
+    "elapsed_seconds": 10.119770396035165,
+    "image_relative_l2": 0.034444116055965424,
+    "measurement_relative_l2_clean": 0.006567732430994511,
+    "phi": 0.01896876191702579
+  },
+  {
+    "dataset": "circles",
+    "problem": "ct",
+    "variant": "gaussian_two",
+    "status": "stalled",
+    "steps": 171,
+    "gradient_seconds": 0.028392363153398038,
+    "elapsed_seconds": 23.284295129124075,
+    "image_relative_l2": 0.025164837017655373,
+    "measurement_relative_l2_clean": 0.006626545917242765,
+    "phi": 0.018935211085337078
+  },
+  {
+    "dataset": "circles",
+    "problem": "mri",
+    "variant": "legacy",
+    "status": "step_limit",
+    "steps": 1000,
+    "gradient_seconds": 0.022718207724392415,
+    "elapsed_seconds": 288.12978675588965,
+    "image_relative_l2": 1.1316426992416382,
+    "measurement_relative_l2_clean": 1.1125640869140625,
+    "phi": 152.08050337282847
+  },
+  {
+    "dataset": "circles",
+    "problem": "mri",
+    "variant": "gaussian_one",
+    "status": "step_limit",
+    "steps": 1000,
+    "gradient_seconds": 0.02464080462232232,
+    "elapsed_seconds": 290.2143090199679,
+    "image_relative_l2": 1.132508397102356,
+    "measurement_relative_l2_clean": 1.1132150888442993,
+    "phi": 152.24986250387633
+  },
+  {
+    "dataset": "circles",
+    "problem": "mri",
+    "variant": "gaussian_two",
+    "status": "stalled",
+    "steps": 138,
+    "gradient_seconds": 0.028093070816248657,
+    "elapsed_seconds": 16.11105508590117,
+    "image_relative_l2": 1.0007717609405518,
+    "measurement_relative_l2_clean": 0.9490850567817688,
+    "phi": 110.86417348127566
+  }
+]

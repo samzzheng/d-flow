@@ -19,6 +19,8 @@ def main() -> None:
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
     rows = json.loads((args.out / 'reconstructions.json').read_text())
+    labels = {'legacy': 'Existing startup', 'gaussian_one': 'Gaussian, 1 step',
+              'gaussian_two': 'Gaussian, 2 steps'}
     summaries = []
     figure, axes = plt.subplots(2, 2, figsize=(10, 7), layout='constrained')
     for index, problem in enumerate(('ct', 'mri')):
@@ -40,13 +42,13 @@ def main() -> None:
                 {'DLR D-Flow': (record['image'], record['measurement'])},
                 observation=inputs['observed'], measurement_log=problem == 'mri',
                 title=f"Resolution: 64², Inverse Problem: {problem.upper()}, Noise Level 5%, Sample: 0\n"
-                      f"Initialization: {row['variant']}")
-            panel.savefig(path.with_suffix('.png'), dpi=120)
+                      f"Initialization: {labels[row['variant']]}")
+            panel.savefig(args.out / f'circles_{problem}' / f"{row['variant']}.png", dpi=120)
             plt.close(panel)
             axes[index, 0].plot([h['step'] for h in history],
-                                [100 * h['image_relative_l2'] for h in history], label=row['variant'])
+                                [100 * h['image_relative_l2'] for h in history], label=labels[row['variant']])
             axes[index, 1].semilogy([h['step'] for h in history], [h['phi'] for h in history],
-                                   label=row['variant'])
+                                   label=labels[row['variant']])
         axes[index, 0].set_ylabel(f'{problem.upper()} image error (%)')
         axes[index, 1].set_ylabel(f'{problem.upper()} measurement objective')
     for ax in axes.flat:
@@ -58,9 +60,26 @@ def main() -> None:
     plt.close(figure)
     (args.out / 'summary.json').write_text(json.dumps(summaries, indent=2))
     with (args.out / 'summary.csv').open('w') as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(summaries[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(summaries[0]), lineterminator='\n')
         writer.writeheader()
         writer.writerows(summaries)
+    diagnostics = json.loads((args.out / 'diagnostics.json').read_text())
+    figure, axes = plt.subplots(2, 2, figsize=(10, 7), layout='constrained')
+    variants = ('legacy', 'gaussian_one', 'gaussian_two')
+    for ax, (dataset, problem) in zip(axes.flat, (
+            ('circles', 'ct'), ('circles', 'mri'), ('shapes', 'ct'), ('shapes', 'mri'))):
+        for offset, steps in ((-.18, 5), (.18, 100)):
+            selected = {row['variant']: row for row in diagnostics if row['dataset'] == dataset
+                        and row['problem'] == problem and row['flow_steps'] == steps}
+            ax.bar([index + offset for index in range(3)],
+                   [100 * selected[name]['gradient_relative_error'] for name in variants],
+                   width=.35, label=f'{steps} Euler steps')
+        ax.set_xticks(range(3), [labels[name] for name in variants], rotation=15)
+        ax.set_title(f'{dataset}, {problem.upper()}')
+        ax.set_ylabel('Source-gradient relative error (%)')
+        ax.legend()
+    figure.savefig(args.out / 'gradient_errors.png', dpi=150)
+    plt.close(figure)
 
 
 if __name__ == '__main__':

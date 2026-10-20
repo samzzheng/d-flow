@@ -43,11 +43,15 @@
     },
     "dlr_dflow/implementation/enriched.py": {
       "before": "215f6177cd1143e91321923ba8b6c2814e613ea5659a44859e2c196e3702d985",
-      "after": "0084519de2c8d94f568066d2fe719f2e8cd31b861825356c89c144e869176e79"
+      "after": "3b2ef58756fa65890b36ca177608fbbec65173c0424e0c2bc45b282a1ed39a07"
     },
     "dlr_dflow/implementation/objectives.py": {
       "before": null,
       "after": "20aecd6bb7020f3b4be42ad63a8138c0b06ec4cf0a370673e6947f466e2eb050"
+    },
+    "dlr_dflow/implementation/residual_startup.py": {
+      "before": null,
+      "after": "742848ac91a31d1dc3647ff9511655406e4384564caa50a7c69d3ef166dedbde"
     }
   },
   "reason": "Scheduler now applies the manifest worker memory reservation to allocator limits and status. All existing reservations remain 9216 MiB, so existing numerical execution is unchanged. 22 CPU tests pass.",
@@ -76,6 +80,16 @@
         "dlr_dflow/implementation/objectives.py"
       ],
       "evidence": "outputs/reusable_api_review_20261019/"
+    },
+    {
+      "at": "2026-10-20T00:11:43.098551-04:00",
+      "commit": "68d8f32",
+      "reason": "Opt-in exact-prefix initialization added. residual_sketch_steps remains None in this frozen protocol, preserving legacy startup and original factor grid.",
+      "files": [
+        "dlr_dflow/implementation/enriched.py",
+        "dlr_dflow/implementation/residual_startup.py"
+      ],
+      "evidence": "outputs/residual_startup_20261020/"
     }
   ]
 }

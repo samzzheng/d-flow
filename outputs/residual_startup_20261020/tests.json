@@ -1,0 +1,15 @@
+{
+  "run": 34,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 1,
+  "modules": [
+    "test_residual_startup",
+    "test_graphed_evolution",
+    "test_untruncated_core",
+    "test_enriched_products",
+    "test_enriched_orthogonality",
+    "test_zero_enrichment_specialization",
+    "test_dlr_optimization"
+  ]
+}

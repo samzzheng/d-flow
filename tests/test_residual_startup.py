@@ -58,6 +58,14 @@ class ResidualStartupTests(unittest.TestCase):
             torch.testing.assert_close(x, prefix(self.z), atol=0, rtol=0)
             self.assertEqual(completed, steps)
             self.assertGreater(float((residual - residual.T).norm()), .01)
+            # With a full-width sketch, the rank-r output must be the dense
+            # best rank-r approximation, including its nonsymmetric factors.
+            _, low_rank, _ = residual_sketch_startup(
+                model, self.z, 5, 2, 6, steps, torch.Generator().manual_seed(91))
+            left, values, right_t = torch.linalg.svd(residual)
+            torch.testing.assert_close(low_rank[0] @ low_rank[1] @ low_rank[2].T,
+                                       (left[:, :2] * values[:2]) @ right_t[:2],
+                                       atol=3e-14, rtol=3e-13)
 
     def test_ideal_first_step_zero_extends_and_retains_only_resolved_rank(self) -> None:
         q = torch.linalg.qr(torch.randn(8, 2, dtype=self.z.dtype))[0]
@@ -75,6 +83,13 @@ class ResidualStartupTests(unittest.TestCase):
             results.append(result)
         for left, right in zip(results[0][1], results[1][1]):
             torch.testing.assert_close(left, right, atol=0, rtol=0)
+        _, (u, s, v), alpha = evolve_trace_centered_enriched(
+            model, self.z, 5, rank=6, trace_probes=0, enrichment_probes=0,
+            residual_sketch_steps=2, zero_terminal_baseline=True)
+        exact = torch.func.jacrev(lambda z: euler_flow(model, z, 5))(self.z).reshape(8, 8)
+        self.assertEqual(s.shape, (2, 2))
+        self.assertEqual(alpha, 0.)
+        torch.testing.assert_close(u @ s @ v.T, exact, atol=3e-14, rtol=3e-13)
 
     def test_zero_residual_reaches_terminal_without_invented_basis(self) -> None:
         model = CovarianceVelocity(torch.zeros(8, 8, dtype=self.z.dtype))

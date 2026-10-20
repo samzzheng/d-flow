@@ -1,0 +1,6 @@
+{
+  "status": "complete",
+  "diagnostics": 24,
+  "solves": 6,
+  "device": "cuda:0"
+}

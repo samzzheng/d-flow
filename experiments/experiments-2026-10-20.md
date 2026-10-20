@@ -3,3 +3,27 @@
 | Time | Experiment | Motivation | What Tried / Evidence | Correctness | Timing | Merge decision |
 | --- | --- | --- | --- | --- | --- | --- |
 | 00:11 | Two-step residual-sketch initialization | For independent Gaussian/data coupling, the ideal A0=-I makes the first residual vanish; an exact two-step Euler prefix can expose covariance-related directions before low-rank evolution. | Added opt-in residual_sketch_steps=2 (1 is a matched Gaussian control; None retains legacy). Propagate the full skinny residual action and its reverse-order transpose, use rank-revealing skinny QR/small SVD, retain only numerically resolved rank, extend zero sketches on the original grid, then continue existing DLR. Cutoff is a roundoff heuristic, not certified learned-JVP accuracy. Pilot compares legacy/one-Gaussian/two-Gaussian at rank8 with p8, analytical alpha, FP32/TF32 off, no previous-V reuse, same five-step model and LBFGS/geometric Armijo up to 1000 attempts. Circle sample0 CT10/MRI4 at 5% noise; additional fixed-source diagnostics on separated shapes at 5/100 Euler steps. | Dense nonnormal discrete-prefix Jacobians match at 1/2/3 steps; ideal covariance case extends past zero R1 and retains true rank2; zero residual through the entire grid returns empty factors; endpoints, callbacks, diagnostics and reusable provider integration tested. CPU tests passed before GPU launch. GPU/eager new-startup checks required below 1% gradient difference before comparison. | CPU tests 2 threads. Bounded serial pilot on idle GPU0, memory capped at 25%; ongoing training on GPU1 unchanged. Evidence: outputs/residual_startup_20261020/. | Experimental opt-in only; no production default change. Pilot running; final accuracy and runtime evidence pending. |
+| 00:18 | Two-step startup pilot completed | Test whether a better initial subspace improves full reconstruction, beyond fixed-source gradient accuracy. | All six circle solves and 24 fixed-source diagnostics complete. Final CT image errors existing/Gaussian-one/Gaussian-two: 3.623/3.444/2.516%; at common attempt109: 3.623/3.444/2.477%. MRI final: 113.164/113.251/100.077%; all fail accurate reconstruction. At five Euler steps Gaussian-one to two reduces source-gradient error CT 68.89 to9.06%, MRI74.04 to19.70%; shapes CT60.95 to46.03%, MRI69.39 to50.14%. At100 steps the change is small and mixed (circles about4.1%, shapes18–20%). Evidence: outputs/residual_startup_20261020/summary.csv, diagnostics.json, startup_audit.json, convergence.png, gradient_errors.png. | 34 tests run, zero failures/errors, one CUDA-only skip; new dense truncated-SVD and retained-rank continuation assertions also pass. Actual GPU graph/eager gradient differences below3.5e-6; endpoint relative differences below3e-6. Same saved source/observation/checkpoint per arm, identical Gaussian probes between one/two-step controls, no previous-V reuse. Learned sampled norm(A0+I) action ratios3.15% circles and1.79% shapes, so first residual is small, not exactly zero. | Serial GPU0 pilot completed by00:17; GPU1 training uninterrupted. Warmed gradient refresh existing/one/two: CT23.05/25.80/28.39ms, MRI22.72/24.64/28.09ms. Solve wall times CT11.28/10.12/23.28s; MRI288.13/290.21/16.11s. Different trajectory lengths preclude interpreting solve times as per-iteration speedups. | Keep opt-in, not default. One sample/source/noise realization per problem; shapes diagnostics only. Five-step initial-gradient improvement is promising but does not cure MRI failure; no100-step reconstruction claim. Existing production queues retain legacy initialization. |
+
+The pilot uses the existing 472,017-parameter non-attention epoch-200 checkpoints,
+not the 20k models currently training. Rank8, oversampling8, alpha=1-t,
+zero enrichment and FP32 are fixed. Sources/acquisition/noise/DLR seeds are
+606/607/608/609. LBFGS uses LR1, history100, geometric Armijo halving,
+c1=1e-4, at most30 backtracks and displacement cap0.64.
+CT terminates after109/111/171 attempts under the existing failed-search safeguard;
+MRI uses1000/1000/138. These are final accepted checkpoints, not retrospective
+best-image selections. MRI errors at the common attempt138 are
+113.523/113.561/100.077%. A better gradient at the initial source therefore does
+not establish a better-conditioned or globally convergent inverse problem.
+
+Enable through `sensitivity_factors(..., residual_sketch_steps=2,
+trace_probes=0, enrichment_probes=0, initialization_oversampling=8)`;
+`residual_sketch_steps=1` is the Gaussian control and `None` keeps existing startup.
+The exact prefix advances the original Euler trajectory; it does not add generator
+steps or reinitialize the source. The zero-sketch fallback carries the entire prefix.
+The numerical rank threshold is heuristic and is not a certified derivative error bound.
+
+Reproduce the pilot with
+`CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 uv run --no-sync --python .venv/bin/python python -m experiments.residual_startup.pilot --out outputs/residual_startup_20261020`.
+Render saved results with
+`CUDA_VISIBLE_DEVICES='' uv run --no-sync --python .venv/bin/python python -m experiments.residual_startup.report --out outputs/residual_startup_20261020`.
