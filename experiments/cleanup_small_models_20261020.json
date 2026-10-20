@@ -1,0 +1,114 @@
+{
+  "time": "2026-10-20T16:00:59.266902-04:00",
+  "reason": "User requested removal of87k and original narrow-time tiny-model run files",
+  "removed": [
+    {
+      "path": "outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n1",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3596573
+    },
+    {
+      "path": "outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n2",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3718191
+    },
+    {
+      "path": "outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n3",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3806618
+    },
+    {
+      "path": "outputs/fm_unet/circles-128-noattn-ch4-e500-mbtuned-20261019/n4",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3975933
+    },
+    {
+      "path": "outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n1",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 4151862
+    },
+    {
+      "path": "outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n2",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 4137956
+    },
+    {
+      "path": "outputs/fm_unet/circles-160-noattn-ch4-e500-mbtuned-20261019/n3",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 796646
+    },
+    {
+      "path": "outputs/fm_unet/circles-64-noattn-ch4-e1000/n1",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3484524
+    },
+    {
+      "path": "outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n1",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3165923
+    },
+    {
+      "path": "outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n2",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3197409
+    },
+    {
+      "path": "outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n3",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3272888
+    },
+    {
+      "path": "outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n4",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3301343
+    },
+    {
+      "path": "outputs/fm_unet/circles-64-noattn-ch8-time32-e500-20261020/n2",
+      "parameters": 86761,
+      "time_features": 32,
+      "bytes": 4663971
+    },
+    {
+      "path": "outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n1",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3356675
+    },
+    {
+      "path": "outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n2",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3464565
+    },
+    {
+      "path": "outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n3",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3612501
+    },
+    {
+      "path": "outputs/fm_unet/circles-96-noattn-ch4-e500-mbtuned-20261019/n4",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3602907
+    },
+    {
+      "path": "outputs/fm_unet/separated-shapes-64-noattn-ch4-e1000",
+      "parameters": 22037,
+      "time_features": 4,
+      "bytes": 3846169
+    }
+  ]
+}
