@@ -1,4 +1,4 @@
-"""Paired unconditional sampling audit after the 49k two-circle pilot finishes."""
+"""Paired unconditional sampling audit after a two-circle pilot finishes."""
 from __future__ import annotations
 
 import argparse
@@ -64,10 +64,13 @@ def main() -> None:
     parser.add_argument("--baseline", type=Path, default=Path(
         "outputs/fm_unet/circles-64-noattn-ch4-e500-mbtuned-20261019/n2"))
     parser.add_argument("--trainer-pid", type=int)
+    parser.add_argument("--candidate-label", default="49k")
     parser.add_argument("--device", default="cuda:1")
     parser.add_argument("--samples", type=int, default=128)
     parser.add_argument("--seed", type=int, default=20261020)
     args = parser.parse_args()
+    if args.candidate_label == "22k":
+        parser.error("--candidate-label must differ from the baseline label '22k'")
     out = args.run / "capacity_evaluation"
     out.mkdir(exist_ok=True)
     while not (args.run / "run_summary.json").exists():
@@ -94,7 +97,7 @@ def main() -> None:
                   metrics_note="8-connected components with area>=8 pixels; thresholds0.25/0.5/0.75. Disk IoU uses centroid and equal-area disk at threshold0.5. Morphology proxies, not a complete generation-quality score.",
                   reference=morphology(reference), models={})
     samples = {}
-    for name, run in (("22k", args.baseline), ("49k", args.run)):
+    for name, run in (("22k", args.baseline), (args.candidate_label, args.run)):
         model, _ = load_flow_model(run_dir=run, epoch=500, device=args.device)
         config = json.loads((run / "config.json").read_text())
         result["models"][name] = dict(parameters=config["params"], run=str(run),
@@ -117,7 +120,8 @@ def main() -> None:
         del model
         torch.cuda.empty_cache()
     torch.save(dict(initial=initial, generated=samples), out / "paired_samples.pt")
-    order = ("22k_euler", "49k_euler", "22k_rk4", "49k_rk4")
+    order = ("22k_euler", f"{args.candidate_label}_euler",
+             "22k_rk4", f"{args.candidate_label}_rk4")
     for start in range(0, min(args.samples, 16), 8):
         figure, axes = plt.subplots(4, min(8, args.samples - start), figsize=(15, 8), squeeze=False,
                                     layout="constrained")
