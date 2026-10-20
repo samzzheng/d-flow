@@ -71,6 +71,11 @@ def compare_models(baseline: Path, candidate: Path, device: str, micro_batch: in
     (candidate / 'baseline_comparison.json').write_text(json.dumps(report, indent=2))
     torch.save(generated, candidate / 'eval' / 'capacity_comparison_samples.pt')
     torch.save(initial.cpu(), candidate / 'eval' / 'capacity_comparison_sources.pt')
+    if data.get('metadata', {}).get('type_distribution'):
+        from scripts.shape_sample_quality import compare_shape_statistics
+
+        quality = compare_shape_statistics(data['val'][:1024].float() / 255, generated)
+        (candidate / 'shape_quality.json').write_text(json.dumps(quality, indent=2, allow_nan=False))
     for steps in (5, 100):
         for start in range(0, sample_count, 8):
             fig, axes = plt.subplots(2, 8, figsize=(16, 4))
