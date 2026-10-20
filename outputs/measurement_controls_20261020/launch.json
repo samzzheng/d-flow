@@ -1,0 +1,24 @@
+{
+  "started_at": "2026-10-20T00:31:28.246600-04:00",
+  "physical_gpu": 0,
+  "sample_queues": [
+    [
+      20,
+      9
+    ],
+    [
+      22,
+      14
+    ]
+  ],
+  "queue_pids": [
+    2613106,
+    2613416
+  ],
+  "workers": 2,
+  "memory_fraction_per_worker": 0.25,
+  "threads_per_worker": 2,
+  "worker_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 uv run --no-sync --python .venv/bin/python python -m experiments.residual_startup.measurement_controls worker --out outputs/measurement_controls_20261020 --sample <sample>",
+  "logs": "/tmp/measurement-controls-<sample>.log",
+  "report_interval_seconds": 30
+}
