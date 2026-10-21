@@ -22,28 +22,6 @@
         }
       }
     },
-    "200k": {
-      "parameters": 205793,
-      "epochs": 500,
-      "checkpoint": "outputs/fm_unet/separated-shapes-64-200k-time32-e500-20261020/checkpoints/epoch_0500.pt",
-      "checkpoint_sha256": "6c94c7db688675b55bd7317dc93d247c7640bff493a5dc07f53b344c6c123716",
-      "val_fm_mse": 0.01994406314024442,
-      "test_fm_mse": 0.019893006103325492,
-      "generation": {
-        "5": {
-          "samples": 1024,
-          "count_outside_one_to_four": 11,
-          "template_outlier_images": 329,
-          "four_components": 70
-        },
-        "100": {
-          "samples": 1024,
-          "count_outside_one_to_four": 1,
-          "template_outlier_images": 126,
-          "four_components": 220
-        }
-      }
-    },
     "original": {
       "parameters": 472017,
       "epochs": 200,
@@ -65,6 +43,50 @@
           "four_components": 196
         }
       }
+    },
+    "117k": {
+      "parameters": 116617,
+      "epochs": 500,
+      "checkpoint": "outputs/fm_unet/separated-shapes-64-117k-time32-e500-20261020/checkpoints/epoch_0500.pt",
+      "checkpoint_sha256": "12575a26669172c9bd457893401496bbcaec4d81e124c77837ad797376114bc0",
+      "val_fm_mse": 0.020628872999473462,
+      "test_fm_mse": 0.02057168932183634,
+      "generation": {
+        "5": {
+          "samples": 1024,
+          "count_outside_one_to_four": 29,
+          "template_outlier_images": 361,
+          "four_components": 72
+        },
+        "100": {
+          "samples": 1024,
+          "count_outside_one_to_four": 12,
+          "template_outlier_images": 159,
+          "four_components": 207
+        }
+      }
+    },
+    "200k": {
+      "parameters": 205793,
+      "epochs": 500,
+      "checkpoint": "outputs/fm_unet/separated-shapes-64-200k-time32-e500-20261020/checkpoints/epoch_0500.pt",
+      "checkpoint_sha256": "6c94c7db688675b55bd7317dc93d247c7640bff493a5dc07f53b344c6c123716",
+      "val_fm_mse": 0.01994406314024442,
+      "test_fm_mse": 0.019893006103325492,
+      "generation": {
+        "5": {
+          "samples": 1024,
+          "count_outside_one_to_four": 11,
+          "template_outlier_images": 329,
+          "four_components": 70
+        },
+        "100": {
+          "samples": 1024,
+          "count_outside_one_to_four": 1,
+          "template_outlier_images": 126,
+          "four_components": 220
+        }
+      }
     }
   },
   "source_sha256": "20daa3085a66cd7c4299b5c4dfe00407a76f75c64c63a7b2ffb96c88a0849f7f",
@@ -72,5 +94,26 @@
   "template_iou_cutoff": 0.8799757361412048,
   "real_reference_outlier_images": 26,
   "real_reference_images": 1024,
-  "limitation": "Template outliers and detected object counts are descriptive diagnostics, not certified shape validity or inverse-reconstruction accuracy. Original model trained200 epochs; small models500. This establishes a200k candidate, not minimum possible capacity."
+  "paired_117k_minus_200k_template_outliers": {
+    "5": {
+      "difference_percentage_points": 3.125,
+      "paired_bootstrap_95_percent_interval": [
+        -0.09765625,
+        6.34765625
+      ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_seed": 20261020
+    },
+    "100": {
+      "difference_percentage_points": 3.22265625,
+      "paired_bootstrap_95_percent_interval": [
+        0.68359375,
+        5.859375
+      ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_seed": 20261020
+    }
+  },
+  "recommendation": "200k is the smallest tested model retaining approximately original quality; 117k is a smaller, lower-quality alternative.",
+  "limitation": "No global minimum parameter count or formal quality equivalence is established. Template flags are not certified invalid shapes. One training seed per architecture; original trained 200 epochs, others 500. No inverse-reconstruction comparison."
 }

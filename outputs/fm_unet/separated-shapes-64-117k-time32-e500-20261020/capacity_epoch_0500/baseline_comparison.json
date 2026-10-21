@@ -1,0 +1,27 @@
+{
+  "models": {
+    "baseline": {
+      "parameters": 472017,
+      "epochs": 200,
+      "checkpoint": "outputs/fm_unet/separated-shapes-64-noattn-ch16-b8-e200/checkpoints/epoch_0200.pt",
+      "checkpoint_sha256": "8cba99cccb18b2daa9595246f2ea3272c3b444107a6190ec6a0ffd7968ff32e8",
+      "val_fm_mse": 0.019858044583963442,
+      "test_fm_mse": 0.01989189926770669
+    },
+    "small": {
+      "parameters": 116617,
+      "epochs": 500,
+      "checkpoint": "outputs/fm_unet/separated-shapes-64-117k-time32-e500-20261020/checkpoints/epoch_0500.pt",
+      "checkpoint_sha256": "12575a26669172c9bd457893401496bbcaec4d81e124c77837ad797376114bc0",
+      "val_fm_mse": 0.020628872999473462,
+      "test_fm_mse": 0.02057168932183634
+    }
+  },
+  "validation_ratio": 1.0388169344796672,
+  "test_ratio": 1.0341742155930402,
+  "sample_count": 1024,
+  "source_seed": 4271,
+  "source_sha256": "20daa3085a66cd7c4299b5c4dfe00407a76f75c64c63a7b2ffb96c88a0849f7f",
+  "protocol": "EMA checkpoints at the recorded epochs; paired full validation/test sets, batch128 and microbatch128; standard BF16 FM evaluation, 1024 paired FP32 Euler samples; TF32 off.",
+  "limitation": "Unequal training epochs are intentional. FM loss and unconditional samples do not establish inverse-reconstruction accuracy."
+}
