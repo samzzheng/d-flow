@@ -1,0 +1,185 @@
+{
+  "device": "cpu",
+  "dtype": "float32",
+  "effective_batch": 512,
+  "micro_batch": 32,
+  "epochs": 500,
+  "training_images": 80000,
+  "affinity": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "rows": [
+    {
+      "threads": 4,
+      "resolution": 64,
+      "parameters": 116617,
+      "microbatch_seconds": 0.167261797003448,
+      "optimizer_ema_seconds": 0.008198294788599014,
+      "microbatch_repeats": [
+        0.1607035337947309,
+        0.1675265161320567,
+        0.167261797003448
+      ],
+      "training_hours": 58.25578122089306
+    },
+    {
+      "threads": 4,
+      "resolution": 96,
+      "parameters": 116617,
+      "microbatch_seconds": 0.3680081660859287,
+      "optimizer_ema_seconds": 0.00859798677265644,
+      "microbatch_repeats": [
+        0.340486709959805,
+        0.37800779612734914,
+        0.3680081660859287
+      ],
+      "training_hours": 127.96809710251789
+    },
+    {
+      "threads": 4,
+      "resolution": 128,
+      "parameters": 116617,
+      "microbatch_seconds": 0.6322442046366632,
+      "optimizer_ema_seconds": 0.00847595278173685,
+      "microbatch_repeats": [
+        0.6083764261566103,
+        0.6322442046366632,
+        0.6425698362290859
+      ],
+      "training_hours": 219.71406058033205
+    },
+    {
+      "threads": 4,
+      "resolution": 160,
+      "parameters": 116617,
+      "microbatch_seconds": 0.979598896112293,
+      "optimizer_ema_seconds": 0.015473398379981518,
+      "microbatch_repeats": [
+        0.979598896112293,
+        1.0027062189765275,
+        0.9647272136062384
+      ],
+      "training_hours": 340.47591164255414
+    },
+    {
+      "threads": 4,
+      "resolution": 200,
+      "parameters": 116617,
+      "microbatch_seconds": 1.5224434938281775,
+      "optimizer_ema_seconds": 0.008721934165805578,
+      "microbatch_repeats": [
+        1.5224434938281775,
+        1.5330760977230966,
+        1.52069456782192
+      ],
+      "training_hours": 528.8163997547882
+    },
+    {
+      "threads": 4,
+      "resolution": 250,
+      "parameters": 116617,
+      "microbatch_seconds": 2.7164934021420777,
+      "optimizer_ema_seconds": 0.009029447101056576,
+      "microbatch_repeats": [
+        2.693765780888498,
+        2.8710594261065125,
+        2.7164934021420777
+      ],
+      "training_hours": 943.423767854175
+    },
+    {
+      "threads": 16,
+      "resolution": 64,
+      "parameters": 116617,
+      "microbatch_seconds": 0.06719258986413479,
+      "optimizer_ema_seconds": 0.008812510874122381,
+      "microbatch_repeats": [
+        0.06713351095095277,
+        0.06719258986413479,
+        0.0684672612696886
+      ],
+      "training_hours": 23.522922064940857
+    },
+    {
+      "threads": 16,
+      "resolution": 96,
+      "parameters": 116617,
+      "microbatch_seconds": 0.11372694885358214,
+      "optimizer_ema_seconds": 0.008764047175645828,
+      "microbatch_repeats": [
+        0.11056080786511302,
+        0.11372694885358214,
+        0.11665075505152345
+      ],
+      "training_hours": 39.679628825073856
+    },
+    {
+      "threads": 16,
+      "resolution": 128,
+      "parameters": 116617,
+      "microbatch_seconds": 0.17687391303479671,
+      "optimizer_ema_seconds": 0.008947493974119425,
+      "microbatch_repeats": [
+        0.17687391303479671,
+        0.17873327480629086,
+        0.1740583390928805
+      ],
+      "training_hours": 61.609658214017855
+    },
+    {
+      "threads": 16,
+      "resolution": 160,
+      "parameters": 116617,
+      "microbatch_seconds": 0.2564173857681453,
+      "optimizer_ema_seconds": 0.008981976192444563,
+      "microbatch_repeats": [
+        0.2563237748108804,
+        0.2564173857681453,
+        0.25902184238657355
+      ],
+      "training_hours": 89.22967148369126
+    },
+    {
+      "threads": 16,
+      "resolution": 200,
+      "parameters": 116617,
+      "microbatch_seconds": 0.479411733802408,
+      "optimizer_ema_seconds": 0.009183580055832863,
+      "microbatch_repeats": [
+        0.479411733802408,
+        0.5078556388616562,
+        0.47080541402101517
+      ],
+      "training_hours": 166.6626606353869
+    },
+    {
+      "threads": 16,
+      "resolution": 250,
+      "parameters": 116617,
+      "microbatch_seconds": 1.1270417249761522,
+      "optimizer_ema_seconds": 0.009368778672069311,
+      "microbatch_repeats": [
+        1.1333947689272463,
+        1.0708778649568558,
+        1.1270417249761522
+      ],
+      "training_hours": 391.5382237072077
+    }
+  ],
+  "scope": "Synthetic in-memory batches; real FM forward/backward, AdamW and EMA. Project microbatch timing to 80k images for 500 epochs. Excludes validation, sampling, I/O and sustained-load effects; no CPU tuning or BF16."
+}
