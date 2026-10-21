@@ -1,4 +1,4 @@
-"""Generate the remaining shape datasets and train one model at a time on GPU 1.
+"""Generate shape datasets and train one model at a time on the selected GPU.
 
 CPU generation overlaps GPU training. Completed runs are skipped, failed stages
 are recorded, and existing unfinished outputs are never overwritten.
@@ -26,14 +26,18 @@ def save_state(path: Path, state: dict[str, Any]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--device", default="cuda:1")
-    parser.add_argument("--deeper-model", action="store_true")
+    models = parser.add_mutually_exclusive_group()
+    models.add_argument("--deeper-model", action="store_true")
+    models.add_argument("--model-117k", action="store_true")
+    parser.add_argument("--resolutions", type=int, nargs="+", choices=(96, 128, 160, 200, 250),
+                        default=[96, 128, 160, 200, 250])
     parser.add_argument("--epochs", type=int)
     parser.add_argument("--run-tag", default="")
     parser.add_argument("--after-run", type=Path, help="Wait for this trainer and its final comparison to exit")
     parser.add_argument("--output", type=Path,
                         default=Path("outputs/separated_shapes_multires_20261015"))
     args = parser.parse_args()
-    epochs = args.epochs or (500 if args.deeper_model else 200)
+    epochs = args.epochs or (500 if args.deeper_model or args.model_117k else 200)
     root = Path(__file__).resolve().parents[1]
     os.chdir(root)
     args.output.mkdir(parents=True, exist_ok=True)
@@ -45,9 +49,9 @@ def main() -> None:
         "TQDM_MININTERVAL": "30", "MPLBACKEND": "Agg",
     }
     state: dict[str, Any] = {"pid": os.getpid(), "device": args.device, "status": "running", "jobs": []}
-    for resolution in (96, 128, 160, 200, 250):
+    for resolution in dict.fromkeys(args.resolutions):
         dataset = Path(f"data/separated-shapes-{resolution}.pt")
-        architecture = "53k-time32" if args.deeper_model else "noattn-ch16-b8"
+        architecture = "117k-time32" if args.model_117k else "53k-time32" if args.deeper_model else "noattn-ch16-b8"
         tag = f"-{args.run_tag}" if args.run_tag else ""
         run = Path(f"outputs/fm_unet/separated-shapes-{resolution}-{architecture}-e{epochs}{tag}")
         ready = dataset.with_suffix(".json")
@@ -79,7 +83,7 @@ def main() -> None:
             "train_command": [sys.executable, "-u", "scripts/train_separated_shapes.py",
                               "--resolution", str(resolution), "--device", args.device,
                               "--epochs", str(epochs), "--out-dir", str(run)]
-                              + (["--deeper-model"] if args.deeper_model else []),
+                              + (["--model-117k"] if args.model_117k else ["--deeper-model"] if args.deeper_model else []),
             "generate_log": str(args.output / f"generate_{resolution}.log"),
             "train_log": str(args.output / f"train_{resolution}.log"),
         })

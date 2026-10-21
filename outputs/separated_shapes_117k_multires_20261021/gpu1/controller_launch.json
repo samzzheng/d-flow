@@ -1,0 +1,21 @@
+{
+  "pid": 3809093,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python3",
+    "-u",
+    "scripts/queue_separated_shapes.py",
+    "--model-117k",
+    "--epochs",
+    "500",
+    "--device",
+    "cuda:1",
+    "--resolutions",
+    "250",
+    "128",
+    "--run-tag",
+    "20261021",
+    "--output",
+    "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu1"
+  ],
+  "started_at": "2026-10-21T00:34:43.236953-04:00"
+}
