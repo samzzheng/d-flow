@@ -134,6 +134,51 @@
       "image_error": 0.30331653356552124,
       "residual": 0.13780204951763153,
       "source_hash": "308fb7512b9cddfc25301c1624fa55c6e8fe6a6d061c1726867c433a4b99a9c3"
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "run": "multistart_increment_ct7",
+      "method": "DLR D-Flow",
+      "selected": "measurement_half",
+      "status": "stalled",
+      "rank": 128,
+      "factor_integrator": "increment",
+      "goal_steps": 0,
+      "complete": true,
+      "total_attempts": 431,
+      "image_error": 0.05291931703686714,
+      "residual": 0.015391292050480843,
+      "source_hash": "412f4dd9577a6f2c94a80c150eefed717d5c13fc4a5e0cc2041aca852c5174d3"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_002",
+      "run": "multistart_increment_mri2",
+      "method": "DLR D-Flow",
+      "selected": "measurement_half",
+      "status": "stalled",
+      "rank": 128,
+      "factor_integrator": "increment",
+      "goal_steps": 0,
+      "complete": true,
+      "total_attempts": 620,
+      "image_error": 0.03179425001144409,
+      "residual": 0.01648685522377491,
+      "source_hash": "d9e273d9d1a3aead1952d50f8f48b53537ab03860c65e46fce2a7e7bddd05bad"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "run": "multistart_increment_200ct1",
+      "method": "DLR D-Flow",
+      "selected": "measurement_half",
+      "status": "stalled",
+      "rank": 128,
+      "factor_integrator": "increment",
+      "goal_steps": 0,
+      "complete": true,
+      "total_attempts": 245,
+      "image_error": 0.25789889693260193,
+      "residual": 0.13221333920955658,
+      "source_hash": "308fb7512b9cddfc25301c1624fa55c6e8fe6a6d061c1726867c433a4b99a9c3"
     }
   ],
   "checks_passed": true
