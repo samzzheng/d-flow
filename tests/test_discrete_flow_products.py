@@ -12,6 +12,7 @@ from sampler.ode_samplers import euler_flow
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from experiments.separated_shapes_117k.exact_suffix import suffix_gradient, task_terminal_factors, task_gradient
 from dlr_dflow.api import sensitivity_factors
+from dlr_dflow.implementation.enriched import _thin_svd
 
 
 class NonlinearVelocity(torch.nn.Module):
@@ -25,6 +26,25 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_native_compressed_svd_reference_matches_dense_truncated_gradients(self) -> None:
+        torch.manual_seed(81)
+        model = NonlinearVelocity()
+        source = .1*torch.randn(1, 1, 3, 3, dtype=torch.float64)
+        products = DiscreteProducts(model, source, steps=5)
+        dense = torch.func.jacrev(lambda value: euler_flow(model, value, 5))(source).reshape(9, 9)
+        dense_left, dense_values, dense_right_t = torch.linalg.svd(dense)
+        basis, _ = torch.linalg.qr(products.apply(torch.randn(9, 9, dtype=source.dtype)))
+        right, values, coordinates = _thin_svd(products.apply(basis, transpose=True))
+        left = basis @ coordinates.T
+        torch.testing.assert_close(values, dense_values, atol=1e-11, rtol=1e-10)
+        torch.testing.assert_close(products.apply(right), left*values, atol=1e-11, rtol=1e-10)
+        torch.testing.assert_close(products.apply(left, transpose=True), right*values, atol=1e-11, rtol=1e-10)
+        terminal = torch.randn(9, 1, dtype=source.dtype)
+        for rank in (1, 3, 6):
+            actual = right[:, :rank] @ (values[:rank, None]*(left[:, :rank].T @ terminal))
+            expected = dense_right_t[:rank].T @ (dense_values[:rank, None]*(dense_left[:, :rank].T @ terminal))
+            torch.testing.assert_close(actual, expected, atol=1e-11, rtol=1e-10)
+
     def test_transported_goal_projections_match_exact_suffix_with_low_rank_factors(self) -> None:
         torch.manual_seed(76)
         model = NonlinearVelocity()

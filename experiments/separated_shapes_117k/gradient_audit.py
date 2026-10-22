@@ -69,6 +69,8 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--ranks", nargs="+", type=int, default=[32, 128])
     parser.add_argument("--power-iterations", type=int, default=3)
+    parser.add_argument("--reference-oversampling", type=int, default=8,
+        help="Extra columns for the independent terminal SVD reference, not DLR initialization")
     parser.add_argument("--basis-refreshes", type=int, default=0,
         help="Repeatedly reuse the returned right basis at an unchanged source")
     integrator = parser.add_mutually_exclusive_group()
@@ -91,6 +93,8 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.reference_oversampling < 1:
+        parser.error("The reference needs an extra singular value to assess the rank cutoff")
     if args.saved_direction_audit and (args.source is None or args.double):
         parser.error("Saved-direction audit requires a saved FP32 source")
     if args.factor_arithmetic != "specialized" and (args.stable_sl or args.increment_ksl or args.refined_increment):
@@ -315,7 +319,9 @@ def main() -> None:
         run.write_json(args.out, report)
         return
     generator = torch.Generator(device=device).manual_seed(protocol["dlr_seed"])
-    omega = torch.randn(source.numel(), max(args.ranks) + 8, device=device, generator=generator)
+    report["reference_oversampling"] = args.reference_oversampling
+    omega = torch.randn(source.numel(), max(args.ranks) + args.reference_oversampling,
+                        device=device, generator=generator)
     with torch.no_grad():
         basis, _ = torch.linalg.qr(reference.apply(omega), mode="reduced")
         previous_estimates: dict[int, torch.Tensor] = {}
@@ -338,7 +344,26 @@ def main() -> None:
                 right_basis, _ = torch.linalg.qr(transpose, mode="reduced")
                 basis, _ = torch.linalg.qr(reference.apply(right_basis), mode="reduced")
         residual = reference.apply(right[:, :max(args.ranks)]) - left[:, :max(args.ranks)] * values[:max(args.ranks)]
+        transpose_residual = (reference.apply(left[:, :max(args.ranks)], transpose=True)
+                              - right[:, :max(args.ranks)] * values[:max(args.ranks)])
         report["max_triplet_residual_over_leading_value"] = float(residual.norm(dim=0).max()/values[0])
+        coefficients = values[:max(args.ranks), None] * (left[:, :max(args.ranks)].T @ terminal.reshape(-1, 1))
+        report["reference_gradient_energy_curve"] = (coefficients.square().cumsum(dim=0)
+            / exact.square().sum()).flatten().cpu().tolist()
+        report["reference_checks"] = []
+        for rank in args.ranks:
+            triplet_error = float(torch.maximum(residual[:, :rank].norm(dim=0).max(),
+                transpose_residual[:, :rank].norm(dim=0).max())/values[0])
+            change = next(row["gradient_change_over_exact_norm"] for row in reversed(report["rows"])
+                          if row["method"] == "terminal_randomized" and row["rank"] == rank)
+            gap = float((values[rank-1]-values[rank])/values[0])
+            report["reference_checks"].append(dict(rank=rank,
+                max_triplet_residual_over_leading_value=triplet_error,
+                gradient_change_over_exact_norm=change,
+                cutoff_gap_over_leading_value=gap,
+                cutoff_unresolved=gap <= 2*triplet_error,
+                numerical_checks_passed=(triplet_error < 1e-3 and change is not None
+                                         and change < .01 and gap > 2*triplet_error)))
     report["status"] = "complete"
     run.write_json(args.out, report)
 
