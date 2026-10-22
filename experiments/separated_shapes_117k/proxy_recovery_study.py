@@ -7,6 +7,7 @@ import math
 from pathlib import Path
 import signal
 import time
+from unittest.mock import patch
 
 import torch
 
@@ -17,6 +18,7 @@ from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.optimizer import SweepLBFGS
 from experiments.separated_shapes_117k.bounded_products import BoundedGraphedProducts
 from experiments.separated_shapes_117k.proxy_fallback import proxy_step
+from experiments.separated_shapes_117k.optimizer_controls import CapStartedLBFGS
 
 
 def main() -> None:
@@ -24,6 +26,9 @@ def main() -> None:
     parser.add_argument("--parent", type=Path, required=True)
     parser.add_argument("--inputs", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--arms", nargs="+",
+        choices=("reset_dlr", "proxy_then_dlr", "proxy_only", "cap_started_dlr"),
+        default=["reset_dlr", "proxy_then_dlr", "proxy_only"])
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
@@ -69,17 +74,17 @@ def main() -> None:
     tangent_unet.GN_STATS_MODE = tangent_unet.GN_ACTION_BACKEND = tangent_unet.GN_PRIMAL_BACKEND = "native"
     experiment = dict(parent=str(args.parent), parent_sha256=hashlib.sha256(args.parent.read_bytes()).hexdigest(),
         initial_source_sha256=hashlib.sha256(source.cpu().numpy().tobytes()).hexdigest(),
-        settings=settings, initial_attempt=initial_attempt, attempt_limit=limit,
+        settings=settings, initial_attempt=initial_attempt, attempt_limit=limit, arms=args.arms,
         script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         fallback_sha256=hashlib.sha256(Path(proxy_step.__wrapped__.__code__.co_filename).read_bytes()).hexdigest(),
-        note="All arms start at the same stalled source. Reset DLR uses fresh LBFGS with existing attempt count and previous V as a sketch seed. Hybrid tries exactly one objective-safeguarded proxy step, then fresh LBFGS/DLR; no curvature spans the switch. Proxy-only repeats that safeguarded proxy, without LBFGS or a proxy Armijo slope. Projection unchanged; all attempts including the rescue count toward the original1000 limit.")
+        note="All arms start at the same stalled source. Reset DLR uses fresh LBFGS with existing attempt count and previous V as a sketch seed. Hybrid tries exactly one objective-safeguarded proxy step, then fresh LBFGS/DLR; no curvature spans the switch. Proxy-only repeats that safeguarded proxy, without LBFGS or a proxy Armijo slope. Optional cap_started_dlr is the reset-DLR control with later searches starting at the existing displacement cap; no proxy step. Projection unchanged; all attempts including the rescue count toward the original1000 limit.")
     args.out.mkdir(parents=True, exist_ok=True)
     config = args.out/"config.json"
     if config.exists():
         assert json.loads(config.read_text()) == experiment
     run.write_json(config, experiment)
 
-    for arm in ("reset_dlr", "proxy_then_dlr", "proxy_only"):
+    for arm in args.arms:
         if interrupted[0]:
             break
         path = args.out/arm
@@ -113,7 +118,7 @@ def main() -> None:
             failures, prior_seconds = existing["failures"], existing["elapsed_seconds"]
             evaluator.counts = existing["evaluations"]
             evaluator.objective(current)
-        while arm != "reset_dlr" and (not checkpoint.exists() or arm == "proxy_only"):
+        while arm in ("proxy_then_dlr", "proxy_only") and (not checkpoint.exists() or arm == "proxy_only"):
             if interrupted[0]:
                 status = "paused"
                 break
@@ -174,8 +179,10 @@ def main() -> None:
                 run.write_json(checkpoint.with_suffix(".json"), {key:saved[key] for key in
                     ("protocol", "method", "status", "history", "evaluations", "elapsed_seconds")})
             if status != "proxy_rejected" and not interrupted[0]:
-                result = run.solve(evaluator, method, current, inputs["truth"], inputs["clean"],
-                    checkpoint, paired, interrupted)
+                optimizer_type = CapStartedLBFGS if arm == "cap_started_dlr" else SweepLBFGS
+                with patch.object(run, "SweepLBFGS", optimizer_type):
+                    result = run.solve(evaluator, method, current, inputs["truth"], inputs["clean"],
+                        checkpoint, paired, interrupted)
                 print(arm, result["status"], result["history"][-1], flush=True)
         del evaluator, products
         torch.cuda.empty_cache()
