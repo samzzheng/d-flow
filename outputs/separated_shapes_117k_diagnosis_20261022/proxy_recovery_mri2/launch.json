@@ -1,0 +1,16 @@
+{
+  "pid": 1681145,
+  "command": [
+    ".venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.separated_shapes_117k.proxy_recovery_study",
+    "--parent",
+    "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_floor32_mri2/adaptive/r250_shapes_mri4/sample_002/dlr_d_flow.pt",
+    "--inputs",
+    "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_floor32_mri2/adaptive/r250_shapes_mri4/sample_002/inputs.pt",
+    "--out",
+    "outputs/separated_shapes_117k_diagnosis_20261022/proxy_recovery_mri2"
+  ],
+  "log": "/tmp/proxy_recovery_mri2.log"
+}
