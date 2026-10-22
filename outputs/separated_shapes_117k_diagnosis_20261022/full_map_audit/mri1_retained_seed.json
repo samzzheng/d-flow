@@ -1,0 +1,239 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/mri_initialization_controls/measurement/r250_shapes_mri4/sample_001/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/mri_initialization_controls/measurement/r250_shapes_mri4/sample_001/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "ffe129c7dec82b017afcd8c7bd27c399beed6455006502d219fa41f49828249e",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "objective": 1.6359576050368574,
+  "image_error": 0.12305708974599838,
+  "exact_gradient_norm": 0.02981463074684143,
+  "adjoint_relative_error": 1.3300392538440065e-06,
+  "rows": [
+    {
+      "method": "dynamic",
+      "rank": 32,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "startup": "retained",
+      "terminal_seed": false,
+      "source_gradient_seed": true,
+      "relative_error": 0.7268190979957581,
+      "subspace_relative_error": 0.6554979085922241,
+      "coefficient_relative_error": 0.31398698687553406,
+      "cosine": 0.7201555967330933,
+      "norm_ratio": 0.9366965293884277,
+      "oracle_scalar": -0.0030337993521243334,
+      "oracle_scalar_corrected_error": 0.7077228426933289,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 1.0000038146972656
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000238418579,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.8959044814109802
+        },
+        {
+          "step": 3,
+          "alpha": 0.40000003576278687,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.7871796488761902
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000003278255463,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.693596601486206
+        },
+        {
+          "step": 5,
+          "alpha": 2.9802322387695312e-08,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.5703244805335999
+        }
+      ]
+    },
+    {
+      "method": "dynamic",
+      "rank": 32,
+      "warm": true,
+      "factor_arithmetic": "specialized",
+      "startup": "retained",
+      "terminal_seed": false,
+      "source_gradient_seed": true,
+      "relative_error": 0.6123824119567871,
+      "subspace_relative_error": 0.5848280787467957,
+      "coefficient_relative_error": 0.18162420392036438,
+      "cosine": 0.8054194450378418,
+      "norm_ratio": 0.9594083428382874,
+      "oracle_scalar": -0.0032223083544522524,
+      "oracle_scalar_corrected_error": 0.5866069197654724,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 1.0000027418136597
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000238418579,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.9081130027770996
+        },
+        {
+          "step": 3,
+          "alpha": 0.40000003576278687,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.8412380814552307
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000003278255463,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.7918558120727539
+        },
+        {
+          "step": 5,
+          "alpha": 2.9802322387695312e-08,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.6579789519309998
+        }
+      ]
+    },
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "startup": "retained",
+      "terminal_seed": false,
+      "source_gradient_seed": true,
+      "relative_error": 0.6484554409980774,
+      "subspace_relative_error": 0.5997396111488342,
+      "coefficient_relative_error": 0.24657928943634033,
+      "cosine": 0.7800666093826294,
+      "norm_ratio": 0.9503557682037354,
+      "oracle_scalar": -0.003024463076144457,
+      "oracle_scalar_corrected_error": 0.6271111369132996,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 1.0000224113464355
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000238418579,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.9065752625465393
+        },
+        {
+          "step": 3,
+          "alpha": 0.40000003576278687,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8242295384407043
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000003278255463,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.7620470523834229
+        },
+        {
+          "step": 5,
+          "alpha": 2.9802322387695312e-08,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.6403290629386902
+        }
+      ]
+    },
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": true,
+      "factor_arithmetic": "specialized",
+      "startup": "retained",
+      "terminal_seed": false,
+      "source_gradient_seed": true,
+      "relative_error": 0.5980927348136902,
+      "subspace_relative_error": 0.5700454115867615,
+      "coefficient_relative_error": 0.18098658323287964,
+      "cosine": 0.8151693344116211,
+      "norm_ratio": 0.9642192125320435,
+      "oracle_scalar": -0.0030193475540727377,
+      "oracle_scalar_corrected_error": 0.5749616026878357,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 1.0000156164169312
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000238418579,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.91265869140625
+        },
+        {
+          "step": 3,
+          "alpha": 0.40000003576278687,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8513303995132446
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000003278255463,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8054552674293518
+        },
+        {
+          "step": 5,
+          "alpha": 2.9802322387695312e-08,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.675067663192749
+        }
+      ]
+    }
+  ],
+  "increment_substeps": 0,
+  "startup": "retained",
+  "startup_sha256": "7f2fb0672116f194c9d11a76a951782319b4830e48ccfdbc705f38ee12265b41",
+  "factor_integrator_sha256": "fc988d65ce74ec8a24edf131f7953b25793251a99a205434cdcc72856253fcbd",
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}

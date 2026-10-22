@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 07:05 local time. Native-backend checks at failed sources pass. A single frozen exact-gradient sketch seed improves one MRI reconstruction12.306% to9.040%; the random control and CT case do not improve, and a second refresh gives no further gain. A terminal subspace/curvature audit identifies useful excluded directions and stiff retained directions. The accuracy objective remains unresolved.
+Snapshot: 2026-10-22, 07:31 local time. Explicitly retaining one informed seed in the first residual right basis improves the paired rank32 MRI1 continuation12.306% to2.982%; unchanged and random-seed controls remain12.306%. It uses the same cached exact-gradient seed that previously reached9.040%. CT fixed-point diagnostics still lose the direction in the next KSL step. The completed three-object MRI4 informed/random/unchanged controls all remain94.224%; general accuracy remains unresolved. [Initialization derivation and paired results](full_map_audit/retained_seed_report.md).
 
 ## Verified findings
 
