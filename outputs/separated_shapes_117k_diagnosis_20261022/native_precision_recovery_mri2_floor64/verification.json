@@ -1,0 +1,36 @@
+{
+  "checked_at": "2026-10-22T13:45:41.552997-04:00",
+  "results": {
+    "float32": {
+      "status": "stalled",
+      "selected_source_attempts": 90,
+      "total_attempts": 240,
+      "image_error_percent": 11.658585226731915,
+      "residual_percent": 7.848128501046081,
+      "phi": 1.0643755381340347,
+      "source_sha256": "4ace6335ee69ec15b27cc0dde53c65978a0ff7013d8dc1c5882d3f1fe1f34001",
+      "preserved_segment_history_sha256": "ba8337b063a5c00262af753ac3946c4c24088328a44aff0d6ad8563ca10c6c0c",
+      "terminal_rank": 64
+    },
+    "float64": {
+      "status": "step_limit",
+      "selected_source_attempts": 850,
+      "total_attempts": 1000,
+      "image_error_percent": 6.597888139462052,
+      "residual_percent": 4.205441320618015,
+      "phi": 0.3056228556447197,
+      "source_sha256": "43ad9d3b44aa493cc5d971dfa7046273b47e6c4fc4b4a3e854643cf501ffeb0d",
+      "preserved_segment_history_sha256": "e96f68336a4a3579bc043c7417a476404cfea293c1db9cd99e0eff26a94190a8",
+      "terminal_rank": 64
+    }
+  },
+  "checks": [
+    "terminal status and original 1000-total-attempt cap",
+    "parent hash and paired model/operator/seeds",
+    "unchanged adaptive settings",
+    "original 50-update history prefix hashes preserved",
+    "monotone objectives and displacement caps",
+    "image, complex measurement residual and objective recomputed from saved arrays"
+  ],
+  "note": "FP32 stops after two rejected searches; FP64 uses remaining budget. This measures restored numerical progress and subsequent optimization, not equal numbers of accepted updates."
+}
