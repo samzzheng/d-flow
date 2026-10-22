@@ -22,6 +22,12 @@ In FP64, central differences converge to the autodiff descent slope27.2137. The 
 
 This establishes a numerical obstacle to local progress. It does not establish that removing it yields an accurate reconstruction.
 
+## Independent CPU chain check
+
+The CPU-only check uses the same saved source, model and observations, and verifies its recorded forward chain is bitwise identical to the canonical Euler sampler at each precision. It gives a0.005223% endpoint difference but15.756% source-gradient difference between FP32 and FP64. The adjoint difference grows from0.001764% at the endpoint to0.08439%,1.189%,10.095%,15.719% and15.756% through the reverse chain. Thus small forward arithmetic differences can accompany much larger sensitivity differences at this source.
+
+This is a separate CPU arithmetic comparison, not a reference for the GPU: kernels and the deliberately FP32 time features can differ between devices. CPU gradient norms are29.2203/34.0250, versus GPU15.2515/33.7530. Do not mix these as matched-backend results. [Reproducible chain evidence](mri4_cpu_precision_chain.json).
+
 ## Paired reconstruction control
 
 Both continuations use native autodiff products, the same rank32, frozen informed seed, right basis, source, measurements, five-step map, retained initialization and later KSL formulas. Both cold-reset curvature and retain the original attempt counter201 and geometric Armijo/cap settings. Each precision recomputes its own initial objective. No new exact-gradient seed is computed. The first segment is bounded to50 additional attempts, inside the original1000-attempt budget.

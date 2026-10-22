@@ -1,0 +1,73 @@
+{
+  "device": "cpu",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/retained_seed_recovery_mri4/gradient_seed/dlr_d_flow.pt",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "source_sha256": "480d5351660d9523a1105be41485349a6d4fdf10443e3eadc009b8f376bded2b",
+  "script_sha256": "65dae5d5951fc81be5117e3ccfa30de874922fa15ad4d128662ec487b3d1c6f5",
+  "flow_steps": 5,
+  "records": [
+    {
+      "dtype": "torch.float32",
+      "objective": 1369.175679746074,
+      "adjoint_norms": [
+        29.220308303833008,
+        32.914005279541016,
+        10.917539596557617,
+        6.714391231536865,
+        6.407247543334961,
+        49.737972259521484
+      ]
+    },
+    {
+      "dtype": "torch.float64",
+      "objective": 1369.175709218327,
+      "adjoint_norms": [
+        34.02500979356009,
+        38.25240747037501,
+        11.538148325712578,
+        6.720052263622266,
+        6.407342580471584,
+        49.73911059961915
+      ]
+    }
+  ],
+  "comparison": [
+    {
+      "step": 0,
+      "forward_relative_difference": 0.0,
+      "adjoint_relative_difference": 0.15756230733075532,
+      "adjoint_cosine": 0.9971555999771082
+    },
+    {
+      "step": 1,
+      "forward_relative_difference": 8.073341186642235e-08,
+      "adjoint_relative_difference": 0.15719168946111592,
+      "adjoint_cosine": 0.9969590833120244
+    },
+    {
+      "step": 2,
+      "forward_relative_difference": 1.4167805905950384e-07,
+      "adjoint_relative_difference": 0.1009524083114884,
+      "adjoint_cosine": 0.9961434181059963
+    },
+    {
+      "step": 3,
+      "forward_relative_difference": 5.35285644394561e-07,
+      "adjoint_relative_difference": 0.01189275165034841,
+      "adjoint_cosine": 0.9999295768226755
+    },
+    {
+      "step": 4,
+      "forward_relative_difference": 1.2452322779891898e-05,
+      "adjoint_relative_difference": 0.00084390888617067,
+      "adjoint_cosine": 0.999999644017249
+    },
+    {
+      "step": 5,
+      "forward_relative_difference": 5.222857988274726e-05,
+      "adjoint_relative_difference": 1.763698518095399e-05,
+      "adjoint_cosine": 0.9999999998444691
+    }
+  ],
+  "note": "CPU arithmetic diagnostic. CPU and GPU kernels and FP32 time features need not agree; neither CPU result is a GPU reference."
+}

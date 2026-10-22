@@ -1,0 +1,24 @@
+[
+  {
+    "case": "r250_shapes_ct10/sample_007",
+    "paired_arrays_bitwise": true,
+    "model_operator_seeds_verified": true,
+    "settings_difference": {
+      "rank_min": [
+        4,
+        32
+      ]
+    }
+  },
+  {
+    "case": "r250_shapes_ct10/sample_020",
+    "paired_arrays_bitwise": true,
+    "model_operator_seeds_verified": true,
+    "settings_difference": {
+      "rank_min": [
+        4,
+        32
+      ]
+    }
+  }
+]
