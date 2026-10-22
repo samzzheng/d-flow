@@ -80,3 +80,11 @@ Five-step unconditional quality also degrades at high resolution: the detector f
 At the final corrected FP64 MRI2 source, raising the adaptive floor from 64 to 128 barely changes reused-basis gradient error (30.8869% to 30.8774%). Missing-subspace error dominates; terminal rank alone is insufficient.
 
 [Geometry and paired-method audit](dataset_difficulty/report.md) · [Final MRI gradient audit](full_map_audit/mri2_final_gradient_report.md)
+
+## Narrow descent regions at collapsed endpoints
+
+Six selected MRI250 endpoints (four D-Flow, two corrected DLR) have nonzero exact gradients but very narrow sampled descent regions. For corrected DLR samples0/1, the largest tested decreasing displacements along the normalized negative exact gradient are1e-6/1e-7; larger tested steps increase the objective. Central differences at1e-8 agree with native derivatives to at most3.8e-6 of the gradient norm across all tested directions. This is a diagnostic, not a GD reconstruction.
+
+Straight paths to paired successful P-Flow sources all show a small initial objective rise before reaching low-error images. These particular paths expose local barriers, not a proof that no descending path exists. Promoted FP64 maps change failed endpoint images by up to0.451% relative to the original nearly blank image. The evidence supports both subspace loss and difficult local objective geometry; larger rank alone cannot address both. No relaxed line-search or production optimizer change is justified by this diagnostic.
+
+[Source-path report and figure](dataset_difficulty/source_bridge_report.md).

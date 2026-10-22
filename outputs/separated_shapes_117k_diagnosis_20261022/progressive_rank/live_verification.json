@@ -1,23 +1,23 @@
 {
-  "checked_at": "2026-10-22T13:31:47.021272-04:00",
+  "checked_at": "2026-10-22T14:08:18.476832-04:00",
   "rows": [
     {
       "case": "r250_shapes_ct10/sample_007",
       "variant": "unrestricted256",
       "status": "running",
-      "step": 50,
-      "image_error_percent": 97.77361720580593,
-      "residual_percent": 75.0406547193867,
-      "verified_rank_evaluations": 64
+      "step": 510,
+      "image_error_percent": 46.05059004225607,
+      "residual_percent": 16.258172469156044,
+      "verified_rank_evaluations": 517
     },
     {
       "case": "r250_shapes_mri4/sample_004",
       "variant": "unrestricted256",
       "status": "running",
-      "step": 30,
-      "image_error_percent": 64.92656896057912,
-      "residual_percent": 63.52273806719051,
-      "verified_rank_evaluations": 46
+      "step": 530,
+      "image_error_percent": 4.26021050229106,
+      "residual_percent": 3.3636925169631358,
+      "verified_rank_evaluations": 526
     }
   ],
   "checks": [
