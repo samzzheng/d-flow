@@ -20,6 +20,7 @@ from experiments.ct_mri_sweep.queue import source_hashes
 from sampler.ode_samplers import euler_flow
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step
 
 
 class RankRecordingEvaluator(run.Evaluator):
@@ -73,6 +74,8 @@ def main() -> None:
                         default=["prefix2", "prefix5"])
     parser.add_argument("--backend", choices=("fast", "native", "native_primal"), default="fast")
     parser.add_argument("--rank", type=int)
+    parser.add_argument("--flow-steps", type=int)
+    parser.add_argument("--methods", choices=run.METHODS, nargs="+")
     parser.add_argument("--source-cache-roots", type=Path, nargs="*", default=[])
     parser.add_argument("--source-cache-variant", choices=("measurement", "random_mix"),
         help="Use one cached initialization across the requested rank variants")
@@ -83,10 +86,13 @@ def main() -> None:
     parser.add_argument("--history-fallback", action="store_true")
     parser.add_argument("--no-reuse-v", action="store_true",
         help="Rebuild each initialization sketch without the previous right basis")
+    parser.add_argument("--factor-integrator", choices=("original", "increment"), default="original")
     parser.add_argument("--rank-min", type=int, default=4)
     parser.add_argument("--rank-max", type=int, default=128)
     parser.add_argument("--rank-tol", type=float, default=1e-3)
     args = parser.parse_args()
+    if args.factor_integrator == "increment" and "adaptive" in args.variants:
+        parser.error("The increment integrator control currently requires fixed rank")
     if args.history_fallback:
         run.SweepLBFGS = HistoryFallbackLBFGS
     if args.restart_source and (len(args.cases) != 1 or set(args.variants) - {"baseline", "terminal_seed"}):
@@ -103,6 +109,10 @@ def main() -> None:
     settings = manifest["settings"]
     if args.rank is not None:
         settings["dlr"]["rank"] = args.rank
+    if args.flow_steps is not None:
+        if args.flow_steps < 1:
+            parser.error("--flow-steps must be positive")
+        settings["flow_steps"] = args.flow_steps
     if args.no_reuse_v:
         settings["dlr_reuse_previous_v"] = False
     args.out.mkdir(parents=True, exist_ok=True)
@@ -115,6 +125,13 @@ def main() -> None:
         evidence["restart_source"] = str(args.restart_source)
     evidence["history_fallback"] = args.history_fallback
     evidence["reuse_previous_v"] = settings.get("dlr_reuse_previous_v", False)
+    evidence["flow_steps"] = settings["flow_steps"]
+    if args.methods:
+        evidence["methods"] = args.methods
+    if args.factor_integrator != "original":
+        evidence["factor_integrator"] = args.factor_integrator
+        evidence["factor_integrator_sha256"] = hashlib.sha256(
+            Path(increment_ksl_step.__code__.co_filename).read_bytes()).hexdigest()
     if args.source_cache_variant:
         if not args.source_cache_roots:
             parser.error("--source-cache-variant requires --source-cache-roots")
@@ -151,6 +168,8 @@ def main() -> None:
         tangent_unet.GN_PRIMAL_BACKEND = "native" if args.backend == "native" else "full"
         enriched.SPECIALIZE_ZERO_ENRICHMENT = True
         enriched.SKIP_UNTRUNCATED_SVD = True
+        if args.factor_integrator == "increment":
+            enriched._zero_enrichment_step = increment_ksl_step
         products = GraphedAProducts(model, inputs["initial"], share_linearization=True,
             full_step_graphs=True, max_jvp_columns=20, max_vjp_columns=16,
             max_step_jvp_columns=6, max_step_vjp_columns=4)
@@ -230,6 +249,9 @@ def main() -> None:
                 paired = {**protocol, "variant": variant, "backend": args.backend, "settings": configuration,
                     "initial_source_sha256": hashlib.sha256(initial.cpu().numpy().tobytes()).hexdigest(),
                     "diagnostic_script_sha256": args.resume_script_sha256 or evidence["script_sha256"]}
+                if args.factor_integrator != "original":
+                    paired.update({key: evidence[key] for key in
+                                   ("factor_integrator", "factor_integrator_sha256")})
                 if initialization_selection is not None:
                     assert initialization_selection["source_sha256"] == paired["initial_source_sha256"]
                     paired["initialization_selection"] = initialization_selection
@@ -240,7 +262,7 @@ def main() -> None:
                     paired["restart_source_sha256"] = hashlib.sha256(args.restart_source.read_bytes()).hexdigest()
                 run.save_tensor(path / "inputs.pt", {**inputs, "initial": initial, "protocol": paired})
                 results = {}
-                methods = run.METHODS if variant in ("measurement", "random_mix") else ("DLR D-Flow",)
+                methods = args.methods or (run.METHODS if variant in ("measurement", "random_mix") else ("DLR D-Flow",))
                 for method in methods:
                     evaluator_type = {"adaptive": RankRecordingEvaluator,
                                       "terminal_seed": TerminalSeedEvaluator}.get(variant, run.Evaluator)
@@ -258,7 +280,7 @@ def main() -> None:
                     {method: (result["image"], result["measurement"]) for method, result in results.items()},
                     observation=inputs["observed"], include_errors=True,
                     measurement_log=isinstance(operator, MRI), residual_vmax=RESIDUAL_VMAX[protocol["job"]["problem"]],
-                    title=f"{name}: {variant}, noiseless")
+                    title=f"{name}: {variant}, {args.factor_integrator} factors, noiseless")
                 fig.savefig(path / "comparison.png", dpi=120)
                 run.plt.close(fig)
                 del evaluator, results
