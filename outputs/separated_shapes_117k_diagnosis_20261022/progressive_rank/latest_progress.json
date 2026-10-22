@@ -86,22 +86,43 @@
   {
     "case": "r250_shapes_mri4/sample_004",
     "variant": "retain_initial256",
-    "status": "running",
-    "attempt": 600,
-    "image_error": 2.1839486435055733,
-    "residual": 1.4713113196194172,
+    "status": "step_limit",
+    "attempt": 1000,
+    "image_error": 1.521187461912632,
+    "residual": 0.7937123067677021,
     "first_terminal_rank": 82,
-    "last_terminal_rank": 184,
+    "last_terminal_rank": 247,
     "last_rank_path": [
       256,
       256,
       256,
-      255,
-      184
+      256,
+      247
     ],
-    "last_rank_objective": 0.25833858852993674,
+    "last_rank_objective": 0.09822950795698851,
     "initial_rank_below_cap_evaluations": 0,
-    "rank_evaluations": 596,
-    "terminal_at_cap_fraction": 0.0016778523489932886
+    "rank_evaluations": 986,
+    "terminal_at_cap_fraction": 0.0010141987829614604
+  },
+  {
+    "case": "r250_shapes_mri4/sample_004",
+    "variant": "gradual256",
+    "status": "running",
+    "attempt": 10,
+    "image_error": 99.64727759361267,
+    "residual": 99.6203601360321,
+    "first_terminal_rank": 126,
+    "last_terminal_rank": 32,
+    "last_rank_path": [
+      256,
+      256,
+      128,
+      64,
+      32
+    ],
+    "last_rank_objective": 1539.9656769098165,
+    "initial_rank_below_cap_evaluations": 0,
+    "rank_evaluations": 15,
+    "terminal_at_cap_fraction": 0.06666666666666667
   }
 ]

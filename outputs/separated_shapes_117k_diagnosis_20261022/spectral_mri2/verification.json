@@ -11,10 +11,10 @@
     {
       "variant": "median_cap",
       "status": "running",
-      "attempts": 10,
-      "image_error_percent": 100.01821629755523,
-      "residual_percent": 99.98447805001126,
-      "best_image_error_percent": 100.01821517944336
+      "attempts": 220,
+      "image_error_percent": 99.91571139147696,
+      "residual_percent": 99.84452006378596,
+      "best_image_error_percent": 99.91565346717834
     },
     {
       "variant": "norm_matched_cap",

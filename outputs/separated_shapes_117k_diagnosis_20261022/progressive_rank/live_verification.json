@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-22T15:48:39.467193-04:00",
+  "checked_at": "2026-10-22T16:31:51.957127-04:00",
   "rows": [
     {
       "case": "r250_shapes_ct10/sample_007",
@@ -31,11 +31,11 @@
     {
       "case": "r250_shapes_mri4/sample_004",
       "variant": "retain_initial256",
-      "status": "running",
-      "step": 590,
-      "image_error_percent": 2.2203395141390705,
-      "residual_percent": 1.5019951521812613,
-      "verified_rank_evaluations": 588
+      "status": "step_limit",
+      "step": 1000,
+      "image_error_percent": 1.521187482019819,
+      "residual_percent": 0.793712296516138,
+      "verified_rank_evaluations": 986
     },
     {
       "case": "r250_shapes_mri4/sample_004",

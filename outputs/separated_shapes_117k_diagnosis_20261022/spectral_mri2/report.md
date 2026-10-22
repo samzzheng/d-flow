@@ -26,7 +26,7 @@ If the factors were exact retained singular factors of the true Jacobian, the ca
 
 ## Evidence and verification
 
-The study is running. [Current verified metrics](verification.json) and [queue with exact commands](queue.json) distinguish partial results from completed runs. The new unchanged arm completes145 attempts at99.689384% image error and99.558357% residual. All146 non-timing records and its final source match the previous deterministic control exactly. The capped arm is partial at10 attempts with100.0182% image error; the norm-matched arm is pending. No accuracy improvement is established.
+The study is running. [Current verified metrics](verification.json) and [queue with exact commands](queue.json) distinguish partial results from completed runs. The new unchanged arm completes145 attempts at99.689384% image error and99.558357% residual. All146 non-timing records and its final source match the previous deterministic control exactly. The capped arm is partial at220 attempts with99.915711% image error and99.844520% residual; the norm-matched arm is pending. More attempts have not established an accuracy improvement.
 
 At the common original source, the capped gradient has0.009433 times the original norm and cosine0.436743 with it. Thus this cap changes magnitude substantially as well as direction; the norm-matched control is necessary for interpretation. Its four repeated initial gradient evaluations are bitwise equal. Final results are not yet available for the modified arms.
 
