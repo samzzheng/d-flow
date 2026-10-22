@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 02:04 local time. Adaptive and optimizer controls are still running.
+Snapshot: 2026-10-22, 02:08 local time. The adaptive pilot's remaining controls are still running.
 
 ## Verified findings
 
@@ -35,7 +35,7 @@ The terminal-gradient seed replaces one existing random sketch column. It retain
 
 The terminal-gradient sketch change was compared with an identical cold-optimizer restart at the saved failed sources. Both arms reuse the saved V basis and receive the same additional optimizer budget. The unchanged MRI1 restart makes no progress (12.306%); the seeded restart finishes at11.018%. CT0 and MRI0 make no progress with either restart, remaining37.118% and9.336%. This is not sufficient evidence to promote the sketch change.
 
-The separate rank-adaptive pilot remains active. Its first MRI case fails at every tested rank choice; its completed CT20 adaptive result is3.742%, versus fixed32's3.946% and fixed128's3.999%. A single close CT comparison does not establish an adaptive advantage, especially given GPU floating-point sensitivity. On MRI4, however, adaptive rank has progressed below2% while fixed32 ended at94.224%; its budget and fixed128 control are unfinished. Additional adaptive runs on CT0/MRI1/MRI0 Gaussian starts finish at101.799/100.024/99.767%, so adaptive rank does not universally prevent collapse.
+The separate rank-adaptive pilot remains active. Its first MRI case fails at every tested rank choice; its completed CT20 adaptive result is3.742%, versus fixed32's3.946% and fixed128's3.999%. A single close CT comparison does not establish an adaptive advantage, especially given GPU floating-point sensitivity. On MRI4, however, adaptive rank completes1000 attempts at**1.743%**, while fixed32 ended at94.224%; the fixed128 control remains unfinished. Additional adaptive runs on CT0/MRI1/MRI0 Gaussian starts finish at101.799/100.024/99.767%, so adaptive rank does not universally prevent collapse.
 
 ## CT precision and optimizer conditioning
 
@@ -43,7 +43,7 @@ At the conditioned CT0 endpoint, reused rank32 DLR has cosine0.837 with the exac
 
 A bounded FP64 control preserves the checkpoint values, recorded CT grid, and observed data while promoting their arithmetic. It finds a decrease of only1.97e-9 at source displacement1.19e-6. Thus a useful descent direction can be too numerically delicate for the FP32 search to realize at this source. The tiny decrease does **not** demonstrate a precision-only reconstruction cure; full FP64 reconstruction is not being promoted.
 
-An isolated optimizer control now retries the older half of the L-BFGS history after a failed search, before falling back to no history. This tests whether retaining some curvature information avoids a numerically ineffective plain-gradient fallback. It keeps the same gradient estimators, objective, strict Armijo acceptance, displacement cap, and total attempt limit. Every rejected search still counts; halving guarantees finite history recovery. All three methods receive the same cached conditioned CT0 source and the same optimizer change. Results are pending under `history_fallback_ct0/`.
+An isolated optimizer control retries the older half of the L-BFGS history after a failed search, before falling back to no history. It keeps the same gradient estimators, objective, strict Armijo acceptance, displacement cap, and total attempt limit. Every rejected search still counts; halving guarantees finite history recovery. All three methods receive the same cached conditioned CT0 source and optimizer change. Completed image errors are D-Flow6.315%, P-Flow62.881%, DLR38.978%: no DLR rescue. D-Flow performed zero history retries yet differs from its earlier same-source runs, confirming that matching source hashes alone does not eliminate numerical trajectory variability. These selected CT reruns do not support fine causal accuracy comparisons without repeats or more deterministic execution. Evidence: `history_fallback_ct0/`.
 
 ## Reproducibility
 

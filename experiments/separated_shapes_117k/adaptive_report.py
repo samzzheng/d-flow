@@ -41,6 +41,7 @@ def main() -> None:
     completed = 0
     for case in config["cases"]:
         paired_keys: set[tuple[str, str]] = set()
+        histories = {}
         for variant in config["variants"]:
             folder = args.root / variant / case
             path = folder / "dlr_d_flow.json"
@@ -48,6 +49,7 @@ def main() -> None:
                 lines.append(f"| {case} | {variant} | Pending | — | — | — |")
                 continue
             record = json.loads(path.read_text())
+            histories[variant] = record
             protocol = record["protocol"]
             paired_keys.add((protocol["initial_source_sha256"], protocol["checkpoint_sha256"]))
             final = record["history"][-1]
@@ -68,7 +70,7 @@ def main() -> None:
         records = list(map(json.loads, contents[:contents.rfind('\n') + 1].splitlines()))
         if not records:
             continue
-        figure, axes = plt.subplots(1, 2, figsize=(10, 3.5), constrained_layout=True)
+        figure, axes = plt.subplots(1, 3, figsize=(14, 3.5), constrained_layout=True)
         for index in sorted({0, len(records) // 2, len(records) - 1}):
             record = records[index]
             axes[0].plot([item["flow_step"] for item in record["ranks"]],
@@ -80,6 +82,12 @@ def main() -> None:
                      [record["ranks"][-1]["rank"] for record in records])
         axes[1].set(xlabel="Gradient evaluation", ylabel="Terminal rank",
                     ylim=(0, adaptive["rank_max"] * 1.05))
+        for variant, record in histories.items():
+            label = variant + (" (partial)" if record["status"] not in {"stalled", "step_limit", "objective_plateau"} else "")
+            axes[2].plot([item["step"] for item in record["history"]],
+                         [100 * item["image_relative_l2"] for item in record["history"]], label=label)
+        axes[2].set(xlabel="Optimizer attempt", ylabel="Relative image error (%)")
+        axes[2].legend(fontsize=8)
         figure.suptitle(case)
         filename = f"ranks_{case.replace('/', '_')}.png"
         figure.savefig(args.root / filename, dpi=140)
