@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 import torch
@@ -25,6 +26,8 @@ def main() -> None:
     parser.add_argument("--line-trials", action="store_true")
     parser.add_argument("--trial-starting-displacement", type=float, default=0.,
         help="Diagnostic line-search starting length; zero uses the saved optimizer proposal")
+    parser.add_argument("--append-secant-from", type=Path,
+        help="Diagnostic only: append the aggregate source/gradient secant from an earlier saved state")
     args = parser.parse_args()
     if not 0 <= args.minimum_direction_cosine < 1:
         parser.error("Minimum direction cosine must lie in [0,1)")
@@ -72,6 +75,25 @@ def main() -> None:
     exact, = torch.autograd.grad(objective, source)
     exact = exact.flatten()
     state = saved["optimizer"]
+    secant = None
+    if args.append_secant_from is not None:
+        earlier = torch.load(args.append_secant_from, map_location="cpu", weights_only=True)
+        for key in ("checkpoint_sha256", "operator", "source_seed"):
+            assert earlier["protocol"][key] == protocol[key]
+        assert earlier["protocol"]["precision_recovery"]["settings"] == settings
+        assert earlier["optimizer"]["step_attempts"] < state["step_attempts"]
+        displacement = (saved["source"]-earlier["source"]).flatten()
+        change = state["g"].flatten()-earlier["optimizer"]["g"].flatten()
+        curvature = float(displacement.dot(change))
+        cosine = curvature/float(displacement.norm()*change.norm())
+        if not math.isfinite(cosine) or cosine < 1e-3:
+            raise FloatingPointError("Aggregate secant does not have reliably positive curvature")
+        secant = dict(source=str(args.append_secant_from), from_step=earlier["optimizer"]["step_attempts"],
+            to_step=state["step_attempts"], curvature=curvature, curvature_cosine=cosine,
+            inverse_scale=curvature/float(change.square().sum()),
+            note="Aggregate secant, not an individual rejected pair or exact Hessian measurement")
+        state = {**state, "S": (state["S"]+[displacement])[-settings["optimizer"]["history_size"]:],
+                 "Y": (state["Y"]+[change])[-settings["optimizer"]["history_size"]:]}
     approximate = state["g"].to(device).flatten()
     direction = lbfgs_direction(approximate, [s.to(device) for s in state["S"]],
         [y.to(device) for y in state["Y"]])
@@ -127,6 +149,7 @@ def main() -> None:
         direction_norm_before_normalization=float(norm), fallback=bool(used_fallback),
         minimum_direction_cosine=args.minimum_direction_cosine, line_trials=line_trials,
         trial_starting_displacement=args.trial_starting_displacement,
+        appended_secant=secant,
         direction_error_slope_fraction=float((exact-approximate).dot(direction)/abs(predicted_slope)),
         exact_direction_cosine=float(-exact.dot(direction)/exact.norm()),
         finite_differences=finite_differences,

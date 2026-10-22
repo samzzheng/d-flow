@@ -1,0 +1,51 @@
+{
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/full_map_audit/ct1_aggregate_secant.pt",
+  "snapshot": "outputs/separated_shapes_117k_diagnosis_20261022/full_map_audit/ct1_aggregate_secant_baseline.pt",
+  "snapshot_sha256": "59b39c27b585a6490c92e277bd6d12cff814fe2c2b043d5c29b713bc753a085c",
+  "script_sha256": "2d4e542f2909ee08b481b00873cd6c46f564ca7803575cdb36839daf013a7b6e",
+  "step": 310,
+  "curvature_pairs": 3,
+  "device": "cuda:1",
+  "endpoint_relative_difference": 0.0,
+  "objective_absolute_difference": 0.0,
+  "objective": 0.020834815216835376,
+  "saved_objective": 0.020834815216835376,
+  "gradient_relative_error": 0.9123829864115909,
+  "exact_gradient_norm": 0.0008292008508490675,
+  "approximate_gradient_norm": 0.00028258559763715387,
+  "gradient_cosine": 0.4162309672833465,
+  "unit_direction_exact_slope": -0.0003448686313329777,
+  "unit_direction_predicted_slope": -0.000282433298717493,
+  "direction_norm_before_normalization": 8.656026094668204e-08,
+  "fallback": false,
+  "minimum_direction_cosine": 0.0,
+  "line_trials": [
+    {
+      "displacement": 8.656026094668204e-08,
+      "change": -2.985206526417983e-11,
+      "accepted": true
+    }
+  ],
+  "trial_starting_displacement": 0.0,
+  "appended_secant": null,
+  "direction_error_slope_fraction": -0.22106222212111146,
+  "exact_direction_cosine": 0.4159048208643858,
+  "finite_differences": [
+    {
+      "displacement": 1e-05,
+      "slope": -0.0003448686279258761,
+      "relative_slope_error": 9.879418802398079e-09
+    },
+    {
+      "displacement": 1e-06,
+      "slope": -0.0003448686267115697,
+      "relative_slope_error": 1.3400488185485051e-08
+    },
+    {
+      "displacement": 1e-07,
+      "slope": -0.0003448686128337819,
+      "relative_slope_error": 5.36412829315145e-08
+    }
+  ],
+  "scope": "Fixed saved-state diagnostic, native FP64. CPU mode uses CUDA1 only to construct CT geometry. No reconstruction or optimizer changes."
+}

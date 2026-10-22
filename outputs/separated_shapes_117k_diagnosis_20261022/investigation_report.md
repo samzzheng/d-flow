@@ -104,3 +104,11 @@ The verified high-start checkpoints at14:30 reach CT250 sample7 image error5.324
 Within a single zero-enrichment flow pass, rank can only shrink. Across optimizer iterations, the source changes and each refresh initializes at the maximum rank, so terminal rank can rise again. The observed rank trajectories argue against assuming that a small terminal rank at initialization remains sufficient throughout optimization. They do not establish a causal benefit for the gradual policy before its paired controls run.
 
 [Latest convergence and terminal-rank curves](progressive_rank/latest_progress.md).
+
+## First completed high-start control and plateau secant check
+
+CT250 sample7 unrestricted256 completes at5.194% image error and0.929% measurement residual after836 attempts with the existing rejection safeguard. The earlier maximum128/floor32 control achieved3.428%, so the wider cap is not an established accuracy improvement. Initialization retained256 in all824 unique recorded evaluations of the completed run: forcing that initial rank changes no ranks along this observed trajectory. Its separate control also probes execution variability; do not attribute a difference to rank retention automatically. Other policies remain pending or active.
+
+At the same CT200 plateau source, appending the discarded positive aggregate secant improves one-step objective decrease2.99e-11 to5.32e-6. Cap-starting the unchanged direction improves it further to1.99e-5. Keep the existing cap-start control queued rather than adding a new curvature-policy variant.
+
+[Curvature diagnostic](full_map_audit/ct1_aggregate_secant_report.md).

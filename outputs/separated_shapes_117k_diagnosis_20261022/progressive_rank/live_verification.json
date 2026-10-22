@@ -1,23 +1,32 @@
 {
-  "checked_at": "2026-10-22T14:30:01.105170-04:00",
+  "checked_at": "2026-10-22T14:38:29.879961-04:00",
   "rows": [
     {
       "case": "r250_shapes_ct10/sample_007",
-      "variant": "unrestricted256",
+      "variant": "retain_initial256",
       "status": "running",
-      "step": 780,
-      "image_error_percent": 5.3241949044413195,
-      "residual_percent": 0.9726054212559345,
-      "verified_rank_evaluations": 782
+      "step": 40,
+      "image_error_percent": 98.26175198659858,
+      "residual_percent": 75.01746854474536,
+      "verified_rank_evaluations": 44
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "variant": "unrestricted256",
+      "status": "stalled",
+      "step": 836,
+      "image_error_percent": 5.194084613910253,
+      "residual_percent": 0.9292408973181858,
+      "verified_rank_evaluations": 831
     },
     {
       "case": "r250_shapes_mri4/sample_004",
       "variant": "unrestricted256",
       "status": "running",
-      "step": 790,
-      "image_error_percent": 1.5180696967084746,
-      "residual_percent": 0.804605993742178,
-      "verified_rank_evaluations": 793
+      "step": 890,
+      "image_error_percent": 1.492756228177539,
+      "residual_percent": 0.7886892114925594,
+      "verified_rank_evaluations": 884
     }
   ],
   "checks": [

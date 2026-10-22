@@ -2,39 +2,64 @@
   {
     "case": "r250_shapes_ct10/sample_007",
     "variant": "unrestricted256",
-    "status": "running",
-    "attempt": 780,
-    "image_error": 5.324194952845573,
-    "residual": 0.9726054035127163,
+    "status": "stalled",
+    "attempt": 836,
+    "image_error": 5.194084718823433,
+    "residual": 0.929240882396698,
     "first_terminal_rank": 32,
-    "last_terminal_rank": 40,
+    "last_terminal_rank": 39,
     "last_rank_path": [
       256,
       256,
-      255,
-      40,
-      40
+      256,
+      39,
+      39
     ],
-    "last_rank_objective": 0.0012175265191312966,
-    "terminal_at_cap_fraction": 0.2809278350515464
+    "last_rank_objective": 0.0011436233963794,
+    "initial_rank_below_cap_evaluations": 0,
+    "rank_evaluations": 824,
+    "terminal_at_cap_fraction": 0.2645631067961165
+  },
+  {
+    "case": "r250_shapes_ct10/sample_007",
+    "variant": "retain_initial256",
+    "status": "running",
+    "attempt": 50,
+    "image_error": 98.08352589607239,
+    "residual": 74.72637295722961,
+    "first_terminal_rank": 32,
+    "last_terminal_rank": 56,
+    "last_rank_path": [
+      256,
+      256,
+      256,
+      56,
+      56
+    ],
+    "last_rank_objective": 7.339462947288557,
+    "initial_rank_below_cap_evaluations": 0,
+    "rank_evaluations": 56,
+    "terminal_at_cap_fraction": 0.0
   },
   {
     "case": "r250_shapes_mri4/sample_004",
     "variant": "unrestricted256",
     "status": "running",
-    "attempt": 790,
-    "image_error": 1.5180696733295918,
-    "residual": 0.8046059869229794,
+    "attempt": 900,
+    "image_error": 1.493398193269968,
+    "residual": 0.7875577546656132,
     "first_terminal_rank": 82,
     "last_terminal_rank": 253,
     "last_rank_path": [
       256,
-      256,
-      256,
-      256,
+      255,
+      255,
+      255,
       253
     ],
-    "last_rank_objective": 0.10002965186524332,
+    "last_rank_objective": 0.09629510826545604,
+    "initial_rank_below_cap_evaluations": 0,
+    "rank_evaluations": 886,
     "terminal_at_cap_fraction": 0.0
   }
 ]

@@ -1,0 +1,79 @@
+{
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/prefix_recovery_200ct1/prefix_3/float64/dlr_d_flow.pt",
+  "snapshot": "outputs/separated_shapes_117k_diagnosis_20261022/full_map_audit/ct1_aggregate_secant.pt",
+  "snapshot_sha256": "32ba6995cdf2135394b126d3312410456f097ae5cf30df65d93c68e60aa3cc75",
+  "script_sha256": "2d4e542f2909ee08b481b00873cd6c46f564ca7803575cdb36839daf013a7b6e",
+  "step": 310,
+  "curvature_pairs": 4,
+  "device": "cuda:1",
+  "endpoint_relative_difference": 0.0,
+  "objective_absolute_difference": 0.0,
+  "objective": 0.020834815216835376,
+  "saved_objective": 0.020834815216835376,
+  "gradient_relative_error": 0.9123829864115908,
+  "exact_gradient_norm": 0.0008292008508490675,
+  "approximate_gradient_norm": 0.00028258559763715387,
+  "gradient_cosine": 0.4162309672833467,
+  "unit_direction_exact_slope": -0.0003498785178418568,
+  "unit_direction_predicted_slope": -0.0002816992834495808,
+  "direction_norm_before_normalization": 37.639162472147454,
+  "fallback": false,
+  "minimum_direction_cosine": 0.0,
+  "line_trials": [
+    {
+      "displacement": 2.0,
+      "change": 0.15190785228536097,
+      "accepted": false
+    },
+    {
+      "displacement": 1.0,
+      "change": 0.09995193778414209,
+      "accepted": false
+    },
+    {
+      "displacement": 0.5,
+      "change": 0.02034667158562249,
+      "accepted": false
+    },
+    {
+      "displacement": 0.25,
+      "change": 0.0007100706303527216,
+      "accepted": false
+    },
+    {
+      "displacement": 0.125,
+      "change": -5.316410851025077e-06,
+      "accepted": true
+    }
+  ],
+  "trial_starting_displacement": 0.0,
+  "appended_secant": {
+    "source": "outputs/separated_shapes_117k_diagnosis_20261022/full_map_audit/ct1_plateau_direction_cpu.pt",
+    "from_step": 250,
+    "to_step": 310,
+    "curvature": 4.01606073791009e-16,
+    "curvature_cosine": 0.1444833567263605,
+    "inverse_scale": 1402.0874734664844,
+    "note": "Aggregate secant, not an individual rejected pair or exact Hessian measurement"
+  },
+  "direction_error_slope_fraction": -0.24202842675841912,
+  "exact_direction_cosine": 0.42194664595869097,
+  "finite_differences": [
+    {
+      "displacement": 1e-05,
+      "slope": -0.000349878516263391,
+      "relative_slope_error": 4.511468235202614e-09
+    },
+    {
+      "displacement": 1e-06,
+      "slope": -0.00034987849770184987,
+      "relative_slope_error": 5.756285662347583e-08
+    },
+    {
+      "displacement": 1e-07,
+      "slope": -0.00034987835545452484,
+      "relative_slope_error": 4.6412489966492143e-07
+    }
+  ],
+  "scope": "Fixed saved-state diagnostic, native FP64. CPU mode uses CUDA1 only to construct CT geometry. No reconstruction or optimizer changes."
+}

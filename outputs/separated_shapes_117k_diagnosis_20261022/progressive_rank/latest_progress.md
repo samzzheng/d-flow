@@ -4,12 +4,16 @@ Paired five-Euler-step, noiseless, FP32 controls with maximum rank 256, floor 32
 
 | Case | Policy | Status | Attempts | Image error | Measurement residual | First terminal rank | Last recorded terminal rank |
 |---|---|---|---:|---:|---:|---:|---:|
-| r250_shapes_ct10/sample_007 | unrestricted256 | running | 780 | 5.324% | 0.973% | 32 | 40 |
-| r250_shapes_ct10/sample_007 | retain_initial256 | Pending | — | — | — | — | — |
+| r250_shapes_ct10/sample_007 | unrestricted256 | stalled | 836 | 5.194% | 0.929% | 32 | 39 |
+| r250_shapes_ct10/sample_007 | retain_initial256 | running | 50 | 98.084% | 74.726% | 32 | 56 |
 | r250_shapes_ct10/sample_007 | gradual256 | Pending | — | — | — | — | — |
-| r250_shapes_mri4/sample_004 | unrestricted256 | running | 790 | 1.518% | 0.805% | 82 | 253 |
+| r250_shapes_mri4/sample_004 | unrestricted256 | running | 900 | 1.493% | 0.788% | 82 | 253 |
 | r250_shapes_mri4/sample_004 | retain_initial256 | Pending | — | — | — | — | — |
 | r250_shapes_mri4/sample_004 | gradual256 | Pending | — | — | — | — | — |
+
+r250_shapes_ct10/sample_007: unrestricted initialization retained fewer than 256 directions in 0/824 recorded evaluations. Where it already retains 256, the initialization-only floor changes no retained rank. Differences from that control cannot automatically be attributed to a rank-policy improvement; floating-point execution variability and trajectory divergence remain possible.
+
+r250_shapes_mri4/sample_004: unrestricted initialization retained fewer than 256 directions in 0/886 recorded evaluations. Where it already retains 256, the initialization-only floor changes no retained rank. Differences from that control cannot automatically be attributed to a rank-policy improvement; floating-point execution variability and trajectory divergence remain possible.
 
 Rank is measured on the approximated residual core with relative cutoff 0.001, not on a certified exact Jacobian. A small initial terminal rank does not imply that the same rank remains sufficient at later optimized sources. Retaining nearly the full cap indicates limited compression under this criterion, not proof that the true Jacobian requires that many directions.
 

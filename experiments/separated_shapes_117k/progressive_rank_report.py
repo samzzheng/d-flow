@@ -42,6 +42,8 @@ def main() -> None:
                 last_terminal_rank=records[-1]["ranks"][-1]["rank"],
                 last_rank_path=[x["rank"] for x in records[-1]["ranks"][1:]],
                 last_rank_objective=records[-1]["objective"],
+                initial_rank_below_cap_evaluations=sum(record["ranks"][1]["rank"] < 256 for record in records),
+                rank_evaluations=len(records),
                 terminal_at_cap_fraction=sum(record["ranks"][-1]["rank"] == 256 for record in records)/len(records))
             rows.append(row)
             lines.append(f"| {name} | {variant} | {row['status']} | {row['attempt']} | {row['image_error']:.3f}% | {row['residual']:.3f}% | {row['first_terminal_rank']} | {row['last_terminal_rank']} |")
@@ -55,6 +57,9 @@ def main() -> None:
         for axis in axes[:, column]:
             axis.legend(fontsize=8)
             axis.grid(alpha=.2)
+    for row in rows:
+        if row["variant"] == "unrestricted256":
+            lines += ["", f"{row['case']}: unrestricted initialization retained fewer than 256 directions in {row['initial_rank_below_cap_evaluations']}/{row['rank_evaluations']} recorded evaluations. Where it already retains 256, the initialization-only floor changes no retained rank. Differences from that control cannot automatically be attributed to a rank-policy improvement; floating-point execution variability and trajectory divergence remain possible."]
     lines += ["", "Rank is measured on the approximated residual core with relative cutoff 0.001, not on a certified exact Jacobian. A small initial terminal rank does not imply that the same rank remains sufficient at later optimized sources. Retaining nearly the full cap indicates limited compression under this criterion, not proof that the true Jacobian requires that many directions.", "",
         "Rank and image curves have different horizontal axes: gradient evaluations versus optimizer attempts. The last rank record may precede the latest accepted source; they should not be interpreted as a fixed-point pair. Duplicated evaluation numbers after checkpoint recovery use the most recent record. All curves are partial until their saved status is terminal.", "",
         "The gradual policy limits shrinking inside each flow pass. Rank can rise across optimizer iterations because each new gradient initializes a new maximum-rank sketch. Accuracy comparisons between policies require completed paired runs or common completed prefixes; no such comparison is claimed while other policies are pending.", "",
