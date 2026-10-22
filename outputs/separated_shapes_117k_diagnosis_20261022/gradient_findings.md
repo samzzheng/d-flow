@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 03:51 local time. Adaptive, fixed-sketch, restart, and bounded sketch-recovery controls below are complete.
+Snapshot: 2026-10-22, 04:01 local time. Adaptive, fixed-sketch, restart, and bounded sketch-recovery controls below are complete. Backward-flow initialization reconstructions are running.
 
 ## Verified findings
 
@@ -69,6 +69,8 @@ A separate restart test gives all three methods identical cached pools of four s
 
 ## CT precision and optimizer conditioning
 
+A saved-direction audit tests both signs of the actual cached optimizer gradient, without refreshing the DLR basis. At conditioned MRI1 (12.306% image error), its cosine with the exact gradient is-0.01792; neither sign yields an accepted FP32 decrease over30 halved displacements. The exact negative gradient accepts the full2.5 displacement and lowers the loss by0.070996, versus a linear prediction of0.074537. This isolates a poor DLR direction at this source. At fixed-sketch restarted MRI2 (14.723% error), the DLR cosine is0.91085, yet even the exact direction only accepts displacements around6e-7, with loss changes around7e-7. Fresh-sketch CT0 (91.052% error) has cosine0.91362 and similarly tiny accepted changes. Replacing approximate Armijo slopes by exact directional derivatives does not produce a useful new accepted DLR step in these controls. Do not promote a sign flip or slope-only correction. Evidence: `full_map_audit/{mri1,mri2,ct0}_saved_direction.json`.
+
 At the conditioned CT0 endpoint, reused rank32 DLR has cosine0.837 with the exact gradient. Increasing rank to512 only improves it to0.857. Both the exact and DLR negative-gradient directions fail FP32 Armijo tests over30 displacement sizes, from the cap2.5 down to about5e-9. At small displacements the intended decrease is below the forward objective's floating-point variation.
 
 A bounded FP64 control preserves the checkpoint values, recorded CT grid, and observed data while promoting their arithmetic. It finds a decrease of only1.97e-9 at source displacement1.19e-6. Thus a useful descent direction can be too numerically delicate for the FP32 search to realize at this source. The tiny decrease does **not** demonstrate a precision-only reconstruction cure; full FP64 reconstruction is not being promoted.
@@ -76,6 +78,8 @@ A bounded FP64 control preserves the checkpoint values, recorded CT grid, and ob
 An isolated optimizer control retries the older half of the L-BFGS history after a failed search, before falling back to no history. It keeps the same gradient estimators, objective, strict Armijo acceptance, displacement cap, and total attempt limit. Every rejected search still counts; halving guarantees finite history recovery. All three methods receive the same cached conditioned CT0 source and optimizer change. Completed image errors are D-Flow6.315%, P-Flow62.881%, DLR38.978%: no DLR rescue. D-Flow performed zero history retries yet differs from its earlier same-source runs, confirming that matching source hashes alone does not eliminate numerical trajectory variability. These selected CT reruns do not support fine causal accuracy comparisons without repeats or more deterministic execution. Evidence: `history_fallback_ct0/`.
 
 ## Reproducibility
+
+A further initialization screen integrates backward Euler from a scalar least-squares-scaled measurement adjoint, then evaluates every candidate with the unchanged five-step forward generator. Backward Euler is not the exact inverse of that discrete map. Candidate counts are5/20/100 backward steps plus the original source; selection uses only measurement loss. Matched random image controls preserve the adjoint image's mean and centered norm. All14 cached selections over seven cases pass source-hash, objective-selection, and unchanged-data checks. All three MRI measurement cases select20 backward steps, with initial image errors58.867/61.233/26.276%; all four CT measurement cases retain the original source. Initial scores do not establish reconstruction success. Paired all-method MRI1/MRI2 runs are active, including a matched-random MRI2 control; no production initialization change. Evidence: `reverse_initialization/`, `reverse_mri1/`, and `reverse_mri2/`.
 
 - Fixed-source code: `experiments/separated_shapes_117k/gradient_audit.py`.
 - Independent product, frozen-S/L, and optimizer recovery checks: `tests/test_discrete_flow_products.py` (four tests pass, including frozen-increment KSL and the full-rank Euler identity).

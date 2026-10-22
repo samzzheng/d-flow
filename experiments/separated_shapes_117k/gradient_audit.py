@@ -78,11 +78,15 @@ def main() -> None:
     parser.add_argument("--skip-reference", action="store_true")
     parser.add_argument("--terminal-seed", action="store_true")
     parser.add_argument("--line-search-audit", action="store_true")
+    parser.add_argument("--saved-direction-audit", action="store_true",
+        help="Probe both signs of the saved optimizer gradient using exact objective slopes")
     parser.add_argument("--exact-only", action="store_true")
     parser.add_argument("--double", action="store_true")
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.saved_direction_audit and (args.source is None or args.double):
+        parser.error("Saved-direction audit requires a saved FP32 source")
     if args.factor_arithmetic != "specialized" and (args.stable_sl or args.increment_ksl):
         parser.error("Factor arithmetic controls require the original integrator")
     if args.basis_refreshes < 0 or (args.basis_refreshes and (args.stable_sl or args.increment_ksl or args.terminal_seed)):
@@ -99,7 +103,10 @@ def main() -> None:
     saved = torch.load(args.source, map_location=device, weights_only=True) if args.source else None
     source = inputs["initial"] if saved is None else saved["source"]
     protocol = inputs["protocol"]
-    settings = json.loads(args.manifest.read_text())["settings"]
+    settings = (saved["protocol"].get("continuation_settings", saved["protocol"].get("settings"))
+                if saved is not None else None)
+    if settings is None:
+        settings = json.loads(args.manifest.read_text())["settings"]
     resolution = protocol["job"]["resolution"]
     folder = Path(settings["run_template"].format(resolution=resolution))
     assert hashlib.sha256((folder / "checkpoints/epoch_0500.pt").read_bytes()).hexdigest() == protocol["checkpoint_sha256"]
@@ -160,11 +167,20 @@ def main() -> None:
             records.append(dict(displacement=displacement, change=change,
                 linear_prediction=displacement*float((exact.reshape_as(source)*direction).sum()),
                 armijo=change < 0 and change <= -settings["optimizer"]["c1"]*displacement*float(gradient.norm()),
+                true_slope_armijo=(float((exact.reshape_as(source)*direction).sum()) < 0 and change < 0
+                    and change <= settings["optimizer"]["c1"]*displacement*float((exact.reshape_as(source)*direction).sum())),
                 image_error=float((candidate_image-inputs["truth"]).norm()/inputs["truth"].norm())))
         return records
 
     if args.line_search_audit:
         report["exact_gradient_trials"] = line_trials(exact)
+    if args.saved_direction_audit:
+        stored = saved["optimizer"]["g"].reshape_as(source)
+        report["saved_gradient_cosine"] = float(torch.nn.functional.cosine_similarity(
+            stored.flatten(), exact.flatten(), dim=0))
+        report["saved_gradient_trials"] = line_trials(stored)
+        report["reversed_saved_gradient_trials"] = line_trials(-stored)
+        report["saved_optimizer_step"] = saved["optimizer"]["step_attempts"]
     if args.exact_only:
         report["status"] = "complete"
         run.write_json(args.out, report)

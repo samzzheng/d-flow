@@ -1,0 +1,341 @@
+{
+  "status": "complete",
+  "rows": [
+    {
+      "case": "r250_shapes_ct10/sample_000",
+      "variant": "measurement",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "original",
+      "objectives": {
+        "original": 2.558464750893023,
+        "reverse_5": 77.72974540912548,
+        "reverse_20": 46.60003245669123,
+        "reverse_100": 35.73073972483057
+      },
+      "adjoint_gain": 37.57834741695848,
+      "source_sha256": "21432e97b4f0bbc90953a76d72ef46e3f8f89710885c32bc2cd9bcd3cbb2de25",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.082012414932251,
+        "reverse_5": 2.9122602939605713,
+        "reverse_20": 2.6990807056427,
+        "reverse_100": 2.5662879943847656
+      }
+    },
+    {
+      "case": "r250_shapes_ct10/sample_000",
+      "variant": "random_mix",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "reverse_100",
+      "objectives": {
+        "original": 2.558464750893023,
+        "reverse_5": 3.095642230153492,
+        "reverse_20": 2.4880225758141084,
+        "reverse_100": 2.431045558983901
+      },
+      "adjoint_gain": 37.57834741695848,
+      "source_sha256": "9260bff7ff573de3887be3618ec71d9931b9115516f1068a0706b15185f9d3f5",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.082012414932251,
+        "reverse_5": 1.4310866594314575,
+        "reverse_20": 1.175584316253662,
+        "reverse_100": 1.1162207126617432
+      }
+    },
+    {
+      "case": "r250_shapes_mri4/sample_001",
+      "variant": "measurement",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "reverse_20",
+      "objectives": {
+        "original": 504.52889407809164,
+        "reverse_5": 199.91635177125886,
+        "reverse_20": 97.52019764785973,
+        "reverse_100": 101.06096629206803
+      },
+      "adjoint_gain": 1.0087741025510248,
+      "source_sha256": "17d9c0c7c70172a90c77c68ffe1ec51feb119b587dc99b7ee0fafde2ea6272fc",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.2184662818908691,
+        "reverse_5": 0.8418602347373962,
+        "reverse_20": 0.5886714458465576,
+        "reverse_100": 0.6241949200630188
+      }
+    },
+    {
+      "case": "r250_shapes_mri4/sample_001",
+      "variant": "random_mix",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "original",
+      "objectives": {
+        "original": 504.52889407809164,
+        "reverse_5": 802.5139602832778,
+        "reverse_20": 609.8404643409656,
+        "reverse_100": 578.9811353632864
+      },
+      "adjoint_gain": 1.0087741025510248,
+      "source_sha256": "feec93720058d601a259c37f8b214909e1e5e8ad177e1f60d8b70f7cfc145710",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.2184662818908691,
+        "reverse_5": 2.588205337524414,
+        "reverse_20": 2.043396472930908,
+        "reverse_100": 1.9306659698486328
+      }
+    },
+    {
+      "case": "r250_shapes_mri4/sample_002",
+      "variant": "measurement",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "reverse_20",
+      "objectives": {
+        "original": 466.97203392730705,
+        "reverse_5": 119.6081373381516,
+        "reverse_20": 46.948177712957275,
+        "reverse_100": 113.25816927167591
+      },
+      "adjoint_gain": 1.0616011286134384,
+      "source_sha256": "4bd7c73650b10178a89c7280436b654f6f12ac96c6f94f600f6417365e31fd1f",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.6398133039474487,
+        "reverse_5": 0.8814274072647095,
+        "reverse_20": 0.6123346090316772,
+        "reverse_100": 0.8825515508651733
+      }
+    },
+    {
+      "case": "r250_shapes_mri4/sample_002",
+      "variant": "random_mix",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "reverse_100",
+      "objectives": {
+        "original": 466.97203392730705,
+        "reverse_5": 520.1093397685961,
+        "reverse_20": 351.7294862335648,
+        "reverse_100": 324.5683710974137
+      },
+      "adjoint_gain": 1.0616011286134384,
+      "source_sha256": "f2564a063379818936731849d804aaf28683b8aa716682181183a42ccb768888",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.6398133039474487,
+        "reverse_5": 2.875925064086914,
+        "reverse_20": 2.156329393386841,
+        "reverse_100": 2.0052988529205322
+      }
+    },
+    {
+      "case": "r250_shapes_mri4/sample_004",
+      "variant": "measurement",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "reverse_20",
+      "objectives": {
+        "original": 1768.8657552700806,
+        "reverse_5": 570.4370932963922,
+        "reverse_20": 70.4959216982814,
+        "reverse_100": 1380.1609856115117
+      },
+      "adjoint_gain": 1.054341740767639,
+      "source_sha256": "a55e941e2fd75d540304768e4aaa947eba52115b1ea1d1286c3a6f2ef2fa7582",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.0619663000106812,
+        "reverse_5": 0.6273889541625977,
+        "reverse_20": 0.26276278495788574,
+        "reverse_100": 0.9700035452842712
+      }
+    },
+    {
+      "case": "r250_shapes_mri4/sample_004",
+      "variant": "random_mix",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "original",
+      "objectives": {
+        "original": 1768.8657552700806,
+        "reverse_5": 2435.9514604738606,
+        "reverse_20": 2155.343867139545,
+        "reverse_100": 2113.3100775662065
+      },
+      "adjoint_gain": 1.054341740767639,
+      "source_sha256": "d1409190003f9549863ca0d75548cb575ebc1dcb8f0af3156512141ac9b26e11",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.0619663000106812,
+        "reverse_5": 1.79573655128479,
+        "reverse_20": 1.5936006307601929,
+        "reverse_100": 1.5523830652236938
+      }
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "variant": "measurement",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "original",
+      "objectives": {
+        "original": 12.038001010919956,
+        "reverse_5": 117.3434577410249,
+        "reverse_20": 48.078787464879184,
+        "reverse_100": 41.069727015180334
+      },
+      "adjoint_gain": 32.45475357319472,
+      "source_sha256": "87a4391679ce27e89dfc30734bc976b2fe18afde592747421478835e1b28a6e2",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.051597237586975,
+        "reverse_5": 2.0649921894073486,
+        "reverse_20": 1.7797746658325195,
+        "reverse_100": 1.7395799160003662
+      }
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "variant": "random_mix",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "reverse_100",
+      "objectives": {
+        "original": 12.038001010919956,
+        "reverse_5": 18.401626263885998,
+        "reverse_20": 8.961092549464304,
+        "reverse_100": 8.756304598435609
+      },
+      "adjoint_gain": 32.45475357319472,
+      "source_sha256": "b012717b2f3bba3508f96d8d8a3ff6126bb6398dd231d07579934620b51b1be7",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.051597237586975,
+        "reverse_5": 1.419100284576416,
+        "reverse_20": 1.1158124208450317,
+        "reverse_100": 1.0843160152435303
+      }
+    },
+    {
+      "case": "r250_shapes_ct10/sample_020",
+      "variant": "measurement",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "original",
+      "objectives": {
+        "original": 1.555559432364488,
+        "reverse_5": 72.03198634700715,
+        "reverse_20": 37.7869966111021,
+        "reverse_100": 31.070397848335464
+      },
+      "adjoint_gain": 38.436459347938225,
+      "source_sha256": "b845ee48ce046efa7d95434827e0fb77bfde01aa9de75e09a4f2127a29c8ff39",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.280022144317627,
+        "reverse_5": 3.63547945022583,
+        "reverse_20": 3.2259626388549805,
+        "reverse_100": 3.0989508628845215
+      }
+    },
+    {
+      "case": "r250_shapes_ct10/sample_020",
+      "variant": "random_mix",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "reverse_100",
+      "objectives": {
+        "original": 1.555559432364488,
+        "reverse_5": 1.5329007754232893,
+        "reverse_20": 1.2928618089255883,
+        "reverse_100": 1.279394084056585
+      },
+      "adjoint_gain": 38.436459347938225,
+      "source_sha256": "4f20ed4595d8a2b21d51b579b5e5c95103112af4c9379a3eacd4f0aa3cc39bec",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.280022144317627,
+        "reverse_5": 1.609074354171753,
+        "reverse_20": 1.2520973682403564,
+        "reverse_100": 1.1643458604812622
+      }
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "variant": "measurement",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "original",
+      "objectives": {
+        "original": 1.4178768576143446,
+        "reverse_5": 34.51348964260558,
+        "reverse_20": 33.328882484629794,
+        "reverse_100": 28.51530796368194
+      },
+      "adjoint_gain": 42.1583091881422,
+      "source_sha256": "ebae56dd8f18938efcb9ee9797daa824927b11a28d0835f50dbf38fa1167fa15",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.174647331237793,
+        "reverse_5": 3.5516669750213623,
+        "reverse_20": 3.458902359008789,
+        "reverse_100": 3.2897684574127197
+      }
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "variant": "random_mix",
+      "rule": "Minimum canonical measurement loss; no ground-truth selection",
+      "construction": "Backward Euler from scaled adjoint or matched random image",
+      "selected": "reverse_100",
+      "objectives": {
+        "original": 1.4178768576143446,
+        "reverse_5": 28.47701450414891,
+        "reverse_20": 1.7196604651721827,
+        "reverse_100": 1.4073920503872444
+      },
+      "adjoint_gain": 42.1583091881422,
+      "source_sha256": "83aa4fec0a5412bf136069bfa1ffd2275750d3ecb171ac1b87d45bea4ca58197",
+      "script_sha256": "8dbfc23da8acd7dbde498fd71442afb34e3a13acc85823052c141ae099add5d0",
+      "initialization_model_evaluations": 145,
+      "note": "Backward Euler is not the exact inverse of the discrete forward Euler map",
+      "diagnostic_image_errors": {
+        "original": 1.174647331237793,
+        "reverse_5": 3.55961275100708,
+        "reverse_20": 1.3813531398773193,
+        "reverse_100": 1.2812458276748657
+      }
+    }
+  ]
+}
