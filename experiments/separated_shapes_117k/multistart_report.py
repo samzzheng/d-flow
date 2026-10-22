@@ -54,7 +54,10 @@ def main() -> None:
                 if method not in config["methods"]:
                     continue
                 stem = method.lower().replace("-", "_").replace(" ", "_")
-                factor_label = (f"{config['settings']['dlr']['rank']} / {config.get('factor_integrator', 'fast')} / {config.get('goal_steps', 0)}"
+                dlr = config["settings"]["dlr"]
+                rank_label = (f"{dlr['rank_min']}–{dlr['rank_max']} adaptive" if dlr.get("adaptive_rank")
+                              else str(dlr["rank"]))
+                factor_label = (f"{rank_label} / {config.get('factor_integrator', 'fast')} / {config.get('goal_steps', 0)}"
                                 if method == "DLR D-Flow" else "—")
                 path = folder / f"{stem}.json"
                 if not path.exists():
@@ -93,6 +96,8 @@ def main() -> None:
                     f"{100*final['image_relative_l2']:.3f}% | {100*final['measurement_relative_l2_noisy']:.3f}% |")
                 rows.append(dict(case=case, run=root.name, method=method, selected=winner, status=record["status"],
                     rank=config["settings"]["dlr"]["rank"] if method == "DLR D-Flow" else None,
+                    adaptive_rank_min=dlr.get("rank_min") if method == "DLR D-Flow" and dlr.get("adaptive_rank") else None,
+                    adaptive_rank_max=dlr.get("rank_max") if method == "DLR D-Flow" and dlr.get("adaptive_rank") else None,
                     factor_integrator=config.get("factor_integrator", "fast") if method == "DLR D-Flow" else None,
                     goal_steps=config.get("goal_steps", 0) if method == "DLR D-Flow" else None,
                     complete=terminal, total_attempts=total, image_error=final["image_relative_l2"],
