@@ -22,3 +22,11 @@ The increment update approximates the frozen discrete Euler residual target. Ref
 For rank128 at five flow steps with eight startup oversampling columns, the original/increment paths use 648 JVP and 648 VJP columns per factor refresh. Refinement uses 1160 of each. This count does not establish wall time.
 
 CT7 gains mostly from the consistent Euler target. MRI0 gains from refinement but still excludes most of the exact gradient, so a general correction is not established.
+
+## Completed reconstruction controls, 05:14
+
+The conditioned MRI0 rank128 control finishes at6.639% image error after920 optimizer attempts. Two-pass refinement from the identical source finishes at2.629% after829 attempts. Clean measurement error falls from4.172% to1.403%. Both use the same1000-attempt cap, optimizer, rank, flow grid, model and data; neither changes initialization or adds regularization.
+
+The one-pass frozen-increment CT7 rank128 control finishes at20.241%, versus34.280% for the original update. Improvement in these two selected cases does not establish a general correction. Refinement requires additional derivative products; elapsed times from concurrently running jobs do not isolate its speed.
+
+[Saved-array verification](refinement_completed_controls.json) checks identical MRI0 inputs and settings, objective nonincrease, and final metrics recomputed in double precision.

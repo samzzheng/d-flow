@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 05:10 local time. Adaptive-rank, goal-oriented projection, hybrid, and backward-initialization controls are complete. The two-pass MRI0 factor-refinement control remains running. No general accuracy correction has been established.
+Snapshot: 2026-10-22, 05:20 local time. The two-pass MRI0 factor-refinement control completes2.629% versus6.639% at the same rank128 and source. Three shared-budget source-selection controls with one goal-oriented terminal projection are now running on GPU1. No general accuracy correction has been established.
 
 ## Verified findings
 
@@ -96,3 +96,7 @@ A further initialization screen integrates backward Euler from a scalar least-sq
 - Adaptive pilot: [rank paths and current saved metrics](adaptive_pilot/report.md).
 
 The production sweep remains held at its source-review guard. Corrected experiments are separate from the original results. The broader accuracy objective is not yet complete.
+
+## Combining source selection and goal-oriented projection
+
+The isolated multistart runner now supports an explicit goal-projection option, defaulting to the original update. New rank128 controls use exactly the cached pools and settings of250CT7,250MRI2 and200CT1. All four candidate probes count toward1000 attempts; selection uses measurement loss only, and continuation preserves optimizer history and the right basis. The200CT1 comparison retains its existing no-reuse setting. Completed D/P controls are retained from the identical pools. This tests a combined correction without changing rank, source pools or optimizer budget. Status and checks are in [the combined report](multistart_goal_report/report.md); [protocol verification](multistart_goal_report/paired_protocols.json) establishes equality of settings other than the explicitly recorded gradient variant.

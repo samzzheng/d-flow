@@ -1,0 +1,39 @@
+{
+  "checks_passed": true,
+  "rows": [
+    {
+      "run": "refinement_mri0_original",
+      "status": "stalled",
+      "final": {
+        "step": 920,
+        "phi": 0.986974576266797,
+        "source_step_norm": 0.0,
+        "line_search_trials": 27,
+        "elapsed_seconds": 2170.2348405211233,
+        "image_relative_l2": 0.06638980656862259,
+        "measurement_relative_l2_clean": 0.0417175255715847,
+        "measurement_relative_l2_noisy": 0.0417175255715847,
+        "residual_over_noise": null
+      },
+      "image_error_recomputed": 0.06638981115947747,
+      "residual_recomputed": 0.04171752494435808
+    },
+    {
+      "run": "refinement_mri0_refined",
+      "status": "stalled",
+      "final": {
+        "step": 829,
+        "phi": 0.1116746227334775,
+        "source_step_norm": 0.0,
+        "line_search_trials": 17,
+        "elapsed_seconds": 1550.7247931519523,
+        "image_relative_l2": 0.026289401575922966,
+        "measurement_relative_l2_clean": 0.014032750390470028,
+        "measurement_relative_l2_noisy": 0.014032750390470028,
+        "residual_over_noise": null
+      },
+      "image_error_recomputed": 0.0262894023157102,
+      "residual_recomputed": 0.014032750343041885
+    }
+  ]
+}

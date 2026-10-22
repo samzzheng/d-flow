@@ -16,6 +16,7 @@ from dlr_dflow.implementation.graphed_products import GraphedAProducts
 from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.queue import source_hashes
+from experiments.separated_shapes_117k.exact_suffix import TaskTerminalEvaluator
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 
 
@@ -30,6 +31,8 @@ def main() -> None:
     parser.add_argument("--probe-updates", type=int, default=50)
     parser.add_argument("--budget", type=int, default=1000)
     parser.add_argument("--no-reuse-v", action="store_true")
+    parser.add_argument("--goal-steps", type=int, default=0,
+        help="Experimental goal-oriented final projections for DLR; zero keeps original KSL")
     parser.add_argument("--source-pool-root", type=Path,
         help="Reuse a previously cached candidate pool exactly across controls")
     args = parser.parse_args()
@@ -44,6 +47,8 @@ def main() -> None:
     torch.backends.cudnn.allow_tf32 = False
     torch.backends.cudnn.benchmark = False
     settings = json.loads((args.baseline / "manifest.json").read_text())["settings"]
+    if not 0 <= args.goal_steps < settings["flow_steps"]:
+        parser.error("Goal projections must leave at least one ordinary DLR prefix step")
     settings["dlr"]["rank"] = args.rank
     if args.no_reuse_v:
         settings["dlr_reuse_previous_v"] = False
@@ -54,6 +59,11 @@ def main() -> None:
         selection="Minimum final probe measurement objective; no ground-truth selection")
     if args.source_pool_root:
         evidence["source_pool_root"] = str(args.source_pool_root.resolve())
+    if args.goal_steps:
+        evidence.update(goal_steps=args.goal_steps,
+            gradient_variant="Goal-oriented rank-r Euler projections",
+            task_terminal_sha256=hashlib.sha256(
+                Path(TaskTerminalEvaluator.gradient.__code__.co_filename).read_bytes()).hexdigest())
     run.write_json(args.out / "config.json", evidence)
     tangent_unet.GN_STATS_MODE = "native"
     tangent_unet.GN_ACTION_BACKEND = "triton"
@@ -118,6 +128,7 @@ def main() -> None:
             max_step_jvp_columns=6, max_step_vjp_columns=4)
         results = {}
         summaries = {}
+        evaluator_type = TaskTerminalEvaluator if args.goal_steps else run.Evaluator
         for method in args.methods:
             stem = method.lower().replace("-", "_").replace(" ", "_")
             probes = {}
@@ -125,8 +136,10 @@ def main() -> None:
                 (directory / name).mkdir(exist_ok=True)
                 paired = {**protocol, "experiment": evidence, "candidate": name,
                     "initial_source_sha256": pool["source_hashes"][name]}
-                evaluator = run.Evaluator(model, operator, pool["observed"], settings,
+                evaluator = evaluator_type(model, operator, pool["observed"], settings,
                                           protocol["dlr_seed"], products)
+                if isinstance(evaluator, TaskTerminalEvaluator):
+                    evaluator.goal_steps = args.goal_steps
                 probes[name] = run.solve(evaluator, method, source, pool["truth"], pool["clean"],
                     directory / name / f"{stem}.pt", paired, [False])
             winner = min(probes, key=lambda name: probes[name]["history"][-1]["phi"])
@@ -141,8 +154,10 @@ def main() -> None:
             if not final_path.exists():
                 run.save_tensor(final_path, {**selected, "protocol": paired,
                     "status": "paused" if selected["status"] == "step_limit" else selected["status"]})
-            evaluator = run.Evaluator(model, operator, pool["observed"], continuation,
+            evaluator = evaluator_type(model, operator, pool["observed"], continuation,
                                       protocol["dlr_seed"], products)
+            if isinstance(evaluator, TaskTerminalEvaluator):
+                evaluator.goal_steps = args.goal_steps
             final = run.solve(evaluator, method, pool["sources"][winner], pool["truth"], pool["clean"],
                               final_path, paired, [False])
             total = spent + final["history"][-1]["step"] - selected_steps
@@ -159,7 +174,8 @@ def main() -> None:
             {method: (result["image"], result["measurement"]) for method, result in results.items()},
             observation=pool["observed"], include_errors=True, measurement_log=isinstance(operator, MRI),
             residual_vmax=RESIDUAL_VMAX[protocol["job"]["problem"]],
-            title=f"{case}: measurement-selected starts; total budget {args.budget}")
+            title=(f"{case}: measurement-selected starts; total budget {args.budget}"
+                   + (f"; DLR uses {args.goal_steps} goal projections" if args.goal_steps else "")))
         figure.savefig(directory / "comparison.png", dpi=120)
         run.plt.close(figure)
         del evaluator, products, model, original, pool, probes, results

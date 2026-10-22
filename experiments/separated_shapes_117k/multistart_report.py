@@ -30,8 +30,8 @@ def main() -> None:
         "The selected optimizer state is preserved. Image error never selects a source.", "",
         "These are selected failure cases, not a population estimate. Methods share the candidate "
         "pool but may choose different sources. Partial results are labeled.", "",
-        "| Case | Run | Method | Selected source | Status | Total attempts | Image error | Measurement residual |",
-        "| --- | --- | --- | --- | --- | ---: | ---: | ---: |"]
+        "| Case | Run | Method | DLR rank / goal steps | Selected source | Status | Total attempts | Image error | Measurement residual |",
+        "| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: |"]
     figures = []
     paired_pools = {}
     for root in args.roots:
@@ -54,9 +54,11 @@ def main() -> None:
                 if method not in config["methods"]:
                     continue
                 stem = method.lower().replace("-", "_").replace(" ", "_")
+                factor_label = (f"{config['settings']['dlr']['rank']} / {config.get('goal_steps', 0)}"
+                                if method == "DLR D-Flow" else "—")
                 path = folder / f"{stem}.json"
                 if not path.exists():
-                    lines.append(f"| {case} | {root.name} | {method} | — | Probing / pending | — | — | — |")
+                    lines.append(f"| {case} | {root.name} | {method} | {factor_label} | — | Probing / pending | — | — | — |")
                     continue
                 record = json.loads(path.read_text())
                 protocol = record["protocol"]
@@ -79,16 +81,19 @@ def main() -> None:
                 final = record["history"][-1]
                 if terminal:
                     saved = torch.load(path.with_suffix(".pt"), map_location="cpu", weights_only=True)
-                    image_error = (saved["image"]-pool["truth"]).norm()/pool["truth"].norm()
-                    residual = (saved["measurement"]-pool["observed"]).norm()/pool["observed"].norm()
+                    image_error = (saved["image"].double()-pool["truth"].double()).norm()/pool["truth"].double().norm()
+                    residual = ((saved["measurement"].to(torch.complex128)-pool["observed"].to(torch.complex128)).norm()
+                                / pool["observed"].to(torch.complex128).norm())
                     torch.testing.assert_close(image_error, image_error.new_tensor(final["image_relative_l2"]),
                                                atol=1e-6, rtol=1e-5)
                     torch.testing.assert_close(residual, residual.new_tensor(final["measurement_relative_l2_noisy"]),
                                                atol=1e-6, rtol=1e-5)
                 status = "Complete" if terminal else "Partial"
-                lines.append(f"| {case} | {root.name} | {method} | {winner} | {status} | {total} | "
+                lines.append(f"| {case} | {root.name} | {method} | {factor_label} | {winner} | {status} | {total} | "
                     f"{100*final['image_relative_l2']:.3f}% | {100*final['measurement_relative_l2_noisy']:.3f}% |")
                 rows.append(dict(case=case, run=root.name, method=method, selected=winner, status=record["status"],
+                    rank=config["settings"]["dlr"]["rank"] if method == "DLR D-Flow" else None,
+                    goal_steps=config.get("goal_steps", 0) if method == "DLR D-Flow" else None,
                     complete=terminal, total_attempts=total, image_error=final["image_relative_l2"],
                     residual=final["measurement_relative_l2_noisy"], source_hash=source_hashes[winner]))
                 attempts, image_errors, residuals = [], [], []
@@ -122,7 +127,8 @@ def main() -> None:
     lines.extend(["", "Checks: cached source hashes, measurement-loss selection, preserved continuation history, "
         "and total attempt budgets. Completed metrics are recomputed from saved image/measurement arrays. "
         "Curves show the best measurement-loss candidate seen during probing, then the selected continuation. "
-        "They do not select by image error.", *figures])
+        "They do not select by image error. Goal steps zero means the original factor update; positive values "
+        "label the experimental goal-oriented projection, not unmodified KSL.", *figures])
     (args.out / "report.md").write_text("\n".join(lines)+"\n")
     write_json(args.out / "summary.json", dict(rows=rows, checks_passed=True))
 
