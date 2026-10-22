@@ -1,0 +1,37 @@
+{
+  "pid": 1692745,
+  "commands": [
+    [
+      ".venv/bin/python",
+      "-u",
+      "-m",
+      "experiments.separated_shapes_117k.gradient_audit",
+      "--inputs",
+      "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_floor32_mri2/adaptive/r250_shapes_mri4/sample_002/inputs.pt",
+      "--source",
+      "outputs/separated_shapes_117k_diagnosis_20261022/exact_recovery_mri2/exact_dflow/d_flow.pt",
+      "--exact-only",
+      "--line-search-audit",
+      "--saved-direction-audit",
+      "--out",
+      "outputs/separated_shapes_117k_diagnosis_20261022/exact_recovery_mri2/endpoint_fp32.json"
+    ],
+    [
+      ".venv/bin/python",
+      "-u",
+      "-m",
+      "experiments.separated_shapes_117k.gradient_audit",
+      "--inputs",
+      "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_floor32_mri2/adaptive/r250_shapes_mri4/sample_002/inputs.pt",
+      "--source",
+      "outputs/separated_shapes_117k_diagnosis_20261022/exact_recovery_mri2/exact_dflow/d_flow.pt",
+      "--exact-only",
+      "--line-search-audit",
+      "--saved-direction-audit",
+      "--out",
+      "outputs/separated_shapes_117k_diagnosis_20261022/exact_recovery_mri2/endpoint_fp64.json",
+      "--double"
+    ]
+  ],
+  "log": "/tmp/exact_recovery_mri2_precision.log"
+}

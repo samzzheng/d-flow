@@ -27,7 +27,7 @@ def main() -> None:
     parser.add_argument("--inputs", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--arms", nargs="+",
-        choices=("reset_dlr", "proxy_then_dlr", "proxy_only", "cap_started_dlr"),
+        choices=("reset_dlr", "proxy_then_dlr", "proxy_only", "cap_started_dlr", "exact_dflow"),
         default=["reset_dlr", "proxy_then_dlr", "proxy_only"])
     args = parser.parse_args()
     torch.set_num_threads(2)
@@ -77,7 +77,7 @@ def main() -> None:
         settings=settings, initial_attempt=initial_attempt, attempt_limit=limit, arms=args.arms,
         script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         fallback_sha256=hashlib.sha256(Path(proxy_step.__wrapped__.__code__.co_filename).read_bytes()).hexdigest(),
-        note="All arms start at the same stalled source. Reset DLR uses fresh LBFGS with existing attempt count and previous V as a sketch seed. Hybrid tries exactly one objective-safeguarded proxy step, then fresh LBFGS/DLR; no curvature spans the switch. Proxy-only repeats that safeguarded proxy, without LBFGS or a proxy Armijo slope. Optional cap_started_dlr is the reset-DLR control with later searches starting at the existing displacement cap; no proxy step. Projection unchanged; all attempts including the rescue count toward the original1000 limit.")
+        note="All arms start at the same stalled source. Reset DLR uses fresh LBFGS with existing attempt count and previous V as a sketch seed. Hybrid tries exactly one objective-safeguarded proxy step, then fresh LBFGS/DLR; no curvature spans the switch. Proxy-only repeats that safeguarded proxy, without LBFGS or a proxy Armijo slope. Optional cap_started_dlr changes later starting lengths to the cap; exact_dflow uses the true discrete-map gradient with fresh LBFGS. Projection unchanged; all attempts count toward the original1000 limit.")
     args.out.mkdir(parents=True, exist_ok=True)
     config = args.out/"config.json"
     if config.exists():
@@ -89,15 +89,15 @@ def main() -> None:
             break
         path = args.out/arm
         path.mkdir(exist_ok=True)
-        method = "P-Flow" if arm == "proxy_only" else "DLR D-Flow"
-        checkpoint = path/("p_flow.pt" if method == "P-Flow" else "dlr_d_flow.pt")
+        method = {"proxy_only": "P-Flow", "exact_dflow": "D-Flow"}.get(arm, "DLR D-Flow")
+        checkpoint = path/{"P-Flow": "p_flow.pt", "D-Flow": "d_flow.pt", "DLR D-Flow": "dlr_d_flow.pt"}[method]
         paired = {**protocol, "proxy_recovery": {**experiment, "arm": arm}}
         if checkpoint.exists():
             existing = torch.load(checkpoint, map_location=device, weights_only=True)
             assert existing["protocol"] == paired
             if existing["status"] in run.TERMINAL or existing["status"] == "proxy_rejected":
                 continue
-        products = (None if arm == "proxy_only" else BoundedGraphedProducts(model, source,
+        products = (None if method != "DLR D-Flow" else BoundedGraphedProducts(model, source,
             cache_size=4, share_linearization=True, full_step_graphs=False,
             max_jvp_columns=20, max_vjp_columns=16))
         evaluator = run.Evaluator(model, operator, inputs["observed"], settings, protocol["dlr_seed"], products)

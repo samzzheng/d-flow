@@ -1,0 +1,102 @@
+{
+  "parent": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_floor32_mri2/adaptive/r250_shapes_mri4/sample_002/dlr_d_flow.pt",
+  "parent_sha256": "cd23ae28e6943f783712bdf0bed21303cbb6d2d4dad1a7f3f4655e8fc6acec9d",
+  "initial_source_sha256": "35234baf8569848686c69a70c41af3c99210493be7d32e6842396d5d3549784e",
+  "settings": {
+    "version": 1,
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200,
+      250
+    ],
+    "circles": [
+      0
+    ],
+    "ct_angles": [
+      10
+    ],
+    "mri_accelerations": [
+      4
+    ],
+    "mri_pattern": "cartesian",
+    "samples": 30,
+    "epoch": 500,
+    "run_template": "/home/samzheng/d-flow/outputs/separated_shapes_117k_noiseless_20261021/models/r{resolution}",
+    "noise_relative": 0.0,
+    "flow_steps": 5,
+    "seed": 20261007,
+    "source_projection": false,
+    "optimizer": {
+      "lr": 1.0,
+      "history_size": 100,
+      "max_ls": 30,
+      "c1": 0.0001,
+      "step_cap": 0.01,
+      "backtracking": "geometric"
+    },
+    "stopping": {
+      "min_updates": 1000,
+      "max_updates": 1000,
+      "window": 50,
+      "plateau_relative": 0.001,
+      "failed_searches": 2
+    },
+    "dlr_reuse_previous_v": true,
+    "dlr": {
+      "rank": 32,
+      "trace_probes": 0,
+      "enrichment_probes": 0,
+      "initialization_oversampling": 8,
+      "factor_stride": 1,
+      "zero_terminal_baseline": true,
+      "speed_profile": "fast",
+      "adaptive_rank": true,
+      "rank_min": 32,
+      "rank_max": 128,
+      "rank_tol": 0.001
+    },
+    "execution": {
+      "threads": 2,
+      "checkpoint_every": 10,
+      "cudnn_tf32": false,
+      "matmul_tf32": false,
+      "cudnn_benchmark": false,
+      "memory_fraction": 0.08,
+      "dlr_full_step_graphs": false,
+      "dlr_jvp_columns": 20,
+      "dlr_vjp_columns": 16,
+      "dlr_fused_norm": "native",
+      "dlr_fused_primal": "native",
+      "dlr_specialized_algebra": true,
+      "dflow_checkpointed": false
+    },
+    "scheduling": {
+      "samples_per_worker": 1,
+      "max_workers_per_gpu": 4,
+      "gpu_headroom_mib": 2048,
+      "worker_memory_mib": {
+        "64": 8192,
+        "96": 8192,
+        "128": 8192,
+        "160": 8192,
+        "200": 8192,
+        "250": 8192
+      }
+    },
+    "dataset_label": "separated shapes: 1\u20134 circles/triangles",
+    "dataset_template": "data/separated-shapes-{resolution}.pt",
+    "diagnostic_figures": true
+  },
+  "initial_attempt": 240,
+  "attempt_limit": 1000,
+  "arms": [
+    "reset_dlr",
+    "exact_dflow"
+  ],
+  "script_sha256": "0694a45dc2a5935700c67f5ab6adcafb3cd7312eb59c3cd0409aa3fa42db9b82",
+  "fallback_sha256": "013c3e4032b2aa259504b388487b785091314966f121aced23c9112dfdac8bdb",
+  "note": "All arms start at the same stalled source. Reset DLR uses fresh LBFGS with existing attempt count and previous V as a sketch seed. Hybrid tries exactly one objective-safeguarded proxy step, then fresh LBFGS/DLR; no curvature spans the switch. Proxy-only repeats that safeguarded proxy, without LBFGS or a proxy Armijo slope. Optional cap_started_dlr changes later starting lengths to the cap; exact_dflow uses the true discrete-map gradient with fresh LBFGS. Projection unchanged; all attempts count toward the original1000 limit."
+}

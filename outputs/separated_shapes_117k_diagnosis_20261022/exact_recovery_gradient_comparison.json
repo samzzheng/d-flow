@@ -1,0 +1,27 @@
+{
+  "rows": [
+    {
+      "case": "mri2",
+      "relative_gradient_error": 0.2906899280929101,
+      "cosine": 0.9568176419432861,
+      "dlr_norm": 2.0852378136924243,
+      "exact_norm": 2.181162602687899,
+      "retained_exact_squared_norm_fraction": 0.920144598461715,
+      "right_basis_columns": 32,
+      "subspace_error": 0.2825886737731004,
+      "coefficient_error": 0.06814915031221398
+    },
+    {
+      "case": "conditioned_ct0",
+      "relative_gradient_error": 0.5469066802166145,
+      "cosine": 0.8371944892878935,
+      "dlr_norm": 0.004974324851101026,
+      "exact_norm": 0.005950450746656481,
+      "retained_exact_squared_norm_fraction": 0.7093692261599595,
+      "right_basis_columns": 32,
+      "subspace_error": 0.5391027179270745,
+      "coefficient_error": 0.09206117172978141
+    }
+  ],
+  "note": "Same failed source, native FP32 gradients saved by paired continuations. Both methods reject their searches; these comparisons alone do not certify the floating-point gradient or a local minimum."
+}

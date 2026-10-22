@@ -35,7 +35,7 @@ def main() -> None:
         results = {}
         first_events = []
         for arm in config.get("arms", ("reset_dlr", "proxy_then_dlr", "proxy_only")):
-            path = folder/arm/("p_flow.pt" if arm == "proxy_only" else "dlr_d_flow.pt")
+            path = folder/arm/{"proxy_only": "p_flow.pt", "exact_dflow": "d_flow.pt"}.get(arm, "dlr_d_flow.pt")
             saved = torch.load(path, map_location="cpu", weights_only=True)
             assert saved["status"] in ("stalled", "step_limit", "proxy_rejected")
             assert saved["protocol"]["proxy_recovery"] == {**config, "arm": arm}
@@ -97,7 +97,7 @@ def main() -> None:
                     for left, right in zip(first["trials"], second["trials"])),
                 note="Same source and proposal rule; CT endpoint gradients recomputed separately can differ numerically. All acceptance decisions agree."))
         panels = {}
-        for arm, method in (("proxy_only", "P-Flow"), ("proxy_then_dlr", "DLR D-Flow"), ("cap_started_dlr", "DLR D-Flow")):
+        for arm, method in (("reset_dlr", "DLR D-Flow"), ("exact_dflow", "D-Flow"), ("proxy_only", "P-Flow"), ("proxy_then_dlr", "DLR D-Flow"), ("cap_started_dlr", "DLR D-Flow")):
             if arm in results:
                 panels[method] = (results[arm]["image"], results[arm]["measurement"])
         figure = plot_reconstruction_comparison(inputs["truth"], inputs["clean"],

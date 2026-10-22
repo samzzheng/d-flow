@@ -1,0 +1,19 @@
+{
+  "pid": 1691692,
+  "command": [
+    ".venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.separated_shapes_117k.proxy_recovery_study",
+    "--parent",
+    "outputs/separated_shapes_117k_diagnosis_20261022/initialization_controls/measurement/r250_shapes_ct10/sample_000/dlr_d_flow.pt",
+    "--inputs",
+    "outputs/separated_shapes_117k_diagnosis_20261022/initialization_controls/measurement/r250_shapes_ct10/sample_000/inputs.pt",
+    "--out",
+    "outputs/separated_shapes_117k_diagnosis_20261022/exact_recovery_conditioned_ct0",
+    "--arms",
+    "reset_dlr",
+    "exact_dflow"
+  ],
+  "log": "/tmp/exact_recovery_conditioned_ct0.log"
+}
