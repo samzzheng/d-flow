@@ -52,3 +52,5 @@ Eight CPU tests pass. Dense controls verify the gradient identity at ranks1/4/16
 - Frozen-increment rank128 CT7 finishes at20.241%, versus34.280% with the original update. Better fixed-source gradients did not yield a fully accurate reconstruction.
 
 The broader correction remains incomplete. In particular, a useful terminal projection does not repair all earlier subspace errors, poor initial basins, or inverse-problem ambiguity.
+
+[Completed paired-control verification](completed_correction_controls.json) checks bitwise-equal initial sources/truths/observations, checkpoint hashes, equal optimizer/grid/rank/stopping settings, nonincreasing objectives, and image metrics recomputed with float64 reductions. It covers the completed MRI4 hybrid, CT7 increment, and CT0 goal-projection comparisons.
