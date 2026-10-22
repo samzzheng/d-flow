@@ -1,4 +1,4 @@
-"""Paired native-arithmetic continuations of failed DLR endpoints."""
+"""Paired FP32/FP64 continuations of failed DLR endpoints."""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,8 @@ from unittest.mock import patch
 import torch
 
 from dlr_dflow.api import load_flow_model
-from dlr_dflow.implementation import enriched, residual_startup
+from dlr_dflow.implementation import enriched, residual_startup, tangent_unet
+from dlr_dflow.implementation.graphed_products import GraphedAProducts
 from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.optimizer import SweepLBFGS
@@ -29,6 +30,8 @@ def main() -> None:
     parser.add_argument("--inputs", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--additional-attempts", type=int, default=50)
+    parser.add_argument("--products", choices=("native", "graphed"), default="native",
+        help="Derivative backend; changes on resume are recorded without resetting optimizer state")
     parser.add_argument("--resume", action="store_true",
         help="Extend the saved paired control within its original budget, preserving curvature")
     args = parser.parse_args()
@@ -70,9 +73,10 @@ def main() -> None:
         script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         initial_attempts=initial_attempts, attempt_limit=limit, settings=settings,
         seed_sha256=recovery["seed_sha256"]["gradient_seed"] if retained else None,
+        product_backend=args.products,
         attempts_in_other_starts=recovery.get("attempts_in_other_starts", 0),
         total_budget=recovery.get("total_budget", settings["stopping"]["max_updates"]),
-        note="Both native autodiff backends; cold curvature; same promoted source, initialization, right basis and original attempt count. Each precision recomputes its initial objective.")
+        note="Paired precision with the recorded derivative backend; cold curvature at initial launch; same promoted source, initialization, right basis and original attempt count. Resume preserves optimizer state; each precision recomputes its initial objective.")
     config_path = args.out/"config.json"
     segments = []
     if config_path.exists():
@@ -84,13 +88,17 @@ def main() -> None:
         if limit < previous_config["attempt_limit"]:
             parser.error("Resume cannot lower the recorded attempt limit")
         segments = previous_config.get("segments", []) + [
-            {key: previous_config[key] for key in ("attempt_limit", "script_sha256")}]
+            {**{key: previous_config[key] for key in ("attempt_limit", "script_sha256")},
+             "product_backend": previous_config.get("product_backend", "native")}]
     elif args.resume:
         parser.error("No saved control to resume")
     configuration["segments"] = segments
     run.write_json(config_path, configuration)
     enriched.SPECIALIZE_ZERO_ENRICHMENT = True
     enriched.SKIP_UNTRUNCATED_SVD = True
+    tangent_unet.GN_STATS_MODE = "native"
+    tangent_unet.GN_ACTION_BACKEND = "native"
+    tangent_unet.GN_PRIMAL_BACKEND = "native"
     summary = json.loads((args.out/"summary.json").read_text()) if args.resume else {}
     for dtype in (torch.float32, torch.float64):
         label = str(dtype).split(".")[-1]
@@ -119,7 +127,9 @@ def main() -> None:
         observed = inputs["observed"].to(device=device, dtype=measurement_dtype)
         state = parent if saved is None else saved
         source = state["source"].to(device=device, dtype=dtype).clone().requires_grad_(True)
-        products = ChunkedAutodiffProducts(model, columns=4)
+        products = (GraphedAProducts(model, source, share_linearization=True, full_step_graphs=True,
+                    max_jvp_columns=20, max_vjp_columns=16, max_step_jvp_columns=6, max_step_vjp_columns=4)
+                    if args.products == "graphed" else ChunkedAutodiffProducts(model, columns=4))
         evaluator_type = FrozenSeedEvaluator if retained else run.Evaluator
         evaluator = evaluator_type(model, operator, observed, settings, protocol["dlr_seed"], products)
         evaluator.previous_v = state["previous_v"].to(device=device, dtype=dtype)

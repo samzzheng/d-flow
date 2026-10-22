@@ -6,6 +6,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import time
 from typing import Any
 from unittest.mock import patch
 from functools import partial
@@ -92,6 +93,8 @@ def main() -> None:
     parser.add_argument("--skip-reference", action="store_true")
     parser.add_argument("--compare-native-dlr", action="store_true",
         help="Repeat each identical factor evolution with independent native autodiff products")
+    parser.add_argument("--timing-repeats", type=int, default=0,
+        help="Repeat warmed factor refreshes and gradient actions for both derivative backends")
     seed_control = parser.add_mutually_exclusive_group()
     seed_control.add_argument("--terminal-seed", action="store_true")
     seed_control.add_argument("--source-gradient-seed", action="store_true",
@@ -114,6 +117,8 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.timing_repeats < 0 or (args.timing_repeats and (not args.compare_native_dlr or args.exact_only)):
+        parser.error("Timing repeats require a native DLR comparison")
     if args.adaptive_min is not None:
         if not 1 <= args.adaptive_min <= min(args.ranks) or not args.skip_reference:
             parser.error("Adaptive diagnostics need valid rank bounds and --skip-reference")
@@ -162,8 +167,8 @@ def main() -> None:
     if isinstance(operator, MRI):
         assert torch.equal(inputs["mask"], operator.mask)
     if args.double:
-        if not args.exact_only:
-            parser.error("The double-precision control is restricted to exact-gradient line probes")
+        if not args.exact_only and not (args.compare_native_dlr and args.skip_reference):
+            parser.error("Double-precision factor audits require --compare-native-dlr and --skip-reference")
         model = model.double()
         # The training embedding intentionally computes FP32 sin/cos; preserve
         # those features and promote them for the double-precision linear layer.
@@ -275,7 +280,7 @@ def main() -> None:
         run.write_json(args.out, report)
         return
     tangent_unet.GN_STATS_MODE = "native"
-    tangent_unet.GN_ACTION_BACKEND = "triton"
+    tangent_unet.GN_ACTION_BACKEND = "native" if args.double else "triton"
     tangent_unet.GN_PRIMAL_BACKEND = "full"
     enriched.SPECIALIZE_ZERO_ENRICHMENT = args.factor_arithmetic in ("specialized", "eager_specialized")
     products = GraphedAProducts(model, source, share_linearization=True,
@@ -317,6 +322,23 @@ def main() -> None:
                         model, source, settings["flow_steps"],
                         **{key: value for key, value in options.items() if key != "factor_callback"},
                         seed=protocol["dlr_seed"], products=reference.local, seed_basis=seed_basis)
+                timings: dict[str, list[float]] = {}
+                if args.timing_repeats:
+                    for label, provider in (("accelerated", products), ("native", reference.local)):
+                        timings[label] = []
+                        for _ in range(args.timing_repeats):
+                            torch.cuda.synchronize(device)
+                            started = time.perf_counter()
+                            _, timed_factors, timed_alpha = sensitivity_factors(
+                                model, source, settings["flow_steps"],
+                                **{key: value for key, value in options.items() if key != "factor_callback"},
+                                seed=protocol["dlr_seed"], products=provider, seed_basis=seed_basis)
+                            timed_gradient = approx_source_gradient(timed_factors, terminal, timed_alpha)
+                            torch.cuda.synchronize(device)
+                            timings[label].append(time.perf_counter()-started)
+                            expected = approx_source_gradient(factors if label == "accelerated" else native_factors,
+                                                              terminal, alpha if label == "accelerated" else native_alpha)
+                            torch.testing.assert_close(timed_gradient, expected, rtol=1e-5, atol=1e-8)
             estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
             if not warm:
                 fresh_estimate = estimate.clone()
@@ -326,6 +348,8 @@ def main() -> None:
                        terminal_seed=args.terminal_seed, source_gradient_seed=args.source_gradient_seed,
                        **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
+            if timings:
+                row["warm_factor_and_gradient_seconds"] = timings
             if args.track_gradient_capture:
                 row["gradient_capture_path"] = [dict(step=step, alpha=baseline, rank=prefix[2].shape[1],
                     retained_squared_gradient_fraction=float((prefix[2].T @ exact).square().sum()/exact.square().sum()))
