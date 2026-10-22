@@ -88,3 +88,11 @@ Six selected MRI250 endpoints (four D-Flow, two corrected DLR) have nonzero exac
 Straight paths to paired successful P-Flow sources all show a small initial objective rise before reaching low-error images. These particular paths expose local barriers, not a proof that no descending path exists. Promoted FP64 maps change failed endpoint images by up to0.451% relative to the original nearly blank image. The evidence supports both subspace loss and difficult local objective geometry; larger rank alone cannot address both. No relaxed line-search or production optimizer change is justified by this diagnostic.
 
 [Source-path report and figure](dataset_difficulty/source_bridge_report.md).
+
+## Precision sensitivity before DLR truncation
+
+Native FP32 gradients at six selected collapsed endpoints differ from FP64 by5.7–309.8%, versus0.019–0.120% at five successful paired P-Flow endpoints. At corrected DLR samples0/1 the differences are74.5%/56.6%. Both objectives use FP64 scalar reductions; the discrepancy comes from evaluating and differentiating different floating-point realizations of the map. One failed exact D-Flow source has negative FP32/FP64 gradient cosine.
+
+Higher precision only in GroupNorm, Euler-state accumulation, or both is inconsistent and sometimes reverses the gradient relative to FP64. Do not promote these partial-precision options. A paired rank32 FP32/FP64 reconstruction from the original Gaussian source is running on MRI250 sample0, with unchanged optimizer and1000-attempt cap. This tests prevention of collapse rather than recovery afterward. Both derivative backends are independently checked at initialization; experimental precision remains isolated.
+
+[Precision report](dataset_difficulty/endpoint_precision_report.md) · [From-start control](precision_from_start_mri0/launch.json).

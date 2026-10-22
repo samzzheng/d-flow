@@ -1,0 +1,17 @@
+{
+  "pid": 1640976,
+  "command": [
+    "uv",
+    "run",
+    "--no-sync",
+    "--python",
+    ".venv/bin/python",
+    "python",
+    "-u",
+    "-m",
+    "experiments.separated_shapes_117k.precision_from_start",
+    "--out",
+    "outputs/separated_shapes_117k_diagnosis_20261022/precision_from_start_mri0"
+  ],
+  "log": "/tmp/precision_from_start_mri0.log"
+}
