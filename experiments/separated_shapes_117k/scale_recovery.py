@@ -49,8 +49,11 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--inputs", type=Path,
         help="Use a saved inputs bundle instead of the source-pool bundle")
-    parser.add_argument("--source-gradient-seed", action="store_true",
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--source-gradient-seed", action="store_true",
         help="Compare cold restarts using one frozen exact-gradient seed, a matched random seed, and no added seed")
+    mode.add_argument("--rank-floors", type=int, nargs="+",
+        help="Compare higher adaptive rank floors against an unchanged cold restart")
     parser.add_argument("--retain-seed", action="store_true",
         help="Explicitly retain the seeded direction in the initial right basis, without changing later KSL steps")
     parser.add_argument("--seed-cache", type=Path,
@@ -79,6 +82,10 @@ def main() -> None:
     settings = deepcopy(protocol.get("continuation_settings", protocol.get("settings")))
     if settings is None:
         parser.error("The parent must record its optimizer and factor settings")
+    if args.rank_floors and (not settings["dlr"].get("adaptive_rank") or
+            not all(settings["dlr"]["rank_min"] < floor <= settings["dlr"]["rank_max"]
+                    for floor in args.rank_floors)):
+        parser.error("Recovery floors must exceed the parent's adaptive minimum without exceeding its maximum")
     if args.retain_seed:
         settings["dlr"]["residual_sketch_steps"] = 1
     limit = settings["stopping"]["max_updates"]
@@ -119,6 +126,9 @@ def main() -> None:
         settings=settings, baseline=original["history"][-1],
         note="Preserve cached gradient, curvature, right basis and all attempt counters; change recovery scale only")
     args.out.mkdir(parents=True, exist_ok=True)
+    if args.rank_floors:
+        evidence.update(rank_floors=args.rank_floors,
+            note="Same parent source, right basis and original attempt budget; equally reset curvature and gradient caches; change adaptive minimum only")
     if args.retain_seed:
         evidence.update(retain_seed=True,
             startup_sha256=hashlib.sha256(Path(retained_seed_startup.__wrapped__.__code__.co_filename).read_bytes()).hexdigest())
@@ -164,18 +174,26 @@ def main() -> None:
             note="One exact source gradient at the parent, frozen thereafter; matched random seed; same cold optimizer resets and original attempt budget")
     run.write_json(args.out / "config.json", evidence)
     summary = {}
-    variants = (("unchanged", SweepLBFGS), ("gradient_seed", SweepLBFGS), ("random_seed", SweepLBFGS)) if args.source_gradient_seed else (("unchanged", SweepLBFGS), ("scaled", ScaleRecoveryLBFGS))
+    floors = {f"floor_{floor}": floor for floor in args.rank_floors or []}
+    variants = (tuple((name, SweepLBFGS) for name in ("unchanged", *floors)) if floors else
+                (("unchanged", SweepLBFGS), ("gradient_seed", SweepLBFGS), ("random_seed", SweepLBFGS))
+                if args.source_gradient_seed else (("unchanged", SweepLBFGS), ("scaled", ScaleRecoveryLBFGS)))
     for name, kind in variants:
         path = args.out / name / "dlr_d_flow.pt"
         path.parent.mkdir(exist_ok=True)
-        paired = {**protocol, "scale_recovery": {**evidence, "variant": name}}
+        arm_settings = deepcopy(settings)
+        if name in floors:
+            arm_settings["dlr"]["rank_min"] = floors[name]
+        paired = {**protocol, "scale_recovery": {**evidence, "variant": name, "settings": arm_settings}}
+        if floors:
+            paired["continuation_settings" if "continuation_settings" in protocol else "settings"] = arm_settings
         if not path.exists():
             state = original["optimizer"]
-            if args.source_gradient_seed:
+            if args.source_gradient_seed or floors:
                 state = {**state, "S": [], "Y": [], "f": None, "g": None, "state": {}, "consecutive_failures": 0}
             run.save_tensor(path, {**original, "protocol": paired, "status": "paused", "optimizer": state})
         evaluator_type = FrozenSeedEvaluator if name in seeds else run.Evaluator
-        evaluator = evaluator_type(model, operator, inputs["observed"], settings, protocol["dlr_seed"], products)
+        evaluator = evaluator_type(model, operator, inputs["observed"], arm_settings, protocol["dlr_seed"], products)
         if isinstance(evaluator, FrozenSeedEvaluator):
             evaluator.seed_direction = seeds[name]
         with patch.object(run, "SweepLBFGS", kind), patch.object(
@@ -191,12 +209,15 @@ def main() -> None:
         summary[name] = dict(status=result["status"], final=final,
             total_attempts=outside+final["step"], additional_attempts=final["step"]-evidence["baseline"]["step"],
             scaled_recoveries=result["optimizer"].get("scaled_recoveries", 0))
+        if floors:
+            summary[name].update(rank_min=arm_settings["dlr"]["rank_min"],
+                terminal_rank=result["previous_v"].shape[1])
         run.write_json(args.out / "summary.json", summary)
         figure = plot_reconstruction_comparison(inputs["truth"], inputs["clean"],
             {"DLR D-Flow": (result["image"].to(device), result["measurement"].to(device))},
             observation=inputs["observed"], include_errors=True, measurement_log=isinstance(operator, MRI),
             residual_vmax=RESIDUAL_VMAX[protocol["job"]["problem"]],
-            title=f"{resolution} square: {name} {'sketch seed' if args.source_gradient_seed else 'fallback scale'}, original budget {experiment['budget']}")
+            title=f"{resolution} square: {name} {'adaptive rank floor' if floors else 'sketch seed' if args.source_gradient_seed else 'fallback scale'}, original budget {experiment['budget']}")
         figure.savefig(path.parent / "comparison.png", dpi=120)
         run.plt.close(figure)
 
