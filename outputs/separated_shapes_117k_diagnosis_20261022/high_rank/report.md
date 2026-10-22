@@ -17,6 +17,21 @@ Increasing rank improves these fixed-source gradients, with diminishing returns 
 
 Validation: terminal alpha exactly zero; all endpoints bitwise equal to the native Euler reference; finite gradients; requested fixed rank retained; orthogonal gradient-error decomposition checked. Rank32 products independently repeated with native autodiff (relative backend discrepancies 5.34e-06 / 0.000512). Higher-rank native repetition has not been performed. The first failed-source calibration exceeded 0.001 and terminated; a fresh-process repeat passed. The original failure is retained in first_validation_failure.json; floating-point sensitivity remains unresolved. Earlier precision diagnostics show the failed-source FP32 exact gradient itself can be sensitive to precision.
 
-Paired reconstructions at ranks 32, 1024 and 2048 are launched sequentially for this sample on GPU 1. Original source, model, measurements, optimizer, previous-V reuse, 1000-attempt limit and early-rejection safeguards are shared. The first sketch uses the same nested random columns as this audit; no measurement-informed initialization. The rank32 control completed after16 attempts at100.024% image error and100.011% measurement residual under the original rejected-search stopping rule. Rank1024 is active; rank2048 is queued next. There is no completed high-rank reconstruction result yet.
+Paired reconstructions at ranks 32, 1024 and 2048 are launched sequentially for this sample on GPU 1. Original source, model, measurements, optimizer, previous-V reuse, 1000-attempt limit and early-rejection safeguards are shared. The first sketch uses the same nested random columns as this audit; no measurement-informed initialization. The rank32 control completed after16 attempts at100.024% image error and100.011% measurement residual under the original rejected-search stopping rule. Rank1024 completed13 attempts at100.0238% image error and100.0109% residual. Rank2048 is active. The rank1024 increase did not prevent collapse on this case.
 
 [Initial audit](mri1_initial.json) · [Failed-source audit](mri1_failed.json) · [Reconstruction launch](reconstruction_launch.json)
+
+## Completed reconstruction checks
+
+| Method | Rank | Attempts | Image error |
+|---|---:|---:|---:|
+| D-Flow | Full | 1000 | 1.219% |
+| P-Flow | Identity | 26 | 2.375% |
+| DLR | 32 | 16 | 100.0241% |
+| DLR | 1024 | 13 | 100.0238% |
+
+All use the same original source, five-step generator and measurements. The two new DLR arms share nested initial sketches and otherwise identical settings. Original rejected-search safeguards terminate both DLR arms; rank2048 is still running. These are completed endpoints under the common maximum-attempt budget, not equal accepted-update counts.
+
+The rank1024 image norm is only2.31% of the truth norm, and its objective350.4601 is close to the zero-image objective350.3835. Increasing the rank improves the initial gradient approximation but still steers this reconstruction into a nearly blank output. Paired D-Flow and P-Flow successes rule out lack of representability for this case; they do not identify which approximation or optimizer interaction causes collapse. The exact D-Flow reference here succeeds, so this particular DLR failure cannot be attributed simply to inheriting an exact-gradient failure.
+
+[Independent saved-array verification](reconstruction_verification.json) · [Rank1024 paired panel](reconstruction/r250_shapes_mri4/sample_001/rank1024/paired_methods.png) · [Rank32 paired panel](reconstruction/r250_shapes_mri4/sample_001/rank32/paired_methods.png).

@@ -1,0 +1,48 @@
+{
+  "checked_at": "2026-10-22T15:04:01.698007-04:00",
+  "rows": [
+    {
+      "method": "D-Flow",
+      "status": "step_limit",
+      "steps": 1000,
+      "image_error_percent": 1.2187483454336636
+    },
+    {
+      "method": "P-Flow",
+      "status": "stalled",
+      "steps": 26,
+      "image_error_percent": 2.3747100934663914
+    },
+    {
+      "method": "DLR D-Flow",
+      "rank": 32,
+      "status": "stalled",
+      "steps": 16,
+      "image_error_percent": 100.02410261154668,
+      "residual_percent": 100.01130672143157,
+      "phi": 350.46278014343835,
+      "image_norm_over_truth": 0.023031387645620564,
+      "exact_zero_image_objective": 350.3835418820203
+    },
+    {
+      "method": "DLR D-Flow",
+      "rank": 1024,
+      "status": "stalled",
+      "steps": 13,
+      "image_error_percent": 100.02379503195391,
+      "residual_percent": 100.01092388292403,
+      "phi": 350.46009703899097,
+      "image_norm_over_truth": 0.023097977367638176,
+      "exact_zero_image_objective": 350.3835418820203
+    }
+  ],
+  "checks": [
+    "same initial source/model/operator/seeds",
+    "same optimizer and execution apart from rank",
+    "same nested initial sketch hash",
+    "rank of saved right basis",
+    "monotone objective and displacement caps",
+    "original-array FP64 image and complex measurement metrics"
+  ],
+  "note": "Rank2048 remains active. No change to original stopping rules or accepted-step budgets; failed searches are counted. D/P reference results use the same original source and generator, but do not use a DLR random sketch."
+}
