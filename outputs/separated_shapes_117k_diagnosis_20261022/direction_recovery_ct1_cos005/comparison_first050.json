@@ -1,0 +1,37 @@
+{
+  "status": "50-update prefix comparison; longer continuation remains active",
+  "initial_step": 190,
+  "final_step": 240,
+  "arms": {
+    "Unchanged LBFGS": {
+      "final": {
+        "step": 240,
+        "phi": 0.020834817306470087,
+        "source_step_norm": 8.656028917383795e-08,
+        "line_search_trials": 1,
+        "image_relative_l2": 0.2693378675529498,
+        "measurement_relative_l2_clean": 0.12828768742748928,
+        "measurement_relative_l2_noisy": 0.12828768742748928,
+        "residual_over_noise": null
+      },
+      "objective_decrease": 5.84164026058015e-06,
+      "objective_trials": 118,
+      "completed_attempts": 50
+    },
+    "Minimum cosine 0.05": {
+      "final": {
+        "step": 240,
+        "phi": 0.020833337273659797,
+        "source_step_norm": 0.00026935956059879595,
+        "line_search_trials": 12,
+        "image_relative_l2": 0.269387939209765,
+        "measurement_relative_l2_clean": 0.12828313079145545,
+        "measurement_relative_l2_noisy": 0.12828313079145545,
+        "residual_over_noise": null
+      },
+      "objective_decrease": 7.3216730708709765e-06,
+      "objective_trials": 598,
+      "completed_attempts": 50
+    }
+  }
+}

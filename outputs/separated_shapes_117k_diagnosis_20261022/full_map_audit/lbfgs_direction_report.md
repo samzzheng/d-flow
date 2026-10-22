@@ -43,3 +43,11 @@ The preserved-state branch is now running. To avoid spending the full remaining 
 The priority coordinator validates process identity and input/code hashes, and restores the baseline on success or failure. CPU tests exercise both exit paths. The first actual angle-safeguarded update reproduces the fixed-state trial displacement, ten evaluations and objective decrease within1e-12. The history prefix and factor settings are unchanged; saved image/residual metrics recompute correctly at attempt195. The result is still partial. [Queue configuration](../direction_recovery_ct1_cos005/queue.json).
 
 [Priority schedule](../priority_recovery_plan.json) · [Initial reconstruction verification](../direction_recovery_ct1_cos005/start_verification.json).
+
+## First50 paired reconstruction updates
+
+Both arms share the complete saved prefix through attempt190 and are compared at240. Unchanged L-BFGS ends at26.9338% image error and12.8288% residual; minimum cosine0.05 ends at26.9388% and12.8283%. The image result is slightly worse, not an accuracy improvement. Objective decreases are5.842e-6 versus7.322e-6, while line-search objective evaluations are118 versus598. Thus the large one-step improvement did not translate to a useful50-update reconstruction advantage. This does not justify adopting the angle safeguard.
+
+The full-budget angle run remains active; this is a common-prefix comparison, not its final result. The cap-started control is still pending. [Recorded comparison](../direction_recovery_ct1_cos005/comparison_first050.json).
+
+![Matched50-update comparison](../direction_recovery_ct1_cos005/comparison_first050.png)
