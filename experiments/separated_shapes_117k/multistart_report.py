@@ -30,9 +30,10 @@ def main() -> None:
         "The selected optimizer state is preserved. Image error never selects a source.", "",
         "These are selected failure cases, not a population estimate. Methods share the candidate "
         "pool but may choose different sources. Partial results are labeled.", "",
-        "| Case | Method | Selected source | Status | Total attempts | Image error | Measurement residual |",
-        "| --- | --- | --- | --- | ---: | ---: | ---: |"]
+        "| Case | Run | Method | Selected source | Status | Total attempts | Image error | Measurement residual |",
+        "| --- | --- | --- | --- | --- | ---: | ---: | ---: |"]
     figures = []
+    paired_pools = {}
     for root in args.roots:
         config = json.loads((root / "config.json").read_text())
         for case in config["cases"]:
@@ -41,6 +42,12 @@ def main() -> None:
             source_hashes = {name: hashlib.sha256(value.numpy().tobytes()).hexdigest()
                              for name, value in pool["sources"].items()}
             assert source_hashes == pool["source_hashes"]
+            signature = (pool["protocol"]["checkpoint_sha256"], source_hashes,
+                hashlib.sha256(pool["truth"].numpy().tobytes()).hexdigest(),
+                hashlib.sha256(pool["observed"].numpy().tobytes()).hexdigest(), pool["protocol"]["operator"])
+            if case in paired_pools and signature != paired_pools[case]:
+                raise ValueError(f"Unpaired candidate pools for {case}")
+            paired_pools[case] = signature
             figure, axes = plt.subplots(1, 2, figsize=(10, 3.5), constrained_layout=True)
             plotted = False
             for method in METHODS:
@@ -49,7 +56,7 @@ def main() -> None:
                 stem = method.lower().replace("-", "_").replace(" ", "_")
                 path = folder / f"{stem}.json"
                 if not path.exists():
-                    lines.append(f"| {case} | {method} | — | Probing / pending | — | — | — |")
+                    lines.append(f"| {case} | {root.name} | {method} | — | Probing / pending | — | — | — |")
                     continue
                 record = json.loads(path.read_text())
                 protocol = record["protocol"]
@@ -79,9 +86,9 @@ def main() -> None:
                     torch.testing.assert_close(residual, residual.new_tensor(final["measurement_relative_l2_noisy"]),
                                                atol=1e-6, rtol=1e-5)
                 status = "Complete" if terminal else "Partial"
-                lines.append(f"| {case} | {method} | {winner} | {status} | {total} | "
+                lines.append(f"| {case} | {root.name} | {method} | {winner} | {status} | {total} | "
                     f"{100*final['image_relative_l2']:.3f}% | {100*final['measurement_relative_l2_noisy']:.3f}% |")
-                rows.append(dict(case=case, method=method, selected=winner, status=record["status"],
+                rows.append(dict(case=case, run=root.name, method=method, selected=winner, status=record["status"],
                     complete=terminal, total_attempts=total, image_error=final["image_relative_l2"],
                     residual=final["measurement_relative_l2_noisy"], source_hash=source_hashes[winner]))
                 attempts, image_errors, residuals = [], [], []
@@ -107,8 +114,8 @@ def main() -> None:
                 for axis, ylabel in zip(axes, ("Relative image error (%)", "Measurement residual (%)")):
                     axis.set(xlabel="Total optimizer attempts across starts", ylabel=ylabel)
                     axis.legend(fontsize=8)
-                figure.suptitle(case)
-                filename = f"{case.replace('/', '_')}.png"
+                figure.suptitle(f"{case}: {root.name}")
+                filename = f"{root.name}_{case.replace('/', '_')}.png"
                 figure.savefig(args.out / filename, dpi=140)
                 figures.extend(["", f"![{case}]({filename})"])
             plt.close(figure)

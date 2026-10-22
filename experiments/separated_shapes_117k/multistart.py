@@ -29,6 +29,9 @@ def main() -> None:
     parser.add_argument("--rank", type=int, default=128)
     parser.add_argument("--probe-updates", type=int, default=50)
     parser.add_argument("--budget", type=int, default=1000)
+    parser.add_argument("--no-reuse-v", action="store_true")
+    parser.add_argument("--source-pool-root", type=Path,
+        help="Reuse a previously cached candidate pool exactly across controls")
     args = parser.parse_args()
     if not 0 < 4 * args.probe_updates < args.budget:
         parser.error("Four positive probe budgets must leave a continuation budget")
@@ -42,11 +45,15 @@ def main() -> None:
     torch.backends.cudnn.benchmark = False
     settings = json.loads((args.baseline / "manifest.json").read_text())["settings"]
     settings["dlr"]["rank"] = args.rank
+    if args.no_reuse_v:
+        settings["dlr_reuse_previous_v"] = False
     settings["stopping"]["max_updates"] = args.probe_updates
     evidence = dict(script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         source_hashes=source_hashes(), settings=settings, budget=args.budget,
         probe_updates=args.probe_updates, cases=args.cases, methods=args.methods,
         selection="Minimum final probe measurement objective; no ground-truth selection")
+    if args.source_pool_root:
+        evidence["source_pool_root"] = str(args.source_pool_root.resolve())
     run.write_json(args.out / "config.json", evidence)
     tangent_unet.GN_STATS_MODE = "native"
     tangent_unet.GN_ACTION_BACKEND = "triton"
@@ -73,6 +80,17 @@ def main() -> None:
             assert pool["protocol"] == protocol and pool["experiment"] == evidence
             for key in ("truth", "clean", "observed"):
                 assert torch.equal(pool[key], original[key])
+        elif args.source_pool_root:
+            parent = args.source_pool_root / case / "pool.pt"
+            cached = torch.load(parent, map_location=device, weights_only=True)
+            assert cached["protocol"] == protocol
+            for key in ("truth", "clean", "observed"):
+                assert torch.equal(cached[key], original[key])
+            for name, value in cached["sources"].items():
+                assert hashlib.sha256(value.cpu().numpy().tobytes()).hexdigest() == cached["source_hashes"][name]
+            pool = {**cached, "experiment": evidence,
+                    "source_pool_parent_sha256": hashlib.sha256(parent.read_bytes()).hexdigest()}
+            run.save_tensor(pool_path, pool)
         else:
             source = original["initial"]
             variable = torch.zeros_like(source, requires_grad=True)
