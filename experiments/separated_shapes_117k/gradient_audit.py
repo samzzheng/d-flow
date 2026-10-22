@@ -239,7 +239,9 @@ def main() -> None:
             if args.suffix_audit:
                 suffix = terminal.reshape(-1, 1)
                 suffix_rows = []
+                adjoints = {}
                 for prefix in range(settings["flow_steps"], -1, -1):
+                    adjoints[prefix] = suffix.detach().clone()
                     baseline, (left, core, right) = prefix_factors[prefix]
                     hybrid = baseline*suffix + right @ (core.T @ (left.T @ suffix))
                     suffix_rows.append(dict(prefix_steps=prefix, suffix_steps=settings["flow_steps"]-prefix,
@@ -262,6 +264,22 @@ def main() -> None:
                 row["task_terminal_equivalence"] = dict(rank=core.shape[0],
                     relative_error=float((task_gradient-exact).norm()/exact.norm()),
                     difference_from_exact_suffix_over_exact_norm=float((task_gradient-hybrid).norm()/exact.norm()))
+                transported = []
+                for count in sorted({1, min(2, settings["flow_steps"]-1), settings["flow_steps"]-1}):
+                    cut = settings["flow_steps"]-count
+                    baseline, task_factors = prefix_factors[cut]
+                    left_prefix, core_prefix, right_prefix = task_factors
+                    expected = baseline*adjoints[cut] + right_prefix @ (core_prefix.T @ (left_prefix.T @ adjoints[cut]))
+                    for index in range(cut, settings["flow_steps"]):
+                        products.set_state(index*reference.h, reference.points[index])
+                        task_factors = task_terminal_factors(task_factors, adjoints[index+1],
+                            reference.h, products, alpha=1.-index*reference.h)
+                    left, core, right = task_factors
+                    estimate_task = right @ (core.T @ (left.T @ terminal.reshape(-1, 1)))
+                    transported.append(dict(goal_steps=count, rank=core.shape[0],
+                        relative_error=float((estimate_task-exact).norm()/exact.norm()),
+                        difference_from_exact_suffix_over_exact_norm=float((estimate_task-expected).norm()/exact.norm())))
+                row["transported_goal_equivalence"] = transported
             if args.line_search_audit:
                 row["line_trials"] = line_trials(estimate)
             run.write_json(args.out, report)

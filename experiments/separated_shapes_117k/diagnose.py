@@ -95,6 +95,8 @@ def main() -> None:
         help="Experimental hybrid: DLR prefix followed by exact Euler adjoints")
     parser.add_argument("--task-terminal", action="store_true",
         help="Experimental rank-preserving projection that includes the terminal loss gradient")
+    parser.add_argument("--goal-steps", type=int, default=1,
+        help="Number of final goal-oriented projections when --task-terminal is enabled")
     args = parser.parse_args()
     if args.task_terminal and args.exact_suffix_steps:
         parser.error("Choose either exact suffix or task-oriented terminal factors")
@@ -122,6 +124,8 @@ def main() -> None:
         settings["flow_steps"] = args.flow_steps
     if not 0 <= args.exact_suffix_steps < settings["flow_steps"]:
         parser.error("Exact suffix must leave at least one DLR prefix step")
+    if args.task_terminal and not 1 <= args.goal_steps < settings["flow_steps"]:
+        parser.error("Goal-oriented projections must leave at least one ordinary prefix step")
     if (args.exact_suffix_steps or args.task_terminal) and (set(args.variants) & {"prefix2", "prefix5", "adaptive", "terminal_seed"}):
         parser.error("Exact suffix control currently requires a fixed-rank ordinary initializer")
     if args.no_reuse_v:
@@ -142,6 +146,7 @@ def main() -> None:
         evidence["exact_suffix_sha256"] = hashlib.sha256(
             Path(ExactSuffixEvaluator.gradient.__code__.co_filename).read_bytes()).hexdigest()
     if args.task_terminal:
+        evidence["goal_steps"] = args.goal_steps
         evidence["task_terminal_sha256"] = hashlib.sha256(
             Path(TaskTerminalEvaluator.gradient.__code__.co_filename).read_bytes()).hexdigest()
     if args.methods:
@@ -277,7 +282,7 @@ def main() -> None:
                                   exact_suffix_sha256=evidence["exact_suffix_sha256"])
                 if args.task_terminal:
                     paired.update(gradient_variant="Goal-oriented rank-r terminal Euler projection",
-                                  task_terminal_sha256=evidence["task_terminal_sha256"])
+                                  task_terminal_sha256=evidence["task_terminal_sha256"], goal_steps=args.goal_steps)
                 if initialization_selection is not None:
                     assert initialization_selection["source_sha256"] == paired["initial_source_sha256"]
                     paired["initialization_selection"] = initialization_selection
@@ -300,6 +305,8 @@ def main() -> None:
                                               protocol["dlr_seed"], products)
                     if isinstance(evaluator, ExactSuffixEvaluator):
                         evaluator.suffix_steps = args.exact_suffix_steps
+                    if isinstance(evaluator, TaskTerminalEvaluator):
+                        evaluator.goal_steps = args.goal_steps
                     if restart is not None:
                         evaluator.previous_v = restart["previous_v"]
                     if isinstance(evaluator, RankRecordingEvaluator):
@@ -313,7 +320,7 @@ def main() -> None:
                     observation=inputs["observed"], include_errors=True,
                     measurement_log=isinstance(operator, MRI), residual_vmax=RESIDUAL_VMAX[protocol["job"]["problem"]],
                     title=(f"{name}: {variant}, {args.factor_integrator} factors, noiseless"
-                           + (", goal-oriented rank-r terminal projection" if args.task_terminal else "")
+                           + (f", {args.goal_steps} goal-oriented rank-r projections" if args.task_terminal else "")
                            + (f", DLR-prefix + {args.exact_suffix_steps} exact suffix steps" if args.exact_suffix_steps else "")))
                 fig.savefig(path / "comparison.png", dpi=120)
                 run.plt.close(fig)

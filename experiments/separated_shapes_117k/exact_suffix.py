@@ -77,24 +77,62 @@ def suffix_gradient(
 @torch.no_grad()
 def task_terminal_factors(
     factors: Factors, terminal: torch.Tensor, h: float, products: Any,
+    alpha: float | None = None,
 ) -> Factors:
-    """Rank-preserving terminal Euler projection exact on the supplied covector.
+    """Rank-preserving Euler residual projection exact on the supplied covector.
 
-    Let T=(I+h A)Y+h(h A+I), since alpha=h at the penultimate point.
+    Let T=(I+h A)Y+h(alpha A+I). The default alpha=h is the terminal step.
     Choose an orthonormal Q containing gx, then QR(T.T Q)=V R. The matrix
     Q R.T V.T has rank at most r and its transpose action on gx equals
     T.T gx. It changes the final projection criterion, not the prefix KSL.
     """
+    alpha = h if alpha is None else alpha
     U, S, V = factors
     US = U @ S
-    left, _ = torch.linalg.qr(US + h*(products.A(h*V + US)+V))
+    left, _ = torch.linalg.qr(US + h*(products.A(alpha*V + US)+V))
     direction = terminal.reshape(-1, 1)
     direction = direction/direction.norm().clamp_min(1e-30)
     left, _ = torch.linalg.qr(torch.cat((direction, left[:, :-1]), dim=1))
     transpose = products.AT(left)
-    image = V @ (S.T @ (U.T @ (left+h*transpose))) + h*(h*transpose+left)
+    image = V @ (S.T @ (U.T @ (left+h*transpose))) + h*(alpha*transpose+left)
     right, triangular = torch.linalg.qr(image)
     return left, triangular.T, right
+
+
+def task_gradient(
+    model: torch.nn.Module, source: torch.Tensor, terminal: torch.Tensor,
+    steps: int, goal_steps: int, options: dict[str, Any], seed: int,
+    products: Any, seed_basis: torch.Tensor | None = None,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Preserve the transported loss covector in the final goal_steps projections.
+
+    Transport needs goal_steps-1 extra native single-vector adjoints. Every
+    Euler factor update keeps rank r and alpha=1-t; the native flow is unchanged.
+    In real arithmetic the resulting gradient equals the corresponding exact-
+    suffix hybrid, while the returned right basis is the terminal task basis.
+    """
+    cut, h = steps-goal_steps, 1./steps
+    factors = prefix_factors(model, source, steps, cut, options, seed, products, seed_basis)
+    points = []
+    with torch.no_grad():
+        point = prefix_image(model, source, steps, cut)
+        for index in range(cut, steps):
+            points.append(point)
+            if index+1 < steps:
+                point = point + h*model(point, point.new_full((point.shape[0],), index*h))
+    goals = {steps: terminal.detach()}
+    for index in range(steps-1, cut, -1):
+        with torch.enable_grad():
+            variable = points[index-cut].detach().requires_grad_(True)
+            image = variable + h*model(variable, variable.new_full((variable.shape[0],), index*h))
+            pullback, = torch.autograd.grad(image, variable, goals[index+1])
+        goals[index] = pullback.detach()
+    for index, point in enumerate(points, start=cut):
+        products.set_state(index*h, point)
+        factors = task_terminal_factors(factors, goals[index+1], h, products, alpha=1.-index*h)
+    U, S, V = factors
+    gradient = (V @ (S.T @ (U.T @ terminal.reshape(-1, 1)))).reshape_as(source)
+    return gradient.detach(), V
 
 
 class ExactSuffixEvaluator(run.Evaluator):
@@ -122,22 +160,20 @@ class ExactSuffixEvaluator(run.Evaluator):
 class TaskTerminalEvaluator(run.Evaluator):
     """Keep terminal rank r while making its projection specific to this loss."""
 
+    goal_steps: int = 1
+
     def gradient(self, source: torch.Tensor, method: str) -> torch.Tensor:
         if method != "DLR D-Flow":
             return super().gradient(source, method)
         if self.source is None or not torch.equal(self.source, source.detach()):
             self.objective(source.detach())
         _, terminal = run.endpoint_gradient(self.image, self.operator, self.observed)
-        steps = self.settings["flow_steps"]
-        factors = prefix_factors(self.model, source, steps, steps-1, self.settings["dlr"],
-                                 self.seed, self.products, self.previous_v)
-        point = prefix_image(self.model, source, steps, steps-1)
-        self.products.set_state((steps-1)/steps, point)
-        U, S, V = task_terminal_factors(factors, terminal, 1./steps, self.products)
-        gradient = (V @ (S.T @ (U.T @ terminal.reshape(-1, 1)))).reshape_as(source)
+        gradient, V = task_gradient(self.model, source, terminal, self.settings["flow_steps"],
+            self.goal_steps, self.settings["dlr"], self.seed, self.products, self.previous_v)
         if self.settings.get("dlr_reuse_previous_v", False):
             self.previous_v = V.detach().clone()
         self.counts["gradients"] += 1
+        self.counts["native_goal_vjps"] = self.counts.get("native_goal_vjps", 0) + self.goal_steps-1
         if not torch.isfinite(gradient).all():
             raise FloatingPointError("Nonfinite task-projected source gradient")
         return gradient.detach()

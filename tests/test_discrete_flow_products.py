@@ -10,7 +10,7 @@ from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, 
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 from sampler.ode_samplers import euler_flow
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
-from experiments.separated_shapes_117k.exact_suffix import suffix_gradient, task_terminal_factors
+from experiments.separated_shapes_117k.exact_suffix import suffix_gradient, task_terminal_factors, task_gradient
 from dlr_dflow.api import sensitivity_factors
 
 
@@ -25,6 +25,21 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_transported_goal_projections_match_exact_suffix_with_low_rank_factors(self) -> None:
+        torch.manual_seed(76)
+        model = NonlinearVelocity()
+        source = .1*torch.randn(1, 1, 3, 3, dtype=torch.float64)
+        terminal = torch.randn_like(source)
+        options = dict(rank=3, trace_probes=0, enrichment_probes=0, initialization_oversampling=0)
+        for count in (1, 2, 4):
+            expected, _ = suffix_gradient(model, source, terminal, 5, count, options, 8,
+                                          products=ChunkedAutodiffProducts(model))
+            actual, basis = task_gradient(model, source, terminal, 5, count, options, 8,
+                                         products=ChunkedAutodiffProducts(model))
+            torch.testing.assert_close(actual, expected, rtol=1e-10, atol=1e-11)
+            self.assertEqual(basis.shape, (9, 3))
+            torch.testing.assert_close(basis.T @ basis, torch.eye(3, dtype=source.dtype), atol=1e-11, rtol=1e-11)
+
     def test_task_terminal_preserves_rank_and_exact_target_gradient_action(self) -> None:
         torch.manual_seed(71)
         d, h = 16, .2
