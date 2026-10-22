@@ -87,10 +87,19 @@ def main() -> None:
     parser.add_argument("--factor-arithmetic", choices=("specialized", "eager_specialized", "direct", "canonical"),
         default="specialized", help="Compare equivalent fixed-rank arithmetic without changing the model or rank")
     parser.add_argument("--skip-reference", action="store_true")
-    parser.add_argument("--terminal-seed", action="store_true")
+    parser.add_argument("--compare-native-dlr", action="store_true",
+        help="Repeat each identical factor evolution with independent native autodiff products")
+    seed_control = parser.add_mutually_exclusive_group()
+    seed_control.add_argument("--terminal-seed", action="store_true")
+    seed_control.add_argument("--source-gradient-seed", action="store_true",
+        help="Oracle diagnostic: replace one sketch column with the exact source gradient")
+    parser.add_argument("--track-gradient-capture", action="store_true",
+        help="Record exact source-gradient energy retained by each intermediate right basis")
     parser.add_argument("--line-search-audit", action="store_true")
     parser.add_argument("--saved-direction-audit", action="store_true",
         help="Probe both signs of the saved optimizer gradient using exact objective slopes")
+    parser.add_argument("--saved-subspace-audit", action="store_true",
+        help="Probe the exact gradient inside and outside the saved terminal right basis")
     parser.add_argument("--repeat-gradients", type=int, default=0,
         help="Repeat native exact gradients at one unchanged source to measure arithmetic variation")
     parser.add_argument("--suffix-audit", action="store_true",
@@ -104,11 +113,11 @@ def main() -> None:
         parser.error("Increment substeps must be nonnegative")
     if args.reference_oversampling < 1:
         parser.error("The reference needs an extra singular value to assess the rank cutoff")
-    if args.saved_direction_audit and (args.source is None or args.double):
+    if (args.saved_direction_audit or args.saved_subspace_audit) and (args.source is None or args.double):
         parser.error("Saved-direction audit requires a saved FP32 source")
     if args.factor_arithmetic != "specialized" and (args.increment_substeps or args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl):
         parser.error("Factor arithmetic controls require the original integrator")
-    if args.basis_refreshes < 0 or (args.basis_refreshes and (args.increment_substeps or args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl or args.terminal_seed)):
+    if args.basis_refreshes < 0 or (args.basis_refreshes and (args.increment_substeps or args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl or args.terminal_seed or args.source_gradient_seed)):
         parser.error("Basis refresh diagnostics require a nonnegative count and the original integrator")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
@@ -184,7 +193,12 @@ def main() -> None:
 
     @torch.no_grad()
     def line_trials(gradient: torch.Tensor) -> list[dict[str, Any]]:
-        direction = -gradient.reshape_as(source) / gradient.norm()
+        norm = gradient.norm()
+        if not torch.isfinite(norm):
+            raise FloatingPointError("Nonfinite line-audit direction")
+        if norm == 0:
+            return []
+        direction = -gradient.reshape_as(source) / norm
         cap = settings["optimizer"]["step_cap"] * math.sqrt(source.numel())
         records = []
         for index in range(30):
@@ -212,6 +226,34 @@ def main() -> None:
         report["saved_gradient_trials"] = line_trials(stored)
         report["reversed_saved_gradient_trials"] = line_trials(-stored)
         report["saved_optimizer_step"] = saved["optimizer"]["step_attempts"]
+    if args.saved_subspace_audit:
+        if saved.get("previous_v") is None:
+            parser.error("Saved-subspace audit needs a checkpoint with its terminal right basis")
+        basis = saved["previous_v"]
+        projected = basis @ (basis.T @ exact)
+        complement = exact-projected
+        report["saved_subspace_audit"] = dict(rank=basis.shape[1],
+            retained_squared_gradient_fraction=float(projected.square().sum()/exact.square().sum()),
+            orthogonality_error=float((projected*complement).sum().abs()/exact.square().sum()),
+            inside_trials=line_trials(projected), outside_trials=line_trials(complement))
+        names = ("exact", "inside", "outside", "saved_dlr")
+        directions = torch.cat([exact, projected, complement, saved["optimizer"]["g"].reshape_as(exact)], dim=1)
+        direction_norms = directions.norm(dim=0)
+        directions = directions/direction_norms.clamp_min(torch.finfo(directions.dtype).tiny)
+        image_actions = reference.apply(directions)
+        geometry = []
+        for name, direction, action, norm in zip(names, directions.unbind(1), image_actions.unbind(1), direction_norms):
+            if norm == 0:
+                geometry.append(dict(direction=name, available=False, decrease_slope=None,
+                    gauss_newton_curvature=None, linearized_optimal_displacement=None, linearized_best_decrease=None))
+                continue
+            measurement_action = operator(action.reshape_as(source))
+            curvature = float(measurement_action.abs().square().sum(dtype=torch.float64))
+            slope = float((exact.flatten()*direction).sum())
+            geometry.append(dict(direction=name, decrease_slope=slope, gauss_newton_curvature=curvature,
+                linearized_optimal_displacement=slope/curvature if curvature > 0 else None,
+                linearized_best_decrease=slope*slope/(2*curvature) if curvature > 0 and slope > 0 else None))
+        report["saved_subspace_audit"]["directional_geometry"] = geometry
     if args.exact_only:
         report["status"] = "complete"
         run.write_json(args.out, report)
@@ -227,7 +269,7 @@ def main() -> None:
         for warm in (False, True) if saved is not None and saved.get("previous_v") is not None else (False,):
             options = {**settings["dlr"], "rank": rank}
             prefix_factors: dict[int, tuple[float, tuple[torch.Tensor, ...]]] = {}
-            if args.suffix_audit:
+            if args.suffix_audit or args.track_gradient_capture:
                 options["factor_callback"] = lambda step, alpha, factors: prefix_factors.update({
                     step: (float(alpha), tuple(value.detach().clone() for value in factors))})
             if args.factor_arithmetic == "canonical":
@@ -236,6 +278,8 @@ def main() -> None:
             if args.terminal_seed:
                 seed_basis = (terminal.reshape(-1, 1) if seed_basis is None else
                               torch.cat([terminal.reshape(-1, 1), seed_basis], dim=1))
+            if args.source_gradient_seed:
+                seed_basis = exact if seed_basis is None else torch.cat([exact, seed_basis], dim=1)
             with patch.object(enriched, "_zero_enrichment_step",
                               partial(subdivided_increment_step, substeps=args.increment_substeps) if args.increment_substeps else
                               partial(stable_sl_step, recompress=False) if args.stable_ksl else
@@ -245,13 +289,37 @@ def main() -> None:
                 endpoint, factors, alpha = sensitivity_factors(model, source, settings["flow_steps"],
                     **options, seed=protocol["dlr_seed"], products=products,
                     seed_basis=seed_basis)
+                if args.compare_native_dlr:
+                    native_endpoint, native_factors, native_alpha = sensitivity_factors(
+                        model, source, settings["flow_steps"],
+                        **{key: value for key, value in options.items() if key != "factor_callback"},
+                        seed=protocol["dlr_seed"], products=reference.local, seed_basis=seed_basis)
             estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
             if not warm:
                 fresh_estimate = estimate.clone()
             row = dict(method="subdivided_increment" if args.increment_substeps else "stable_ksl" if args.stable_ksl else "pure_ksl" if args.pure_ksl else "stable_sl" if args.stable_sl else "refined_increment" if args.refined_increment else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
                        factor_arithmetic=args.factor_arithmetic,
-                       terminal_seed=args.terminal_seed, **scores(estimate, exact, factors[2], terminal),
+                       terminal_seed=args.terminal_seed, source_gradient_seed=args.source_gradient_seed,
+                       **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
+            if args.track_gradient_capture:
+                row["gradient_capture_path"] = [dict(step=step, alpha=baseline, rank=prefix[2].shape[1],
+                    retained_squared_gradient_fraction=float((prefix[2].T @ exact).square().sum()/exact.square().sum()))
+                    for step, (baseline, prefix) in prefix_factors.items()]
+            if args.compare_native_dlr:
+                native_estimate = approx_source_gradient(native_factors, terminal, native_alpha).reshape(-1, 1)
+                difference = float((estimate-native_estimate).norm()/native_estimate.norm())
+                native_projection = native_factors[2] @ (native_factors[2].T @ exact)
+                fast_projection = factors[2] @ (factors[2].T @ exact)
+                row["native_dlr_comparison"] = dict(
+                    relative_backend_difference=difference,
+                    difference_over_exact_norm=float((estimate-native_estimate).norm()/exact.norm()),
+                    projected_exact_gradient_difference=float((fast_projection-native_projection).norm()/exact.norm()),
+                    native_gradient_error=float((native_estimate-exact).norm()/exact.norm()),
+                    native_endpoint_relative_error=float((native_endpoint-image.detach()).norm()/image.detach().norm()),
+                    native_alpha=float(native_alpha),
+                    passed=(difference < .01 and torch.equal(native_endpoint, image.detach())
+                            and float(native_alpha) == float(alpha) == 0.))
             report["rows"].append(row)
             if args.suffix_audit:
                 suffix = terminal.reshape(-1, 1)

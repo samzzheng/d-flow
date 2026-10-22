@@ -1,0 +1,125 @@
+{
+  "inputs": "outputs/separated_shapes_117k_noiseless_20261021/production/r200_shapes_ct10/sample_001/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/multistart_increment_200ct1/r200_shapes_ct10/sample_001/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "ddfca05c71d104fbe6babc69ccbe19e1c18c77c0cd64a80891c5551420465a4a",
+  "checkpoint_sha256": "e589cd4ed64e2465c3c2a6db64e14658e4860dc9c1faa1bd503da168d73b46bb",
+  "objective": 0.022129435553857,
+  "image_error": 0.25789889693260193,
+  "exact_gradient_norm": 0.0008915573707781732,
+  "adjoint_relative_error": 7.193723945420061e-07,
+  "rows": [
+    {
+      "method": "increment_ksl",
+      "rank": 32,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.9951082468032837,
+      "subspace_relative_error": 0.9834954142570496,
+      "coefficient_relative_error": 0.15158270299434662,
+      "cosine": 0.12918013334274292,
+      "norm_ratio": 0.21241554617881775,
+      "oracle_scalar": 0.010608221404254436,
+      "oracle_scalar_corrected_error": 0.9506168961524963,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.004973387345671654
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000238418579,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.028121227398514748
+        },
+        {
+          "step": 3,
+          "alpha": 0.40000003576278687,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.02662995271384716
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000003278255463,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.022158699110150337
+        },
+        {
+          "step": 5,
+          "alpha": 2.9802322387695312e-08,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.03273674473166466
+        }
+      ]
+    },
+    {
+      "method": "increment_ksl",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.9895398616790771,
+      "subspace_relative_error": 0.9798110723495483,
+      "coefficient_relative_error": 0.13841906189918518,
+      "cosine": 0.15518522262573242,
+      "norm_ratio": 0.21238406002521515,
+      "oracle_scalar": 0.010236702859401703,
+      "oracle_scalar_corrected_error": 0.9479338526725769,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.012347712181508541
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000238418579,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.034902289509773254
+        },
+        {
+          "step": 3,
+          "alpha": 0.40000003576278687,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.03624913468956947
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000003278255463,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.030089596286416054
+        },
+        {
+          "step": 5,
+          "alpha": 2.9802322387695312e-08,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.03997117653489113
+        }
+      ]
+    }
+  ],
+  "increment_substeps": 0,
+  "factor_integrator_sha256": "fc988d65ce74ec8a24edf131f7953b25793251a99a205434cdcc72856253fcbd",
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}

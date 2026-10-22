@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 06:40 local time. The bounded factor-substep and optimizer recovery-scale controls have completed without a general accuracy rescue. Verified derivative corrections remain in place; experimental projection/integration changes are not production defaults. The broad accuracy objective remains unresolved.
+Snapshot: 2026-10-22, 07:05 local time. Native-backend checks at failed sources pass. A single frozen exact-gradient sketch seed improves one MRI reconstruction12.306% to9.040%; the random control and CT case do not improve, and a second refresh gives no further gain. A terminal subspace/curvature audit identifies useful excluded directions and stiff retained directions. The accuracy objective remains unresolved.
 
 ## Verified findings
 
@@ -132,3 +132,9 @@ Keep the verified native-normalization/derivative corrections. Retain adaptive r
 Four KSL substeps for each frozen Euler increment preserve the five-step generator and pass an independent dense projected-ODE convergence check. CT rank32 fixed-source gradient error improves20.188% to12.771%, but rank128 changes5.177% to6.191%; MRI rank128 remains98.246%. Extra factor resolution is not a general gradient correction and no reconstruction sweep is launched for it.
 
 At the completed200CT1 increment source, rank128 excludes97.981% of the exact gradient norm. The cached fallback gradient is tiny, yet normalized line probes find an accepted displacement0.125 versus the optimizer's0.00018935. A paired bounded scale-recovery control preserves the saved optimizer state and original total budget. It lowers CT measurement loss4.90%, but image error changes25.790% to25.896%; MRI2 stays3.179%. This establishes a possible premature-search termination without establishing an accuracy fix. All13 CPU tests and completed saved-array/history/budget checks pass. [Full evidence](full_map_audit/substeps_recovery_report.md).
+
+## Native failed-source validation and informed sketch seed, 07:05
+
+Accelerated versus native-autodiff DLR factor evolutions agree to within0.185% of the DLR gradient norm (0.0225% of the exact-gradient norm) at failed200CT1 and250MRI1 sources. Both retain roughly99% gradient approximation error. An oracle source-gradient column improves MRI rank32 cosine-0.0148 to0.6912 without changing KSL, rank or sketch width. One frozen exact-gradient seed then improves the MRI reconstruction12.306% to9.040%; unchanged/random controls stay12.306%. CT remains25.79%. Refreshing the seed once more does not improve MRI. All runs stay within the original1000-attempt budget; the one/two extra exact-gradient evaluations are recorded.
+
+At the refreshed MRI endpoint, the exact gradient component outside V gives a useful loss and image decrease at the full2.5 displacement. The saved DLR direction finds no accepted halved step. Its Gauss-Newton curvature is233.99 versus2.30 for the excluded direction; the local quadratic model predicts only8.17e-7 possible decrease along the saved direction, comparable to tiny-step FP32 evaluation variation. This identifies stiff retained directions plus useful excluded directions, not just a rank count or coefficient error. [Full paired evidence and verification](full_map_audit/backend_seed_report.md).

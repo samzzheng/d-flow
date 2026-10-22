@@ -8,6 +8,8 @@ import torch
 from experiments.separated_shapes_117k.gradient_audit import DiscreteProducts
 from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step, pure_ksl_step, subdivided_increment_step
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS, ScaleRecoveryLBFGS
+from experiments.separated_shapes_117k.scale_recovery import FrozenSeedEvaluator
+from experiments.ct_mri_sweep import run
 from sampler.ode_samplers import euler_flow
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from experiments.separated_shapes_117k.exact_suffix import suffix_gradient, task_terminal_factors, task_gradient
@@ -228,6 +230,36 @@ class DiscreteProductTests(unittest.TestCase):
                                        atol=1e-11, rtol=1e-11)
             if rank == dimension:
                 torch.testing.assert_close(reconstructed, Y + h * forcing, atol=1e-11, rtol=1e-11)
+
+    def test_frozen_seed_does_not_accumulate_or_override_basis_reuse(self) -> None:
+        seed = torch.tensor([[1.], [0.], [0.]])
+        next_basis = torch.eye(3)[:, 1:]
+        for reuse in (False, True):
+            evaluator = object.__new__(FrozenSeedEvaluator)
+            evaluator.settings = {"dlr_reuse_previous_v": reuse}
+            evaluator.previous_v = next_basis.clone() if reuse else None
+            evaluator.seed_direction = seed
+            seen = []
+
+            def base_gradient(current: run.Evaluator, source: torch.Tensor, method: str) -> torch.Tensor:
+                seen.append(current.previous_v.clone())
+                if current.settings["dlr_reuse_previous_v"]:
+                    current.previous_v = next_basis.clone()
+                return torch.zeros_like(source)
+
+            with patch.object(run.Evaluator, "gradient", base_gradient):
+                for _ in range(3):
+                    evaluator.gradient(torch.ones(3), "DLR D-Flow")
+            expected = torch.cat([seed, next_basis], dim=1) if reuse else seed
+            for actual in seen:
+                torch.testing.assert_close(actual, expected)
+            if not reuse:
+                self.assertIsNone(evaluator.previous_v)
+            previous = evaluator.previous_v
+            with patch.object(run.Evaluator, "gradient", side_effect=FloatingPointError("test")):
+                with self.assertRaises(FloatingPointError):
+                    evaluator.gradient(torch.ones(3), "DLR D-Flow")
+            self.assertIs(evaluator.previous_v, previous)
 
     def test_scaled_recovery_escapes_an_unrepresentable_fallback_step(self) -> None:
         from experiments.ct_mri_sweep.optimizer import SweepLBFGS

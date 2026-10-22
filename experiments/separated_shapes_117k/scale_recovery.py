@@ -61,6 +61,9 @@ def main() -> None:
     original = torch.load(args.source, map_location="cpu", weights_only=True)
     inputs = torch.load(args.inputs or args.source.parent / "pool.pt", map_location=device, weights_only=True)
     protocol = original["protocol"]
+    parent_recovery = protocol.get("scale_recovery", {})
+    if parent_recovery.get("recovery") == "frozen_source_gradient_seed" and not args.source_gradient_seed:
+        parser.error("A seeded parent needs the seed-recovery control to preserve its estimator")
     if original["method"] != "DLR D-Flow" or original["status"] not in run.TERMINAL or not original["optimizer"]["consecutive_failures"]:
         parser.error("Recovery needs a completed failed-search source-pool control")
     settings = deepcopy(protocol.get("continuation_settings", protocol.get("settings")))
@@ -122,9 +125,17 @@ def main() -> None:
             random = torch.randn(exact.shape, generator=torch.Generator().manual_seed(protocol["dlr_seed"]+80000000)).to(device)
             random *= exact.norm()/random.norm()
             seeds = {"gradient_seed": exact, "random_seed": random}
+            if parent_recovery.get("recovery") == "frozen_source_gradient_seed":
+                parent_seeds = torch.load(args.source.parents[1] / "seeds.pt", map_location=device, weights_only=True)
+                parent_variant = parent_recovery["variant"]
+                if parent_variant in parent_seeds["directions"]:
+                    previous_seed = parent_seeds["directions"][parent_variant]
+                    assert hashlib.sha256(previous_seed.cpu().numpy().tobytes()).hexdigest() == parent_recovery["seed_sha256"][parent_variant]
+                    seeds["unchanged"] = previous_seed
             run.save_tensor(seed_path, dict(source_sha256=evidence["source_sha256"], directions=seeds))
             del variable, image, loss
-        evidence.update(recovery="frozen_source_gradient_seed", exact_gradient_evaluations=1,
+        evidence.update(recovery="frozen_source_gradient_seed",
+            exact_gradient_evaluations=parent_recovery.get("exact_gradient_evaluations", 0)+1,
             seed_sha256={name: hashlib.sha256(value.cpu().numpy().tobytes()).hexdigest() for name, value in seeds.items()},
             note="One exact source gradient at the parent, frozen thereafter; matched random seed; same cold optimizer resets and original attempt budget")
     run.write_json(args.out / "config.json", evidence)

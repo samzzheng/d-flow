@@ -1,0 +1,41 @@
+{
+  "inputs": "outputs/separated_shapes_117k_noiseless_20261021/production/r200_shapes_ct10/sample_001/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/multistart_increment_200ct1/r200_shapes_ct10/sample_001/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "ddfca05c71d104fbe6babc69ccbe19e1c18c77c0cd64a80891c5551420465a4a",
+  "checkpoint_sha256": "e589cd4ed64e2465c3c2a6db64e14658e4860dc9c1faa1bd503da168d73b46bb",
+  "objective": 0.022129435553857,
+  "image_error": 0.25789889693260193,
+  "exact_gradient_norm": 0.0008915572543628514,
+  "adjoint_relative_error": 8.432281219938886e-07,
+  "rows": [
+    {
+      "method": "increment_ksl",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "relative_error": 0.9895403385162354,
+      "subspace_relative_error": 0.9798105359077454,
+      "coefficient_relative_error": 0.138425812125206,
+      "cosine": 0.1551833152770996,
+      "norm_ratio": 0.2123837172985077,
+      "oracle_scalar": 0.01023668423295021,
+      "oracle_scalar_corrected_error": 0.9479344487190247,
+      "endpoint_relative_error": 0.0,
+      "native_dlr_comparison": {
+        "relative_backend_difference": 0.00016728747868910432,
+        "difference_over_exact_norm": 3.552955968189053e-05,
+        "projected_exact_gradient_difference": 4.9256716010859236e-05,
+        "native_gradient_error": 0.9895398020744324,
+        "native_endpoint_relative_error": 0.0,
+        "native_alpha": 0.0,
+        "passed": true
+      }
+    }
+  ],
+  "increment_substeps": 0,
+  "factor_integrator_sha256": "fc988d65ce74ec8a24edf131f7953b25793251a99a205434cdcc72856253fcbd",
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}
