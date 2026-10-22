@@ -18,6 +18,7 @@ from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.queue import source_hashes
 from experiments.separated_shapes_117k.exact_suffix import TaskTerminalEvaluator
 from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, refined_increment_step
+from experiments.separated_shapes_117k.diagnose import RankRecordingEvaluator
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 
 
@@ -29,6 +30,8 @@ def main() -> None:
     parser.add_argument("--cases", nargs="+", required=True)
     parser.add_argument("--methods", nargs="+", choices=run.METHODS, default=list(run.METHODS))
     parser.add_argument("--rank", type=int, default=128)
+    parser.add_argument("--adaptive-min", type=int,
+        help="Use the existing adaptive update between this floor and --rank")
     parser.add_argument("--probe-updates", type=int, default=50)
     parser.add_argument("--budget", type=int, default=1000)
     parser.add_argument("--no-reuse-v", action="store_true")
@@ -41,6 +44,9 @@ def main() -> None:
     args = parser.parse_args()
     if not 0 < 4 * args.probe_updates < args.budget:
         parser.error("Four positive probe budgets must leave a continuation budget")
+    if args.adaptive_min is not None:
+        if not 1 <= args.adaptive_min <= args.rank or args.goal_steps or args.factor_integrator != "original":
+            parser.error("Adaptive source selection requires valid bounds and the existing adaptive factor update")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
@@ -53,6 +59,9 @@ def main() -> None:
     if not 0 <= args.goal_steps < settings["flow_steps"]:
         parser.error("Goal projections must leave at least one ordinary DLR prefix step")
     settings["dlr"]["rank"] = args.rank
+    if args.adaptive_min is not None:
+        settings["dlr"].update(adaptive_rank=True, rank_min=args.adaptive_min,
+                               rank_max=args.rank, rank_tol=1e-3)
     if args.no_reuse_v:
         settings["dlr_reuse_previous_v"] = False
     settings["stopping"]["max_updates"] = args.probe_updates
@@ -137,8 +146,10 @@ def main() -> None:
             max_step_jvp_columns=6, max_step_vjp_columns=4)
         results = {}
         summaries = {}
-        evaluator_type = TaskTerminalEvaluator if args.goal_steps else run.Evaluator
         for method in args.methods:
+            evaluator_type = (TaskTerminalEvaluator if args.goal_steps else
+                              RankRecordingEvaluator if args.adaptive_min is not None and method == "DLR D-Flow"
+                              else run.Evaluator)
             stem = method.lower().replace("-", "_").replace(" ", "_")
             probes = {}
             for name, source in pool["sources"].items():
@@ -149,6 +160,8 @@ def main() -> None:
                                           protocol["dlr_seed"], products)
                 if isinstance(evaluator, TaskTerminalEvaluator):
                     evaluator.goal_steps = args.goal_steps
+                if isinstance(evaluator, RankRecordingEvaluator):
+                    evaluator.rank_history_path = directory / name / f"{stem}_rank_history.jsonl"
                 probes[name] = run.solve(evaluator, method, source, pool["truth"], pool["clean"],
                     directory / name / f"{stem}.pt", paired, [False])
             winner = min(probes, key=lambda name: probes[name]["history"][-1]["phi"])
@@ -167,6 +180,8 @@ def main() -> None:
                                       protocol["dlr_seed"], products)
             if isinstance(evaluator, TaskTerminalEvaluator):
                 evaluator.goal_steps = args.goal_steps
+            if isinstance(evaluator, RankRecordingEvaluator):
+                evaluator.rank_history_path = directory / f"{stem}_rank_history.jsonl"
             final = run.solve(evaluator, method, pool["sources"][winner], pool["truth"], pool["clean"],
                               final_path, paired, [False])
             total = spent + final["history"][-1]["step"] - selected_steps
