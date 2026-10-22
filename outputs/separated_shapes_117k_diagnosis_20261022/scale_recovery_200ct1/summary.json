@@ -1,0 +1,36 @@
+{
+  "unchanged": {
+    "status": "stalled",
+    "final": {
+      "step": 107,
+      "phi": 0.022129435553857,
+      "source_step_norm": 0.0,
+      "line_search_trials": 23,
+      "elapsed_seconds": 178.83708967175335,
+      "image_relative_l2": 0.25789889693260193,
+      "measurement_relative_l2_clean": 0.13221333920955658,
+      "measurement_relative_l2_noisy": 0.13221333920955658,
+      "residual_over_noise": null
+    },
+    "total_attempts": 246,
+    "additional_attempts": 1,
+    "scaled_recoveries": 0
+  },
+  "scaled": {
+    "status": "stalled",
+    "final": {
+      "step": 118,
+      "phi": 0.021045206080558078,
+      "source_step_norm": 0.0,
+      "line_search_trials": 30,
+      "elapsed_seconds": 188.2807647958398,
+      "image_relative_l2": 0.2589629888534546,
+      "measurement_relative_l2_clean": 0.12893378734588623,
+      "measurement_relative_l2_noisy": 0.12893378734588623,
+      "residual_over_noise": null
+    },
+    "total_attempts": 257,
+    "additional_attempts": 12,
+    "scaled_recoveries": 3
+  }
+}

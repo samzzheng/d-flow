@@ -128,3 +128,37 @@ def refined_increment_step(
         L1 = V @ (S.T @ (U.T @ (U1 + step_size * ATU1))) + step_size * (alpha * ATU1 + U1)
         V1, R_L = torch.linalg.qr(L1)
     return (U1, R_L.T, V1), probe_sensitivities, -1.0
+
+
+def subdivided_increment_step(
+    A: Callable[[torch.Tensor], torch.Tensor],
+    AT: Callable[[torch.Tensor], torch.Tensor],
+    factors: Factors,
+    probe_sensitivities: torch.Tensor,
+    probes: torch.Tensor,
+    step_size: float,
+    alpha: float,
+    *,
+    substeps: int = 4,
+) -> tuple[Factors, torch.Tensor, float]:
+    """Resolve the projected frozen-increment path without changing the Euler map.
+
+    F0=A(alpha I+Y0)+I stays fixed across all substeps. Each KSL update
+    integrates P_Y F0 over h/substeps; recomputing F at the updated factors
+    would instead change the full-rank Euler sensitivity target. The K/S
+    cancellation gives L=(Y_current+delta F0).T U_next. This needs one
+    rank-column JVP/VJP block per substep, with no additional basis columns.
+    """
+    U0, S0, V0 = factors
+    U, S, V = factors
+    US0 = U0 @ S0
+    delta = step_size / substeps
+    for _ in range(substeps):
+        FV = A(alpha * V + US0 @ (V0.T @ V)) + V
+        U1, _ = torch.linalg.qr(U @ S + delta * FV)
+        ATU1 = AT(U1)
+        FTU1 = V0 @ (US0.T @ ATU1) + alpha * ATU1 + U1
+        L1 = V @ (S.T @ (U.T @ U1)) + delta * FTU1
+        V, R_L = torch.linalg.qr(L1)
+        U, S = U1, R_L.T
+    return (U, S, V), probe_sensitivities, -1.0

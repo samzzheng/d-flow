@@ -6,8 +6,8 @@ from types import SimpleNamespace
 import torch
 
 from experiments.separated_shapes_117k.gradient_audit import DiscreteProducts
-from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step, pure_ksl_step
-from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step, pure_ksl_step, subdivided_increment_step
+from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS, ScaleRecoveryLBFGS
 from sampler.ode_samplers import euler_flow
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from experiments.separated_shapes_117k.exact_suffix import suffix_gradient, task_terminal_factors, task_gradient
@@ -165,6 +165,48 @@ class DiscreteProductTests(unittest.TestCase):
             if rank == dimension:
                 torch.testing.assert_close(left @ core @ right.T, target, atol=1e-11, rtol=1e-11)
 
+    def test_subdivided_increment_converges_to_dense_projected_ode(self) -> None:
+        torch.manual_seed(71)
+        dimension, h, alpha = 7, .1, .6
+        matrix = .2 * torch.randn(dimension, dimension, dtype=torch.float64)
+        identity = torch.eye(dimension, dtype=matrix.dtype)
+        for rank in (2, dimension):
+            U, _ = torch.linalg.qr(torch.randn(dimension, rank, dtype=matrix.dtype))
+            V, _ = torch.linalg.qr(torch.randn(dimension, rank, dtype=matrix.dtype))
+            S = torch.diag(torch.linspace(1., 2., rank, dtype=matrix.dtype))
+            Y = U @ S @ V.T
+            forcing = matrix @ (alpha * identity + Y) + identity
+
+            def field(value: torch.Tensor) -> torch.Tensor:
+                left, _, right_t = torch.linalg.svd(value, full_matrices=False)
+                left, right = left[:, :rank], right_t[:rank].T
+                return forcing @ right @ right.T + left @ left.T @ forcing - left @ left.T @ forcing @ right @ right.T
+
+            reference = Y.clone()
+            delta = h / 256
+            for _ in range(256):
+                k1 = field(reference)
+                k2 = field(reference + delta*k1/2)
+                k3 = field(reference + delta*k2/2)
+                k4 = field(reference + delta*k3)
+                reference = reference + delta*(k1 + 2*k2 + 2*k3 + k4)/6
+            errors = []
+            for substeps in (1, 2, 4, 8):
+                actual, _, _ = subdivided_increment_step(lambda value: matrix @ value,
+                    lambda value: matrix.T @ value, (U, S, V), U[:, :0], U[:, :0], h, alpha,
+                    substeps=substeps)
+                reconstructed = actual[0] @ actual[1] @ actual[2].T
+                errors.append(float((reconstructed-reference).norm()))
+                if substeps == 1:
+                    ordinary, _, _ = increment_ksl_step(lambda value: matrix @ value,
+                        lambda value: matrix.T @ value, (U, S, V), U[:, :0], U[:, :0], h, alpha)
+                    torch.testing.assert_close(reconstructed, ordinary[0] @ ordinary[1] @ ordinary[2].T,
+                                               atol=1e-11, rtol=1e-11)
+                if rank == dimension:
+                    torch.testing.assert_close(reconstructed, Y+h*forcing, atol=1e-11, rtol=1e-11)
+            if rank < dimension:
+                self.assertTrue(all(after < .6*before for before, after in zip(errors, errors[1:])))
+
     def test_increment_ksl_matches_dense_frozen_field_and_full_rank_euler(self) -> None:
         torch.manual_seed(31)
         dimension, h, alpha = 12, .2, .6
@@ -186,6 +228,34 @@ class DiscreteProductTests(unittest.TestCase):
                                        atol=1e-11, rtol=1e-11)
             if rank == dimension:
                 torch.testing.assert_close(reconstructed, Y + h * forcing, atol=1e-11, rtol=1e-11)
+
+    def test_scaled_recovery_escapes_an_unrepresentable_fallback_step(self) -> None:
+        from experiments.ct_mri_sweep.optimizer import SweepLBFGS
+        for kind in (SweepLBFGS, ScaleRecoveryLBFGS):
+            source = torch.tensor([1.], requires_grad=True)
+            objective = lambda value: float(1e-8 * value.square().sum())
+            optimizer = kind(source, objective, lr=1., max_ls=30, step_cap=.1, project=False)
+
+            def closure() -> torch.Tensor:
+                loss = 1e-8 * source.square().sum()
+                source.grad, = torch.autograd.grad(loss, source)
+                return loss
+
+            before = objective(source.detach())
+            optimizer.step(closure)
+            self.assertEqual(float(source), 1.)
+            self.assertEqual(optimizer.consecutive_failures, 1)
+            optimizer.step(closure)
+            self.assertEqual(optimizer.step_attempts, 2)
+            if kind is ScaleRecoveryLBFGS:
+                self.assertLess(objective(source.detach()), before)
+                self.assertAlmostEqual(float(source), .9, places=6)
+                self.assertLessEqual(abs(float(source)-1.), .100001)
+                self.assertEqual(optimizer.scaled_recoveries, 1)
+                self.assertEqual(optimizer.consecutive_failures, 0)
+            else:
+                self.assertEqual(float(source), 1.)
+                self.assertEqual(optimizer.consecutive_failures, 2)
 
     def test_history_recovery_preserves_armijo_and_changes_rejected_direction(self) -> None:
         source = torch.tensor([1., 0.], dtype=torch.float64, requires_grad=True)

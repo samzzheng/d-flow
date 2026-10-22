@@ -1,0 +1,34 @@
+[
+  {
+    "case": "scale_recovery_200ct1",
+    "variant": "unchanged",
+    "metric_checks": true,
+    "preserved_history": true,
+    "budget_check": true,
+    "objective_nonincrease": true
+  },
+  {
+    "case": "scale_recovery_200ct1",
+    "variant": "scaled",
+    "metric_checks": true,
+    "preserved_history": true,
+    "budget_check": true,
+    "objective_nonincrease": true
+  },
+  {
+    "case": "scale_recovery_mri2",
+    "variant": "unchanged",
+    "metric_checks": true,
+    "preserved_history": true,
+    "budget_check": true,
+    "objective_nonincrease": true
+  },
+  {
+    "case": "scale_recovery_mri2",
+    "variant": "scaled",
+    "metric_checks": true,
+    "preserved_history": true,
+    "budget_check": true,
+    "objective_nonincrease": true
+  }
+]

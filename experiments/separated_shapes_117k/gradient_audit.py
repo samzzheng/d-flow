@@ -19,7 +19,7 @@ from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from sampler.ode_samplers import euler_flow
-from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step, pure_ksl_step
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step, pure_ksl_step, subdivided_increment_step
 from experiments.separated_shapes_117k.exact_suffix import task_terminal_factors
 
 
@@ -78,6 +78,8 @@ def main() -> None:
     integrator.add_argument("--stable-sl", action="store_true")
     integrator.add_argument("--increment-ksl", action="store_true")
     integrator.add_argument("--refined-increment", action="store_true")
+    integrator.add_argument("--increment-substeps", type=int, default=0,
+        help="Subdivide the projected frozen-increment evolution; preserve the five-step Euler map")
     integrator.add_argument("--pure-ksl", action="store_true",
         help="Retain the notes' L-step core instead of projecting the Euler target")
     integrator.add_argument("--stable-ksl", action="store_true",
@@ -98,13 +100,15 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.increment_substeps < 0:
+        parser.error("Increment substeps must be nonnegative")
     if args.reference_oversampling < 1:
         parser.error("The reference needs an extra singular value to assess the rank cutoff")
     if args.saved_direction_audit and (args.source is None or args.double):
         parser.error("Saved-direction audit requires a saved FP32 source")
-    if args.factor_arithmetic != "specialized" and (args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl):
+    if args.factor_arithmetic != "specialized" and (args.increment_substeps or args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl):
         parser.error("Factor arithmetic controls require the original integrator")
-    if args.basis_refreshes < 0 or (args.basis_refreshes and (args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl or args.terminal_seed)):
+    if args.basis_refreshes < 0 or (args.basis_refreshes and (args.increment_substeps or args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl or args.terminal_seed)):
         parser.error("Basis refresh diagnostics require a nonnegative count and the original integrator")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
@@ -164,6 +168,8 @@ def main() -> None:
         checkpoint_sha256=protocol["checkpoint_sha256"], objective=float(loss.detach()),
         image_error=float((image.detach()-inputs["truth"]).norm()/inputs["truth"].norm()),
         exact_gradient_norm=float(exact.norm()), adjoint_relative_error=error, rows=[],
+        increment_substeps=args.increment_substeps,
+        factor_integrator_sha256=hashlib.sha256(Path(subdivided_increment_step.__code__.co_filename).read_bytes()).hexdigest(),
         note="Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.")
     if args.repeat_gradients:
         repeats = []
@@ -231,6 +237,7 @@ def main() -> None:
                 seed_basis = (terminal.reshape(-1, 1) if seed_basis is None else
                               torch.cat([terminal.reshape(-1, 1), seed_basis], dim=1))
             with patch.object(enriched, "_zero_enrichment_step",
+                              partial(subdivided_increment_step, substeps=args.increment_substeps) if args.increment_substeps else
                               partial(stable_sl_step, recompress=False) if args.stable_ksl else
                               pure_ksl_step if args.pure_ksl else stable_sl_step if args.stable_sl else
                               refined_increment_step if args.refined_increment else
@@ -241,7 +248,7 @@ def main() -> None:
             estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
             if not warm:
                 fresh_estimate = estimate.clone()
-            row = dict(method="stable_ksl" if args.stable_ksl else "pure_ksl" if args.pure_ksl else "stable_sl" if args.stable_sl else "refined_increment" if args.refined_increment else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
+            row = dict(method="subdivided_increment" if args.increment_substeps else "stable_ksl" if args.stable_ksl else "pure_ksl" if args.pure_ksl else "stable_sl" if args.stable_sl else "refined_increment" if args.refined_increment else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
                        factor_arithmetic=args.factor_arithmetic,
                        terminal_seed=args.terminal_seed, **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))

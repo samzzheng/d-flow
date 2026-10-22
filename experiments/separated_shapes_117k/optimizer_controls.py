@@ -25,3 +25,22 @@ class HistoryFallbackLBFGS(SweepLBFGS):
             # Total failed searches and step attempts still count every retry.
             self.consecutive_failures = 0
         return value
+
+
+class ScaleRecoveryLBFGS(SweepLBFGS):
+    """After a rejected search, test the cached fallback gradient at the cap.
+
+    Ordinary attempts keep the established first-attempt scaling. Recovery
+    changes only the starting length of the existing history-free direction;
+    geometric Armijo, strict decrease, the displacement cap and failure/attempt
+    accounting remain in the parent optimizer. No gradient refresh is forced.
+    """
+
+    def _direction(self) -> torch.Tensor:
+        direction = super()._direction()
+        if self.consecutive_failures and not self.S and self.step_cap > 0 and self.lr > 0:
+            norm = float(direction.norm())
+            if 0 < norm < float("inf"):
+                direction = direction * (self.step_cap / (self.lr * norm))
+                self.scaled_recoveries = getattr(self, "scaled_recoveries", 0) + 1
+        return direction

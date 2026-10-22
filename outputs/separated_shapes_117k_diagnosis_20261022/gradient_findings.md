@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 06:32 local time. Adaptive rank and all three shared-budget goal-projection comparisons are complete and mixed. All three frozen-increment/source-selection controls are complete: both CT image errors improve, while MRI remains essentially unchanged. The rank32 full-map SVD reference passes numerical checks but still loses most of the gradient at the failed MRI1 source; rank128 remains unresolved. No general accuracy correction has been established.
+Snapshot: 2026-10-22, 06:40 local time. The bounded factor-substep and optimizer recovery-scale controls have completed without a general accuracy rescue. Verified derivative corrections remain in place; experimental projection/integration changes are not production defaults. The broad accuracy objective remains unresolved.
 
 ## Verified findings
 
@@ -126,3 +126,9 @@ With identical candidate pools and a shared1000-attempt budget, frozen-increment
 The completed adaptive pilot is not evidence for a universal rank-adaptive default. It improves250MRI4 from94.224% (fast rank32) to1.743%, but fixed128 in the same adaptive implementation achieves1.597%. On250CT7 adaptation worsens46.905% to97.082%. The adaptive terminal rank falls to4 in both failedCT7 and failedMRI2, while successfulMRI4 retains127. This is consistent with discarding useful directions, but the rank histories alone do not establish causation. The independent fixed-source SVD result gives stronger evidence that a small singular value can still carry much of the current reconstruction gradient.
 
 Keep the verified native-normalization/derivative corrections. Retain adaptive rank, frozen increment and goal-oriented projection as explicitly named experiments; do not silently change the production sweep. The outstanding accuracy question is whether useful residual directions can be retained reliably across cases, not simply whether the core admits a smaller numerical rank.
+
+## Factor resolution and bounded optimizer recovery, 06:40
+
+Four KSL substeps for each frozen Euler increment preserve the five-step generator and pass an independent dense projected-ODE convergence check. CT rank32 fixed-source gradient error improves20.188% to12.771%, but rank128 changes5.177% to6.191%; MRI rank128 remains98.246%. Extra factor resolution is not a general gradient correction and no reconstruction sweep is launched for it.
+
+At the completed200CT1 increment source, rank128 excludes97.981% of the exact gradient norm. The cached fallback gradient is tiny, yet normalized line probes find an accepted displacement0.125 versus the optimizer's0.00018935. A paired bounded scale-recovery control preserves the saved optimizer state and original total budget. It lowers CT measurement loss4.90%, but image error changes25.790% to25.896%; MRI2 stays3.179%. This establishes a possible premature-search termination without establishing an accuracy fix. All13 CPU tests and completed saved-array/history/budget checks pass. [Full evidence](full_map_audit/substeps_recovery_report.md).
