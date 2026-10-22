@@ -24,42 +24,42 @@
     "case": "r250_shapes_ct10/sample_007",
     "variant": "retain_initial256",
     "status": "running",
-    "attempt": 50,
-    "image_error": 98.08352589607239,
-    "residual": 74.72637295722961,
+    "attempt": 110,
+    "image_error": 93.64013075828552,
+    "residual": 69.3081259727478,
     "first_terminal_rank": 32,
-    "last_terminal_rank": 56,
+    "last_terminal_rank": 256,
     "last_rank_path": [
       256,
       256,
       256,
-      56,
-      56
+      256,
+      256
     ],
-    "last_rank_objective": 7.339462947288557,
+    "last_rank_objective": 6.254090049529108,
     "initial_rank_below_cap_evaluations": 0,
-    "rank_evaluations": 56,
-    "terminal_at_cap_fraction": 0.0
+    "rank_evaluations": 119,
+    "terminal_at_cap_fraction": 0.4369747899159664
   },
   {
     "case": "r250_shapes_mri4/sample_004",
     "variant": "unrestricted256",
     "status": "running",
-    "attempt": 900,
-    "image_error": 1.493398193269968,
-    "residual": 0.7875577546656132,
+    "attempt": 960,
+    "image_error": 1.4889644458889961,
+    "residual": 0.7759822532534599,
     "first_terminal_rank": 82,
-    "last_terminal_rank": 253,
+    "last_terminal_rank": 254,
     "last_rank_path": [
       256,
-      255,
-      255,
-      255,
-      253
+      256,
+      256,
+      256,
+      254
     ],
-    "last_rank_objective": 0.09629510826545604,
+    "last_rank_objective": 0.09387686926512023,
     "initial_rank_below_cap_evaluations": 0,
-    "rank_evaluations": 886,
+    "rank_evaluations": 947,
     "terminal_at_cap_fraction": 0.0
   }
 ]

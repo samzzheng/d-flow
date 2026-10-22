@@ -1,0 +1,45 @@
+{
+  "case": "r250_shapes_ct10/sample_007",
+  "checks": [
+    "bitwise cached truths/observations/initial sources",
+    "checkpoint/operator/seeds",
+    "optimizer/stopping/flow steps/source projection/V reuse"
+  ],
+  "old": {
+    "path": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_floor32_ct7/adaptive/r250_shapes_ct10/sample_007",
+    "rank_max": 128,
+    "backend": "native_primal",
+    "graph_strategy": "full-step product graphs",
+    "status": "stalled",
+    "final": {
+      "step": 829,
+      "phi": 0.0003698575289263426,
+      "source_step_norm": 0.0,
+      "line_search_trials": 15,
+      "elapsed_seconds": 1310.9947872268967,
+      "image_relative_l2": 0.034283921122550964,
+      "measurement_relative_l2_clean": 0.005284501705318689,
+      "measurement_relative_l2_noisy": 0.005284501705318689,
+      "residual_over_noise": null
+    }
+  },
+  "new": {
+    "path": "outputs/separated_shapes_117k_diagnosis_20261022/progressive_rank/r250_shapes_ct10/sample_007/unrestricted256",
+    "rank_max": 256,
+    "backend": "native statistics, primal and derivative actions",
+    "graph_strategy": "bounded separate product graphs; explicit checkpoint recovery",
+    "status": "stalled",
+    "final": {
+      "step": 836,
+      "phi": 0.0011436233963794,
+      "source_step_norm": 0.0,
+      "line_search_trials": 23,
+      "elapsed_seconds": 4034.58872872917,
+      "image_relative_l2": 0.05194084718823433,
+      "measurement_relative_l2_clean": 0.00929240882396698,
+      "measurement_relative_l2_noisy": 0.00929240882396698,
+      "residual_over_noise": null
+    }
+  },
+  "interpretation": "Historical paired-problem reference, not a strict rank-cap-only comparison. Backend execution and floating-point trajectories also differ; do not attribute 3.428% versus 5.194% solely to rank."
+}
