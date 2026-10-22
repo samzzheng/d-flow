@@ -71,6 +71,8 @@ def main() -> None:
     integrator = parser.add_mutually_exclusive_group()
     integrator.add_argument("--stable-sl", action="store_true")
     integrator.add_argument("--increment-ksl", action="store_true")
+    parser.add_argument("--factor-arithmetic", choices=("specialized", "eager_specialized", "direct", "canonical"),
+        default="specialized", help="Compare equivalent fixed-rank arithmetic without changing the model or rank")
     parser.add_argument("--skip-reference", action="store_true")
     parser.add_argument("--terminal-seed", action="store_true")
     parser.add_argument("--line-search-audit", action="store_true")
@@ -79,6 +81,8 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.factor_arithmetic != "specialized" and (args.stable_sl or args.increment_ksl):
+        parser.error("Factor arithmetic controls require the original integrator")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
@@ -164,12 +168,15 @@ def main() -> None:
     tangent_unet.GN_STATS_MODE = "native"
     tangent_unet.GN_ACTION_BACKEND = "triton"
     tangent_unet.GN_PRIMAL_BACKEND = "full"
-    enriched.SPECIALIZE_ZERO_ENRICHMENT = True
-    products = GraphedAProducts(model, source, share_linearization=True, full_step_graphs=not args.stable_sl,
+    enriched.SPECIALIZE_ZERO_ENRICHMENT = args.factor_arithmetic in ("specialized", "eager_specialized")
+    products = GraphedAProducts(model, source, share_linearization=True,
+        full_step_graphs=not args.stable_sl and args.factor_arithmetic == "specialized",
         max_jvp_columns=20, max_vjp_columns=16, max_step_jvp_columns=6, max_step_vjp_columns=4)
     for rank in args.ranks:
         for warm in (False, True) if saved is not None and saved.get("previous_v") is not None else (False,):
             options = {**settings["dlr"], "rank": rank}
+            if args.factor_arithmetic == "canonical":
+                options.update(adaptive_rank=True, rank_min=rank, rank_max=rank)
             seed_basis = saved["previous_v"] if warm else None
             if args.terminal_seed:
                 seed_basis = (terminal.reshape(-1, 1) if seed_basis is None else
@@ -182,6 +189,7 @@ def main() -> None:
                     seed_basis=seed_basis)
             estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
             row = dict(method="stable_sl" if args.stable_sl else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
+                       factor_arithmetic=args.factor_arithmetic,
                        terminal_seed=args.terminal_seed, **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
             report["rows"].append(row)

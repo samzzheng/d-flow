@@ -81,6 +81,8 @@ def main() -> None:
     parser.add_argument("--restart-source", type=Path,
         help="One-case cold-optimizer continuation from a saved source, with its previous right basis")
     parser.add_argument("--history-fallback", action="store_true")
+    parser.add_argument("--no-reuse-v", action="store_true",
+        help="Rebuild each initialization sketch without the previous right basis")
     parser.add_argument("--rank-min", type=int, default=4)
     parser.add_argument("--rank-max", type=int, default=128)
     parser.add_argument("--rank-tol", type=float, default=1e-3)
@@ -101,6 +103,8 @@ def main() -> None:
     settings = manifest["settings"]
     if args.rank is not None:
         settings["dlr"]["rank"] = args.rank
+    if args.no_reuse_v:
+        settings["dlr_reuse_previous_v"] = False
     args.out.mkdir(parents=True, exist_ok=True)
     evidence = dict(baseline=str(args.baseline.resolve()), cases=args.cases,
                     variants=args.variants, backend=args.backend, rank=settings["dlr"]["rank"],
@@ -110,6 +114,7 @@ def main() -> None:
     if args.restart_source:
         evidence["restart_source"] = str(args.restart_source)
     evidence["history_fallback"] = args.history_fallback
+    evidence["reuse_previous_v"] = settings.get("dlr_reuse_previous_v", False)
     if args.source_cache_variant:
         if not args.source_cache_roots:
             parser.error("--source-cache-variant requires --source-cache-roots")

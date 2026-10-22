@@ -1,0 +1,45 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_pilot/rank128/r250_shapes_mri4/sample_004/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_pilot/rank128/r250_shapes_mri4/sample_004/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "aee350679ade76ee0255d721df5a7462462ad648b8b87de36064431d75406959",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "objective": 141.18854614619258,
+  "image_error": 0.3123510181903839,
+  "exact_gradient_norm": 0.08070353418588638,
+  "adjoint_relative_error": 4.903572062175954e-06,
+  "rows": [
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "relative_error": 0.6524974703788757,
+      "subspace_relative_error": 0.6324253082275391,
+      "coefficient_relative_error": 0.1606016308069229,
+      "cosine": 0.7582480907440186,
+      "norm_ratio": 0.7319217324256897,
+      "oracle_scalar": -0.0011804859386757016,
+      "oracle_scalar_corrected_error": 0.6103577613830566,
+      "endpoint_relative_error": 0.0
+    },
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": true,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "relative_error": 0.6509599089622498,
+      "subspace_relative_error": 0.6360956430435181,
+      "coefficient_relative_error": 0.1383192241191864,
+      "cosine": 0.7591359615325928,
+      "norm_ratio": 0.7531203031539917,
+      "oracle_scalar": -0.0011941759148612618,
+      "oracle_scalar_corrected_error": 0.6076931953430176,
+      "endpoint_relative_error": 0.0
+    }
+  ],
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}

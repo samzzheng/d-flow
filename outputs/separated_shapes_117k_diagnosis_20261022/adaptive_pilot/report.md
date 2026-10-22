@@ -1,5 +1,5 @@
 # Separated-shapes adaptive-rank pilot
-Updated 2026-10-22T02:36-04:00.
+Updated 2026-10-22T02:47-04:00.
 
 Paired noiseless CT10/MRI4× cases; 117k models, five Euler steps, analytical alpha=1-t, native forward normalization, zero enrichment, and the same LBFGS/Armijo settings and 1000-attempt limit.
 Adaptive bounds: 4–128; retain core singular values at least 0.001 times the largest, subject to these bounds. This cutoff is not a bound on gradient error.
@@ -19,14 +19,14 @@ Errors below use the last saved source. Partial results are explicitly marked; t
 | r250_shapes_mri4/sample_004 | baseline | Complete (stalled) | 199 | 94.224% | 93.707% |
 | r250_shapes_mri4/sample_004 | adaptive | Complete (step_limit) | 1000 | 1.743% | 0.999% |
 | r250_shapes_mri4/sample_004 | rank128 | Complete (stalled) | 370 | 31.235% | 30.091% |
-| r250_shapes_mri4/sample_004 | fixed128_canonical | Partial (running) | 970 | 1.602% | 0.902% |
-| r250_shapes_mri4/sample_004 | fixed32_canonical | Pending | — | — | — |
+| r250_shapes_mri4/sample_004 | fixed128_canonical | Complete (step_limit) | 1000 | 1.597% | 0.899% |
+| r250_shapes_mri4/sample_004 | fixed32_canonical | Complete (stalled) | 342 | 73.820% | 72.543% |
 | r250_shapes_ct10/sample_007 | baseline | Complete (stalled) | 217 | 46.905% | 28.573% |
 | r250_shapes_ct10/sample_007 | adaptive | Complete (stalled) | 97 | 97.082% | 74.187% |
 | r250_shapes_ct10/sample_007 | rank128 | Complete (stalled) | 846 | 34.280% | 20.199% |
-| r250_shapes_ct10/sample_007 | fixed32_canonical | Partial (running) | 190 | 45.631% | 29.501% |
+| r250_shapes_ct10/sample_007 | fixed32_canonical | Complete (stalled) | 325 | 45.616% | 29.479% |
 
-Completed 12/15 method runs.
+Completed 15/15 method runs.
 All available variants within each case have matching initial-source and checkpoint hashes.
 
 ## r250_shapes_mri4/sample_002
