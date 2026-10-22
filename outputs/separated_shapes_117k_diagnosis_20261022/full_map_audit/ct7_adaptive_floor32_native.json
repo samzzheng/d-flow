@@ -1,0 +1,151 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_pilot/adaptive/r250_shapes_ct10/sample_007/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_pilot/adaptive/r250_shapes_ct10/sample_007/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "2958c8aae7ede363770f90cb0db7a2668240ee489a1311c59e669ba9d19678a6",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "objective": 7.289181013453784,
+  "image_error": 0.9708171486854553,
+  "exact_gradient_norm": 0.02982153557240963,
+  "adjoint_relative_error": 3.8678699638694525e-05,
+  "rows": [
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "canonical",
+      "startup": "legacy",
+      "adaptive_rank_min": 32,
+      "terminal_rank": 32,
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.536304235458374,
+      "subspace_relative_error": 0.5107737183570862,
+      "coefficient_relative_error": 0.16350214183330536,
+      "cosine": 0.8449867963790894,
+      "norm_ratio": 0.8046779036521912,
+      "oracle_scalar": 0.02157149463891983,
+      "oracle_scalar_corrected_error": 0.4705013334751129,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.6771183013916016
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8670693039894104
+        },
+        {
+          "step": 3,
+          "alpha": 0.4000000000000001,
+          "rank": 119,
+          "retained_squared_gradient_fraction": 0.9411150217056274
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000000000000007,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.6740833520889282
+        },
+        {
+          "step": 5,
+          "alpha": 5.551115123125783e-17,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.7391128540039062
+        }
+      ],
+      "native_dlr_comparison": {
+        "relative_backend_difference": 0.0005007580621168017,
+        "difference_over_exact_norm": 0.00040295327198691666,
+        "projected_exact_gradient_difference": 0.0007301450241357088,
+        "native_gradient_error": 0.5362980961799622,
+        "native_endpoint_relative_error": 0.0,
+        "native_alpha": 0.0,
+        "passed": true
+      }
+    },
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": true,
+      "factor_arithmetic": "canonical",
+      "startup": "legacy",
+      "adaptive_rank_min": 32,
+      "terminal_rank": 32,
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.5361915826797485,
+      "subspace_relative_error": 0.5113170146942139,
+      "coefficient_relative_error": 0.1614210158586502,
+      "cosine": 0.8450053930282593,
+      "norm_ratio": 0.8058201670646667,
+      "oracle_scalar": 0.021604951471090317,
+      "oracle_scalar_corrected_error": 0.4701541066169739,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.6804479956626892
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.86602783203125
+        },
+        {
+          "step": 3,
+          "alpha": 0.4000000000000001,
+          "rank": 117,
+          "retained_squared_gradient_fraction": 0.9406903982162476
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000000000000007,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.6744774580001831
+        },
+        {
+          "step": 5,
+          "alpha": 5.551115123125783e-17,
+          "rank": 32,
+          "retained_squared_gradient_fraction": 0.7385572791099548
+        }
+      ],
+      "native_dlr_comparison": {
+        "relative_backend_difference": 0.0004712934314738959,
+        "difference_over_exact_norm": 0.00037978007458150387,
+        "projected_exact_gradient_difference": 0.000791108759585768,
+        "native_gradient_error": 0.5361925959587097,
+        "native_endpoint_relative_error": 0.0,
+        "native_alpha": 0.0,
+        "passed": true
+      }
+    }
+  ],
+  "increment_substeps": 0,
+  "startup": "legacy",
+  "startup_sha256": "7f2fb0672116f194c9d11a76a951782319b4830e48ccfdbc705f38ee12265b41",
+  "factor_integrator_sha256": "fc988d65ce74ec8a24edf131f7953b25793251a99a205434cdcc72856253fcbd",
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}

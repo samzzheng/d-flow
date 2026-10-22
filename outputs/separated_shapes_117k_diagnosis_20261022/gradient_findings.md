@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 07:44 local time. The three-object MRI4 retained-seed failure has a precision obstacle despite cosine0.894 and81.69% squared-gradient capture: FP32 line evaluations reject the saved direction, while FP64 accepts steps near4.8e-6 displacement. A paired native continuation gives FP32 image94.224% versus FP64's interim94.039% after50 additional attempts; this is not yet an accuracy rescue. FP64 resumes with full optimizer state up to the original1000-attempt cap. General accuracy remains unresolved. [Precision and stiffness evidence](full_map_audit/mri4_precision_report.md).
+Snapshot: 2026-10-22, 08:21 local time. The completed adaptive floor32–128 control rescues250CT7 from97.082% to3.428% image error, preserves CT20 at3.694% versus3.742%, and fails on MRI2 at99.768%. Fixed-source audits show improved capture and gradient alignment on both failures; an independent native adaptive-backend check passes. The separate FP64 MRI4 continuation remains active. [Completed rank-floor comparisons and mechanism](adaptive_floor32_report.md). General accuracy remains unresolved.
 
 ## Verified findings
 

@@ -1,0 +1,133 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_pilot/adaptive/r250_shapes_ct10/sample_007/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_pilot/adaptive/r250_shapes_ct10/sample_007/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "2958c8aae7ede363770f90cb0db7a2668240ee489a1311c59e669ba9d19678a6",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "objective": 7.289181013453784,
+  "image_error": 0.9708171486854553,
+  "exact_gradient_norm": 0.029821449890732765,
+  "adjoint_relative_error": 2.7531148589332588e-05,
+  "rows": [
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "canonical",
+      "startup": "legacy",
+      "adaptive_rank_min": 4,
+      "terminal_rank": 4,
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.9579693078994751,
+      "subspace_relative_error": 0.9579486846923828,
+      "coefficient_relative_error": 0.006282898597419262,
+      "cosine": 0.2868747115135193,
+      "norm_ratio": 0.28541135787963867,
+      "oracle_scalar": 0.028578491881489754,
+      "oracle_scalar_corrected_error": 0.8952224850654602,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.6771134734153748
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8670702576637268
+        },
+        {
+          "step": 3,
+          "alpha": 0.4000000000000001,
+          "rank": 119,
+          "retained_squared_gradient_fraction": 0.9411163926124573
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000000000000007,
+          "rank": 23,
+          "retained_squared_gradient_fraction": 0.6534753441810608
+        },
+        {
+          "step": 5,
+          "alpha": 5.551115123125783e-17,
+          "rank": 4,
+          "retained_squared_gradient_fraction": 0.08233468979597092
+        }
+      ]
+    },
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": true,
+      "factor_arithmetic": "canonical",
+      "startup": "legacy",
+      "adaptive_rank_min": 4,
+      "terminal_rank": 4,
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.9584062099456787,
+      "subspace_relative_error": 0.9583966732025146,
+      "coefficient_relative_error": 0.0042490060441195965,
+      "cosine": 0.28540918231010437,
+      "norm_ratio": 0.28624871373176575,
+      "oracle_scalar": 0.028610210865736008,
+      "oracle_scalar_corrected_error": 0.8955458402633667,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.6804497241973877
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8660281300544739
+        },
+        {
+          "step": 3,
+          "alpha": 0.4000000000000001,
+          "rank": 117,
+          "retained_squared_gradient_fraction": 0.9406916499137878
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000000000000007,
+          "rank": 23,
+          "retained_squared_gradient_fraction": 0.654658317565918
+        },
+        {
+          "step": 5,
+          "alpha": 5.551115123125783e-17,
+          "rank": 4,
+          "retained_squared_gradient_fraction": 0.08147583901882172
+        }
+      ]
+    }
+  ],
+  "increment_substeps": 0,
+  "startup": "legacy",
+  "startup_sha256": "7f2fb0672116f194c9d11a76a951782319b4830e48ccfdbc705f38ee12265b41",
+  "factor_integrator_sha256": "fc988d65ce74ec8a24edf131f7953b25793251a99a205434cdcc72856253fcbd",
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}

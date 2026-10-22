@@ -1,0 +1,62 @@
+[
+  {
+    "case": "r250_shapes_ct10/sample_007",
+    "method": "D-Flow",
+    "status": "step_limit",
+    "image_error_percent": 1.4949825288940373,
+    "attempts": 1000,
+    "paired_inputs": true,
+    "settings_verified": true,
+    "metrics_verified": true
+  },
+  {
+    "case": "r250_shapes_ct10/sample_007",
+    "method": "P-Flow",
+    "status": "stalled",
+    "image_error_percent": 104.02508451901278,
+    "attempts": 14,
+    "paired_inputs": true,
+    "settings_verified": true,
+    "metrics_verified": true
+  },
+  {
+    "case": "r250_shapes_ct10/sample_020",
+    "method": "D-Flow",
+    "status": "step_limit",
+    "image_error_percent": 2.8160278120741116,
+    "attempts": 1000,
+    "paired_inputs": true,
+    "settings_verified": true,
+    "metrics_verified": true
+  },
+  {
+    "case": "r250_shapes_ct10/sample_020",
+    "method": "P-Flow",
+    "status": "stalled",
+    "image_error_percent": 29.752811320419436,
+    "attempts": 47,
+    "paired_inputs": true,
+    "settings_verified": true,
+    "metrics_verified": true
+  },
+  {
+    "case": "r250_shapes_mri4/sample_002",
+    "method": "D-Flow",
+    "status": "step_limit",
+    "image_error_percent": 99.72384702971868,
+    "attempts": 1000,
+    "paired_inputs": true,
+    "settings_verified": true,
+    "metrics_verified": true
+  },
+  {
+    "case": "r250_shapes_mri4/sample_002",
+    "method": "P-Flow",
+    "status": "stalled",
+    "image_error_percent": 3.5973878264522545,
+    "attempts": 119,
+    "paired_inputs": true,
+    "settings_verified": true,
+    "metrics_verified": true
+  }
+]
