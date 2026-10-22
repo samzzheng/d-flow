@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
+from functools import partial
 import hashlib
 from pathlib import Path
 from unittest.mock import patch
@@ -10,7 +11,7 @@ from unittest.mock import patch
 import torch
 
 from dlr_dflow.api import load_flow_model
-from dlr_dflow.implementation import enriched, tangent_unet
+from dlr_dflow.implementation import enriched, tangent_unet, residual_startup
 from dlr_dflow.implementation.graphed_products import GraphedAProducts
 from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
@@ -18,6 +19,7 @@ from experiments.ct_mri_sweep.optimizer import SweepLBFGS
 from experiments.ct_mri_sweep.queue import source_hashes
 from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step
 from experiments.separated_shapes_117k.optimizer_controls import ScaleRecoveryLBFGS
+from experiments.separated_shapes_117k.sketch_initialization import retained_seed_startup
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 from sampler.ode_samplers import euler_flow
 
@@ -49,7 +51,13 @@ def main() -> None:
         help="Use a saved inputs bundle instead of the source-pool bundle")
     parser.add_argument("--source-gradient-seed", action="store_true",
         help="Compare cold restarts using one frozen exact-gradient seed, a matched random seed, and no added seed")
+    parser.add_argument("--retain-seed", action="store_true",
+        help="Explicitly retain the seeded direction in the initial right basis, without changing later KSL steps")
+    parser.add_argument("--seed-cache", type=Path,
+        help="Reuse an existing paired exact/random seed bundle instead of recomputing it")
     args = parser.parse_args()
+    if (args.retain_seed or args.seed_cache) and not args.source_gradient_seed:
+        parser.error("Retained initialization and seed caching require the seed-recovery control")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
@@ -64,11 +72,15 @@ def main() -> None:
     parent_recovery = protocol.get("scale_recovery", {})
     if parent_recovery.get("recovery") == "frozen_source_gradient_seed" and not args.source_gradient_seed:
         parser.error("A seeded parent needs the seed-recovery control to preserve its estimator")
+    if parent_recovery.get("retain_seed") and not args.retain_seed:
+        parser.error("Preserve the parent retained-seed initialization in its restart control")
     if original["method"] != "DLR D-Flow" or original["status"] not in run.TERMINAL or not original["optimizer"]["consecutive_failures"]:
         parser.error("Recovery needs a completed failed-search source-pool control")
     settings = deepcopy(protocol.get("continuation_settings", protocol.get("settings")))
     if settings is None:
         parser.error("The parent must record its optimizer and factor settings")
+    if args.retain_seed:
+        settings["dlr"]["residual_sketch_steps"] = 1
     limit = settings["stopping"]["max_updates"]
     if original["optimizer"]["step_attempts"] >= limit:
         parser.error("No original attempt budget remains")
@@ -107,6 +119,12 @@ def main() -> None:
         settings=settings, baseline=original["history"][-1],
         note="Preserve cached gradient, curvature, right basis and all attempt counters; change recovery scale only")
     args.out.mkdir(parents=True, exist_ok=True)
+    if args.retain_seed:
+        evidence.update(retain_seed=True,
+            startup_sha256=hashlib.sha256(Path(retained_seed_startup.__wrapped__.__code__.co_filename).read_bytes()).hexdigest())
+    if args.seed_cache:
+        evidence.update(seed_cache=str(args.seed_cache),
+            seed_cache_sha256=hashlib.sha256(args.seed_cache.read_bytes()).hexdigest())
     seeds = {}
     if args.source_gradient_seed:
         seed_path = args.out / "seeds.pt"
@@ -114,6 +132,11 @@ def main() -> None:
             cached = torch.load(seed_path, map_location=device, weights_only=True)
             assert cached["source_sha256"] == evidence["source_sha256"]
             seeds = cached["directions"]
+        elif args.seed_cache:
+            cached = torch.load(args.seed_cache, map_location=device, weights_only=True)
+            assert cached["source_sha256"] == evidence["source_sha256"]
+            seeds = cached["directions"]
+            run.save_tensor(seed_path, cached)
         else:
             variable = original["source"].to(device).requires_grad_(True)
             image = euler_flow(model, variable, settings["flow_steps"])
@@ -136,6 +159,7 @@ def main() -> None:
             del variable, image, loss
         evidence.update(recovery="frozen_source_gradient_seed",
             exact_gradient_evaluations=parent_recovery.get("exact_gradient_evaluations", 0)+1,
+            exact_gradient_evaluations_for_seed_construction=0 if args.seed_cache else 1,
             seed_sha256={name: hashlib.sha256(value.cpu().numpy().tobytes()).hexdigest() for name, value in seeds.items()},
             note="One exact source gradient at the parent, frozen thereafter; matched random seed; same cold optimizer resets and original attempt budget")
     run.write_json(args.out / "config.json", evidence)
@@ -154,7 +178,9 @@ def main() -> None:
         evaluator = evaluator_type(model, operator, inputs["observed"], settings, protocol["dlr_seed"], products)
         if isinstance(evaluator, FrozenSeedEvaluator):
             evaluator.seed_direction = seeds[name]
-        with patch.object(run, "SweepLBFGS", kind):
+        with patch.object(run, "SweepLBFGS", kind), patch.object(
+            residual_startup, "residual_sketch_startup", partial(retained_seed_startup, retain_seed=name in seeds)
+            if args.retain_seed else residual_startup.residual_sketch_startup):
             result = run.solve(evaluator, "DLR D-Flow", original["source"].to(device),
                 inputs["truth"], inputs["clean"], path, paired, [False])
         assert result["history"][:len(original["history"])] == original["history"]
