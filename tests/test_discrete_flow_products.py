@@ -4,7 +4,7 @@ import unittest
 import torch
 
 from experiments.separated_shapes_117k.gradient_audit import DiscreteProducts
-from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 from sampler.ode_samplers import euler_flow
 
@@ -20,6 +20,29 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_refined_increment_preserves_target_and_reduces_projection_error(self) -> None:
+        torch.manual_seed(49)
+        dimension, h, alpha = 16, .2, .6
+        matrix = torch.randn(dimension, dimension, dtype=torch.float64)
+        for rank in (3, dimension):
+            U, _ = torch.linalg.qr(torch.randn(dimension, rank, dtype=matrix.dtype))
+            V, _ = torch.linalg.qr(torch.randn(dimension, rank, dtype=matrix.dtype))
+            S = torch.randn(rank, rank, dtype=matrix.dtype)
+            Y = U @ S @ V.T
+            target = Y + h*(matrix @ (alpha*torch.eye(dimension, dtype=matrix.dtype)+Y)
+                            + torch.eye(dimension, dtype=matrix.dtype))
+            ordinary, _, _ = increment_ksl_step(lambda q: matrix @ q, lambda q: matrix.T @ q,
+                (U, S, V), U[:, :0], U[:, :0], h, alpha)
+            refined, _, _ = refined_increment_step(lambda q: matrix @ q, lambda q: matrix.T @ q,
+                (U, S, V), U[:, :0], U[:, :0], h, alpha)
+            left, core, right = refined
+            torch.testing.assert_close(core, left.T @ target @ right, atol=1e-11, rtol=1e-11)
+            before = (ordinary[0] @ ordinary[1] @ ordinary[2].T-target).norm()
+            after = (left @ core @ right.T-target).norm()
+            self.assertLessEqual(float(after), float(before)+1e-10)
+            if rank == dimension:
+                torch.testing.assert_close(left @ core @ right.T, target, atol=1e-11, rtol=1e-11)
+
     def test_increment_ksl_matches_dense_frozen_field_and_full_rank_euler(self) -> None:
         torch.manual_seed(31)
         dimension, h, alpha = 12, .2, .6

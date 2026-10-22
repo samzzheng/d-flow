@@ -66,3 +66,32 @@ def stable_sl_step(
     cross = V.T @ V1
     core = R_K @ cross + step_size * (W.T @ V1 - C @ cross)
     return (U1, core, V1), probe_sensitivities, -1.0
+
+
+def refined_increment_step(
+    A: Callable[[torch.Tensor], torch.Tensor],
+    AT: Callable[[torch.Tensor], torch.Tensor],
+    factors: Factors,
+    probe_sensitivities: torch.Tensor,
+    probes: torch.Tensor,
+    step_size: float,
+    alpha: float,
+) -> tuple[Factors, torch.Tensor, float]:
+    """Two bilateral subspace iterations on one frozen Euler residual target.
+
+    T=(I+h A) U S V.T+h(alpha A+I). Each iteration forms QR(T V_c)
+    and QR(T.T U_c); the latter triangular factor supplies the core.
+    The target and rank remain fixed across the two iterations. This is a
+    power-refined retraction control, not the original continuous KSL scheme.
+    """
+    U, S, V = factors
+    US = U @ S
+    V1 = V
+    for _ in range(2):
+        residual_image = US @ (V.T @ V1)
+        U1, _ = torch.linalg.qr(residual_image + step_size * (
+            A(alpha * V1 + residual_image) + V1))
+        ATU1 = AT(U1)
+        L1 = V @ (S.T @ (U.T @ (U1 + step_size * ATU1))) + step_size * (alpha * ATU1 + U1)
+        V1, R_L = torch.linalg.qr(L1)
+    return (U1, R_L.T, V1), probe_sensitivities, -1.0

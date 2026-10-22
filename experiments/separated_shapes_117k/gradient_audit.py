@@ -18,7 +18,7 @@ from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from sampler.ode_samplers import euler_flow
-from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step
 
 
 class DiscreteProducts:
@@ -73,6 +73,7 @@ def main() -> None:
     integrator = parser.add_mutually_exclusive_group()
     integrator.add_argument("--stable-sl", action="store_true")
     integrator.add_argument("--increment-ksl", action="store_true")
+    integrator.add_argument("--refined-increment", action="store_true")
     parser.add_argument("--factor-arithmetic", choices=("specialized", "eager_specialized", "direct", "canonical"),
         default="specialized", help="Compare equivalent fixed-rank arithmetic without changing the model or rank")
     parser.add_argument("--skip-reference", action="store_true")
@@ -87,9 +88,9 @@ def main() -> None:
     args = parser.parse_args()
     if args.saved_direction_audit and (args.source is None or args.double):
         parser.error("Saved-direction audit requires a saved FP32 source")
-    if args.factor_arithmetic != "specialized" and (args.stable_sl or args.increment_ksl):
+    if args.factor_arithmetic != "specialized" and (args.stable_sl or args.increment_ksl or args.refined_increment):
         parser.error("Factor arithmetic controls require the original integrator")
-    if args.basis_refreshes < 0 or (args.basis_refreshes and (args.stable_sl or args.increment_ksl or args.terminal_seed)):
+    if args.basis_refreshes < 0 or (args.basis_refreshes and (args.stable_sl or args.increment_ksl or args.refined_increment or args.terminal_seed)):
         parser.error("Basis refresh diagnostics require a nonnegative count and the original integrator")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
@@ -203,6 +204,7 @@ def main() -> None:
                               torch.cat([terminal.reshape(-1, 1), seed_basis], dim=1))
             with patch.object(enriched, "_zero_enrichment_step",
                               stable_sl_step if args.stable_sl else
+                              refined_increment_step if args.refined_increment else
                               increment_ksl_step if args.increment_ksl else enriched._zero_enrichment_step):
                 endpoint, factors, alpha = sensitivity_factors(model, source, settings["flow_steps"],
                     **options, seed=protocol["dlr_seed"], products=products,
@@ -210,7 +212,7 @@ def main() -> None:
             estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
             if not warm:
                 fresh_estimate = estimate.clone()
-            row = dict(method="stable_sl" if args.stable_sl else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
+            row = dict(method="stable_sl" if args.stable_sl else "refined_increment" if args.refined_increment else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
                        factor_arithmetic=args.factor_arithmetic,
                        terminal_seed=args.terminal_seed, **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
