@@ -41,6 +41,23 @@ class RankRecordingEvaluator(run.Evaluator):
         return gradient
 
 
+class TerminalSeedEvaluator(run.Evaluator):
+    """Spend one existing sketch column on the measurement-gradient direction."""
+
+    def gradient(self, source: torch.Tensor, method: str) -> torch.Tensor:
+        if self.source is None or not torch.equal(self.source, source.detach()):
+            self.objective(source.detach())
+        _, terminal = run.endpoint_gradient(self.image, self.operator, self.observed)
+        previous = self.previous_v
+        self.previous_v = (terminal.reshape(-1, 1) if previous is None else
+                           torch.cat([terminal.reshape(-1, 1), previous], dim=1))
+        try:
+            return super().gradient(source, method)
+        except Exception:
+            self.previous_v = previous
+            raise
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("diagnose", "reconstruct"))
@@ -51,15 +68,21 @@ def main() -> None:
     parser.add_argument("--cases", nargs="+", default=[
         "r250_shapes_ct10/sample_000", "r250_shapes_mri4/sample_001",
         "r250_shapes_mri4/sample_000"])
-    parser.add_argument("--variants", nargs="+", choices=("baseline", "prefix2", "prefix5", "measurement", "random_mix", "adaptive", "rank128"),
+    parser.add_argument("--variants", nargs="+", choices=("baseline", "prefix2", "prefix5", "measurement", "random_mix", "adaptive", "rank128", "terminal_seed"),
                         default=["prefix2", "prefix5"])
     parser.add_argument("--backend", choices=("fast", "native", "native_primal"), default="fast")
     parser.add_argument("--rank", type=int)
     parser.add_argument("--source-cache-roots", type=Path, nargs="*", default=[])
+    parser.add_argument("--resume-script-sha256",
+        help="Previously recorded script hash after a compatibility review; all other protocol checks remain enabled")
+    parser.add_argument("--restart-source", type=Path,
+        help="One-case cold-optimizer continuation from a saved source, with its previous right basis")
     parser.add_argument("--rank-min", type=int, default=4)
     parser.add_argument("--rank-max", type=int, default=128)
     parser.add_argument("--rank-tol", type=float, default=1e-3)
     args = parser.parse_args()
+    if args.restart_source and (len(args.cases) != 1 or set(args.variants) - {"baseline", "terminal_seed"}):
+        parser.error("Restart controls require one case and baseline/terminal_seed variants")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
@@ -78,12 +101,24 @@ def main() -> None:
                     source_cache_roots=list(map(str, args.source_cache_roots)), source_sha256=source_hashes(),
                     adaptive=dict(rank_min=args.rank_min, rank_max=args.rank_max, rank_tol=args.rank_tol),
                     script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+    if args.restart_source:
+        evidence["restart_source"] = str(args.restart_source)
     run.write_json(args.out / f"{args.action}_config.json", evidence)
+    if args.resume_script_sha256:
+        run.write_json(args.out / "resume_script_review.json", dict(
+            previous_script_sha256=args.resume_script_sha256,
+            current_script_sha256=evidence["script_sha256"],
+            note="Explicit script compatibility review; run.solve still verifies all other protocol fields"))
     rows: list[dict[str, Any]] = []
     for name in args.cases:
         case = args.baseline / name
         inputs = torch.load(case / "inputs.pt", map_location=device, weights_only=True)
         protocol = inputs["protocol"]
+        restart = None
+        if args.restart_source:
+            restart = torch.load(args.restart_source, map_location=device, weights_only=True)
+            for key in ("checkpoint_sha256", "operator", "source_seed"):
+                assert restart["protocol"][key] == protocol[key]
         resolution = protocol["job"]["resolution"]
         folder = Path(settings["run_template"].format(resolution=resolution))
         assert hashlib.sha256((folder / "checkpoints/epoch_0500.pt").read_bytes()).hexdigest() == protocol["checkpoint_sha256"]
@@ -148,7 +183,7 @@ def main() -> None:
                                                rank_max=args.rank_max, rank_tol=args.rank_tol)
                 elif variant == "rank128":
                     configuration["dlr"]["rank"] = args.rank_max
-                initial = inputs["initial"]
+                initial = inputs["initial"] if restart is None else restart["source"]
                 caches = [root / variant / name / "inputs.pt" for root in args.source_cache_roots
                           if (root / variant / name / "inputs.pt").exists()]
                 if args.source_cache_roots and variant in ("measurement", "random_mix"):
@@ -175,14 +210,20 @@ def main() -> None:
                 path.mkdir(parents=True, exist_ok=True)
                 paired = {**protocol, "variant": variant, "backend": args.backend, "settings": configuration,
                     "initial_source_sha256": hashlib.sha256(initial.cpu().numpy().tobytes()).hexdigest(),
-                    "diagnostic_script_sha256": evidence["script_sha256"]}
+                    "diagnostic_script_sha256": args.resume_script_sha256 or evidence["script_sha256"]}
+                if restart is not None:
+                    paired["restart_source"] = str(args.restart_source)
+                    paired["restart_source_sha256"] = hashlib.sha256(args.restart_source.read_bytes()).hexdigest()
                 run.save_tensor(path / "inputs.pt", {**inputs, "initial": initial, "protocol": paired})
                 results = {}
                 methods = run.METHODS if variant in ("measurement", "random_mix") else ("DLR D-Flow",)
                 for method in methods:
-                    evaluator_type = RankRecordingEvaluator if variant == "adaptive" else run.Evaluator
+                    evaluator_type = {"adaptive": RankRecordingEvaluator,
+                                      "terminal_seed": TerminalSeedEvaluator}.get(variant, run.Evaluator)
                     evaluator = evaluator_type(model, operator, inputs["observed"], configuration,
                                               protocol["dlr_seed"], products)
+                    if restart is not None:
+                        evaluator.previous_v = restart["previous_v"]
                     if isinstance(evaluator, RankRecordingEvaluator):
                         evaluator.rank_history_path = path / "rank_history.jsonl"
                     stem = method.lower().replace("-", "_").replace(" ", "_")
