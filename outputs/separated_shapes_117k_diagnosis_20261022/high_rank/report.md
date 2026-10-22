@@ -35,3 +35,9 @@ All use the same original source, five-step generator and measurements. The two 
 The rank1024 image norm is only2.31% of the truth norm, and its objective350.4601 is close to the zero-image objective350.3835. Increasing the rank improves the initial gradient approximation but still steers this reconstruction into a nearly blank output. Paired D-Flow and P-Flow successes rule out lack of representability for this case; they do not identify which approximation or optimizer interaction causes collapse. The exact D-Flow reference here succeeds, so this particular DLR failure cannot be attributed simply to inheriting an exact-gradient failure.
 
 [Independent saved-array verification](reconstruction_verification.json) · [Rank1024 paired panel](reconstruction/r250_shapes_mri4/sample_001/rank1024/paired_methods.png) · [Rank32 paired panel](reconstruction/r250_shapes_mri4/sample_001/rank32/paired_methods.png).
+
+## Extension to rank5096
+
+The same selected failure is queued at fixed rank5096 on GPU1 after the existing same-sample worker exits and at least30GiB is free. It preserves all2056 original sketch columns and appends independently seeded random columns. Source, model, measurements, five Euler steps, optimizer and stopping rules are unchanged. A52% per-process memory cap protects concurrent jobs; first-refresh memory is recorded and an allocation failure is reported explicitly. No result for5096 is available yet. [Live queue](rank5096_queue.json).
+
+The exact D-Flow reference also initially becomes nearly blank before later recovering. [Endpoint descent and trajectory analysis](endpoint_report.md) distinguishes this from DLR stopping after rejected searches.

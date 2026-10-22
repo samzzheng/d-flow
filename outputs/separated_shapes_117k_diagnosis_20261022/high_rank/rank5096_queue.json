@@ -1,0 +1,21 @@
+{
+  "status": "queued",
+  "wait_for_pid": 1669430,
+  "minimum_free_mib": 30720,
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "experiments.separated_shapes_117k.large_rank_reconstruction",
+    "--rank",
+    "5096",
+    "--out",
+    "outputs/separated_shapes_117k_diagnosis_20261022/high_rank"
+  ],
+  "script": "experiments/separated_shapes_117k/large_rank_reconstruction.py",
+  "script_sha256": "628c26c08ffbc4de453da3ae2f8952404a33b67e57524e89488e4801d3a68443",
+  "note": "GPU1 only; wait until same-sample1024/2048 worker exits and at least30GiB is free. Allocation cap52%; record first factor refresh and OOM explicitly. Existing workers unchanged.",
+  "coordinator_pid": 1676034,
+  "waiting_for_same_sample": true,
+  "free_mib": 21902,
+  "checked_at": 1792696462.5382614
+}
