@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 from copy import deepcopy
 import hashlib
+import json
+import math
 from pathlib import Path
 import time
 from unittest.mock import patch
@@ -26,6 +28,8 @@ def main() -> None:
     parser.add_argument("--inputs", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--additional-attempts", type=int, default=50)
+    parser.add_argument("--resume", action="store_true",
+        help="Extend the saved paired control within its original budget, preserving curvature")
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
@@ -61,15 +65,34 @@ def main() -> None:
         initial_attempts=initial_attempts, attempt_limit=limit, settings=settings,
         seed_sha256=recovery["seed_sha256"]["gradient_seed"],
         note="Both native autodiff backends; cold curvature; same promoted source, frozen seed, right basis and original attempt count. Each precision recomputes its initial objective.")
-    run.write_json(args.out/"config.json", configuration)
+    config_path = args.out/"config.json"
+    segments = []
+    if config_path.exists():
+        if not args.resume:
+            parser.error("The control exists; use --resume to preserve its states")
+        previous_config = json.loads(config_path.read_text())
+        for key in ("parent_sha256", "settings", "seed_sha256", "initial_attempts"):
+            assert previous_config[key] == configuration[key]
+        if limit < previous_config["attempt_limit"]:
+            parser.error("Resume cannot lower the recorded attempt limit")
+        segments = previous_config.get("segments", []) + [
+            {key: previous_config[key] for key in ("attempt_limit", "script_sha256")}]
+    elif args.resume:
+        parser.error("No saved control to resume")
+    configuration["segments"] = segments
+    run.write_json(config_path, configuration)
     enriched.SPECIALIZE_ZERO_ENRICHMENT = True
     enriched.SKIP_UNTRUNCATED_SVD = True
-    summary = {}
+    summary = json.loads((args.out/"summary.json").read_text()) if args.resume else {}
     for dtype in (torch.float32, torch.float64):
         label = str(dtype).split(".")[-1]
         path = args.out/label/"dlr_d_flow.pt"
-        if path.exists():
-            parser.error(f"Refusing to overwrite a completed or partial control: {path}")
+        saved = torch.load(path, map_location="cpu", weights_only=True) if path.exists() else None
+        if saved is not None:
+            if not args.resume:
+                parser.error(f"Refusing to overwrite a completed or partial control: {path}")
+            if saved["status"] == "stalled" or saved["optimizer"]["step_attempts"] >= limit:
+                continue
         path.parent.mkdir(exist_ok=True)
         model, _ = load_flow_model(resolution, 0, 500, str(device), folder)
         model = model.to(dtype=dtype)
@@ -86,19 +109,27 @@ def main() -> None:
         truth = inputs["truth"].to(device=device, dtype=dtype)
         clean = inputs["clean"].to(device=device, dtype=measurement_dtype)
         observed = inputs["observed"].to(device=device, dtype=measurement_dtype)
-        source = parent["source"].to(device=device, dtype=dtype).clone().requires_grad_(True)
+        state = parent if saved is None else saved
+        source = state["source"].to(device=device, dtype=dtype).clone().requires_grad_(True)
         products = ChunkedAutodiffProducts(model, columns=4)
         evaluator = FrozenSeedEvaluator(model, operator, observed, settings, protocol["dlr_seed"], products)
-        evaluator.previous_v = parent["previous_v"].to(device=device, dtype=dtype)
+        evaluator.previous_v = state["previous_v"].to(device=device, dtype=dtype)
         evaluator.seed_direction = seed.to(device=device, dtype=dtype)
         evaluator.method = "DLR D-Flow"
         optimizer = SweepLBFGS(source, evaluator.objective, **{
             **settings["optimizer"], "step_cap": settings["optimizer"]["step_cap"]*source.numel()**.5,
             "project": settings["source_projection"]})
         optimizer.step_attempts = initial_attempts
+        if saved is not None:
+            for name, value in saved["optimizer"].items():
+                setattr(optimizer, name, run.tensor_tree(value, device))
+            evaluator.counts = saved["evaluations"].copy()
         evaluator.objective(source.detach())
-        history = [dict(step=initial_attempts, phi=evaluator.value,
+        history = deepcopy(saved["history"]) if saved is not None else [dict(step=initial_attempts, phi=evaluator.value,
             **run.metrics(evaluator.image, evaluator.measurement, truth, clean, observed))]
+        if saved is not None:
+            assert math.isclose(evaluator.value, history[-1]["phi"], rel_tol=1e-12, abs_tol=1e-12)
+        prior_seconds = 0.0 if saved is None else saved["elapsed_seconds"]
         started = time.monotonic()
 
         def closure() -> torch.Tensor:
@@ -128,7 +159,7 @@ def main() -> None:
                         measurement=evaluator.measurement, previous_v=evaluator.previous_v, history=history,
                         evaluations=evaluator.counts, optimizer={key: value for key, value in vars(optimizer).items()
                             if key not in {"source", "objective", "_direction_graph"}},
-                        elapsed_seconds=time.monotonic()-started))
+                        elapsed_seconds=prior_seconds+time.monotonic()-started))
                     summary[label] = dict(status=status, final=history[-1], additional_attempts=optimizer.step_attempts-initial_attempts)
                     run.write_json(args.out/"summary.json", summary)
                     print(label, status, history[-1], flush=True)
