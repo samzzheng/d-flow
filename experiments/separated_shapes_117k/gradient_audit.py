@@ -70,6 +70,8 @@ def main() -> None:
     parser.add_argument("--source", type=Path)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--ranks", nargs="+", type=int, default=[32, 128])
+    parser.add_argument("--adaptive-min", type=int,
+        help="Use each requested rank as an adaptive upper bound, with this lower bound")
     parser.add_argument("--power-iterations", type=int, default=3)
     parser.add_argument("--reference-oversampling", type=int, default=8,
         help="Extra columns for the independent terminal SVD reference, not DLR initialization")
@@ -112,6 +114,11 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.adaptive_min is not None:
+        if not 1 <= args.adaptive_min <= min(args.ranks) or not args.skip_reference:
+            parser.error("Adaptive diagnostics need valid rank bounds and --skip-reference")
+        if args.startup != "legacy" or args.stable_sl or args.increment_ksl or args.refined_increment or args.increment_substeps or args.pure_ksl or args.stable_ksl:
+            parser.error("Adaptive diagnostics use the existing adaptive factor update and initialization")
     if args.startup == "retained" and not (args.source_gradient_seed or args.terminal_seed):
         parser.error("Retained startup needs a specified seed direction")
     if args.startup != "legacy" and args.factor_arithmetic == "canonical":
@@ -285,6 +292,8 @@ def main() -> None:
                     step: (float(alpha), tuple(value.detach().clone() for value in factors))})
             if args.factor_arithmetic == "canonical":
                 options.update(adaptive_rank=True, rank_min=rank, rank_max=rank)
+            if args.adaptive_min is not None:
+                options.update(adaptive_rank=True, rank_min=args.adaptive_min, rank_max=rank, rank_tol=1e-3)
             seed_basis = saved["previous_v"] if warm else None
             if args.terminal_seed:
                 seed_basis = (terminal.reshape(-1, 1) if seed_basis is None else
@@ -313,6 +322,7 @@ def main() -> None:
                 fresh_estimate = estimate.clone()
             row = dict(method="subdivided_increment" if args.increment_substeps else "stable_ksl" if args.stable_ksl else "pure_ksl" if args.pure_ksl else "stable_sl" if args.stable_sl else "refined_increment" if args.refined_increment else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
                        factor_arithmetic=args.factor_arithmetic, startup=args.startup,
+                       adaptive_rank_min=args.adaptive_min, terminal_rank=factors[1].shape[0],
                        terminal_seed=args.terminal_seed, source_gradient_seed=args.source_gradient_seed,
                        **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
