@@ -32,6 +32,9 @@ def main() -> None:
     parser.add_argument("--additional-attempts", type=int, default=50)
     parser.add_argument("--products", choices=("native", "graphed"), default="native",
         help="Derivative backend; changes on resume are recorded without resetting optimizer state")
+    parser.add_argument("--dtypes", choices=("float32", "float64"), nargs="+", default=["float32", "float64"])
+    parser.add_argument("--initialization-prefix", type=int,
+        help="Cold restart with the existing prefix sketch at the parent's fixed requested rank; leave at least one KSL step")
     parser.add_argument("--resume", action="store_true",
         help="Extend the saved paired control within its original budget, preserving curvature")
     args = parser.parse_args()
@@ -46,13 +49,19 @@ def main() -> None:
     parent = torch.load(args.source, map_location="cpu", weights_only=True)
     inputs = torch.load(args.inputs, map_location="cpu", weights_only=True)
     protocol = parent["protocol"]
-    recovery = protocol["scale_recovery"]
+    recovery = protocol.get("scale_recovery", {})
     retained = recovery.get("retain_seed", False)
-    if not (retained and recovery["variant"] == "gradient_seed") and not recovery.get("rank_floors"):
+    if args.initialization_prefix is None and not (retained and recovery["variant"] == "gradient_seed") and not recovery.get("rank_floors"):
         parser.error("Use a completed informed retained-seed or adaptive rank-floor control")
     if parent["status"] not in run.TERMINAL or not parent["optimizer"]["consecutive_failures"]:
         parser.error("The parent must have completed with rejected searches")
-    settings = deepcopy(recovery["settings"])
+    settings = deepcopy(recovery.get("settings", protocol.get("continuation_settings", protocol.get("settings"))))
+    if args.initialization_prefix is not None:
+        experiment = protocol.get("experiment", {})
+        if (retained or experiment.get("factor_integrator", "original") != "original"
+                or experiment.get("goal_steps", 0) or not 1 <= args.initialization_prefix < settings["flow_steps"]):
+            parser.error("Prefix recovery requires an ordinary parent and must leave at least one original KSL step")
+        settings["dlr"].update(adaptive_rank=False, residual_sketch_steps=args.initialization_prefix)
     initial_attempts = parent["optimizer"]["step_attempts"]
     limit = min(initial_attempts + args.additional_attempts, settings["stopping"]["max_updates"])
     if not initial_attempts < limit:
@@ -74,8 +83,10 @@ def main() -> None:
         initial_attempts=initial_attempts, attempt_limit=limit, settings=settings,
         seed_sha256=recovery["seed_sha256"]["gradient_seed"] if retained else None,
         product_backend=args.products,
-        attempts_in_other_starts=recovery.get("attempts_in_other_starts", 0),
-        total_budget=recovery.get("total_budget", settings["stopping"]["max_updates"]),
+        dtypes=args.dtypes, initialization_prefix=args.initialization_prefix,
+        attempts_in_other_starts=recovery.get("attempts_in_other_starts",
+            protocol.get("experiment", {}).get("budget", settings["stopping"]["max_updates"])-settings["stopping"]["max_updates"]),
+        total_budget=recovery.get("total_budget", protocol.get("experiment", {}).get("budget", settings["stopping"]["max_updates"])),
         note="Paired precision with the recorded derivative backend; cold curvature at initial launch; same promoted source, initialization, right basis and original attempt count. Resume preserves optimizer state; each precision recomputes its initial objective.")
     config_path = args.out/"config.json"
     segments = []
@@ -100,7 +111,7 @@ def main() -> None:
     tangent_unet.GN_ACTION_BACKEND = "native"
     tangent_unet.GN_PRIMAL_BACKEND = "native"
     summary = json.loads((args.out/"summary.json").read_text()) if args.resume else {}
-    for dtype in (torch.float32, torch.float64):
+    for dtype in map(lambda name: getattr(torch, name), args.dtypes):
         label = str(dtype).split(".")[-1]
         path = args.out/label/"dlr_d_flow.pt"
         saved = torch.load(path, map_location="cpu", weights_only=True) if path.exists() else None
@@ -132,7 +143,8 @@ def main() -> None:
                     if args.products == "graphed" else ChunkedAutodiffProducts(model, columns=4))
         evaluator_type = FrozenSeedEvaluator if retained else run.Evaluator
         evaluator = evaluator_type(model, operator, observed, settings, protocol["dlr_seed"], products)
-        evaluator.previous_v = state["previous_v"].to(device=device, dtype=dtype)
+        evaluator.previous_v = (None if state.get("previous_v") is None else
+                                state["previous_v"].to(device=device, dtype=dtype))
         if retained:
             evaluator.seed_direction = seed.to(device=device, dtype=dtype)
         evaluator.method = "DLR D-Flow"
@@ -183,7 +195,7 @@ def main() -> None:
                         elapsed_seconds=prior_seconds+time.monotonic()-started))
                     summary[label] = dict(status=status, final=history[-1], additional_attempts=optimizer.step_attempts-initial_attempts,
                         total_attempts=configuration["attempts_in_other_starts"]+optimizer.step_attempts,
-                        terminal_rank=evaluator.previous_v.shape[1])
+                        terminal_rank=None if evaluator.previous_v is None else evaluator.previous_v.shape[1])
                     run.write_json(args.out/"summary.json", summary)
                     print(label, status, history[-1], flush=True)
         del evaluator, optimizer, products, model

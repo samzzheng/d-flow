@@ -101,8 +101,12 @@ def main() -> None:
         help="Oracle diagnostic: replace one sketch column with the exact source gradient")
     parser.add_argument("--startup", choices=("legacy", "matched", "retained"), default="legacy",
         help="Matched Rademacher control or initialization that explicitly retains the first supplied seed")
+    parser.add_argument("--residual-sketch-steps", type=int,
+        help="Use the existing exact Euler-prefix sketch initialization at fixed requested rank")
     parser.add_argument("--track-gradient-capture", action="store_true",
         help="Record exact source-gradient energy retained by each intermediate right basis")
+    parser.add_argument("--track-jacobian-defect", action="store_true",
+        help="Measure prefix Jacobian error and the unrepresented ODE field using eight independent diagnostic vectors")
     parser.add_argument("--line-search-audit", action="store_true")
     parser.add_argument("--saved-direction-audit", action="store_true",
         help="Probe both signs of the saved optimizer gradient using exact objective slopes")
@@ -117,6 +121,9 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.residual_sketch_steps is not None and (
+            args.startup != "legacy" or args.adaptive_min is not None or args.factor_arithmetic == "canonical"):
+        parser.error("Prefix sketches require the existing initializer and a fixed-rank arithmetic path")
     if args.timing_repeats < 0 or (args.timing_repeats and (not args.compare_native_dlr or args.exact_only)):
         parser.error("Timing repeats require a native DLR comparison")
     if args.adaptive_min is not None:
@@ -154,6 +161,8 @@ def main() -> None:
                 if saved is not None else None)
     if settings is None:
         settings = json.loads(args.manifest.read_text())["settings"]
+    if args.residual_sketch_steps is not None and not 1 <= args.residual_sketch_steps <= settings["flow_steps"]:
+        parser.error("The initialization prefix must fit within the original flow grid")
     resolution = protocol["job"]["resolution"]
     folder = Path(settings["run_template"].format(resolution=resolution))
     assert hashlib.sha256((folder / "checkpoints/epoch_0500.pt").read_bytes()).hexdigest() == protocol["checkpoint_sha256"]
@@ -289,10 +298,12 @@ def main() -> None:
     for rank in args.ranks:
         for warm in (False, True) if saved is not None and saved.get("previous_v") is not None else (False,):
             options = {**settings["dlr"], "rank": rank}
+            if args.residual_sketch_steps is not None:
+                options.update(residual_sketch_steps=args.residual_sketch_steps, adaptive_rank=False)
             if args.startup != "legacy":
                 options["residual_sketch_steps"] = 1
             prefix_factors: dict[int, tuple[float, tuple[torch.Tensor, ...]]] = {}
-            if args.suffix_audit or args.track_gradient_capture:
+            if args.suffix_audit or args.track_gradient_capture or args.track_jacobian_defect:
                 options["factor_callback"] = lambda step, alpha, factors: prefix_factors.update({
                     step: (float(alpha), tuple(value.detach().clone() for value in factors))})
             if args.factor_arithmetic == "canonical":
@@ -344,6 +355,7 @@ def main() -> None:
                 fresh_estimate = estimate.clone()
             row = dict(method="subdivided_increment" if args.increment_substeps else "stable_ksl" if args.stable_ksl else "pure_ksl" if args.pure_ksl else "stable_sl" if args.stable_sl else "refined_increment" if args.refined_increment else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
                        factor_arithmetic=args.factor_arithmetic, startup=args.startup,
+                       residual_sketch_steps=options.get("residual_sketch_steps"),
                        adaptive_rank_min=args.adaptive_min, terminal_rank=factors[1].shape[0],
                        terminal_seed=args.terminal_seed, source_gradient_seed=args.source_gradient_seed,
                        **scores(estimate, exact, factors[2], terminal),
@@ -354,6 +366,34 @@ def main() -> None:
                 row["gradient_capture_path"] = [dict(step=step, alpha=baseline, rank=prefix[2].shape[1],
                     retained_squared_gradient_fraction=float((prefix[2].T @ exact).square().sum()/exact.square().sum()))
                     for step, (baseline, prefix) in prefix_factors.items()]
+            if args.track_jacobian_defect:
+                diagnostic_generator = torch.Generator(device=device).manual_seed(protocol["dlr_seed"]+90000000)
+                vectors = (2*torch.randint(0, 2, (source.numel(), 8), generator=diagnostic_generator,
+                                          device=device)-1).to(source.dtype)
+                exact_actions = vectors.clone()
+                defects = []
+                for step in range(settings["flow_steps"]+1):
+                    baseline, (left, core, right) = prefix_factors[step]
+                    right_actions = right.T @ vectors
+                    residual_actions = left @ (core @ right_actions)
+                    approximate_actions = baseline*vectors+residual_actions
+                    exact_residual_actions = exact_actions-baseline*vectors
+                    entry = dict(step=step, alpha=baseline, rank=core.shape[0],
+                        jacobian_error_over_jacobian_norm=float((approximate_actions-exact_actions).norm()/exact_actions.norm()),
+                        residual_norm_over_jacobian_norm=float(exact_residual_actions.norm()/exact_actions.norm()))
+                    if step < settings["flow_steps"]:
+                        reference.local.set_state(step*reference.h, reference.points[step])
+                        field = reference.local.A(approximate_actions)+vectors
+                        perpendicular = vectors-right @ right_actions
+                        normal_field = baseline*reference.local.A(perpendicular)+perpendicular
+                        normal_field -= left @ (left.T @ normal_field)
+                        entry["normal_field_over_field_norm"] = float(normal_field.norm()/field.norm())
+                        entry["normal_field_norm_estimate"] = float(normal_field.norm()/math.sqrt(vectors.shape[1]))
+                        entry["field_norm_estimate"] = float(field.norm()/math.sqrt(vectors.shape[1]))
+                        exact_actions = exact_actions+reference.h*reference.local.A(exact_actions)
+                    defects.append(entry)
+                row["prefix_defect_diagnostics"] = dict(vectors=8, seed=protocol["dlr_seed"]+90000000,
+                    note="Independent Rademacher action estimates, not certified norms or rank estimates. No diagnostic vectors enter the factor evolution or alpha update.", rows=defects)
             if args.compare_native_dlr:
                 native_estimate = approx_source_gradient(native_factors, terminal, native_alpha).reshape(-1, 1)
                 difference = float((estimate-native_estimate).norm()/native_estimate.norm())
