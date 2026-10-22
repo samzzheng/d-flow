@@ -1,0 +1,14 @@
+{
+  "status": "complete",
+  "completed": 48,
+  "expected": 48,
+  "queue_pids": [],
+  "updated_at": "2026-10-20T01:43:34.366577-04:00",
+  "gpu": 0,
+  "samples": [
+    20,
+    22,
+    9,
+    14
+  ]
+}

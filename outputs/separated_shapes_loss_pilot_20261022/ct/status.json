@@ -1,0 +1,9 @@
+{
+  "status": "running",
+  "pid": 1739549,
+  "case": "r250_shapes_ct10/sample_000",
+  "method": "dlr_d_flow",
+  "variant": "l2",
+  "stage": 0,
+  "attempts_before_stage": 0
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "variant": "l2",
+    "method": "DLR D-Flow",
+    "attempts": 4,
+    "image_error_percent": 100.031199706963,
+    "residual_percent": 100.02004662934867,
+    "original_l2": 350.52403614267155,
+    "status": "step_limit"
+  },
+  {
+    "variant": "coarse_to_fine",
+    "method": "DLR D-Flow",
+    "attempts": 4,
+    "image_error_percent": 121.6853794752774,
+    "residual_percent": 119.82928046970227,
+    "original_l2": 503.11770597982087,
+    "status": "step_limit"
+  },
+  {
+    "variant": "intensity",
+    "method": "DLR D-Flow",
+    "attempts": 4,
+    "image_error_percent": 100.0388309499347,
+    "residual_percent": 100.02813516223557,
+    "original_l2": 350.5807315738484,
+    "status": "step_limit"
+  },
+  {
+    "variant": "l2_resets",
+    "method": "DLR D-Flow",
+    "attempts": 4,
+    "image_error_percent": 121.68222301707536,
+    "residual_percent": 119.82583739754095,
+    "original_l2": 503.088794086604,
+    "status": "step_limit"
+  },
+  {
+    "variant": "l2",
+    "method": "D-Flow",
+    "attempts": 4,
+    "image_error_percent": 100.0317713742698,
+    "residual_percent": 100.02068123538011,
+    "original_l2": 350.5284841584577,
+    "status": "step_limit"
+  },
+  {
+    "variant": "coarse_to_fine",
+    "method": "D-Flow",
+    "attempts": 4,
+    "image_error_percent": 121.51003884603362,
+    "residual_percent": 119.6518652887901,
+    "original_l2": 501.62901072477365,
+    "status": "step_limit"
+  },
+  {
+    "variant": "intensity",
+    "method": "D-Flow",
+    "attempts": 4,
+    "image_error_percent": 100.04035048148106,
+    "residual_percent": 100.02976118250095,
+    "original_l2": 350.5921294871778,
+    "status": "step_limit"
+  },
+  {
+    "variant": "l2_resets",
+    "method": "D-Flow",
+    "attempts": 4,
+    "image_error_percent": 121.50587886363702,
+    "residual_percent": 119.64740589307641,
+    "original_l2": 501.5916202408167,
+    "status": "step_limit"
+  },
+  {
+    "variant": "l2",
+    "method": "P-Flow",
+    "attempts": 4,
+    "image_error_percent": 27.82336415610882,
+    "residual_percent": 22.28215439554099,
+    "original_l2": 17.39634679756711,
+    "status": "step_limit"
+  },
+  {
+    "variant": "coarse_to_fine",
+    "method": "P-Flow",
+    "attempts": 4,
+    "image_error_percent": 121.7276908920496,
+    "residual_percent": 119.87471756242375,
+    "original_l2": 503.4993245600986,
+    "status": "step_limit"
+  },
+  {
+    "variant": "intensity",
+    "method": "P-Flow",
+    "attempts": 4,
+    "image_error_percent": 32.215148665835756,
+    "residual_percent": 26.42769703538537,
+    "original_l2": 24.47159842452379,
+    "status": "step_limit"
+  },
+  {
+    "variant": "l2_resets",
+    "method": "P-Flow",
+    "attempts": 4,
+    "image_error_percent": 121.71010294379086,
+    "residual_percent": 119.8573660265164,
+    "original_l2": 503.3535748224462,
+    "status": "step_limit"
+  }
+]

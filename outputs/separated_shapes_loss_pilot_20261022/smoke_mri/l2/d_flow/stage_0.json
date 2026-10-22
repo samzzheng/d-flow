@@ -1,0 +1,227 @@
+{
+  "protocol": {
+    "manifest_sha256": "77b119b5354c4de2bdb99f4e9464277acdca3093d119bb99565e442e124f5638",
+    "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+    "test_subset_sha256": "fad77ec1ba9349ba8407de7e6b87c5f516288b25731bcb13d5eed0c9b5cfb6cc",
+    "job": {
+      "resolution": 250,
+      "circles": 0,
+      "problem": "mri",
+      "level": 4
+    },
+    "sample": 1,
+    "operator": {
+      "kind": "mri",
+      "pattern": "cartesian",
+      "nominal_acceleration": 4,
+      "actual_acceleration": 4.032258064516129,
+      "acquired_coefficients": 15500,
+      "mask_seed": 32761008,
+      "normalization": "centered orthonormal FFT",
+      "zero_phase_phantom": true
+    },
+    "source_seed": 22761008,
+    "noise_seed": 42761008,
+    "dlr_seed": 52761008,
+    "torch": "2.11.0+cu129",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "experiment": {
+      "settings": {
+        "version": 1,
+        "resolutions": [
+          64,
+          96,
+          128,
+          160,
+          200,
+          250
+        ],
+        "circles": [
+          0
+        ],
+        "ct_angles": [
+          10
+        ],
+        "mri_accelerations": [
+          4
+        ],
+        "mri_pattern": "cartesian",
+        "samples": 30,
+        "epoch": 500,
+        "run_template": "/home/samzheng/d-flow/outputs/separated_shapes_117k_noiseless_20261021/models/r{resolution}",
+        "noise_relative": 0.0,
+        "flow_steps": 5,
+        "seed": 20261007,
+        "source_projection": false,
+        "optimizer": {
+          "lr": 1.0,
+          "history_size": 100,
+          "max_ls": 30,
+          "c1": 0.0001,
+          "step_cap": 0.01,
+          "backtracking": "geometric"
+        },
+        "stopping": {
+          "min_updates": 1000,
+          "max_updates": 4,
+          "window": 50,
+          "plateau_relative": 0.001,
+          "failed_searches": 2
+        },
+        "dlr_reuse_previous_v": true,
+        "dlr": {
+          "rank": 32,
+          "trace_probes": 0,
+          "enrichment_probes": 0,
+          "initialization_oversampling": 8,
+          "factor_stride": 1,
+          "zero_terminal_baseline": true,
+          "speed_profile": "fast",
+          "adaptive_rank": false
+        },
+        "execution": {
+          "threads": 2,
+          "checkpoint_every": 10,
+          "cudnn_tf32": false,
+          "matmul_tf32": false,
+          "cudnn_benchmark": false,
+          "memory_fraction": 0.15,
+          "dlr_full_step_graphs": false,
+          "dlr_jvp_columns": 20,
+          "dlr_vjp_columns": 16,
+          "dlr_fused_norm": "native",
+          "dlr_fused_primal": "native",
+          "dlr_specialized_algebra": true,
+          "dflow_checkpointed": false,
+          "cudnn_deterministic": true
+        },
+        "scheduling": {
+          "samples_per_worker": 1,
+          "max_workers_per_gpu": 4,
+          "gpu_headroom_mib": 2048,
+          "worker_memory_mib": {
+            "64": 8192,
+            "96": 8192,
+            "128": 8192,
+            "160": 8192,
+            "200": 8192,
+            "250": 8192
+          }
+        },
+        "dataset_label": "separated shapes: 1\u20134 circles/triangles",
+        "dataset_template": "data/separated-shapes-{resolution}.pt",
+        "diagnostic_figures": true,
+        "measurement_loss": {
+          "kind": "l2",
+          "sigma": 0.0,
+          "beta": 0.1,
+          "intensity_weight": 9.0
+        }
+      },
+      "variant": "l2",
+      "stage": 0,
+      "starting_source_sha256": "feec93720058d601a259c37f8b214909e1e5e8ad177e1f60d8b70f7cfc145710",
+      "source_files": {
+        "dlr_dflow/__init__.py": "46f628b687c80cf68853c21426578773e3bcd5c8bba6b893725a054b949fe587",
+        "dlr_dflow/api.py": "63b303b9cd52c05675012dadacfbf8b108965ff860636f74861c64e60ad63195",
+        "dlr_dflow/dlr_dflow.py": "dd8c9172ad2003e754f45329c455209461990e2dd8016f73a531fa5b67753da1",
+        "dlr_dflow/implementation/__init__.py": "32c579c4441992aa8cfbf2676e047a4ae4c6f328ba64bff3538633de9cbb2d85",
+        "dlr_dflow/implementation/_fused_norm_triton.py": "9f32e45764a4f39aa89a16e371777822e030b1cd827a8f5e83e24cebef7b9584",
+        "dlr_dflow/implementation/_fused_primal_triton.py": "22da98c7992efaaaeb587194710be2ef13d0a7434df51c387bdce70f61f2a132",
+        "dlr_dflow/implementation/dlr_dflow_diagnostics.py": "be3f8f1bdc643be36355b77d181dd6974540cd4923a95df05a02516a31d24db7",
+        "dlr_dflow/implementation/enriched.py": "3b2ef58756fa65890b36ca177608fbbec65173c0424e0c2bc45b282a1ed39a07",
+        "dlr_dflow/implementation/fused_norm.py": "3dd0798f4380fc0f28ae68058a2e5b804a57701a8fd2d3b0d29bb7191e89cdac",
+        "dlr_dflow/implementation/fused_primal.py": "8801aa638ca7fdc30262ada77a4fc730b135c7845c8a4b9e6d491b2ca4cb7d7b",
+        "dlr_dflow/implementation/graphed_evolution.py": "40fa2475df05f29d2626eb3b9df849cf0f207c8e92be772e7c472e12a313e570",
+        "dlr_dflow/implementation/graphed_products.py": "1697786d670400d01fa15b2550fd768c76dc28f54614e9bbd4525f2e6bddde32",
+        "dlr_dflow/implementation/model_io.py": "5da3e1d362cce62cf26481f3b4289e444f08dd4260525b78fb5df2e476924212",
+        "dlr_dflow/implementation/objectives.py": "20aecd6bb7020f3b4be42ad63a8138c0b06ec4cf0a370673e6947f466e2eb050",
+        "dlr_dflow/implementation/optimizer_adapters.py": "bcca86c512d0cc033c3add4fd28886e06950ef891a0f87ca9c6119d1c1bcdff6",
+        "dlr_dflow/implementation/residual_startup.py": "742848ac91a31d1dc3647ff9511655406e4384564caa50a7c69d3ef166dedbde",
+        "dlr_dflow/implementation/tangent_unet.py": "451ed7da599af982e11cf63d10472b99b3ad3ff5e3f5320e991c273afcc59e10",
+        "dlr_dflow/implementation/types.py": "9e2a4b03b70335b89a0df07cde03941d3fc595674214dfbf9d62d93b74f62a99",
+        "dlr_dflow/optimization.py": "9db75bb07f8f821531173427e458df2d660e5d3a383c1c2e965503aad333d52f",
+        "experiments/ct_mri_sweep/__init__.py": "3490701354689453b62d6da5f5fa8ca8452fb74ca21943e5d206cda97746ba00",
+        "experiments/ct_mri_sweep/operators.py": "3aca59fba4d4ce7364a78cd45fe866290f6d7d8d6b8a387089c0c17129f97ba9",
+        "experiments/ct_mri_sweep/optimizer.py": "41a70adf8c050d628632c63242e719f69ce9657fb81853915be928fe4463c997",
+        "experiments/ct_mri_sweep/queue.py": "ae0ff31148657c3ff04085a467a0a6e78a962585f19d416f5b544ece2bd640fe",
+        "experiments/ct_mri_sweep/run.py": "877916a701c6f886ad119e82741dafb6a5bcf32318bc8665678174f10d59cf79",
+        "experiments/ct_mri_sweep/validation.py": "ed5f6084c29b1c37015c3f2d0182bf5ad73e18c904278e397dc25c1271c339d7",
+        "models/unet/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "models/unet/default.py": "a2a1557740f9bdb2579fc9a1ea3d9cc573eeb80dcd943b7436b22781aec73b22",
+        "models/unet/unet.py": "fb9d630e0b592c4b79309303854d5033aa600240ca7f39933eb2bba94b4958cc",
+        "p_flow/__init__.py": "b76ef14426fc9f9405e3107da79c475f2103c58817fee9b5bb8e2f66d2398be7",
+        "p_flow/armijo.py": "2c395ec4a824c1c71e3e5c87b7b9af8923ad0a0c82c8081221e3e077476d9712",
+        "p_flow/p_flow.py": "8293480e9fcab94554b7a389ac02db2f6a07e0f01ca3d4e717cc201cfce31d69",
+        "sampler/ode_samplers.py": "7738267d43ed8dfd7b3b3fcb4b3d677fb8c3f163d298f744b3e5a951724e6594",
+        "sampler/optimizer_state.py": "f3f7b79a41071f03757da1102155fda63a4c3ebcddb9ef2f7f45e07b5a9806e3",
+        "scripts/reconstruction_figures.py": "9737c0c896952d72496cbd6ec1f61b6f8c261dca611b22222310fde87bd12968",
+        "/home/samzheng/d-flow/experiments/separated_shapes_117k/measurement_loss_study.py": "0aa1084d191b612ab80e0e00c72c2112e6e1edd9ab35bef1af53373d0313631d",
+        "/home/samzheng/d-flow/experiments/separated_shapes_117k/measurement_losses.py": "c81557eae6ee59405558909b2235d583a99ca4933c769330afa2f71b7527a793",
+        "/home/samzheng/d-flow/experiments/separated_shapes_117k/bounded_products.py": "5125e3b0138d87e39e0c38a89e1fba4968f2a5713e47b4da7a3417706c23afb9"
+      }
+    }
+  },
+  "method": "D-Flow",
+  "status": "step_limit",
+  "history": [
+    {
+      "step": 0,
+      "phi": 504.52889407809164,
+      "elapsed_seconds": 0.0,
+      "image_relative_l2": 1.2184662818908691,
+      "measurement_relative_l2_clean": 1.199972152709961,
+      "measurement_relative_l2_noisy": 1.199972152709961,
+      "residual_over_noise": null
+    },
+    {
+      "step": 1,
+      "phi": 503.7942619820301,
+      "source_step_norm": 0.020558038726449013,
+      "line_search_trials": 1,
+      "elapsed_seconds": 0.12194386683404446,
+      "image_relative_l2": 1.2176260948181152,
+      "measurement_relative_l2_clean": 1.1990982294082642,
+      "measurement_relative_l2_noisy": 1.1990982294082642,
+      "residual_over_noise": null
+    },
+    {
+      "step": 2,
+      "phi": 350.6204006460749,
+      "source_step_norm": 2.5,
+      "line_search_trials": 1,
+      "elapsed_seconds": 0.17093691183254123,
+      "image_relative_l2": 1.0004419088363647,
+      "measurement_relative_l2_clean": 1.0003379583358765,
+      "measurement_relative_l2_noisy": 1.0003379583358765,
+      "residual_over_noise": null
+    },
+    {
+      "step": 3,
+      "phi": 350.5789114756195,
+      "source_step_norm": 0.04256056249141693,
+      "line_search_trials": 1,
+      "elapsed_seconds": 0.22049102280288935,
+      "image_relative_l2": 1.0003855228424072,
+      "measurement_relative_l2_clean": 1.0002787113189697,
+      "measurement_relative_l2_noisy": 1.0002787113189697,
+      "residual_over_noise": null
+    },
+    {
+      "step": 4,
+      "phi": 350.5284832532309,
+      "source_step_norm": 0.024839939549565315,
+      "line_search_trials": 3,
+      "elapsed_seconds": 0.33043441409245133,
+      "image_relative_l2": 1.0003176927566528,
+      "measurement_relative_l2_clean": 1.0002068281173706,
+      "measurement_relative_l2_noisy": 1.0002068281173706,
+      "residual_over_noise": null
+    }
+  ],
+  "evaluations": {
+    "forward_objectives": 7,
+    "gradients": 5
+  },
+  "elapsed_seconds": 0.3305872636847198
+}

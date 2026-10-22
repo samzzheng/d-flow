@@ -1,0 +1,906 @@
+{
+  "completed": 48,
+  "expected": 48,
+  "groups": [
+    {
+      "problem": "ct",
+      "count": 2,
+      "paired_cases": 4,
+      "median": {
+        "original": 85.3374034166336,
+        "random_mix": 79.15701568126678,
+        "measurement_mix": 10.036742314696312
+      },
+      "measurement_better_than_original": 3,
+      "measurement_better_than_random": 3
+    },
+    {
+      "problem": "ct",
+      "count": 4,
+      "paired_cases": 4,
+      "median": {
+        "original": 44.01794821023941,
+        "random_mix": 76.57589912414551,
+        "measurement_mix": 12.078200839459896
+      },
+      "measurement_better_than_original": 4,
+      "measurement_better_than_random": 4
+    },
+    {
+      "problem": "mri",
+      "count": 2,
+      "paired_cases": 4,
+      "median": {
+        "original": 71.78353667259216,
+        "random_mix": 57.37512707710266,
+        "measurement_mix": 3.13261728733778
+      },
+      "measurement_better_than_original": 3,
+      "measurement_better_than_random": 3
+    },
+    {
+      "problem": "mri",
+      "count": 4,
+      "paired_cases": 4,
+      "median": {
+        "original": 76.93756520748138,
+        "random_mix": 95.24036943912506,
+        "measurement_mix": 3.9665071293711662
+      },
+      "measurement_better_than_original": 4,
+      "measurement_better_than_random": 4
+    }
+  ],
+  "pairs": [
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610201,
+      "common_attempt": 773,
+      "final": {
+        "original": 81.3134253025055,
+        "random_mix": 82.92714953422546,
+        "measurement_mix": 31.356361508369446
+      },
+      "common": {
+        "original": 81.3134253025055,
+        "random_mix": 82.99211859703064,
+        "measurement_mix": 31.636637449264526
+      }
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610202,
+      "common_attempt": 658,
+      "final": {
+        "original": 89.36138153076172,
+        "random_mix": 3.636902943253517,
+        "measurement_mix": 11.322253197431564
+      },
+      "common": {
+        "original": 99.38338994979858,
+        "random_mix": 3.636961430311203,
+        "measurement_mix": 11.322253197431564
+      }
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610201,
+      "common_attempt": 338,
+      "final": {
+        "original": 71.85871005058289,
+        "random_mix": 14.684760570526123,
+        "measurement_mix": 3.591834008693695
+      },
+      "common": {
+        "original": 78.23668718338013,
+        "random_mix": 78.8527250289917,
+        "measurement_mix": 3.591834008693695
+      }
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610202,
+      "common_attempt": 566,
+      "final": {
+        "original": 71.70836329460144,
+        "random_mix": 3.730284422636032,
+        "measurement_mix": 4.829099774360657
+      },
+      "common": {
+        "original": 98.17195534706116,
+        "random_mix": 73.51190447807312,
+        "measurement_mix": 4.829099774360657
+      }
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610201,
+      "common_attempt": 471,
+      "final": {
+        "original": 2.549295127391815,
+        "random_mix": 75.3868818283081,
+        "measurement_mix": 7.499333471059799
+      },
+      "common": {
+        "original": 87.18197345733643,
+        "random_mix": 106.36129379272461,
+        "measurement_mix": 7.499333471059799
+      }
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610202,
+      "common_attempt": 398,
+      "final": {
+        "original": 107.39129781723022,
+        "random_mix": 102.52435207366943,
+        "measurement_mix": 8.75123143196106
+      },
+      "common": {
+        "original": 101.65973901748657,
+        "random_mix": 102.40644216537476,
+        "measurement_mix": 8.75123143196106
+      }
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610201,
+      "common_attempt": 289,
+      "final": {
+        "original": 2.2245068103075027,
+        "random_mix": 100.1444935798645,
+        "measurement_mix": 2.454926073551178
+      },
+      "common": {
+        "original": 2.207472175359726,
+        "random_mix": 100.1444935798645,
+        "measurement_mix": 2.4442072957754135
+      }
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610202,
+      "common_attempt": 342,
+      "final": {
+        "original": 72.08414077758789,
+        "random_mix": 100.0654935836792,
+        "measurement_mix": 2.673400565981865
+      },
+      "common": {
+        "original": 72.13957905769348,
+        "random_mix": 99.78204369544983,
+        "measurement_mix": 2.673400565981865
+      }
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610201,
+      "common_attempt": 1000,
+      "final": {
+        "original": 49.080684781074524,
+        "random_mix": 77.86913514137268,
+        "measurement_mix": 19.863884150981903
+      },
+      "common": {
+        "original": 49.080684781074524,
+        "random_mix": 77.86913514137268,
+        "measurement_mix": 19.863884150981903
+      }
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610202,
+      "common_attempt": 1000,
+      "final": {
+        "original": 77.07051038742065,
+        "random_mix": 62.72556781768799,
+        "measurement_mix": 31.674060225486755
+      },
+      "common": {
+        "original": 77.07051038742065,
+        "random_mix": 62.72556781768799,
+        "measurement_mix": 31.674060225486755
+      }
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610201,
+      "common_attempt": 453,
+      "final": {
+        "original": 80.77954053878784,
+        "random_mix": 90.49375057220459,
+        "measurement_mix": 4.66836504638195
+      },
+      "common": {
+        "original": 80.85342049598694,
+        "random_mix": 90.41263461112976,
+        "measurement_mix": 4.66836504638195
+      }
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610202,
+      "common_attempt": 739,
+      "final": {
+        "original": 100.63083171844482,
+        "random_mix": 99.98698830604553,
+        "measurement_mix": 4.126526415348053
+      },
+      "common": {
+        "original": 100.5733847618103,
+        "random_mix": 99.95723962783813,
+        "measurement_mix": 4.126526415348053
+      }
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610201,
+      "common_attempt": 725,
+      "final": {
+        "original": 38.9552116394043,
+        "random_mix": 75.28266310691833,
+        "measurement_mix": 3.6264844238758087
+      },
+      "common": {
+        "original": 38.96513283252716,
+        "random_mix": 78.8094699382782,
+        "measurement_mix": 3.6264844238758087
+      }
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610202,
+      "common_attempt": 935,
+      "final": {
+        "original": 13.625457882881165,
+        "random_mix": 115.63841104507446,
+        "measurement_mix": 4.292517527937889
+      },
+      "common": {
+        "original": 14.339251816272736,
+        "random_mix": 115.85525274276733,
+        "measurement_mix": 4.292517527937889
+      }
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610201,
+      "common_attempt": 158,
+      "final": {
+        "original": 38.831084966659546,
+        "random_mix": 38.66991996765137,
+        "measurement_mix": 3.8064878433942795
+      },
+      "common": {
+        "original": 73.99969100952148,
+        "random_mix": 73.52150082588196,
+        "measurement_mix": 3.8064878433942795
+      }
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610202,
+      "common_attempt": 120,
+      "final": {
+        "original": 73.09558987617493,
+        "random_mix": 100.07044076919556,
+        "measurement_mix": 3.758567199110985
+      },
+      "common": {
+        "original": 78.644460439682,
+        "random_mix": 99.79878664016724,
+        "measurement_mix": 3.758567199110985
+      }
+    }
+  ],
+  "runs": [
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "original",
+      "image_percent": 81.3134253025055,
+      "measurement_percent": 69.46038603782654,
+      "attempts": 773,
+      "status": "stalled",
+      "elapsed_seconds": 168.43263828614727
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "random_mix",
+      "image_percent": 82.92714953422546,
+      "measurement_percent": 71.30654454231262,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 266.2873591459356
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "measurement_mix",
+      "image_percent": 31.356361508369446,
+      "measurement_percent": 13.182657957077026,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 192.876898502931
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "original",
+      "image_percent": 89.36138153076172,
+      "measurement_percent": 66.07641577720642,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 203.27747298311442
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "random_mix",
+      "image_percent": 3.636902943253517,
+      "measurement_percent": 1.0835976339876652,
+      "attempts": 686,
+      "status": "stalled",
+      "elapsed_seconds": 144.12330606905743
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "measurement_mix",
+      "image_percent": 11.322253197431564,
+      "measurement_percent": 5.523300543427467,
+      "attempts": 658,
+      "status": "stalled",
+      "elapsed_seconds": 123.74602986080572
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "original",
+      "image_percent": 71.85871005058289,
+      "measurement_percent": 70.11041641235352,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 247.97089943801984
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "random_mix",
+      "image_percent": 14.684760570526123,
+      "measurement_percent": 10.354188829660416,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 274.887644757051
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "measurement_mix",
+      "image_percent": 3.591834008693695,
+      "measurement_percent": 2.182875946164131,
+      "attempts": 338,
+      "status": "stalled",
+      "elapsed_seconds": 62.58379596984014
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "original",
+      "image_percent": 71.70836329460144,
+      "measurement_percent": 70.16705870628357,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 220.77584702987224
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "random_mix",
+      "image_percent": 3.730284422636032,
+      "measurement_percent": 2.066795527935028,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 209.6889512320049
+    },
+    {
+      "sample": 20,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "measurement_mix",
+      "image_percent": 4.829099774360657,
+      "measurement_percent": 2.535930462181568,
+      "attempts": 566,
+      "status": "stalled",
+      "elapsed_seconds": 118.12996356096119
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "original",
+      "image_percent": 2.549295127391815,
+      "measurement_percent": 0.7187558338046074,
+      "attempts": 803,
+      "status": "stalled",
+      "elapsed_seconds": 167.49746197089553
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "random_mix",
+      "image_percent": 75.3868818283081,
+      "measurement_percent": 58.96614193916321,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 213.571721568238
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "measurement_mix",
+      "image_percent": 7.499333471059799,
+      "measurement_percent": 2.7858130633831024,
+      "attempts": 471,
+      "status": "stalled",
+      "elapsed_seconds": 100.2217792570591
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "original",
+      "image_percent": 107.39129781723022,
+      "measurement_percent": 92.34763383865356,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 218.50951267639175
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "random_mix",
+      "image_percent": 102.52435207366943,
+      "measurement_percent": 94.22450661659241,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 205.5907171429135
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "measurement_mix",
+      "image_percent": 8.75123143196106,
+      "measurement_percent": 4.0542952716350555,
+      "attempts": 398,
+      "status": "stalled",
+      "elapsed_seconds": 82.91747758584097
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "original",
+      "image_percent": 2.2245068103075027,
+      "measurement_percent": 1.1721615679562092,
+      "attempts": 447,
+      "status": "stalled",
+      "elapsed_seconds": 94.54185844864696
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "random_mix",
+      "image_percent": 100.1444935798645,
+      "measurement_percent": 99.41725730895996,
+      "attempts": 289,
+      "status": "stalled",
+      "elapsed_seconds": 67.23003812599927
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "measurement_mix",
+      "image_percent": 2.454926073551178,
+      "measurement_percent": 1.3593644835054874,
+      "attempts": 433,
+      "status": "stalled",
+      "elapsed_seconds": 80.52384719718248
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "original",
+      "image_percent": 72.08414077758789,
+      "measurement_percent": 73.67694973945618,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 193.16865133820102
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "random_mix",
+      "image_percent": 100.0654935836792,
+      "measurement_percent": 99.04553294181824,
+      "attempts": 809,
+      "status": "stalled",
+      "elapsed_seconds": 172.76769314333797
+    },
+    {
+      "sample": 22,
+      "count": 2,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "measurement_mix",
+      "image_percent": 2.673400565981865,
+      "measurement_percent": 1.589679904282093,
+      "attempts": 342,
+      "status": "stalled",
+      "elapsed_seconds": 64.15905581694096
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "original",
+      "image_percent": 49.080684781074524,
+      "measurement_percent": 34.47525203227997,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 218.78379498794675
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "random_mix",
+      "image_percent": 77.86913514137268,
+      "measurement_percent": 60.303837060928345,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 204.60810922505334
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "measurement_mix",
+      "image_percent": 19.863884150981903,
+      "measurement_percent": 7.240995764732361,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 221.638792545069
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "original",
+      "image_percent": 77.07051038742065,
+      "measurement_percent": 48.71126413345337,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 231.84329132782295
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "random_mix",
+      "image_percent": 62.72556781768799,
+      "measurement_percent": 39.70368504524231,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 211.67221274226904
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "measurement_mix",
+      "image_percent": 31.674060225486755,
+      "measurement_percent": 10.107000917196274,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 221.23722588876262
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "original",
+      "image_percent": 80.77954053878784,
+      "measurement_percent": 77.16284394264221,
+      "attempts": 965,
+      "status": "stalled",
+      "elapsed_seconds": 216.18271839106455
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "random_mix",
+      "image_percent": 90.49375057220459,
+      "measurement_percent": 89.96761441230774,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 181.451208434999
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "measurement_mix",
+      "image_percent": 4.66836504638195,
+      "measurement_percent": 2.722584269940853,
+      "attempts": 453,
+      "status": "stalled",
+      "elapsed_seconds": 71.12805609731004
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "original",
+      "image_percent": 100.63083171844482,
+      "measurement_percent": 98.69954586029053,
+      "attempts": 899,
+      "status": "stalled",
+      "elapsed_seconds": 154.37583708995953
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "random_mix",
+      "image_percent": 99.98698830604553,
+      "measurement_percent": 98.71791005134583,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 170.8200374590233
+    },
+    {
+      "sample": 9,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "measurement_mix",
+      "image_percent": 4.126526415348053,
+      "measurement_percent": 2.3262958973646164,
+      "attempts": 739,
+      "status": "stalled",
+      "elapsed_seconds": 105.36706063896418
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "original",
+      "image_percent": 38.9552116394043,
+      "measurement_percent": 22.758451104164124,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 186.57061919989064
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "random_mix",
+      "image_percent": 75.28266310691833,
+      "measurement_percent": 63.959527015686035,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 238.99167382298037
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610201,
+      "arm": "measurement_mix",
+      "image_percent": 3.6264844238758087,
+      "measurement_percent": 0.8096832782030106,
+      "attempts": 725,
+      "status": "stalled",
+      "elapsed_seconds": 139.73997003678232
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "original",
+      "image_percent": 13.625457882881165,
+      "measurement_percent": 3.6729153245687485,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 187.54196058493108
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "random_mix",
+      "image_percent": 115.63841104507446,
+      "measurement_percent": 87.74932622909546,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 219.88349061599
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "ct",
+      "seed": 202610202,
+      "arm": "measurement_mix",
+      "image_percent": 4.292517527937889,
+      "measurement_percent": 1.1306872591376305,
+      "attempts": 935,
+      "status": "stalled",
+      "elapsed_seconds": 184.6288303420879
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "original",
+      "image_percent": 38.831084966659546,
+      "measurement_percent": 34.403517842292786,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 245.30104369390756
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "random_mix",
+      "image_percent": 38.66991996765137,
+      "measurement_percent": 34.36296880245209,
+      "attempts": 942,
+      "status": "stalled",
+      "elapsed_seconds": 212.6963719590567
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610201,
+      "arm": "measurement_mix",
+      "image_percent": 3.8064878433942795,
+      "measurement_percent": 2.0455537363886833,
+      "attempts": 158,
+      "status": "stalled",
+      "elapsed_seconds": 34.02692775661126
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "original",
+      "image_percent": 73.09558987617493,
+      "measurement_percent": 71.405029296875,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 194.68373628007248
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "random_mix",
+      "image_percent": 100.07044076919556,
+      "measurement_percent": 97.83474802970886,
+      "attempts": 1000,
+      "status": "step_limit",
+      "elapsed_seconds": 205.36579219764099
+    },
+    {
+      "sample": 14,
+      "count": 4,
+      "problem": "mri",
+      "seed": 202610202,
+      "arm": "measurement_mix",
+      "image_percent": 3.758567199110985,
+      "measurement_percent": 2.0219970494508743,
+      "attempts": 120,
+      "status": "stalled",
+      "elapsed_seconds": 24.700510622002184
+    }
+  ]
+}

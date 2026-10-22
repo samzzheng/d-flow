@@ -1,0 +1,14 @@
+[
+  {
+    "case": "r250_shapes_mri4",
+    "paired": true,
+    "noiseless": true,
+    "all_objectives_decrease": true
+  },
+  {
+    "case": "r64_shapes_ct10",
+    "paired": true,
+    "noiseless": true,
+    "all_objectives_decrease": true
+  }
+]

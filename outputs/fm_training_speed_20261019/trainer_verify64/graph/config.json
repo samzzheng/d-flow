@@ -1,0 +1,62 @@
+{
+  "im_size": 64,
+  "data": "outputs/fm_training_speed_20261019/trainer_verify64/data.pt",
+  "epochs": 20,
+  "batch": 512,
+  "lr": 0.0002,
+  "wd": 0.0001,
+  "ema_decay": 0.999,
+  "lr_schedule": {
+    "name": "CosineAnnealingLR",
+    "t_max": 20,
+    "eta_min": 1e-05
+  },
+  "checkpoint_sampling": {
+    "samples_per_integrator": 2,
+    "integrators": [
+      "euler",
+      "rk4"
+    ],
+    "steps": 2,
+    "shared_initial_noise": true
+  },
+  "micro_batch": 512,
+  "arch": {
+    "ch": 4,
+    "ch_mul": [
+      1,
+      2,
+      2
+    ],
+    "att_channels": [
+      0,
+      0,
+      0
+    ],
+    "groups": 2,
+    "mid_attn": false
+  },
+  "params": 22037,
+  "dataset_metadata": {},
+  "t_alpha": 1.0,
+  "started_at": "2026-10-19T16:11:34",
+  "execution": {
+    "graph_microbatches": true,
+    "compile": false,
+    "channels_last": true,
+    "fused_adam": true,
+    "gpu_resident": true
+  },
+  "initial_micro_batch": 512,
+  "resumes": [
+    {
+      "checkpoint": "outputs/fm_training_speed_20261019/trainer_verify64/graph/checkpoints/training_state.pt",
+      "start_epoch": 1,
+      "resumed_at": "2026-10-19T16:11:38",
+      "micro_batch": 512,
+      "device": "cuda:1",
+      "optimizer_state": "restored",
+      "t_alpha": 1.0
+    }
+  ]
+}

@@ -3866,10 +3866,10 @@
       "case": "r250_shapes_ct10",
       "sample": 10,
       "method": "P-Flow",
-      "attempts": 32,
-      "accepted_updates": 29,
-      "image_percent": 3.3848457038402557,
-      "residual_percent": 1.1999303475022316,
+      "attempts": 50,
+      "accepted_updates": 42,
+      "image_percent": 1.8543994054198265,
+      "residual_percent": 0.6494187749922276,
       "status": "paused"
     },
     {
@@ -4176,10 +4176,10 @@
       "case": "r250_shapes_mri4",
       "sample": 10,
       "method": "P-Flow",
-      "attempts": 31,
-      "accepted_updates": 27,
-      "image_percent": 1.3402614742517471,
-      "residual_percent": 0.8847931399941444,
+      "attempts": 50,
+      "accepted_updates": 44,
+      "image_percent": 1.3481220230460167,
+      "residual_percent": 0.8636969141662121,
       "status": "paused"
     },
     {

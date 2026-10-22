@@ -1,0 +1,119 @@
+{
+  "pid": 3809555,
+  "device": "cuda:0",
+  "status": "complete",
+  "jobs": [
+    {
+      "resolution": 200,
+      "dataset": "data/separated-shapes-200.pt",
+      "run": "outputs/fm_unet/separated-shapes-200-117k-time32-e500-20261021",
+      "generate": "complete",
+      "train": "complete",
+      "generate_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "-m",
+        "dataset.generate_separated_shapes",
+        "--resolution",
+        "200",
+        "--workers",
+        "4"
+      ],
+      "train_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "scripts/train_separated_shapes.py",
+        "--resolution",
+        "200",
+        "--device",
+        "cuda:0",
+        "--epochs",
+        "500",
+        "--out-dir",
+        "outputs/fm_unet/separated-shapes-200-117k-time32-e500-20261021",
+        "--model-117k"
+      ],
+      "generate_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu0/generate_200.log",
+      "train_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu0/train_200.log",
+      "train_pid": 3809556,
+      "train_started_at": "2026-10-21T00:35:21.197491-04:00",
+      "train_returncode": 0,
+      "train_finished_at": "2026-10-21T11:34:01.613862-04:00"
+    },
+    {
+      "resolution": 160,
+      "dataset": "data/separated-shapes-160.pt",
+      "run": "outputs/fm_unet/separated-shapes-160-117k-time32-e500-20261021",
+      "generate": "complete",
+      "train": "complete",
+      "generate_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "-m",
+        "dataset.generate_separated_shapes",
+        "--resolution",
+        "160",
+        "--workers",
+        "4"
+      ],
+      "train_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "scripts/train_separated_shapes.py",
+        "--resolution",
+        "160",
+        "--device",
+        "cuda:0",
+        "--epochs",
+        "500",
+        "--out-dir",
+        "outputs/fm_unet/separated-shapes-160-117k-time32-e500-20261021",
+        "--model-117k"
+      ],
+      "generate_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu0/generate_160.log",
+      "train_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu0/train_160.log",
+      "train_pid": 37004,
+      "train_started_at": "2026-10-21T11:34:01.626071-04:00",
+      "train_returncode": 0,
+      "train_finished_at": "2026-10-21T18:41:31.894523-04:00"
+    },
+    {
+      "resolution": 96,
+      "dataset": "data/separated-shapes-96.pt",
+      "run": "outputs/fm_unet/separated-shapes-96-117k-time32-e500-20261021",
+      "generate": "complete",
+      "train": "complete",
+      "generate_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "-m",
+        "dataset.generate_separated_shapes",
+        "--resolution",
+        "96",
+        "--workers",
+        "4"
+      ],
+      "train_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "scripts/train_separated_shapes.py",
+        "--resolution",
+        "96",
+        "--device",
+        "cuda:0",
+        "--epochs",
+        "500",
+        "--out-dir",
+        "outputs/fm_unet/separated-shapes-96-117k-time32-e500-20261021",
+        "--model-117k"
+      ],
+      "generate_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu0/generate_96.log",
+      "train_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu0/train_96.log",
+      "train_pid": 198113,
+      "train_started_at": "2026-10-21T18:41:31.895259-04:00",
+      "train_returncode": 0,
+      "train_finished_at": "2026-10-21T21:14:31.993310-04:00"
+    }
+  ],
+  "updated_at": "2026-10-21T21:14:31.993400-04:00"
+}

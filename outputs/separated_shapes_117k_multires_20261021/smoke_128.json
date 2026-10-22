@@ -1,0 +1,16 @@
+[
+  {
+    "resolution": 128,
+    "device": "cuda:1",
+    "micro_batch": 128,
+    "parameters": 116617,
+    "update_seconds": [
+      8.077969613019377,
+      0.20262752659618855,
+      0.051325149834156036
+    ],
+    "training_peak_reserved_gib": 6.009765625,
+    "combined_reference_peak_reserved_gib": 8.697265625,
+    "finite_training_and_reference": true
+  }
+]

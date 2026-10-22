@@ -1,0 +1,17 @@
+{
+  "pid": 380300,
+  "command": [
+    ".venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.ct_mri_sweep.queue",
+    "run",
+    "--out",
+    "/home/samzheng/d-flow/outputs/separated_shapes_117k_noiseless_20261021/production",
+    "--gpus",
+    "1",
+    "--poll-seconds",
+    "10"
+  ],
+  "gpu": 1
+}

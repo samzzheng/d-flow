@@ -1,0 +1,11 @@
+[
+  {
+    "variant": "l2",
+    "method": "DLR D-Flow",
+    "attempts": 14,
+    "image_error_percent": 100.02381752552677,
+    "residual_percent": 100.01094624669958,
+    "original_l2": 350.4602537741065,
+    "status": "stalled"
+  }
+]

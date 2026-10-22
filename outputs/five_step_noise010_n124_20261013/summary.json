@@ -16326,10 +16326,10 @@
       "case": "r200_n4_mri4",
       "sample": 10,
       "method": "P-Flow",
-      "attempts": 52,
-      "accepted_updates": 49,
-      "image_percent": 1.7423972487449646,
-      "residual_percent": 9.891434758901596,
+      "attempts": 189,
+      "accepted_updates": 185,
+      "image_percent": 14.128400385379791,
+      "residual_percent": 4.989060387015343,
       "status": "paused"
     },
     {

@@ -1,0 +1,16 @@
+{
+  "status": "waiting_for_source_review",
+  "updated_at": "2026-10-22T17:01:39.799103-04:00",
+  "training_pending": [],
+  "completed_acquisitions": 2,
+  "total_acquisitions": 12,
+  "gpus": [
+    1
+  ],
+  "completed_shards": 64,
+  "total_shards": 360,
+  "active": {},
+  "gpu_memory_total_used_mib": {},
+  "external_gpu_processes": {},
+  "failed_shards": []
+}

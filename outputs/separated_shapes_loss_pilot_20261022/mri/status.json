@@ -1,0 +1,9 @@
+{
+  "status": "running",
+  "pid": 1739550,
+  "case": "r250_shapes_mri4/sample_001",
+  "method": "dlr_d_flow",
+  "variant": "coarse_to_fine",
+  "stage": 0,
+  "attempts_before_stage": 0
+}

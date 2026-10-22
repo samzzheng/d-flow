@@ -392,7 +392,7 @@ Final saved checkpoints, not retrospective best-image selection. Five-step Euler
 | r250_shapes_ct10/sample_007 | P-Flow | 1000 | 970 | 2.0214 | 0.3135 | step_limit |
 | r250_shapes_ct10/sample_008 | P-Flow | 59 | 48 | 65.1575 | 39.7203 | stalled |
 | r250_shapes_ct10/sample_009 | P-Flow | 61 | 53 | 41.6189 | 15.0574 | stalled |
-| r250_shapes_ct10/sample_010 | P-Flow | 32 | 29 | 3.3848 | 1.1999 | paused |
+| r250_shapes_ct10/sample_010 | P-Flow | 50 | 42 | 1.8544 | 0.6494 | paused |
 | r250_shapes_ct10/sample_000 | DLR D-Flow | 1000 | 967 | 82.8371 | 65.9608 | step_limit |
 | r250_shapes_ct10/sample_001 | DLR D-Flow | 45 | 41 | 99.9850 | 97.1080 | stalled |
 | r250_shapes_ct10/sample_002 | DLR D-Flow | 482 | 464 | 100.0471 | 94.4883 | stalled |
@@ -423,7 +423,7 @@ Final saved checkpoints, not retrospective best-image selection. Five-step Euler
 | r250_shapes_mri4/sample_007 | P-Flow | 86 | 72 | 1.3677 | 0.7075 | stalled |
 | r250_shapes_mri4/sample_008 | P-Flow | 130 | 104 | 2.7085 | 1.4433 | stalled |
 | r250_shapes_mri4/sample_009 | P-Flow | 104 | 88 | 1.6456 | 0.8012 | stalled |
-| r250_shapes_mri4/sample_010 | P-Flow | 31 | 27 | 1.3403 | 0.8848 | paused |
+| r250_shapes_mri4/sample_010 | P-Flow | 50 | 44 | 1.3481 | 0.8637 | paused |
 | r250_shapes_mri4/sample_000 | DLR D-Flow | 202 | 188 | 99.2466 | 99.0341 | stalled |
 | r250_shapes_mri4/sample_001 | DLR D-Flow | 660 | 627 | 99.4823 | 99.4310 | stalled |
 | r250_shapes_mri4/sample_002 | DLR D-Flow | 523 | 504 | 99.6921 | 99.5981 | stalled |

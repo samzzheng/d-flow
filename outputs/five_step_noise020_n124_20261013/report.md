@@ -1650,7 +1650,7 @@ Final saved checkpoints, not retrospective best-image selection. Five-step Euler
 | r200_n4_mri4/sample_007 | P-Flow | 185 | 181 | 25.7466 | 9.7873 | stalled |
 | r200_n4_mri4/sample_008 | P-Flow | 190 | 184 | 24.8028 | 8.9846 | stalled |
 | r200_n4_mri4/sample_009 | P-Flow | 189 | 182 | 24.2576 | 11.5718 | stalled |
-| r200_n4_mri4/sample_010 | P-Flow | 161 | 160 | 26.4373 | 9.8379 | paused |
+| r200_n4_mri4/sample_010 | P-Flow | 183 | 180 | 26.5085 | 9.8347 | stalled |
 | r200_n4_mri4/sample_000 | DLR D-Flow | 270 | 259 | 21.3060 | 25.1638 | stalled |
 | r200_n4_mri4/sample_001 | DLR D-Flow | 474 | 446 | 53.7834 | 53.3109 | stalled |
 | r200_n4_mri4/sample_002 | DLR D-Flow | 129 | 122 | 69.1893 | 69.0097 | stalled |
@@ -1661,6 +1661,7 @@ Final saved checkpoints, not retrospective best-image selection. Five-step Euler
 | r200_n4_mri4/sample_007 | DLR D-Flow | 1000 | 969 | 19.1630 | 24.2855 | step_limit |
 | r200_n4_mri4/sample_008 | DLR D-Flow | 207 | 198 | 56.5281 | 54.3070 | stalled |
 | r200_n4_mri4/sample_009 | DLR D-Flow | 1000 | 965 | 11.9222 | 21.2680 | step_limit |
+| r200_n4_mri4/sample_010 | DLR D-Flow | 25 | 25 | 80.4429 | 77.9674 | paused |
 | r250_n1_ct10/sample_000 | D-Flow | 575 | 573 | 205.6643 | 0.7813 | stalled |
 | r250_n1_ct10/sample_001 | D-Flow | 616 | 614 | 148.5193 | 0.6079 | stalled |
 | r250_n1_ct10/sample_002 | D-Flow | 635 | 633 | 107.9091 | 0.9154 | stalled |
@@ -1962,6 +1963,6 @@ Final saved checkpoints, not retrospective best-image selection. Five-step Euler
 | r250_n4_mri4/sample_008 | DLR D-Flow | 829 | 803 | 73.7976 | 72.8998 | stalled |
 | r250_n4_mri4/sample_009 | DLR D-Flow | 1000 | 969 | 42.0490 | 43.4575 | step_limit |
 
-Terminal method runs: 1953/3240. Running rows are provisional.
+Terminal method runs: 1954/3240. Running rows are provisional.
 
 Each production acquisition saves `sample_NNN/comparison.png` and `.pdf`, including images and clean-reference measurements.

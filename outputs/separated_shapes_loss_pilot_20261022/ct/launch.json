@@ -1,0 +1,17 @@
+{
+  "pid": 1739549,
+  "command": [
+    "/home/samzheng/d-flow/.venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.separated_shapes_117k.measurement_loss_study",
+    "--case",
+    "r250_shapes_ct10/sample_000",
+    "--out",
+    "outputs/separated_shapes_loss_pilot_20261022/ct"
+  ],
+  "log": "outputs/separated_shapes_loss_pilot_20261022/ct/worker.log",
+  "started_at": "2026-10-22T17:01:16.426188-04:00",
+  "code_commit": "49567df",
+  "gpu": 1
+}

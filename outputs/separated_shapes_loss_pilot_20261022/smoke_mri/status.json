@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "pid": 1736491,
+  "case": "r250_shapes_mri4/sample_001",
+  "method": "p_flow",
+  "variant": "l2_resets",
+  "stage": 3,
+  "attempts_before_stage": 3
+}

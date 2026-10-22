@@ -1,0 +1,8 @@
+{
+  "status": "complete",
+  "samples": 128,
+  "models": [
+    "22k",
+    "22k-time32"
+  ]
+}

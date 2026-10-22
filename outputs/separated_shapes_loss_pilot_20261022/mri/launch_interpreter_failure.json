@@ -1,0 +1,17 @@
+{
+  "pid": 1739252,
+  "command": [
+    "/home/samzheng/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/bin/python3.11",
+    "-u",
+    "-m",
+    "experiments.separated_shapes_117k.measurement_loss_study",
+    "--case",
+    "r250_shapes_mri4/sample_001",
+    "--out",
+    "outputs/separated_shapes_loss_pilot_20261022/mri"
+  ],
+  "log": "outputs/separated_shapes_loss_pilot_20261022/mri/worker.log",
+  "started_at": "2026-10-22T17:00:56.324440-04:00",
+  "code_commit": "49567df",
+  "gpu": 1
+}

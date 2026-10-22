@@ -1638,7 +1638,7 @@ Final saved checkpoints, not retrospective best-image selection. Five-step Euler
 | r200_n4_mri4/sample_007 | P-Flow | 173 | 169 | 13.7174 | 4.9688 | stalled |
 | r200_n4_mri4/sample_008 | P-Flow | 212 | 196 | 13.1792 | 4.5568 | stalled |
 | r200_n4_mri4/sample_009 | P-Flow | 174 | 169 | 13.0530 | 5.8653 | stalled |
-| r200_n4_mri4/sample_010 | P-Flow | 52 | 49 | 1.7424 | 9.8914 | paused |
+| r200_n4_mri4/sample_010 | P-Flow | 189 | 185 | 14.1284 | 4.9891 | paused |
 | r200_n4_mri4/sample_000 | DLR D-Flow | 1000 | 972 | 18.9310 | 17.9838 | step_limit |
 | r200_n4_mri4/sample_001 | DLR D-Flow | 273 | 265 | 56.3424 | 53.0938 | stalled |
 | r200_n4_mri4/sample_002 | DLR D-Flow | 318 | 305 | 51.0670 | 48.6163 | stalled |

@@ -1,8 +1,0 @@
-{
-  "checked_at": "2026-10-22T11:36",
-  "checks": "Original native segment history preserved bitwise as JSON; FP64 source and original settings/budget preserved; native-to-graphed transition recorded; optimizer resumed beyond 138 without resetting its counters.",
-  "last_saved_step": 165,
-  "preserved_history_sha256": "e96f68336a4a3579bc043c7417a476404cfea293c1db9cd99e0eff26a94190a8",
-  "curvature_pairs": 12,
-  "total_attempts": 315
-}

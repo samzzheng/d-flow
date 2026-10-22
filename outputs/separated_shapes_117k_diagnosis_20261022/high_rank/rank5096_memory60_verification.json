@@ -1,8 +1,0 @@
-{
-  "same_source": true,
-  "same_original_and_extended_sketch": true,
-  "mathematical_settings_equal": true,
-  "memory_fraction_before": 0.52,
-  "memory_fraction_after": 0.6,
-  "note": "Verified configuration pairing before first gradient completion. This is not an accuracy result."
-}

@@ -1,5 +1,5 @@
 {
-  "terminal_runs": 1953,
+  "terminal_runs": 1954,
   "total_runs": 3240,
   "rows": [
     {
@@ -16446,11 +16446,11 @@
       "case": "r200_n4_mri4",
       "sample": 10,
       "method": "P-Flow",
-      "attempts": 161,
-      "accepted_updates": 160,
-      "image_percent": 26.437345147132874,
-      "residual_percent": 9.837916493415833,
-      "status": "paused"
+      "attempts": 183,
+      "accepted_updates": 180,
+      "image_percent": 26.508501172065735,
+      "residual_percent": 9.834681451320648,
+      "status": "stalled"
     },
     {
       "case": "r200_n4_mri4",
@@ -16551,6 +16551,16 @@
       "image_percent": 11.922220140695572,
       "residual_percent": 21.268004179000854,
       "status": "step_limit"
+    },
+    {
+      "case": "r200_n4_mri4",
+      "sample": 10,
+      "method": "DLR D-Flow",
+      "attempts": 25,
+      "accepted_updates": 25,
+      "image_percent": 80.44290542602539,
+      "residual_percent": 77.96741724014282,
+      "status": "paused"
     },
     {
       "case": "r250_n1_ct10",

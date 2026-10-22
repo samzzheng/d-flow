@@ -1,0 +1,82 @@
+{
+  "pid": 3809093,
+  "device": "cuda:1",
+  "status": "complete",
+  "jobs": [
+    {
+      "resolution": 250,
+      "dataset": "data/separated-shapes-250.pt",
+      "run": "outputs/fm_unet/separated-shapes-250-117k-time32-e500-20261021",
+      "generate": "complete",
+      "train": "complete",
+      "generate_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "-m",
+        "dataset.generate_separated_shapes",
+        "--resolution",
+        "250",
+        "--workers",
+        "4"
+      ],
+      "train_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "scripts/train_separated_shapes.py",
+        "--resolution",
+        "250",
+        "--device",
+        "cuda:1",
+        "--epochs",
+        "500",
+        "--out-dir",
+        "outputs/fm_unet/separated-shapes-250-117k-time32-e500-20261021",
+        "--model-117k"
+      ],
+      "generate_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu1/generate_250.log",
+      "train_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu1/train_250.log",
+      "train_pid": 3809096,
+      "train_started_at": "2026-10-21T00:34:43.269449-04:00",
+      "train_returncode": 0,
+      "train_finished_at": "2026-10-21T18:18:03.991752-04:00"
+    },
+    {
+      "resolution": 128,
+      "dataset": "data/separated-shapes-128.pt",
+      "run": "outputs/fm_unet/separated-shapes-128-117k-time32-e500-20261021",
+      "generate": "complete",
+      "train": "complete",
+      "generate_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "-m",
+        "dataset.generate_separated_shapes",
+        "--resolution",
+        "128",
+        "--workers",
+        "4"
+      ],
+      "train_command": [
+        "/home/samzheng/d-flow/.venv/bin/python3",
+        "-u",
+        "scripts/train_separated_shapes.py",
+        "--resolution",
+        "128",
+        "--device",
+        "cuda:1",
+        "--epochs",
+        "500",
+        "--out-dir",
+        "outputs/fm_unet/separated-shapes-128-117k-time32-e500-20261021",
+        "--model-117k"
+      ],
+      "generate_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu1/generate_128.log",
+      "train_log": "/home/samzheng/d-flow/outputs/separated_shapes_117k_multires_20261021/gpu1/train_128.log",
+      "train_pid": 193708,
+      "train_started_at": "2026-10-21T18:18:03.992683-04:00",
+      "train_returncode": 0,
+      "train_finished_at": "2026-10-21T22:58:54.185597-04:00"
+    }
+  ],
+  "updated_at": "2026-10-21T22:58:54.185698-04:00"
+}

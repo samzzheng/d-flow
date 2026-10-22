@@ -1,0 +1,70 @@
+{
+  "status": "step_limit",
+  "attempts": 4,
+  "history": [
+    {
+      "step": 0,
+      "phi": 6.5577566104601885,
+      "elapsed_seconds": 0.0,
+      "image_relative_l2": 1.082012414932251,
+      "measurement_relative_l2_clean": 0.9775809645652771,
+      "measurement_relative_l2_noisy": 0.9775809645652771,
+      "residual_over_noise": null,
+      "stage": 0,
+      "original_l2": 2.5584646099188535
+    },
+    {
+      "step": 1,
+      "phi": 6.549734146799389,
+      "source_step_norm": 0.011787863448262215,
+      "line_search_trials": 1,
+      "elapsed_seconds": 0.39549893885850906,
+      "image_relative_l2": 1.0822803974151611,
+      "measurement_relative_l2_clean": 0.9776115417480469,
+      "measurement_relative_l2_noisy": 0.9776115417480469,
+      "residual_over_noise": null,
+      "stage": 0,
+      "original_l2": 2.5586246618558044
+    },
+    {
+      "step": 2,
+      "phi": 6.024224418094564,
+      "source_step_norm": 0.6750420928001404,
+      "line_search_trials": 1,
+      "elapsed_seconds": 0.6604442070238292,
+      "image_relative_l2": 1.0959261655807495,
+      "measurement_relative_l2_clean": 0.9773800373077393,
+      "measurement_relative_l2_noisy": 0.9773800373077393,
+      "residual_over_noise": null,
+      "stage": 0,
+      "original_l2": 2.5574130091472216
+    },
+    {
+      "step": 3,
+      "phi": 4.415664724810496,
+      "source_step_norm": 2.5,
+      "line_search_trials": 1,
+      "elapsed_seconds": 0.8561402917839587,
+      "image_relative_l2": 1.2322508096694946,
+      "measurement_relative_l2_clean": 1.1008596420288086,
+      "measurement_relative_l2_noisy": 1.1008596420288086,
+      "residual_over_noise": null,
+      "stage": 0,
+      "original_l2": 3.244425770392369
+    },
+    {
+      "step": 4,
+      "phi": 4.187349188028964,
+      "source_step_norm": 1.25,
+      "line_search_trials": 2,
+      "elapsed_seconds": 1.0794174228794873,
+      "image_relative_l2": 1.2805386781692505,
+      "measurement_relative_l2_clean": 1.1680392026901245,
+      "measurement_relative_l2_noisy": 1.1680392026901245,
+      "residual_over_noise": null,
+      "stage": 0,
+      "original_l2": 3.6524878461610384
+    }
+  ],
+  "final_checkpoint": "intensity/dlr_d_flow/stage_0.pt"
+}
