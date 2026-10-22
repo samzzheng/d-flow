@@ -1,5 +1,6 @@
 """The audit differentiates the complete discrete map in the correct order."""
 import unittest
+from unittest.mock import patch
 
 import torch
 
@@ -7,6 +8,9 @@ from experiments.separated_shapes_117k.gradient_audit import DiscreteProducts
 from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 from sampler.ode_samplers import euler_flow
+from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
+from experiments.separated_shapes_117k.exact_suffix import suffix_gradient
+from dlr_dflow.api import sensitivity_factors
 
 
 class NonlinearVelocity(torch.nn.Module):
@@ -20,6 +24,44 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_exact_suffix_uses_low_rank_prefix_instead_of_full_gradient(self) -> None:
+        torch.manual_seed(61)
+        model = NonlinearVelocity()
+        source = .1*torch.randn(1, 1, 3, 3, dtype=torch.float64)
+        terminal = torch.randn_like(source)
+        options = dict(rank=3, trace_probes=0, enrichment_probes=0, initialization_oversampling=0)
+        recorded = {}
+        sensitivity_factors(model, source, 5, **options, seed=9,
+            products=ChunkedAutodiffProducts(model),
+            factor_callback=lambda step, alpha, factors: recorded.update({step: (alpha, factors)}))
+        alpha, (U, S, V) = recorded[4]
+        prefix_matrix = alpha*torch.eye(9, dtype=source.dtype)+U @ S @ V.T
+        point = DiscreteProducts(model, source, 5).points[4]
+        local = torch.func.jacrev(lambda value: value + .2*model(value, value.new_tensor([.8])))(point).reshape(9, 9)
+        expected = prefix_matrix.T @ local.T @ terminal.flatten()
+        actual, _ = suffix_gradient(model, source, terminal, 5, 1, options, 9,
+                                    products=ChunkedAutodiffProducts(model))
+        torch.testing.assert_close(actual.flatten(), expected, rtol=1e-10, atol=1e-11)
+        exact = DiscreteProducts(model, source, 5).apply(terminal.reshape(-1, 1), transpose=True)
+        self.assertGreater(float((actual.flatten()-exact.flatten()).norm()), 1e-5)
+
+    def test_exact_suffix_full_rank_matches_native_gradient_and_stops_prefix(self) -> None:
+        torch.manual_seed(52)
+        model = NonlinearVelocity()
+        source = .1*torch.randn(1, 1, 3, 3, dtype=torch.float64)
+        terminal = torch.randn_like(source)
+        variable = source.detach().requires_grad_(True)
+        exact, = torch.autograd.grad(euler_flow(model, variable, 5), variable, terminal)
+        for suffix_steps in (1, 4):
+            products = ChunkedAutodiffProducts(model)
+            with patch.object(products, "set_state", wraps=products.set_state) as calls:
+                gradient, basis = suffix_gradient(model, source, terminal, 5, suffix_steps,
+                    dict(rank=9, trace_probes=0, enrichment_probes=0, initialization_oversampling=0),
+                    seed=7, products=products)
+            torch.testing.assert_close(gradient, exact, rtol=1e-10, atol=1e-11)
+            self.assertEqual(basis.shape, (9, 9))
+            self.assertLessEqual(max(call.args[0] for call in calls.call_args_list), (4-suffix_steps)/5+1e-15)
+
     def test_refined_increment_preserves_target_and_reduces_projection_error(self) -> None:
         torch.manual_seed(49)
         dimension, h, alpha = 16, .2, .6

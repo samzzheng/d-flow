@@ -81,6 +81,10 @@ def main() -> None:
     parser.add_argument("--line-search-audit", action="store_true")
     parser.add_argument("--saved-direction-audit", action="store_true",
         help="Probe both signs of the saved optimizer gradient using exact objective slopes")
+    parser.add_argument("--repeat-gradients", type=int, default=0,
+        help="Repeat native exact gradients at one unchanged source to measure arithmetic variation")
+    parser.add_argument("--suffix-audit", action="store_true",
+        help="Measure DLR-prefix errors with exact adjoints through the remaining Euler steps")
     parser.add_argument("--exact-only", action="store_true")
     parser.add_argument("--double", action="store_true")
     parser.add_argument("--manifest", type=Path,
@@ -151,6 +155,16 @@ def main() -> None:
         image_error=float((image.detach()-inputs["truth"]).norm()/inputs["truth"].norm()),
         exact_gradient_norm=float(exact.norm()), adjoint_relative_error=error, rows=[],
         note="Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.")
+    if args.repeat_gradients:
+        repeats = []
+        for _ in range(args.repeat_gradients):
+            repeated_image = euler_flow(model, variable, settings["flow_steps"])
+            repeated_loss = .5*(operator(repeated_image)-inputs["observed"]).abs().square().sum(dtype=torch.float64)
+            repeated_gradient, = torch.autograd.grad(repeated_loss, variable)
+            repeats.append(dict(image_bitwise_equal=torch.equal(repeated_image.detach(), image.detach()),
+                objective_change=float(repeated_loss.detach())-report["objective"],
+                gradient_change_over_exact_norm=float((repeated_gradient.reshape_as(exact)-exact).norm()/exact.norm())))
+        report["repeated_native_gradients"] = repeats
 
     @torch.no_grad()
     def line_trials(gradient: torch.Tensor) -> list[dict[str, Any]]:
@@ -196,6 +210,10 @@ def main() -> None:
     for rank in args.ranks:
         for warm in (False, True) if saved is not None and saved.get("previous_v") is not None else (False,):
             options = {**settings["dlr"], "rank": rank}
+            prefix_factors: dict[int, tuple[float, tuple[torch.Tensor, ...]]] = {}
+            if args.suffix_audit:
+                options["factor_callback"] = lambda step, alpha, factors: prefix_factors.update({
+                    step: (float(alpha), tuple(value.detach().clone() for value in factors))})
             if args.factor_arithmetic == "canonical":
                 options.update(adaptive_rank=True, rank_min=rank, rank_max=rank)
             seed_basis = saved["previous_v"] if warm else None
@@ -217,6 +235,20 @@ def main() -> None:
                        terminal_seed=args.terminal_seed, **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
             report["rows"].append(row)
+            if args.suffix_audit:
+                suffix = terminal.reshape(-1, 1)
+                suffix_rows = []
+                for prefix in range(settings["flow_steps"], -1, -1):
+                    baseline, (left, core, right) = prefix_factors[prefix]
+                    hybrid = baseline*suffix + right @ (core.T @ (left.T @ suffix))
+                    suffix_rows.append(dict(prefix_steps=prefix, suffix_steps=settings["flow_steps"]-prefix,
+                        relative_error=float((hybrid-exact).norm()/exact.norm()),
+                        cosine=float(torch.nn.functional.cosine_similarity(hybrid.flatten(), exact.flatten(), dim=0)),
+                        norm_ratio=float(hybrid.norm()/exact.norm())))
+                    if prefix:
+                        reference.local.set_state((prefix-1)*reference.h, reference.points[prefix-1])
+                        suffix = suffix + reference.h*reference.local.AT(suffix)
+                row["exact_suffix_diagnostics"] = suffix_rows
             if args.line_search_audit:
                 row["line_trials"] = line_trials(estimate)
             run.write_json(args.out, report)

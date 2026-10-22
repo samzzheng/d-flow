@@ -1,0 +1,96 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_pilot/rank128/r250_shapes_mri4/sample_004/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_pilot/rank128/r250_shapes_mri4/sample_004/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "aee350679ade76ee0255d721df5a7462462ad648b8b87de36064431d75406959",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "objective": 141.18854614619258,
+  "image_error": 0.3123510181903839,
+  "exact_gradient_norm": 0.08070354163646698,
+  "adjoint_relative_error": 5.262655577098485e-06,
+  "rows": [],
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "repeated_native_gradients": [
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.0029425488464767e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.110722445853753e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 2.954427145596128e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 2.9056980110908626e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.278572194176377e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.00733040603518e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.164366262353724e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.04855416288774e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.050511850233306e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 2.934384610853158e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 2.900562776630977e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.172980541421566e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.05723392557411e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.035649342564284e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.1388108254759572e-06
+    },
+    {
+      "image_bitwise_equal": true,
+      "objective_change": 0.0,
+      "gradient_change_over_exact_norm": 3.115777872153558e-06
+    }
+  ],
+  "status": "complete"
+}
