@@ -44,3 +44,37 @@ class ScaleRecoveryLBFGS(SweepLBFGS):
                 direction = direction * (self.step_cap / (self.lr * norm))
                 self.scaled_recoveries = getattr(self, "scaled_recoveries", 0) + 1
         return direction
+
+
+def safeguard_direction(direction: torch.Tensor, gradient: torch.Tensor,
+                        minimum_cosine: float) -> torch.Tensor:
+    """Rotate toward negative gradient only when needed, retaining step length."""
+    length, gradient_norm = direction.norm(), gradient.norm()
+    if not torch.isfinite(length+gradient_norm) or length == 0 or gradient_norm == 0:
+        return direction
+    downhill = -gradient/gradient_norm
+    parallel = direction.dot(downhill)
+    if parallel >= minimum_cosine*length:
+        return direction
+    perpendicular = direction-parallel*downhill
+    perpendicular_norm = perpendicular.norm()
+    if perpendicular_norm == 0:
+        return length*downhill
+    return length*(minimum_cosine*downhill +
+                   (1-minimum_cosine**2)**.5*perpendicular/perpendicular_norm)
+
+
+class AngleSafeguardedLBFGS(SweepLBFGS):
+    """Preserve curvature history but bound the direction's descent angle."""
+
+    def __init__(self, source: torch.Tensor, objective: Objective,
+                 minimum_cosine: float = .1, **kwargs: Any) -> None:
+        if not 0 < minimum_cosine < 1:
+            raise ValueError("minimum_cosine must lie strictly between zero and one")
+        if kwargs.get("project", True):
+            raise ValueError("Angle safeguarding currently supports unconstrained sources only")
+        super().__init__(source, objective, **kwargs)
+        self.minimum_cosine = minimum_cosine
+
+    def _direction(self) -> torch.Tensor:
+        return safeguard_direction(super()._direction(), self.g, self.minimum_cosine)

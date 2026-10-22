@@ -1,0 +1,39 @@
+{
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/native_precision_recovery_mri2_floor64/float64/dlr_d_flow.pt",
+  "snapshot": "outputs/separated_shapes_117k_diagnosis_20261022/full_map_audit/mri2_lbfgs_direction_cpu.pt",
+  "snapshot_sha256": "15480128d380b2cf519d6d414b582fbeb0cc8bd9ee86c7322a9f826e1672503d",
+  "script_sha256": "47ed9539889dd3cba33897b99255b9533a612065bf7ae1dd23304de6aeabcac1",
+  "step": 540,
+  "curvature_pairs": 9,
+  "device": "cpu",
+  "endpoint_relative_difference": 1.1401139329366281e-07,
+  "objective_absolute_difference": 4.475217256771913e-07,
+  "objective": 0.6500361765660908,
+  "saved_objective": 0.6500366240878165,
+  "gradient_relative_error": 0.3731903660702624,
+  "gradient_cosine": 0.927756588648547,
+  "unit_direction_exact_slope": -0.023901408478430922,
+  "unit_direction_predicted_slope": -0.030640812271403965,
+  "direction_norm_before_normalization": 0.006613260034630463,
+  "fallback": false,
+  "direction_error_slope_fraction": 0.2199486010122072,
+  "exact_direction_cosine": 0.01822841028035492,
+  "finite_differences": [
+    {
+      "displacement": 1e-05,
+      "slope": -0.023901403367609927,
+      "relative_slope_error": 2.1382928124055075e-07
+    },
+    {
+      "displacement": 1e-06,
+      "slope": -0.02390140602104296,
+      "relative_slope_error": 1.0281352103051634e-07
+    },
+    {
+      "displacement": 1e-07,
+      "slope": -0.023901398082948333,
+      "relative_slope_error": 4.349317990488747e-07
+    }
+  ],
+  "scope": "Fixed saved-state diagnostic, native FP64. CPU mode uses CUDA1 only to construct CT geometry. No reconstruction or optimizer changes."
+}

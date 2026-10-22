@@ -45,6 +45,10 @@ With zero enrichment, each factor update has only the current number of candidat
 
 The paired oversampling0/8 diagnostic found no stability advantage from removing oversampling. Both gradient estimates followed the strongly varying exact gradient, with approximately1.3% error in its change. [Fixed-source sketch control](full_map_audit/ct1_sketch_smoothness_report.md).
 
+## L-BFGS directional amplification
+
+At a saved CT prefix3 state, gradient error is only1.34% but L-BFGS predicts51.5 times the true first-order decrease along its proposed direction. Native GPU derivatives and finite differences confirm this. An experimental minimum descent cosine0.05 improves the same-state accepted objective decrease1.18e-9 to5.21e-6 with the same10 trials, without extra model derivatives. This candidate has geometric regression tests but no completed paired reconstruction yet. [Direction audit and safeguard](full_map_audit/lbfgs_direction_report.md).
+
 ## Current bounded recovery tests
 
 - The three-object MRI4 retained-seed FP64 continuation completed the original1000-attempt budget: image error94.224% to73.720%. This is substantial numerical progress but remains an inaccurate reconstruction.
