@@ -96,3 +96,11 @@ Native FP32 gradients at six selected collapsed endpoints differ from FP64 by5.7
 Higher precision only in GroupNorm, Euler-state accumulation, or both is inconsistent and sometimes reverses the gradient relative to FP64. Do not promote these partial-precision options. A paired rank32 FP32/FP64 reconstruction from the original Gaussian source is running on MRI250 sample0, with unchanged optimizer and1000-attempt cap. This tests prevention of collapse rather than recovery afterward. Both derivative backends are independently checked at initialization; experimental precision remains isolated.
 
 [Precision report](dataset_difficulty/endpoint_precision_report.md) · [From-start control](precision_from_start_mri0/launch.json).
+
+## Rank during optimization is not permanently decreasing
+
+The verified high-start checkpoints at14:30 reach CT250 sample7 image error5.324% after780 attempts and MRI250 sample4 error1.518% after790. Both runs use near-cap terminal ranks during major improvements; the latest CT rank record then drops to40 while MRI remains253. These are still partial unrestricted-truncation controls, with initialization-retained and gradual variants pending. The rank criterion acts on the approximated core, not a certified exact Jacobian.
+
+Within a single zero-enrichment flow pass, rank can only shrink. Across optimizer iterations, the source changes and each refresh initializes at the maximum rank, so terminal rank can rise again. The observed rank trajectories argue against assuming that a small terminal rank at initialization remains sufficient throughout optimization. They do not establish a causal benefit for the gradual policy before its paired controls run.
+
+[Latest convergence and terminal-rank curves](progressive_rank/latest_progress.md).

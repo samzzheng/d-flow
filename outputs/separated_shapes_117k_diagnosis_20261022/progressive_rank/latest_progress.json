@@ -1,0 +1,40 @@
+[
+  {
+    "case": "r250_shapes_ct10/sample_007",
+    "variant": "unrestricted256",
+    "status": "running",
+    "attempt": 780,
+    "image_error": 5.324194952845573,
+    "residual": 0.9726054035127163,
+    "first_terminal_rank": 32,
+    "last_terminal_rank": 40,
+    "last_rank_path": [
+      256,
+      256,
+      255,
+      40,
+      40
+    ],
+    "last_rank_objective": 0.0012175265191312966,
+    "terminal_at_cap_fraction": 0.2809278350515464
+  },
+  {
+    "case": "r250_shapes_mri4/sample_004",
+    "variant": "unrestricted256",
+    "status": "running",
+    "attempt": 790,
+    "image_error": 1.5180696733295918,
+    "residual": 0.8046059869229794,
+    "first_terminal_rank": 82,
+    "last_terminal_rank": 253,
+    "last_rank_path": [
+      256,
+      256,
+      256,
+      256,
+      253
+    ],
+    "last_rank_objective": 0.10002965186524332,
+    "terminal_at_cap_fraction": 0.0
+  }
+]
