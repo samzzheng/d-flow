@@ -23,23 +23,44 @@
   {
     "case": "r250_shapes_ct10/sample_007",
     "variant": "retain_initial256",
-    "status": "running",
-    "attempt": 250,
-    "image_error": 33.8979035615921,
-    "residual": 20.196938514709473,
+    "status": "stalled",
+    "attempt": 593,
+    "image_error": 34.03840363025665,
+    "residual": 19.921930134296417,
     "first_terminal_rank": 32,
-    "last_terminal_rank": 145,
+    "last_terminal_rank": 32,
     "last_rank_path": [
       256,
       256,
-      256,
-      256,
-      145
+      253,
+      65,
+      32
     ],
-    "last_rank_objective": 0.5402533592353771,
+    "last_rank_objective": 0.5256410079384027,
     "initial_rank_below_cap_evaluations": 0,
-    "rank_evaluations": 250,
-    "terminal_at_cap_fraction": 0.436
+    "rank_evaluations": 583,
+    "terminal_at_cap_fraction": 0.18696397941680962
+  },
+  {
+    "case": "r250_shapes_ct10/sample_007",
+    "variant": "gradual256",
+    "status": "stalled",
+    "attempt": 152,
+    "image_error": 90.78018069267273,
+    "residual": 72.35978245735168,
+    "first_terminal_rank": 69,
+    "last_terminal_rank": 32,
+    "last_rank_path": [
+      256,
+      256,
+      128,
+      64,
+      32
+    ],
+    "last_rank_objective": 6.934592549070563,
+    "initial_rank_below_cap_evaluations": 0,
+    "rank_evaluations": 147,
+    "terminal_at_cap_fraction": 0.0
   },
   {
     "case": "r250_shapes_mri4/sample_004",
@@ -66,21 +87,21 @@
     "case": "r250_shapes_mri4/sample_004",
     "variant": "retain_initial256",
     "status": "running",
-    "attempt": 90,
-    "image_error": 31.121647357940674,
-    "residual": 30.221322178840637,
+    "attempt": 600,
+    "image_error": 2.1839486435055733,
+    "residual": 1.4713113196194172,
     "first_terminal_rank": 82,
-    "last_terminal_rank": 99,
+    "last_terminal_rank": 184,
     "last_rank_path": [
       256,
       256,
-      191,
-      99,
-      99
+      256,
+      255,
+      184
     ],
-    "last_rank_objective": 142.15457208105096,
+    "last_rank_objective": 0.25833858852993674,
     "initial_rank_below_cap_evaluations": 0,
-    "rank_evaluations": 99,
-    "terminal_at_cap_fraction": 0.0
+    "rank_evaluations": 596,
+    "terminal_at_cap_fraction": 0.0016778523489932886
   }
 ]

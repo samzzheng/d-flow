@@ -1,14 +1,23 @@
 {
-  "checked_at": "2026-10-22T14:58:38.264144-04:00",
+  "checked_at": "2026-10-22T15:48:39.467193-04:00",
   "rows": [
     {
       "case": "r250_shapes_ct10/sample_007",
+      "variant": "gradual256",
+      "status": "stalled",
+      "step": 152,
+      "image_error_percent": 90.78017496811616,
+      "residual_percent": 72.35978614123994,
+      "verified_rank_evaluations": 147
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
       "variant": "retain_initial256",
-      "status": "running",
-      "step": 240,
-      "image_error_percent": 34.50303740991251,
-      "residual_percent": 20.246609412754825,
-      "verified_rank_evaluations": 249
+      "status": "stalled",
+      "step": 593,
+      "image_error_percent": 34.038403485427075,
+      "residual_percent": 19.921930432771912,
+      "verified_rank_evaluations": 583
     },
     {
       "case": "r250_shapes_ct10/sample_007",
@@ -23,10 +32,10 @@
       "case": "r250_shapes_mri4/sample_004",
       "variant": "retain_initial256",
       "status": "running",
-      "step": 90,
-      "image_error_percent": 31.12164978035902,
-      "residual_percent": 30.221320209764546,
-      "verified_rank_evaluations": 99
+      "step": 590,
+      "image_error_percent": 2.2203395141390705,
+      "residual_percent": 1.5019951521812613,
+      "verified_rank_evaluations": 588
     },
     {
       "case": "r250_shapes_mri4/sample_004",

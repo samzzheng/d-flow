@@ -36,12 +36,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--rank", type=int, default=5096)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--memory-fraction", type=float, default=.52)
+    parser.add_argument("--reconstruction-directory", default="reconstruction")
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
     torch.cuda.set_device(device)
-    torch.cuda.set_per_process_memory_fraction(.52, device)
+    torch.cuda.set_per_process_memory_fraction(args.memory_fraction, device)
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
     torch.backends.cudnn.benchmark = False
@@ -58,7 +60,7 @@ def main() -> None:
     protocol = inputs["protocol"]
     settings = json.loads((baseline/"manifest.json").read_text())["settings"]
     settings["dlr"].update(rank=args.rank, adaptive_rank=False)
-    settings["execution"].update(memory_fraction=.52, dlr_full_step_graphs=False,
+    settings["execution"].update(memory_fraction=args.memory_fraction, dlr_full_step_graphs=False,
         dlr_jvp_columns=20, dlr_vjp_columns=16, dlr_fused_norm="native", dlr_fused_primal="native")
     folder = Path(settings["run_template"].format(resolution=250))
     assert hashlib.sha256((folder/"checkpoints/epoch_0500.pt").read_bytes()).hexdigest() == protocol["checkpoint_sha256"]
@@ -89,14 +91,14 @@ def main() -> None:
         full_step_graphs=False, max_jvp_columns=20, max_vjp_columns=16)
     evaluator = ProfiledEvaluator(model, operator, inputs["observed"], settings, protocol["dlr_seed"], products)
     evaluator.previous_v = sketch
-    path = args.out/"reconstruction"/case/f"rank{args.rank}"
+    path = args.out/args.reconstruction_directory/case/f"rank{args.rank}"
     path.mkdir(parents=True, exist_ok=True)
     evaluator.profile_path = path/"first_refresh_profile.json"
     experiment = dict(settings=settings, original_sketch_sha256=original_sketch_hash,
         extended_sketch_sha256=hashlib.sha256(sketch.cpu().numpy().tobytes()).hexdigest(),
         source_sha256=hashlib.sha256(initial.cpu().numpy().tobytes()).hexdigest(),
         script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        note="Existing2056 random sketch columns preserved; append independently seeded Rademacher columns. Same original source/model/operator and optimizer as32/1024/2048. No method change beyond rank. Memory cap52% after free-memory admission.")
+        note=f"Existing2056 random sketch columns preserved; append independently seeded Rademacher columns. Same original source/model/operator and optimizer as32/1024/2048. No method change beyond rank. Memory cap {args.memory_fraction:.0%} after free-memory admission.")
     run.write_json(path/"config.json", experiment)
     torch.cuda.reset_peak_memory_stats(device)
     started = time.perf_counter()

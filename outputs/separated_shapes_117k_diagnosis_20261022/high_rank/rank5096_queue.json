@@ -1,5 +1,5 @@
 {
-  "status": "queued",
+  "status": "failed",
   "wait_for_pid": 1669430,
   "minimum_free_mib": 30720,
   "command": [
@@ -15,7 +15,11 @@
   "script_sha256": "628c26c08ffbc4de453da3ae2f8952404a33b67e57524e89488e4801d3a68443",
   "note": "GPU1 only; wait until same-sample1024/2048 worker exits and at least30GiB is free. Allocation cap52%; record first factor refresh and OOM explicitly. Existing workers unchanged.",
   "coordinator_pid": 1676034,
-  "waiting_for_same_sample": true,
-  "free_mib": 21902,
-  "checked_at": 1792696462.5382614
+  "waiting_for_same_sample": false,
+  "free_mib": 32282,
+  "checked_at": 1792698504.284144,
+  "worker_pid": 1694747,
+  "started_at": 1792698504.284929,
+  "returncode": 1,
+  "finished_at": 1792698735.363716
 }

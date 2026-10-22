@@ -1,0 +1,112 @@
+{
+  "rows": [
+    {
+      "variant": "initial",
+      "source_sha256": "87a4391679ce27e89dfc30734bc976b2fe18afde592747421478835e1b28a6e2",
+      "terminal_relative_changes": [
+        3.503686163976906e-08,
+        3.498146361740819e-08,
+        3.4679861816009104e-08,
+        3.53910807266538e-08,
+        3.504280530460373e-08,
+        3.468230867753786e-08,
+        3.526170341499256e-08
+      ],
+      "source_relative_changes": [
+        7.088843372641706e-07,
+        2.0316093298886924e-07,
+        1.8987195097842986e-07,
+        1.5433686920433043e-07,
+        2.408878055922877e-07,
+        2.5041400943546357e-07,
+        4.0266727061325327e-07
+      ],
+      "fixed_terminal_source_relative_changes": [
+        4.0266222823550403e-07,
+        3.99557730810376e-07,
+        6.146797410927472e-07,
+        2.1327020181533e-07,
+        2.1507767552986432e-07,
+        2.3008722080549693e-07,
+        3.082640977312442e-07
+      ],
+      "cpu_double_adjoint_relative_difference": 3.6801849429618975e-06,
+      "propagated_cpu_double_adjoint_relative_difference": 4.132654638305306e-07,
+      "terminal_norm": 0.6570094847615454,
+      "source_gradient_norm": 1.285169964955761
+    },
+    {
+      "variant": "unrestricted256",
+      "source_sha256": "8ec18ff554978fdb39f30e36f1eccab5336a97f5efbdcdc312b3097d14d24084",
+      "terminal_relative_changes": [
+        4.666580940509715e-08,
+        4.6983110106685626e-08,
+        4.710844361197928e-08,
+        4.677728167097365e-08,
+        4.613386101938013e-08,
+        4.6686132162683975e-08,
+        4.6947977792648946e-08
+      ],
+      "source_relative_changes": [
+        2.7183636560464098e-06,
+        1.3661436562635358e-06,
+        5.802863794209458e-06,
+        4.627957563363152e-06,
+        2.8218048431008195e-06,
+        4.50074439212019e-06,
+        7.503215674328485e-06
+      ],
+      "fixed_terminal_source_relative_changes": [
+        1.3300629847194253e-06,
+        2.7933966365028177e-06,
+        3.1623562684813144e-06,
+        7.464250243464029e-06,
+        2.6155595307217457e-06,
+        1.8631990419521546e-06,
+        1.0237371722048757e-06
+      ],
+      "cpu_double_adjoint_relative_difference": 7.937854667413786e-06,
+      "propagated_cpu_double_adjoint_relative_difference": 6.874125903660636e-06,
+      "terminal_norm": 0.003005163970288786,
+      "source_gradient_norm": 6.325221061902875e-05
+    },
+    {
+      "variant": "gradual256",
+      "source_sha256": "9853e9a8eddd78e35124ab6e461eb9d7a199aaa4cf22d909314c2265fef30c4d",
+      "terminal_relative_changes": [
+        3.921361530963739e-08,
+        3.790255812935145e-08,
+        3.843228771099498e-08,
+        3.963430922286805e-08,
+        3.820806931442031e-08,
+        3.8710522065574017e-08,
+        3.869340010600783e-08
+      ],
+      "source_relative_changes": [
+        7.96484279625501e-05,
+        8.018810575130699e-05,
+        7.158676749101778e-05,
+        7.069990190107949e-05,
+        2.5338754487222177e-05,
+        5.04665288436845e-05,
+        6.343751301210056e-05
+      ],
+      "fixed_terminal_source_relative_changes": [
+        1.321482321207807e-06,
+        1.481639408408251e-06,
+        8.362412525764481e-07,
+        2.2892220064376124e-06,
+        1.7636234240526238e-06,
+        6.949091988747648e-07,
+        2.2847368904737016e-06
+      ],
+      "cpu_double_adjoint_relative_difference": 4.60322112206552e-06,
+      "propagated_cpu_double_adjoint_relative_difference": 0.0001743121705992712,
+      "terminal_norm": 0.37818454956597214,
+      "source_gradient_norm": 0.08126269945651689
+    }
+  ],
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "protocol": "Fixed source, endpoint and residual; repeat native CT adjoint eight times, then propagate each through one fixed native Euler graph. Repeat its pullback separately with identical terminal gradient. CPU FP64 CT adjoint uses copied CUDA grids and the same residual, then casts to FP32 before model pullback.",
+  "limitation": "No optimizer updates. CPU arithmetic is a diagnostic reference, not a promoted operator implementation. Numerical variability alone does not establish the cause of reconstruction failure."
+}
