@@ -28,3 +28,9 @@ A branch from the saved attempt250 snapshot is queued after the angle control, o
 Four CPU tests cover the angle guarantees plus preserved first-attempt behavior, the unchanged L-BFGS ray, cap compliance and recovery from an artificially small curvature scale. The restored real checkpoint also proposes displacement2 as intended. The idle angle queue was restarted after reviewing the added implementation branch and updating its recorded hashes; active GPU workers were left running.
 
 [Starting-length queue](../cap_started_recovery_ct1/queue.json) · [State restoration check](../cap_started_recovery_ct1/initial_state_verification.json).
+
+## Curvature admission at the plateau
+
+Between saved attempts250 and310, the accumulated displacement norm is5.19e-6 and approximate-gradient change norm5.35e-10. Their positive inner product is4.016e-16, versus the fixed1e-10 pair-admission threshold; the three retained pairs are unchanged. The aggregate secant scale s dot y / (y dot y) is1402, while the latest retained pair supplies0.000306. This explains why a small-step history can persist without rejected line searches.
+
+This aggregate60-update secant is not an exact Hessian measurement or an individually rejected pair. It motivates checking scale-sensitive curvature admission, but does not prove that lowering the threshold alone is a reliable correction. The angle and cap-started reconstruction controls remain the only new active/queued optimizer interventions. [Recorded curvature quantities](ct1_plateau_curvature.json).
