@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import torch
 
 from experiments.separated_shapes_117k.gradient_audit import DiscreteProducts
-from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step, pure_ksl_step
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 from sampler.ode_samplers import euler_flow
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
@@ -26,6 +26,31 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_notes_ksl_matches_three_dense_euler_stages_without_recompression(self) -> None:
+        torch.manual_seed(88)
+        d, h, alpha = 12, .2, .6
+        matrix = torch.randn(d, d, dtype=torch.float64)
+        identity = torch.eye(d, dtype=matrix.dtype)
+        for rank in (3, d):
+            U, _ = torch.linalg.qr(torch.randn(d, rank, dtype=matrix.dtype))
+            V, _ = torch.linalg.qr(torch.randn(d, rank, dtype=matrix.dtype))
+            S = torch.randn(rank, rank, dtype=matrix.dtype)
+            Y = U @ S @ V.T
+            K = U @ S + h*(matrix @ (alpha*identity + Y) + identity) @ V
+            left, core = torch.linalg.qr(K)
+            core = core - h*left.T @ (matrix @ (alpha*identity + left @ core @ V.T) + identity) @ V
+            L = V @ core.T
+            L = L + h*(matrix @ (alpha*identity + left @ L.T) + identity).T @ left
+            right, triangular = torch.linalg.qr(L)
+            factors, _, _ = pure_ksl_step(lambda q: matrix @ q, lambda q: matrix.T @ q,
+                (U, S, V), U[:, :0], U[:, :0], h, alpha)
+            actual = factors[0] @ factors[1] @ factors[2].T
+            torch.testing.assert_close(actual, left @ triangular.T @ right.T, atol=1e-11, rtol=1e-10)
+            self.assertEqual(factors[1].shape, (rank, rank))
+            if rank == d:
+                unsplit = Y + h*(matrix @ (alpha*identity+Y) + identity)
+                self.assertGreater(float((actual-unsplit).norm()), 1e-3)
+
     def test_native_compressed_svd_reference_matches_dense_truncated_gradients(self) -> None:
         torch.manual_seed(81)
         model = NonlinearVelocity()
@@ -217,6 +242,11 @@ class DiscreteProductTests(unittest.TestCase):
             L = L + dt / 6 * (k1 + 2*k2 + 2*k3 + k4)
         reference_V, _ = torch.linalg.qr(L)
         torch.testing.assert_close(V1 @ V1.T, reference_V @ reference_V.T, atol=1e-10, rtol=1e-10)
+        (stable_U, stable_S, stable_V), _, _ = stable_sl_step(
+            lambda value: matrix @ value, lambda value: matrix.T @ value,
+            (U, S, V), empty, empty, h, alpha, recompress=False)
+        torch.testing.assert_close(stable_U @ stable_S @ stable_V.T, U1 @ L.T,
+                                   atol=1e-10, rtol=1e-10)
         target = U @ S @ V.T
         identity = torch.eye(dimension, dtype=target.dtype)
         target = target + h * (matrix @ (alpha * identity + target) + identity)

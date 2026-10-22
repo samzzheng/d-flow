@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
+from functools import partial
 import hashlib
 import json
 import math
@@ -20,7 +21,7 @@ from experiments.ct_mri_sweep.queue import source_hashes
 from sampler.ode_samplers import euler_flow
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
-from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, refined_increment_step
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, refined_increment_step, pure_ksl_step, stable_sl_step
 from experiments.separated_shapes_117k.exact_suffix import ExactSuffixEvaluator, TaskTerminalEvaluator
 
 
@@ -88,7 +89,8 @@ def main() -> None:
     parser.add_argument("--history-fallback", action="store_true")
     parser.add_argument("--no-reuse-v", action="store_true",
         help="Rebuild each initialization sketch without the previous right basis")
-    parser.add_argument("--factor-integrator", choices=("original", "increment", "refined"), default="original")
+    parser.add_argument("--factor-integrator", choices=("original", "ksl", "stable_ksl", "increment", "refined"), default="original",
+        help="original retains the fast Euler recompression; ksl retains the notes' L-step core")
     parser.add_argument("--rank-min", type=int, default=4)
     parser.add_argument("--rank-max", type=int, default=128)
     parser.add_argument("--rank-tol", type=float, default=1e-3)
@@ -193,10 +195,12 @@ def main() -> None:
         enriched.SPECIALIZE_ZERO_ENRICHMENT = True
         enriched.SKIP_UNTRUNCATED_SVD = True
         if args.factor_integrator != "original":
-            enriched._zero_enrichment_step = (refined_increment_step if args.factor_integrator == "refined"
-                                              else increment_ksl_step)
+            enriched._zero_enrichment_step = {"ksl": pure_ksl_step,
+                                              "stable_ksl": partial(stable_sl_step, recompress=False),
+                                              "refined": refined_increment_step,
+                                              "increment": increment_ksl_step}[args.factor_integrator]
         products = GraphedAProducts(model, inputs["initial"], share_linearization=True,
-            full_step_graphs=True, max_jvp_columns=20, max_vjp_columns=16,
+            full_step_graphs=args.factor_integrator != "stable_ksl", max_jvp_columns=20, max_vjp_columns=16,
             max_step_jvp_columns=6, max_step_vjp_columns=4)
         if args.action == "diagnose":
             saved = torch.load(case / "dlr_d_flow.pt", map_location=device, weights_only=True)

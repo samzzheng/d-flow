@@ -17,6 +17,7 @@ from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.queue import source_hashes
 from experiments.separated_shapes_117k.exact_suffix import TaskTerminalEvaluator
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, refined_increment_step
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 
 
@@ -32,7 +33,9 @@ def main() -> None:
     parser.add_argument("--budget", type=int, default=1000)
     parser.add_argument("--no-reuse-v", action="store_true")
     parser.add_argument("--goal-steps", type=int, default=0,
-        help="Experimental goal-oriented final projections for DLR; zero keeps original KSL")
+        help="Experimental goal-oriented final projections for DLR; zero keeps the fast recompression profile")
+    parser.add_argument("--factor-integrator", choices=("original", "increment", "refined"), default="original",
+        help="Frozen Euler-increment KSL controls; original keeps the established fast profile")
     parser.add_argument("--source-pool-root", type=Path,
         help="Reuse a previously cached candidate pool exactly across controls")
     args = parser.parse_args()
@@ -64,12 +67,18 @@ def main() -> None:
             gradient_variant="Goal-oriented rank-r Euler projections",
             task_terminal_sha256=hashlib.sha256(
                 Path(TaskTerminalEvaluator.gradient.__code__.co_filename).read_bytes()).hexdigest())
+    if args.factor_integrator != "original":
+        evidence.update(factor_integrator=args.factor_integrator,
+            factor_integrator_sha256=hashlib.sha256(Path(increment_ksl_step.__code__.co_filename).read_bytes()).hexdigest())
     run.write_json(args.out / "config.json", evidence)
     tangent_unet.GN_STATS_MODE = "native"
     tangent_unet.GN_ACTION_BACKEND = "triton"
     tangent_unet.GN_PRIMAL_BACKEND = "full"
     enriched.SPECIALIZE_ZERO_ENRICHMENT = True
     enriched.SKIP_UNTRUNCATED_SVD = True
+    if args.factor_integrator != "original":
+        enriched._zero_enrichment_step = {"increment": increment_ksl_step,
+                                          "refined": refined_increment_step}[args.factor_integrator]
     for case in args.cases:
         original = torch.load(args.baseline / case / "inputs.pt", map_location=device, weights_only=True)
         protocol = original["protocol"]
@@ -175,6 +184,7 @@ def main() -> None:
             observation=pool["observed"], include_errors=True, measurement_log=isinstance(operator, MRI),
             residual_vmax=RESIDUAL_VMAX[protocol["job"]["problem"]],
             title=(f"{case}: measurement-selected starts; total budget {args.budget}"
+                   + (f"; {args.factor_integrator} factors" if args.factor_integrator != "original" else "")
                    + (f"; DLR uses {args.goal_steps} goal projections" if args.goal_steps else "")))
         figure.savefig(directory / "comparison.png", dpi=120)
         run.plt.close(figure)

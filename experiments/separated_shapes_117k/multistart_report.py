@@ -30,7 +30,7 @@ def main() -> None:
         "The selected optimizer state is preserved. Image error never selects a source.", "",
         "These are selected failure cases, not a population estimate. Methods share the candidate "
         "pool but may choose different sources. Partial results are labeled.", "",
-        "| Case | Run | Method | DLR rank / goal steps | Selected source | Status | Total attempts | Image error | Measurement residual |",
+        "| Case | Run | Method | DLR rank / factor update / goal steps | Selected source | Status | Total attempts | Image error | Measurement residual |",
         "| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: |"]
     figures = []
     paired_pools = {}
@@ -54,7 +54,7 @@ def main() -> None:
                 if method not in config["methods"]:
                     continue
                 stem = method.lower().replace("-", "_").replace(" ", "_")
-                factor_label = (f"{config['settings']['dlr']['rank']} / {config.get('goal_steps', 0)}"
+                factor_label = (f"{config['settings']['dlr']['rank']} / {config.get('factor_integrator', 'fast')} / {config.get('goal_steps', 0)}"
                                 if method == "DLR D-Flow" else "—")
                 path = folder / f"{stem}.json"
                 if not path.exists():
@@ -93,6 +93,7 @@ def main() -> None:
                     f"{100*final['image_relative_l2']:.3f}% | {100*final['measurement_relative_l2_noisy']:.3f}% |")
                 rows.append(dict(case=case, run=root.name, method=method, selected=winner, status=record["status"],
                     rank=config["settings"]["dlr"]["rank"] if method == "DLR D-Flow" else None,
+                    factor_integrator=config.get("factor_integrator", "fast") if method == "DLR D-Flow" else None,
                     goal_steps=config.get("goal_steps", 0) if method == "DLR D-Flow" else None,
                     complete=terminal, total_attempts=total, image_error=final["image_relative_l2"],
                     residual=final["measurement_relative_l2_noisy"], source_hash=source_hashes[winner]))
@@ -127,8 +128,9 @@ def main() -> None:
     lines.extend(["", "Checks: cached source hashes, measurement-loss selection, preserved continuation history, "
         "and total attempt budgets. Completed metrics are recomputed from saved image/measurement arrays. "
         "Curves show the best measurement-loss candidate seen during probing, then the selected continuation. "
-        "They do not select by image error. Goal steps zero means the original factor update; positive values "
-        "label the experimental goal-oriented projection, not unmodified KSL.", *figures])
+        "They do not select by image error. The factor-update column distinguishes the fast recompression, "
+        "frozen-increment and two-pass refinement controls. Positive goal steps additionally change the "
+        "projection criterion. These are distinguished from the notes' one-Euler-per-stage KSL core.", *figures])
     (args.out / "report.md").write_text("\n".join(lines)+"\n")
     write_json(args.out / "summary.json", dict(rows=rows, checks_passed=True))
 
