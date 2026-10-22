@@ -1,0 +1,101 @@
+{
+  "completed_arms": [
+    {
+      "arm": "coarse_to_fine/d_flow",
+      "passed": true,
+      "stages": 4,
+      "attempts": 4,
+      "image_error_percent": 108.21165197888295,
+      "residual_percent": 97.74012623292997
+    },
+    {
+      "arm": "coarse_to_fine/dlr_d_flow",
+      "passed": true,
+      "stages": 4,
+      "attempts": 4,
+      "image_error_percent": 108.20701482467688,
+      "residual_percent": 97.74350430411654
+    },
+    {
+      "arm": "coarse_to_fine/p_flow",
+      "passed": true,
+      "stages": 4,
+      "attempts": 4,
+      "image_error_percent": 108.1972284917286,
+      "residual_percent": 97.75189038412923
+    },
+    {
+      "arm": "intensity/d_flow",
+      "passed": true,
+      "stages": 1,
+      "attempts": 4,
+      "image_error_percent": 127.35574019105516,
+      "residual_percent": 115.62570719261085
+    },
+    {
+      "arm": "intensity/dlr_d_flow",
+      "passed": true,
+      "stages": 1,
+      "attempts": 4,
+      "image_error_percent": 128.0538672900793,
+      "residual_percent": 116.80392777628941
+    },
+    {
+      "arm": "intensity/p_flow",
+      "passed": true,
+      "stages": 1,
+      "attempts": 4,
+      "image_error_percent": 107.65293544397684,
+      "residual_percent": 95.52568436423286
+    },
+    {
+      "arm": "l2/d_flow",
+      "passed": true,
+      "stages": 1,
+      "attempts": 4,
+      "image_error_percent": 105.8346336741736,
+      "residual_percent": 94.04162187694605
+    },
+    {
+      "arm": "l2/dlr_d_flow",
+      "passed": true,
+      "stages": 1,
+      "attempts": 4,
+      "image_error_percent": 107.9695257088618,
+      "residual_percent": 97.58694540819039
+    },
+    {
+      "arm": "l2/p_flow",
+      "passed": true,
+      "stages": 1,
+      "attempts": 4,
+      "image_error_percent": 102.54460421487532,
+      "residual_percent": 83.15802279417419
+    },
+    {
+      "arm": "l2_resets/d_flow",
+      "passed": true,
+      "stages": 4,
+      "attempts": 4,
+      "image_error_percent": 108.15544138336452,
+      "residual_percent": 97.73152561740089
+    },
+    {
+      "arm": "l2_resets/dlr_d_flow",
+      "passed": true,
+      "stages": 4,
+      "attempts": 4,
+      "image_error_percent": 108.15968246780376,
+      "residual_percent": 97.73564940234934
+    },
+    {
+      "arm": "l2_resets/p_flow",
+      "passed": true,
+      "stages": 4,
+      "attempts": 4,
+      "image_error_percent": 108.1952685885276,
+      "residual_percent": 97.7515024442283
+    }
+  ],
+  "note": "Source handoffs, budgets, per-stage descent, caps, weighted loss, complex residuals and image errors verified. No cross-stage monotonicity assumption."
+}
