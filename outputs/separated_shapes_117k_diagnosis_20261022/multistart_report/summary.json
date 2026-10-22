@@ -2,6 +2,7 @@
   "rows": [
     {
       "case": "r250_shapes_mri4/sample_002",
+      "run": "multistart_mri2",
       "method": "D-Flow",
       "selected": "measurement_half",
       "status": "step_limit",
@@ -13,6 +14,7 @@
     },
     {
       "case": "r250_shapes_mri4/sample_002",
+      "run": "multistart_mri2",
       "method": "P-Flow",
       "selected": "original",
       "status": "stalled",
@@ -24,17 +26,19 @@
     },
     {
       "case": "r250_shapes_mri4/sample_002",
+      "run": "multistart_mri2",
       "method": "DLR D-Flow",
       "selected": "measurement_half",
-      "status": "running",
-      "complete": false,
-      "total_attempts": 870,
-      "image_error": 0.03153315559029579,
-      "residual": 0.015926292166113853,
+      "status": "stalled",
+      "complete": true,
+      "total_attempts": 892,
+      "image_error": 0.03154999017715454,
+      "residual": 0.015917479991912842,
       "source_hash": "d9e273d9d1a3aead1952d50f8f48b53537ab03860c65e46fce2a7e7bddd05bad"
     },
     {
       "case": "r250_shapes_ct10/sample_007",
+      "run": "multistart_ct7",
       "method": "D-Flow",
       "selected": "measurement_half",
       "status": "step_limit",
@@ -46,6 +50,7 @@
     },
     {
       "case": "r250_shapes_ct10/sample_007",
+      "run": "multistart_ct7",
       "method": "P-Flow",
       "selected": "independent",
       "status": "step_limit",
@@ -57,13 +62,14 @@
     },
     {
       "case": "r250_shapes_ct10/sample_007",
+      "run": "multistart_ct7",
       "method": "DLR D-Flow",
       "selected": "measurement_half",
       "status": "running",
       "complete": false,
-      "total_attempts": 500,
-      "image_error": 0.14413148164749146,
-      "residual": 0.04387813061475754,
+      "total_attempts": 900,
+      "image_error": 0.0895911306142807,
+      "residual": 0.024901239201426506,
       "source_hash": "412f4dd9577a6f2c94a80c150eefed717d5c13fc4a5e0cc2041aca852c5174d3"
     }
   ],
