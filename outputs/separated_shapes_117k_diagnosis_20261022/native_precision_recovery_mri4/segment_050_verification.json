@@ -1,0 +1,60 @@
+[
+  {
+    "dtype": "float32",
+    "status": "stalled",
+    "final": {
+      "step": 205,
+      "phi": 1369.1755988499622,
+      "source_step_norm": 0.0,
+      "line_search_trials": 30,
+      "image_relative_l2": 0.9422394633293152,
+      "measurement_relative_l2_clean": 0.9370692372322083,
+      "measurement_relative_l2_noisy": 0.9370692372322083,
+      "residual_over_noise": null
+    },
+    "initial": {
+      "step": 201,
+      "phi": 1369.1756591343965,
+      "image_relative_l2": 0.9422393441200256,
+      "measurement_relative_l2_clean": 0.9370693564414978,
+      "measurement_relative_l2_noisy": 0.9370693564414978,
+      "residual_over_noise": null
+    },
+    "history_sha256": "bd0ea8ca6359f8c4492a34d76064118da2a7c1ade3dbfb8943dd047cf4d6fc11",
+    "history_length": 5,
+    "source_sha256": "6061865ccc7b035362c7a932b657ddb68c9888e86b9ec5f50bfe6c95976e7a6a",
+    "curvature_pairs": 0,
+    "gradient_norm": 10.963691711425781,
+    "metrics_verified": true,
+    "monotone_objective": true
+  },
+  {
+    "dtype": "float64",
+    "status": "step_limit",
+    "final": {
+      "step": 251,
+      "phi": 1363.3505399885894,
+      "source_step_norm": 0.00011193979084259371,
+      "line_search_trials": 1,
+      "image_relative_l2": 0.9403863733415267,
+      "measurement_relative_l2_clean": 0.935073806263096,
+      "measurement_relative_l2_noisy": 0.935073806263096,
+      "residual_over_noise": null
+    },
+    "initial": {
+      "step": 201,
+      "phi": 1369.1757083674556,
+      "image_relative_l2": 0.9422394082340659,
+      "measurement_relative_l2_clean": 0.9370693152374004,
+      "measurement_relative_l2_noisy": 0.9370693152374004,
+      "residual_over_noise": null
+    },
+    "history_sha256": "3b077d95a900ab561f2990d79d3379f0920406ff0abc2fd88825cdfa6d681e22",
+    "history_length": 51,
+    "source_sha256": "29878547fc26dc32e6e08bd5da8ee80b22b7b26e50a224b8308c48ae095271d4",
+    "curvature_pairs": 5,
+    "gradient_norm": 862.284100536503,
+    "metrics_verified": true,
+    "monotone_objective": true
+  }
+]

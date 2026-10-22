@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 07:31 local time. Explicitly retaining one informed seed in the first residual right basis improves the paired rank32 MRI1 continuation12.306% to2.982%; unchanged and random-seed controls remain12.306%. It uses the same cached exact-gradient seed that previously reached9.040%. CT fixed-point diagnostics still lose the direction in the next KSL step. The completed three-object MRI4 informed/random/unchanged controls all remain94.224%; general accuracy remains unresolved. [Initialization derivation and paired results](full_map_audit/retained_seed_report.md).
+Snapshot: 2026-10-22, 07:44 local time. The three-object MRI4 retained-seed failure has a precision obstacle despite cosine0.894 and81.69% squared-gradient capture: FP32 line evaluations reject the saved direction, while FP64 accepts steps near4.8e-6 displacement. A paired native continuation gives FP32 image94.224% versus FP64's interim94.039% after50 additional attempts; this is not yet an accuracy rescue. FP64 resumes with full optimizer state up to the original1000-attempt cap. General accuracy remains unresolved. [Precision and stiffness evidence](full_map_audit/mri4_precision_report.md).
 
 ## Verified findings
 
