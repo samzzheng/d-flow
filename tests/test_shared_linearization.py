@@ -21,6 +21,33 @@ class CastEmbedding(nn.Module):
 
 
 class SharedLinearizationTests(unittest.TestCase):
+    def test_wide_time_embedding_matches_autodiff(self) -> None:
+        torch.manual_seed(420)
+        model = Unet(ch=6, ch_mul=[1, 2, 3, 3], att_channels=[0]*4,
+                     groups=2, dropout=0, mid_attn=False,
+                     time_embed_dim=32).eval().requires_grad_(False)
+        x = torch.randn(1, 1, 16, 16)
+        direction = torch.randn_like(x)
+        time = torch.tensor([.37])
+
+        def velocity(value: torch.Tensor) -> torch.Tensor:
+            return model(value, time)
+
+        primal, pullback = torch.func.vjp(velocity, x)
+        expected_jvp = torch.func.jvp(velocity, (x,), (direction,))[1]
+        expected_vjp = pullback(direction)[0]
+        for checkpoint in (False, True):
+            tape = tangent.unet_linearize(model, time, x, checkpoint_blocks=checkpoint)
+            self.assert_close(tape.primal, primal)
+            self.assert_close(tape.jvp(direction), expected_jvp)
+            self.assert_close(tape.vjp(direction), expected_vjp)
+        jvp_primal, actual_jvp = tangent.unet_jvp(model, time, x, direction)
+        vjp_primal, actual_vjp = tangent.unet_vjp(model, time, x, direction)
+        self.assert_close(jvp_primal, primal)
+        self.assert_close(vjp_primal, primal)
+        self.assert_close(actual_jvp, expected_jvp)
+        self.assert_close(actual_vjp, expected_vjp)
+
     @classmethod
     def setUpClass(cls):
         cls.old_threads = torch.get_num_threads()

@@ -40,6 +40,7 @@ def plot_reconstruction_comparison(
     histories: Mapping[str, History] | None = None,
     measurement_log: bool = False,
     residual_vmax: float = RESIDUAL_VMAX["ct"],
+    include_errors: bool = False,
     title: str = "",
 ) -> Figure:
     """Plot images and clean-reference measurements for all methods.
@@ -49,7 +50,8 @@ def plot_reconstruction_comparison(
     log(1 + magnitude) MRI. Out-of-range values use endpoint colors.
     Metrics use original arrays before any display transform. Observation,
     histories and residual_vmax remain accepted for existing callers, but their
-    diagnostic rows are no longer displayed. Callers save and close the figure.
+    diagnostic rows are hidden unless include_errors is enabled. Callers save
+    and close the figure.
     """
     if set(reconstructions) - set(METHODS):
         raise ValueError(f"Method labels must be drawn from {METHODS}.")
@@ -68,11 +70,19 @@ def plot_reconstruction_comparison(
     image_errors = [None if x is None else np.abs(x - image_gt) for x in images]
     measurement_errors = [None if y is None else np.abs(y - measurement_gt)
                           for y in measurements]
-    rows = (
+    rows = [
         ("Image", images, image_errors, image_gt),
         ("Measurement (clean GT reference)", measurements, measurement_errors, measurement_gt),
-    )
-    fig, grid = plt.subplots(2, 5, figsize=(16, 8), layout="constrained",
+    ]
+    if include_errors:
+        observed = measurement_gt if observation is None else _as_array(observation)
+        residuals = [None if value is None else np.abs(value - observed)
+                     for value in measurements]
+        rows.extend([
+            ("Absolute image error", image_errors, image_errors, image_gt),
+            ("Absolute measurement residual (observed y)", residuals, residuals, observed),
+        ])
+    fig, grid = plt.subplots(len(rows), 5, figsize=(16, 4 * len(rows)), layout="constrained",
                             gridspec_kw={"width_ratios": [1, 1, 1, 1, .04]})
     axes = grid[:, :4]
     for axis in axes.flat:
@@ -86,6 +96,10 @@ def plot_reconstruction_comparison(
         vmin = 0.0
         vmax = 1.0 if row_index == 0 else MEASUREMENT_VMAX[
             "log_magnitude" if measurement_log else "linear"]
+        if row_index == 2:
+            vmax = max(float(value.max()) for value in displayed if value is not None) or 1.0
+        elif row_index == 3:
+            vmax = residual_vmax
         reference_norm = float(np.linalg.norm(reference))
         for column, (name, value, error) in enumerate(zip(("GT", *METHODS), displayed, errors)):
             axis = axes[row_index, column]
@@ -99,7 +113,7 @@ def plot_reconstruction_comparison(
                 axis.text(0.5, 0.5, "Not available", ha="center", va="center", transform=axis.transAxes)
                 continue
             artist = axis.imshow(
-                value, cmap=cmocean.cm.dense_r,
+                value, cmap=cmocean.cm.amp if row_index >= 2 else cmocean.cm.dense_r,
                 vmin=vmin, vmax=vmax, aspect="auto", interpolation="nearest",
             )
         axes[row_index, 0].set_ylabel(label, fontsize=10)

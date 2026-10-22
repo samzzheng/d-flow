@@ -448,6 +448,7 @@ def main() -> None:
             name: (result["image"], result["measurement"]) for name, result in results.items()},
             observation=observed, measurement_log=job.problem == "mri",
             residual_vmax=RESIDUAL_VMAX[job.problem],
+            include_errors=settings.get("diagnostic_figures", False),
             histories={name: result["history"] for name, result in results.items()},
             title=f"Resolution: {job.resolution}$^2$, Inverse Problem: {job.problem.upper()}, "
                   f"Noise Level {100*settings['noise_relative']:g}%, Sample: {sample}")

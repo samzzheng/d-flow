@@ -278,7 +278,7 @@ def unet_jvp(model, t: float, x: torch.Tensor, T: torch.Tensor):
     # t may be a python float or a 0-dim tensor (tensor keeps torch.compile
     # from baking the time into the graph and recompiling every step)
     tvec = torch.as_tensor(t, device=x.device, dtype=x.dtype).reshape(1)
-    emb = model.time_proj(get_timestep_embedding(tvec * 1000.0, model.ch))
+    emb = model.time_proj(get_timestep_embedding(tvec * 1000.0, model.time_embed_dim))
     xp, xd = _conv(model.input_proj, x, T)
     hp, hd = xp, xd
     down = []
@@ -531,7 +531,7 @@ def _resblock_T(m, rec, g):
 def unet_vjp(model, t, x: torch.Tensor, G: torch.Tensor):
     """x: (1,1,H,W) primal image; G: (k,1,H,W) cotangents. Returns (v, (d_x v)^T G)."""
     tvec = torch.as_tensor(t, device=x.device, dtype=x.dtype).reshape(1)
-    emb = model.time_proj(get_timestep_embedding(tvec * 1000.0, model.ch))
+    emb = model.time_proj(get_timestep_embedding(tvec * 1000.0, model.time_embed_dim))
     n_levels = len(model.down)
     # ---- primal forward with tape
     xp = F.conv2d(x, model.input_proj.weight, model.input_proj.bias, padding=model.input_proj.padding)
@@ -693,7 +693,7 @@ class UnetLinearization:
         self.checkpoint_blocks = bool(checkpoint_blocks)
         self.input_hw = x.shape[-2:]
         tvec = torch.as_tensor(t, device=x.device, dtype=x.dtype).reshape(1)
-        emb = model.time_proj(get_timestep_embedding(tvec * 1000.0, model.ch))
+        emb = model.time_proj(get_timestep_embedding(tvec * 1000.0, model.time_embed_dim))
         n_levels = len(model.down)
         c = model.input_proj
         xp = F.conv2d(x, c.weight, c.bias, c.stride, c.padding, c.dilation, c.groups)
