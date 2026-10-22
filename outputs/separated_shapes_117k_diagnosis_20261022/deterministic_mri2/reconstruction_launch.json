@@ -1,0 +1,5 @@
+{
+  "pid": 1700862,
+  "log": "/tmp/deterministic_mri2_reconstruction.log",
+  "plan": "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/reconstruction_queue.json"
+}

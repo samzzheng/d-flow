@@ -1,0 +1,43 @@
+{
+  "rows": [
+    {
+      "label": "default",
+      "status": "stalled",
+      "steps": 96,
+      "image_error_percent": 99.68820973960293,
+      "residual_percent": 99.56191945712398,
+      "first_gradient_sha256": "3d0bbeeb11744ab85015abb562e19f38835f7bd63236ded3f1c11c06978d0783"
+    },
+    {
+      "label": "deterministic_a",
+      "status": "stalled",
+      "steps": 145,
+      "image_error_percent": 99.68938390878841,
+      "residual_percent": 99.55835701736396,
+      "first_gradient_sha256": "0b3b3edf11cf476c4d05df8bab2ee121e1de131238248db57b9f7a921f1cdbf4"
+    },
+    {
+      "label": "deterministic_b",
+      "status": "stalled",
+      "steps": 145,
+      "image_error_percent": 99.68938390878841,
+      "residual_percent": 99.55835701736396,
+      "first_gradient_sha256": "0b3b3edf11cf476c4d05df8bab2ee121e1de131238248db57b9f7a921f1cdbf4"
+    }
+  ],
+  "deterministic_repeat": {
+    "common_history_records": 146,
+    "first_different_record": null,
+    "matching_non_timing_history": true,
+    "same_final_attempt": true,
+    "source_bitwise_equal": true
+  },
+  "checks": [
+    "source/model/operator/seeds and sketch paired",
+    "only cuDNN determinism differs between configurations",
+    "original budget, caps and monotone objectives",
+    "image and complex residual metrics from original arrays",
+    "common non-timing histories compared when both deterministic checkpoints exist"
+  ],
+  "note": "Partial checkpoints are not convergence results. Matching initial gradients does not alone establish matching full trajectories."
+}

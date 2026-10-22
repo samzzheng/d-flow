@@ -1,0 +1,79 @@
+{
+  "status": "complete",
+  "script": "experiments/separated_shapes_117k/high_rank_reconstruction.py",
+  "script_sha256": "5faefb2844f9c240ce697f6116c2e1d381d617762e9a2ca81355e88620bc4fe1",
+  "runs": [
+    {
+      "label": "default",
+      "command": [
+        ".venv/bin/python",
+        "-u",
+        "-m",
+        "experiments.separated_shapes_117k.high_rank_reconstruction",
+        "--case",
+        "r250_shapes_mri4/sample_002",
+        "--out",
+        "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/reconstruction/default",
+        "--ranks",
+        "32",
+        "--memory-fraction",
+        ".04",
+        "--repeat-initial-gradient",
+        "4"
+      ],
+      "result": "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/reconstruction/default/r250_shapes_mri4/sample_002/rank32/dlr_d_flow.json",
+      "returncode": 0,
+      "result_status": "stalled"
+    },
+    {
+      "label": "deterministic_a",
+      "command": [
+        ".venv/bin/python",
+        "-u",
+        "-m",
+        "experiments.separated_shapes_117k.high_rank_reconstruction",
+        "--case",
+        "r250_shapes_mri4/sample_002",
+        "--out",
+        "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/reconstruction/deterministic_a",
+        "--ranks",
+        "32",
+        "--memory-fraction",
+        ".04",
+        "--repeat-initial-gradient",
+        "4",
+        "--cudnn-deterministic"
+      ],
+      "result": "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/reconstruction/deterministic_a/r250_shapes_mri4/sample_002/rank32/dlr_d_flow.json",
+      "returncode": 0,
+      "result_status": "stalled"
+    },
+    {
+      "label": "deterministic_b",
+      "command": [
+        ".venv/bin/python",
+        "-u",
+        "-m",
+        "experiments.separated_shapes_117k.high_rank_reconstruction",
+        "--case",
+        "r250_shapes_mri4/sample_002",
+        "--out",
+        "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/reconstruction/deterministic_b",
+        "--ranks",
+        "32",
+        "--memory-fraction",
+        ".04",
+        "--repeat-initial-gradient",
+        "4",
+        "--cudnn-deterministic"
+      ],
+      "result": "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/reconstruction/deterministic_b/r250_shapes_mri4/sample_002/rank32/dlr_d_flow.json",
+      "returncode": 0,
+      "result_status": "stalled"
+    }
+  ],
+  "coordinator_pid": 1700862,
+  "current": "deterministic_b",
+  "worker_pid": 1703645,
+  "finished_at": 1792699953.7119775
+}

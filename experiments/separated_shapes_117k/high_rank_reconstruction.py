@@ -22,15 +22,20 @@ def main() -> None:
     parser.add_argument("--case", default="r250_shapes_mri4/sample_001")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--ranks", nargs="+", type=int, default=[32, 1024, 2048])
+    parser.add_argument("--memory-fraction", type=float, default=.30)
+    parser.add_argument("--cudnn-deterministic", action="store_true")
+    parser.add_argument("--repeat-initial-gradient", type=int, default=0)
+    parser.add_argument("--diagnostics-only", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
     torch.cuda.set_device(device)
-    torch.cuda.set_per_process_memory_fraction(.30, device)
+    torch.cuda.set_per_process_memory_fraction(args.memory_fraction, device)
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
     torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = args.cudnn_deterministic
     interrupted = [False]
 
     def stop(signum: int, frame: object) -> None:
@@ -63,19 +68,44 @@ def main() -> None:
             break
         configuration = deepcopy(settings)
         configuration["dlr"].update(rank=rank, adaptive_rank=False)
-        configuration["execution"].update(memory_fraction=.30, dlr_full_step_graphs=False,
+        configuration["execution"].update(memory_fraction=args.memory_fraction,
+            cudnn_deterministic=args.cudnn_deterministic, dlr_full_step_graphs=False,
             dlr_jvp_columns=20, dlr_vjp_columns=16, dlr_fused_norm="native", dlr_fused_primal="native")
         products = BoundedGraphedProducts(model, initial, cache_size=4, share_linearization=True,
             full_step_graphs=False, max_jvp_columns=20, max_vjp_columns=16)
-        evaluator = run.Evaluator(model, operator, inputs["observed"], configuration, protocol["dlr_seed"], products)
-        evaluator.previous_v = sketch[:, :rank+8]
         experiment = dict(settings=configuration,
+            calibration_gradient_evaluations=args.repeat_initial_gradient,
             source_sha256=hashlib.sha256(initial.cpu().numpy().tobytes()).hexdigest(),
             sketch_sha256=hashlib.sha256(sketch.cpu().numpy().tobytes()).hexdigest(),
             script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             note="Paired original sources and nested random initial sketches; sequential ranks on one sample. Subsequent previous-V reuse and LBFGS/geometric Armijo unchanged; max1000 attempts with original safeguards. FP32/native products, TF32 off.")
         path = args.out/args.case/f"rank{rank}"
         path.mkdir(parents=True, exist_ok=True)
+        run.write_json(path/"config.json", experiment)
+        if args.repeat_initial_gradient:
+            diagnostic = run.Evaluator(model, operator, inputs["observed"], configuration, protocol["dlr_seed"], products)
+            repeats = []
+            for repeat in range(args.repeat_initial_gradient):
+                diagnostic.previous_v = sketch[:, :rank+8]
+                gradient = diagnostic.gradient(initial, "DLR D-Flow").detach().clone()
+                if repeat == 0:
+                    first_gradient = gradient
+                    first_image = diagnostic.image.clone()
+                    run.save_tensor(path/"first_gradient.pt", dict(source=initial, gradient=gradient, image=first_image))
+                repeats.append(dict(repeat=repeat,
+                    gradient_bitwise_equal=torch.equal(gradient, first_gradient),
+                    endpoint_bitwise_equal=torch.equal(diagnostic.image, first_image),
+                    relative_gradient_difference=float((gradient.double()-first_gradient.double()).norm()/first_gradient.double().norm())))
+            run.write_json(path/"gradient_repeatability.json", dict(rows=repeats,
+                source_sha256=experiment["source_sha256"], sketch_sha256=experiment["sketch_sha256"],
+                cudnn_deterministic=args.cudnn_deterministic))
+            print("Initial gradient repeatability", repeats, flush=True)
+            del diagnostic, gradient, first_gradient, first_image
+        if args.diagnostics_only:
+            del products
+            continue
+        evaluator = run.Evaluator(model, operator, inputs["observed"], configuration, protocol["dlr_seed"], products)
+        evaluator.previous_v = sketch[:, :rank+8]
         result = run.solve(evaluator, "DLR D-Flow", initial, inputs["truth"], inputs["observed"],
             path/"dlr_d_flow.pt", {**protocol, "experiment": experiment}, interrupted)
         print(rank, result["status"], result["history"][-1], flush=True)

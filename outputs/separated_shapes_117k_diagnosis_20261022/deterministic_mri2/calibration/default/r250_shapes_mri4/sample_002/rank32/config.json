@@ -1,0 +1,93 @@
+{
+  "settings": {
+    "version": 1,
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200,
+      250
+    ],
+    "circles": [
+      0
+    ],
+    "ct_angles": [
+      10
+    ],
+    "mri_accelerations": [
+      4
+    ],
+    "mri_pattern": "cartesian",
+    "samples": 30,
+    "epoch": 500,
+    "run_template": "/home/samzheng/d-flow/outputs/separated_shapes_117k_noiseless_20261021/models/r{resolution}",
+    "noise_relative": 0.0,
+    "flow_steps": 5,
+    "seed": 20261007,
+    "source_projection": false,
+    "optimizer": {
+      "lr": 1.0,
+      "history_size": 100,
+      "max_ls": 30,
+      "c1": 0.0001,
+      "step_cap": 0.01,
+      "backtracking": "geometric"
+    },
+    "stopping": {
+      "min_updates": 1000,
+      "max_updates": 1000,
+      "window": 50,
+      "plateau_relative": 0.001,
+      "failed_searches": 2
+    },
+    "dlr_reuse_previous_v": true,
+    "dlr": {
+      "rank": 32,
+      "trace_probes": 0,
+      "enrichment_probes": 0,
+      "initialization_oversampling": 8,
+      "factor_stride": 1,
+      "zero_terminal_baseline": true,
+      "speed_profile": "fast",
+      "adaptive_rank": false
+    },
+    "execution": {
+      "threads": 2,
+      "checkpoint_every": 10,
+      "cudnn_tf32": false,
+      "matmul_tf32": false,
+      "cudnn_benchmark": false,
+      "memory_fraction": 0.04,
+      "dlr_full_step_graphs": false,
+      "dlr_jvp_columns": 20,
+      "dlr_vjp_columns": 16,
+      "dlr_fused_norm": "native",
+      "dlr_fused_primal": "native",
+      "dlr_specialized_algebra": true,
+      "dflow_checkpointed": false,
+      "cudnn_deterministic": false
+    },
+    "scheduling": {
+      "samples_per_worker": 1,
+      "max_workers_per_gpu": 4,
+      "gpu_headroom_mib": 2048,
+      "worker_memory_mib": {
+        "64": 8192,
+        "96": 8192,
+        "128": 8192,
+        "160": 8192,
+        "200": 8192,
+        "250": 8192
+      }
+    },
+    "dataset_label": "separated shapes: 1\u20134 circles/triangles",
+    "dataset_template": "data/separated-shapes-{resolution}.pt",
+    "diagnostic_figures": true
+  },
+  "calibration_gradient_evaluations": 4,
+  "source_sha256": "0cc5f541a169ed2ffb864a9b438f0d350c4f479c316c332576477f16a5ae776d",
+  "sketch_sha256": "95404b5b6ebbc5b6467c2a8e0a29360ed26ad1cc89050523b7c0e4c2bebf5845",
+  "script_sha256": "5faefb2844f9c240ce697f6116c2e1d381d617762e9a2ca81355e88620bc4fe1",
+  "note": "Paired original sources and nested random initial sketches; sequential ranks on one sample. Subsequent previous-V reuse and LBFGS/geometric Armijo unchanged; max1000 attempts with original safeguards. FP32/native products, TF32 off."
+}

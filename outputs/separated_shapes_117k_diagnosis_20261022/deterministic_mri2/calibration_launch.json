@@ -1,0 +1,41 @@
+{
+  "pid": 1700203,
+  "commands": [
+    [
+      ".venv/bin/python",
+      "-u",
+      "-m",
+      "experiments.separated_shapes_117k.high_rank_reconstruction",
+      "--case",
+      "r250_shapes_mri4/sample_002",
+      "--out",
+      "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/calibration/default",
+      "--ranks",
+      "32",
+      "--memory-fraction",
+      ".04",
+      "--repeat-initial-gradient",
+      "4",
+      "--diagnostics-only"
+    ],
+    [
+      ".venv/bin/python",
+      "-u",
+      "-m",
+      "experiments.separated_shapes_117k.high_rank_reconstruction",
+      "--case",
+      "r250_shapes_mri4/sample_002",
+      "--out",
+      "outputs/separated_shapes_117k_diagnosis_20261022/deterministic_mri2/calibration/deterministic",
+      "--ranks",
+      "32",
+      "--memory-fraction",
+      ".04",
+      "--repeat-initial-gradient",
+      "4",
+      "--diagnostics-only",
+      "--cudnn-deterministic"
+    ]
+  ],
+  "log": "/tmp/deterministic_mri2_calibration.log"
+}
