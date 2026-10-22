@@ -120,8 +120,8 @@ def main() -> None:
         parser.error("Increment substeps must be nonnegative")
     if args.reference_oversampling < 1:
         parser.error("The reference needs an extra singular value to assess the rank cutoff")
-    if (args.saved_direction_audit or args.saved_subspace_audit) and (args.source is None or args.double):
-        parser.error("Saved-direction audit requires a saved FP32 source")
+    if (args.saved_direction_audit or args.saved_subspace_audit) and args.source is None:
+        parser.error("Saved-direction audit requires a saved source")
     if args.factor_arithmetic != "specialized" and (args.increment_substeps or args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl):
         parser.error("Factor arithmetic controls require the original integrator")
     if args.basis_refreshes < 0 or (args.basis_refreshes and (args.increment_substeps or args.stable_sl or args.increment_ksl or args.refined_increment or args.pure_ksl or args.stable_ksl or args.terminal_seed or args.source_gradient_seed)):
@@ -228,7 +228,8 @@ def main() -> None:
     if args.line_search_audit:
         report["exact_gradient_trials"] = line_trials(exact)
     if args.saved_direction_audit:
-        stored = saved["optimizer"]["g"].reshape_as(source)
+        stored = saved["optimizer"]["g"].to(source).reshape_as(source)
+        report["saved_direction_original_dtype"] = str(saved["optimizer"]["g"].dtype)
         report["saved_gradient_cosine"] = float(torch.nn.functional.cosine_similarity(
             stored.flatten(), exact.flatten(), dim=0))
         report["saved_gradient_trials"] = line_trials(stored)
@@ -237,7 +238,7 @@ def main() -> None:
     if args.saved_subspace_audit:
         if saved.get("previous_v") is None:
             parser.error("Saved-subspace audit needs a checkpoint with its terminal right basis")
-        basis = saved["previous_v"]
+        basis = saved["previous_v"].to(source)
         projected = basis @ (basis.T @ exact)
         complement = exact-projected
         report["saved_subspace_audit"] = dict(rank=basis.shape[1],
@@ -245,7 +246,7 @@ def main() -> None:
             orthogonality_error=float((projected*complement).sum().abs()/exact.square().sum()),
             inside_trials=line_trials(projected), outside_trials=line_trials(complement))
         names = ("exact", "inside", "outside", "saved_dlr")
-        directions = torch.cat([exact, projected, complement, saved["optimizer"]["g"].reshape_as(exact)], dim=1)
+        directions = torch.cat([exact, projected, complement, saved["optimizer"]["g"].to(source).reshape_as(exact)], dim=1)
         direction_norms = directions.norm(dim=0)
         directions = directions/direction_norms.clamp_min(torch.finfo(directions.dtype).tiny)
         image_actions = reference.apply(directions)
