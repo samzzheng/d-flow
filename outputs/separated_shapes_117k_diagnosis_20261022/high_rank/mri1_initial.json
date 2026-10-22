@@ -1,0 +1,181 @@
+{
+  "status": "complete",
+  "inputs": "outputs/separated_shapes_117k_noiseless_20261021/production/r250_shapes_mri4/sample_001/inputs.pt",
+  "source": "None",
+  "source_sha256": "feec93720058d601a259c37f8b214909e1e5e8ad177e1f60d8b70f7cfc145710",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "settings": {
+    "version": 1,
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200,
+      250
+    ],
+    "circles": [
+      0
+    ],
+    "ct_angles": [
+      10
+    ],
+    "mri_accelerations": [
+      4
+    ],
+    "mri_pattern": "cartesian",
+    "samples": 30,
+    "epoch": 500,
+    "run_template": "/home/samzheng/d-flow/outputs/separated_shapes_117k_noiseless_20261021/models/r{resolution}",
+    "noise_relative": 0.0,
+    "flow_steps": 5,
+    "seed": 20261007,
+    "source_projection": false,
+    "optimizer": {
+      "lr": 1.0,
+      "history_size": 100,
+      "max_ls": 30,
+      "c1": 0.0001,
+      "step_cap": 0.01,
+      "backtracking": "geometric"
+    },
+    "stopping": {
+      "min_updates": 1000,
+      "max_updates": 1000,
+      "window": 50,
+      "plateau_relative": 0.001,
+      "failed_searches": 2
+    },
+    "dlr_reuse_previous_v": true,
+    "dlr": {
+      "rank": 32,
+      "trace_probes": 0,
+      "enrichment_probes": 0,
+      "initialization_oversampling": 8,
+      "factor_stride": 1,
+      "zero_terminal_baseline": true,
+      "speed_profile": "fast"
+    },
+    "execution": {
+      "threads": 2,
+      "checkpoint_every": 10,
+      "cudnn_tf32": false,
+      "matmul_tf32": false,
+      "cudnn_benchmark": false,
+      "memory_fraction": 0.96,
+      "dlr_full_step_graphs": true,
+      "dlr_jvp_columns": 6,
+      "dlr_vjp_columns": 4,
+      "dlr_fused_norm": "triton",
+      "dlr_fused_primal": "full",
+      "dlr_specialized_algebra": true,
+      "dflow_checkpointed": false
+    },
+    "scheduling": {
+      "samples_per_worker": 1,
+      "max_workers_per_gpu": 4,
+      "gpu_headroom_mib": 2048,
+      "worker_memory_mib": {
+        "64": 8192,
+        "96": 8192,
+        "128": 8192,
+        "160": 8192,
+        "200": 8192,
+        "250": 8192
+      }
+    },
+    "dataset_label": "separated shapes: 1\u20134 circles/triangles",
+    "dataset_template": "data/separated-shapes-{resolution}.pt",
+    "diagnostic_figures": true
+  },
+  "ranks": [
+    32,
+    256,
+    1024,
+    2048
+  ],
+  "script_sha256": "b0db5b5f758c3db08307c639ef7eee9614eb2c37e20d2c12722429a7cd984851",
+  "sketch_sha256": "9a9a89cb56dc12ec7a05ca51f48c80a7f53ee042058b6a0682897147322cc6ba",
+  "objective": 504.52889407809164,
+  "exact_gradient_norm": 35.69713592529297,
+  "image_error": 1.2184662818908691,
+  "rows": [
+    {
+      "rank": 32,
+      "status": "complete",
+      "cold_refresh_seconds": 1.7730428860522807,
+      "peak_allocated_gib": 0.930659294128418,
+      "peak_reserved_gib": 2.056640625,
+      "terminal_rank": 32,
+      "relative_error": 0.6304267048835754,
+      "subspace_relative_error": 0.5257529020309448,
+      "coefficient_relative_error": 0.34788408875465393,
+      "cosine": 0.7887794375419617,
+      "norm_ratio": 0.6487410068511963,
+      "oracle_scalar": 0.16592690348625183,
+      "oracle_scalar_corrected_error": 0.613412082195282,
+      "orthogonal_decomposition_defect": 1.6229722534788493e-06,
+      "native_backend_relative_error": 5.34301807419979e-06,
+      "native_backend_validated": true,
+      "native_gradient_scores": {
+        "relative_error": 0.630426824092865,
+        "subspace_relative_error": 0.5257536768913269,
+        "coefficient_relative_error": 0.34788355231285095,
+        "cosine": 0.7887791991233826,
+        "norm_ratio": 0.6487413048744202,
+        "oracle_scalar": 0.16592703759670258,
+        "oracle_scalar_corrected_error": 0.6134122610092163
+      }
+    },
+    {
+      "rank": 256,
+      "status": "complete",
+      "cold_refresh_seconds": 6.93261057510972,
+      "peak_allocated_gib": 1.7499041557312012,
+      "peak_reserved_gib": 3.2109375,
+      "terminal_rank": 256,
+      "relative_error": 0.4638011157512665,
+      "subspace_relative_error": 0.4119742810726166,
+      "coefficient_relative_error": 0.21307605504989624,
+      "cosine": 0.8871791362762451,
+      "norm_ratio": 0.840293824672699,
+      "oracle_scalar": 0.04825672507286072,
+      "oracle_scalar_corrected_error": 0.4618673324584961,
+      "orthogonal_decomposition_defect": 1.2738528806011118e-05
+    },
+    {
+      "rank": 1024,
+      "status": "complete",
+      "cold_refresh_seconds": 25.84173192596063,
+      "peak_allocated_gib": 5.160396099090576,
+      "peak_reserved_gib": 6.560546875,
+      "terminal_rank": 1024,
+      "relative_error": 0.38055098056793213,
+      "subspace_relative_error": 0.3379920721054077,
+      "coefficient_relative_error": 0.17499028146266937,
+      "cosine": 0.9251811504364014,
+      "norm_ratio": 0.89726722240448,
+      "oracle_scalar": 0.035304371267557144,
+      "oracle_scalar_corrected_error": 0.37929007411003113,
+      "orthogonal_decomposition_defect": 4.119060127671936e-05
+    },
+    {
+      "rank": 2048,
+      "status": "complete",
+      "cold_refresh_seconds": 55.819907329045236,
+      "peak_allocated_gib": 9.785882949829102,
+      "peak_reserved_gib": 11.421875,
+      "terminal_rank": 2048,
+      "relative_error": 0.35789990425109863,
+      "subspace_relative_error": 0.30951088666915894,
+      "coefficient_relative_error": 0.1799325942993164,
+      "cosine": 0.9340643882751465,
+      "norm_ratio": 0.9102200269699097,
+      "oracle_scalar": 0.029101094231009483,
+      "oracle_scalar_corrected_error": 0.356989324092865,
+      "orthogonal_decomposition_defect": 8.038599506576816e-05
+    }
+  ],
+  "note": "Fresh nested Rademacher sketches, fixed rank, native products, FP32 with TF32 off. Exact gradient differentiates the same five-step FP32 map; it is not a high-precision reference. Single cold refresh times under shared GPU load include graph capture; not speed benchmarks.",
+  "backend_calibration_passed": true
+}

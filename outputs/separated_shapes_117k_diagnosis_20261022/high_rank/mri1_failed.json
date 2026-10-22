@@ -1,0 +1,181 @@
+{
+  "status": "complete",
+  "inputs": "outputs/separated_shapes_117k_noiseless_20261021/production/r250_shapes_mri4/sample_001/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/native_reconstruction/baseline/r250_shapes_mri4/sample_001/dlr_d_flow.pt",
+  "source_sha256": "e51f9e094d541b9cccc564fbe60b8d6df5436c57f444b6d2de20845e9238cc96",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "settings": {
+    "version": 1,
+    "resolutions": [
+      64,
+      96,
+      128,
+      160,
+      200,
+      250
+    ],
+    "circles": [
+      0
+    ],
+    "ct_angles": [
+      10
+    ],
+    "mri_accelerations": [
+      4
+    ],
+    "mri_pattern": "cartesian",
+    "samples": 30,
+    "epoch": 500,
+    "run_template": "/home/samzheng/d-flow/outputs/separated_shapes_117k_noiseless_20261021/models/r{resolution}",
+    "noise_relative": 0.0,
+    "flow_steps": 5,
+    "seed": 20261007,
+    "source_projection": false,
+    "optimizer": {
+      "lr": 1.0,
+      "history_size": 100,
+      "max_ls": 30,
+      "c1": 0.0001,
+      "step_cap": 0.01,
+      "backtracking": "geometric"
+    },
+    "stopping": {
+      "min_updates": 1000,
+      "max_updates": 1000,
+      "window": 50,
+      "plateau_relative": 0.001,
+      "failed_searches": 2
+    },
+    "dlr_reuse_previous_v": true,
+    "dlr": {
+      "rank": 32,
+      "trace_probes": 0,
+      "enrichment_probes": 0,
+      "initialization_oversampling": 8,
+      "factor_stride": 1,
+      "zero_terminal_baseline": true,
+      "speed_profile": "fast"
+    },
+    "execution": {
+      "threads": 2,
+      "checkpoint_every": 10,
+      "cudnn_tf32": false,
+      "matmul_tf32": false,
+      "cudnn_benchmark": false,
+      "memory_fraction": 0.96,
+      "dlr_full_step_graphs": true,
+      "dlr_jvp_columns": 6,
+      "dlr_vjp_columns": 4,
+      "dlr_fused_norm": "triton",
+      "dlr_fused_primal": "full",
+      "dlr_specialized_algebra": true,
+      "dflow_checkpointed": false
+    },
+    "scheduling": {
+      "samples_per_worker": 1,
+      "max_workers_per_gpu": 4,
+      "gpu_headroom_mib": 2048,
+      "worker_memory_mib": {
+        "64": 8192,
+        "96": 8192,
+        "128": 8192,
+        "160": 8192,
+        "200": 8192,
+        "250": 8192
+      }
+    },
+    "dataset_label": "separated shapes: 1\u20134 circles/triangles",
+    "dataset_template": "data/separated-shapes-{resolution}.pt",
+    "diagnostic_figures": true
+  },
+  "ranks": [
+    32,
+    256,
+    1024,
+    2048
+  ],
+  "script_sha256": "b0db5b5f758c3db08307c639ef7eee9614eb2c37e20d2c12722429a7cd984851",
+  "sketch_sha256": "9a9a89cb56dc12ec7a05ca51f48c80a7f53ee042058b6a0682897147322cc6ba",
+  "objective": 350.4364449508864,
+  "exact_gradient_norm": 0.40990811586380005,
+  "image_error": 1.0002063512802124,
+  "rows": [
+    {
+      "rank": 32,
+      "status": "complete",
+      "cold_refresh_seconds": 1.7834471450187266,
+      "peak_allocated_gib": 0.9308924674987793,
+      "peak_reserved_gib": 2.056640625,
+      "terminal_rank": 32,
+      "relative_error": 0.45593321323394775,
+      "subspace_relative_error": 0.41114547848701477,
+      "coefficient_relative_error": 0.19706639647483826,
+      "cosine": 0.894553542137146,
+      "norm_ratio": 0.8045473694801331,
+      "oracle_scalar": 0.0016926146345213056,
+      "oracle_scalar_corrected_error": 0.44286465644836426,
+      "orthogonal_decomposition_defect": 6.741700619983249e-07,
+      "native_backend_relative_error": 0.0005116316606290638,
+      "native_backend_validated": true,
+      "native_gradient_scores": {
+        "relative_error": 0.4559174180030823,
+        "subspace_relative_error": 0.411146879196167,
+        "coefficient_relative_error": 0.1970272958278656,
+        "cosine": 0.8945602178573608,
+        "norm_ratio": 0.804567813873291,
+        "oracle_scalar": 0.001692670164629817,
+        "oracle_scalar_corrected_error": 0.4428475499153137
+      }
+    },
+    {
+      "rank": 256,
+      "status": "complete",
+      "cold_refresh_seconds": 7.132974636275321,
+      "peak_allocated_gib": 1.7501373291015625,
+      "peak_reserved_gib": 3.2109375,
+      "terminal_rank": 256,
+      "relative_error": 0.29244446754455566,
+      "subspace_relative_error": 0.2752491235733032,
+      "coefficient_relative_error": 0.09882154315710068,
+      "cosine": 0.9565324783325195,
+      "norm_ratio": 0.9346677660942078,
+      "oracle_scalar": 0.000361605838406831,
+      "oracle_scalar_corrected_error": 0.2915264666080475,
+      "orthogonal_decomposition_defect": 4.01082240358841e-06
+    },
+    {
+      "rank": 1024,
+      "status": "complete",
+      "cold_refresh_seconds": 26.88615624792874,
+      "peak_allocated_gib": 5.1606292724609375,
+      "peak_reserved_gib": 6.560546875,
+      "terminal_rank": 1024,
+      "relative_error": 0.23523718118667603,
+      "subspace_relative_error": 0.22650174796581268,
+      "coefficient_relative_error": 0.06357312947511673,
+      "cosine": 0.9719787836074829,
+      "norm_ratio": 0.9630729556083679,
+      "oracle_scalar": 4.8524037993047386e-05,
+      "oracle_scalar_corrected_error": 0.2352166622877121,
+      "orthogonal_decomposition_defect": 8.053210175440473e-06
+    },
+    {
+      "rank": 2048,
+      "status": "complete",
+      "cold_refresh_seconds": 56.93150113010779,
+      "peak_allocated_gib": 9.786116123199463,
+      "peak_reserved_gib": 11.421875,
+      "terminal_rank": 2048,
+      "relative_error": 0.21837666630744934,
+      "subspace_relative_error": 0.20980267226696014,
+      "coefficient_relative_error": 0.06069590896368027,
+      "cosine": 0.975909948348999,
+      "norm_ratio": 0.9665102958679199,
+      "oracle_scalar": -7.543312676716596e-05,
+      "oracle_scalar_corrected_error": 0.2183232307434082,
+      "orthogonal_decomposition_defect": 1.2786267729769651e-05
+    }
+  ],
+  "note": "Fresh nested Rademacher sketches, fixed rank, native products, FP32 with TF32 off. Exact gradient differentiates the same five-step FP32 map; it is not a high-precision reference. Single cold refresh times under shared GPU load include graph capture; not speed benchmarks.",
+  "backend_calibration_passed": true
+}

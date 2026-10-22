@@ -1,0 +1,12 @@
+{
+  "pid": 1669088,
+  "wait_for_audit_pid": 1668117,
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "experiments.separated_shapes_117k.high_rank_reconstruction",
+    "--out",
+    "outputs/separated_shapes_117k_diagnosis_20261022/high_rank/reconstruction"
+  ],
+  "log": "/tmp/high_rank_reconstruction.log"
+}

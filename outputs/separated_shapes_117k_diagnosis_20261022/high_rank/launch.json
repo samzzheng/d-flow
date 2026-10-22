@@ -1,0 +1,26 @@
+{
+  "pid": 1668117,
+  "commands": [
+    [
+      ".venv/bin/python",
+      "-m",
+      "experiments.separated_shapes_117k.high_rank_audit",
+      "--inputs",
+      "outputs/separated_shapes_117k_noiseless_20261021/production/r250_shapes_mri4/sample_001/inputs.pt",
+      "--out",
+      "outputs/separated_shapes_117k_diagnosis_20261022/high_rank/mri1_initial.json"
+    ],
+    [
+      ".venv/bin/python",
+      "-m",
+      "experiments.separated_shapes_117k.high_rank_audit",
+      "--inputs",
+      "outputs/separated_shapes_117k_noiseless_20261021/production/r250_shapes_mri4/sample_001/inputs.pt",
+      "--source",
+      "outputs/separated_shapes_117k_diagnosis_20261022/native_reconstruction/baseline/r250_shapes_mri4/sample_001/dlr_d_flow.pt",
+      "--out",
+      "outputs/separated_shapes_117k_diagnosis_20261022/high_rank/mri1_failed.json"
+    ]
+  ],
+  "log": "/tmp/high_rank_audit.log"
+}

@@ -1,0 +1,4 @@
+{
+  "pid": 1667673,
+  "reason": "Rank32 accelerated/native DLR discrepancy exceeded 0.001 at failed FP32 source; now recorded explicitly rather than discarding diagnostic."
+}
