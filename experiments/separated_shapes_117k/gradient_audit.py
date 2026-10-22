@@ -157,7 +157,8 @@ def main() -> None:
     saved = torch.load(args.source, map_location=device, weights_only=True) if args.source else None
     source = inputs["initial"] if saved is None else saved["source"]
     protocol = inputs["protocol"]
-    settings = (saved["protocol"].get("continuation_settings", saved["protocol"].get("settings"))
+    settings = (saved["protocol"].get("precision_recovery", {}).get("settings",
+                saved["protocol"].get("continuation_settings", saved["protocol"].get("settings")))
                 if saved is not None else None)
     if settings is None:
         settings = json.loads(args.manifest.read_text())["settings"]
