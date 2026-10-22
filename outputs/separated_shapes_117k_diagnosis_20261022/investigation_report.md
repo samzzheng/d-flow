@@ -70,3 +70,13 @@ At the shared initial source, unrestricted and initialization-retained controls 
 [Completed MRI4 verification](native_precision_recovery_mri4/verification.json) · [Completed MRI2 verification](native_precision_recovery_mri2_floor64/verification.json) · [FP64 backend validation](full_map_audit/fp64_backend_report.md) · [CT pairing verification](prefix_recovery_200ct1/protocol_verification.json) · [Completed CT segments](prefix_recovery_200ct1/segment_050_verification.json)
 
 No experimental initialization, precision or rank policy has been promoted to a production default. The original sweep remains held by its source-hash guard; results from modified implementations must use a separate manifest. The next decision is whether the paired reconstruction controls support a correction beyond the verified backend fixes.
+
+## Dataset difficulty versus optimization failure
+
+An independent CPU audit verifies 64 completed paired D-Flow/P-Flow cases against saved geometry and original complex measurements. At 250² MRI, P-Flow reaches below 10% image error on all 30 cases, while D-Flow exceeds 50% on 19. These failures are nearly blank: median reconstruction norm is 0.0211 times the truth norm. Useful images are therefore representable by the same discrete generator; capacity alone cannot explain the paired failures. Count stratification does not show a simple increase in difficulty with more objects. Legacy DLR results are excluded because its backend was subsequently corrected.
+
+Five-step unconditional quality also degrades at high resolution: the detector finds no valid component in 71/128 sources at 250², versus 5/128 with 100 steps. This is a contributing trajectory concern, not proof that more steps alone fix inversion.
+
+At the final corrected FP64 MRI2 source, raising the adaptive floor from 64 to 128 barely changes reused-basis gradient error (30.8869% to 30.8774%). Missing-subspace error dominates; terminal rank alone is insufficient.
+
+[Geometry and paired-method audit](dataset_difficulty/report.md) · [Final MRI gradient audit](full_map_audit/mri2_final_gradient_report.md)

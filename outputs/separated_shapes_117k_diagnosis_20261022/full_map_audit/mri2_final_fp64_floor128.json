@@ -1,0 +1,157 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/multistart_adaptive_mri2/r250_shapes_mri4/sample_002/pool.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/native_precision_recovery_mri2_floor64/float64/dlr_d_flow.pt",
+  "dtype": "torch.float64",
+  "original_source_sha256": "43ad9d3b44aa493cc5d971dfa7046273b47e6c4fc4b4a3e854643cf501ffeb0d",
+  "source_gradient_step": 0.0,
+  "source_sha256": "43ad9d3b44aa493cc5d971dfa7046273b47e6c4fc4b4a3e854643cf501ffeb0d",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "objective": 0.30562285564471975,
+  "image_error": 0.06597888139462048,
+  "exact_gradient_norm": 1.4243887218313793,
+  "adjoint_relative_error": 1.725712933385465e-15,
+  "rows": [
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "startup": "legacy",
+      "residual_sketch_steps": null,
+      "initialization_oversampling": 8,
+      "adaptive_rank_min": 128,
+      "terminal_rank": 128,
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.33800036069377226,
+      "subspace_relative_error": 0.32369787105146824,
+      "coefficient_relative_error": 0.09728274310418714,
+      "cosine": 0.9421369123752751,
+      "norm_ratio": 0.8989373118084067,
+      "oracle_scalar": 0.009899630812795887,
+      "oracle_scalar_corrected_error": 0.33796642615128386,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8298890673081722
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8858915355285253
+        },
+        {
+          "step": 3,
+          "alpha": 0.4000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8924319202354347
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000000000000007,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8933517684495269
+        },
+        {
+          "step": 5,
+          "alpha": 5.551115123125783e-17,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8952196882768302
+        }
+      ],
+      "native_dlr_comparison": {
+        "relative_backend_difference": 4.524735188547269e-14,
+        "difference_over_exact_norm": 4.067453287037591e-14,
+        "projected_exact_gradient_difference": 6.347918359158658e-13,
+        "native_gradient_error": 0.3380003606937723,
+        "native_endpoint_relative_error": 0.0,
+        "native_alpha": 0.0,
+        "passed": true
+      }
+    },
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": true,
+      "factor_arithmetic": "specialized",
+      "startup": "legacy",
+      "residual_sketch_steps": null,
+      "initialization_oversampling": 8,
+      "adaptive_rank_min": 128,
+      "terminal_rank": 128,
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.3087735410986673,
+      "subspace_relative_error": 0.29638547147905725,
+      "coefficient_relative_error": 0.08658378588828275,
+      "cosine": 0.9511361006283894,
+      "norm_ratio": 0.9501453427426373,
+      "oracle_scalar": -0.0054718271662374885,
+      "oracle_scalar_corrected_error": 0.30876219276731864,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.8628176851165525
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.9028652326464157
+        },
+        {
+          "step": 3,
+          "alpha": 0.4000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.9085818356751022
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000000000000007,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.9087695361025468
+        },
+        {
+          "step": 5,
+          "alpha": 5.551115123125783e-17,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.9121556522962226
+        }
+      ],
+      "native_dlr_comparison": {
+        "relative_backend_difference": 3.0927833688744036e-13,
+        "difference_over_exact_norm": 2.9385937140478196e-13,
+        "projected_exact_gradient_difference": 5.468605723031428e-13,
+        "native_gradient_error": 0.3087735410986646,
+        "native_endpoint_relative_error": 0.0,
+        "native_alpha": 0.0,
+        "passed": true
+      }
+    }
+  ],
+  "increment_substeps": 0,
+  "startup": "legacy",
+  "startup_sha256": "7f2fb0672116f194c9d11a76a951782319b4830e48ccfdbc705f38ee12265b41",
+  "factor_integrator_sha256": "fc988d65ce74ec8a24edf131f7953b25793251a99a205434cdcc72856253fcbd",
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}

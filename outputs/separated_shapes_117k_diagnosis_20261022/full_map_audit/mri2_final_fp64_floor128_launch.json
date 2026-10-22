@@ -1,0 +1,32 @@
+{
+  "created_at": "2026-10-22T13:52:14.810546-04:00",
+  "launcher_pid": 1589655,
+  "command": [
+    "uv",
+    "run",
+    "--no-sync",
+    "--python",
+    ".venv/bin/python",
+    "python",
+    "-u",
+    "-c",
+    "from experiments.separated_shapes_117k import gradient_audit as audit; from experiments.separated_shapes_117k.bounded_products import BoundedGraphedProducts; audit.GraphedAProducts = BoundedGraphedProducts; audit.main()",
+    "--inputs",
+    "outputs/separated_shapes_117k_diagnosis_20261022/multistart_adaptive_mri2/r250_shapes_mri4/sample_002/pool.pt",
+    "--source",
+    "outputs/separated_shapes_117k_diagnosis_20261022/native_precision_recovery_mri2_floor64/float64/dlr_d_flow.pt",
+    "--out",
+    "outputs/separated_shapes_117k_diagnosis_20261022/full_map_audit/mri2_final_fp64_floor128.json",
+    "--ranks",
+    "128",
+    "--adaptive-min",
+    "128",
+    "--double",
+    "--compare-native-dlr",
+    "--skip-reference",
+    "--track-gradient-capture"
+  ],
+  "log": "/tmp/mri2_final_fp64_floor128_audit.log",
+  "bounded_products_sha256": "5125e3b0138d87e39e0c38a89e1fba4968f2a5713e47b4da7a3417706c23afb9",
+  "note": "Matched fixed-source floor64 versus floor128 diagnostic. Same rank128 sketch, source, data, seed and derivative arithmetic; no reconstruction update."
+}
