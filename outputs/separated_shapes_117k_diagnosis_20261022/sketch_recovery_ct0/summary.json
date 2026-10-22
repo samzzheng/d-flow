@@ -1,0 +1,71 @@
+{
+  "trials": [
+    {
+      "trial": 0,
+      "seed": 52761008,
+      "start_attempts": 37,
+      "status": "stalled",
+      "final": {
+        "step": 40,
+        "phi": 1.4822029525248874,
+        "source_step_norm": 0.0,
+        "line_search_trials": 29,
+        "elapsed_seconds": 65.71374076418579,
+        "image_relative_l2": 0.9104511737823486,
+        "measurement_relative_l2_clean": 0.7440752387046814,
+        "measurement_relative_l2_noisy": 0.7440752387046814,
+        "residual_over_noise": null
+      }
+    },
+    {
+      "trial": 1,
+      "seed": 52761009,
+      "start_attempts": 40,
+      "status": "stalled",
+      "final": {
+        "step": 42,
+        "phi": 1.4822029525248874,
+        "source_step_norm": 0.0,
+        "line_search_trials": 29,
+        "elapsed_seconds": 69.65049338340759,
+        "image_relative_l2": 0.9104511737823486,
+        "measurement_relative_l2_clean": 0.7440752387046814,
+        "measurement_relative_l2_noisy": 0.7440752387046814,
+        "residual_over_noise": null
+      }
+    },
+    {
+      "trial": 2,
+      "seed": 52761010,
+      "start_attempts": 42,
+      "status": "stalled",
+      "final": {
+        "step": 44,
+        "phi": 1.4822029525248874,
+        "source_step_norm": 0.0,
+        "line_search_trials": 28,
+        "elapsed_seconds": 72.46783761912957,
+        "image_relative_l2": 0.9104511737823486,
+        "measurement_relative_l2_clean": 0.7440752387046814,
+        "measurement_relative_l2_noisy": 0.7440752387046814,
+        "residual_over_noise": null
+      }
+    }
+  ],
+  "baseline": {
+    "step": 37,
+    "phi": 1.4822031041248964,
+    "source_step_norm": 0.0,
+    "line_search_trials": 30,
+    "elapsed_seconds": 57.19679615693167,
+    "image_relative_l2": 0.9105232954025269,
+    "measurement_relative_l2_clean": 0.7440752983093262,
+    "measurement_relative_l2_noisy": 0.7440752983093262,
+    "residual_over_noise": null
+  },
+  "total_attempts": 44,
+  "winner_attempts": 44,
+  "attempts_in_other_starts": 0,
+  "additional_attempts": 7,
+  "budget": 1000
+}

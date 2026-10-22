@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 02:08 local time. The adaptive pilot's remaining controls are still running.
+Snapshot: 2026-10-22, 03:51 local time. Adaptive, fixed-sketch, restart, and bounded sketch-recovery controls below are complete.
 
 ## Verified findings
 
@@ -53,7 +53,9 @@ $$
 
 The second term changes the gradient without moving the source. Thus L-BFGS can interpret approximation drift as objective curvature. A fixed-seed sketch removes this particular state dependence in exact arithmetic; it does not make the approximate field an exact or necessarily conservative gradient.
 
-Disabling reuse in the paired rank128 MRI4 reconstruction finishes at **2.102%** after1000 attempts, versus31.235% after370 attempts with reuse (both had a1000-attempt cap and the same stopping safeguards). This supports the mechanism as a contributor. It does not prove a universal fix: fresh-sketch MRI1 and CT0 still finish at100.024% and91.052%. Rank32 and successful-case controls are running before any default change.
+Disabling reuse in the paired rank128 MRI4 reconstruction finishes at **2.102%** after1000 attempts, versus31.235% after370 attempts with reuse (both had a1000-attempt cap and the same stopping safeguards). This supports the mechanism as a contributor. It does not prove a universal fix: fresh-sketch MRI1 and CT0 still finish at100.024% and91.052%. The rank32 MRI4 control finishes at73.666%; rank128 CT20 finishes at3.492%, versus3.999% with reuse. These close CT differences require repeats. On the identical cached restart pool for MRI2, disabling reuse worsens DLR from3.155% to14.723%, so it is not promoted as a default.
+
+Bounded recovery after a failed search also does not rescue these endpoints. Three alternative fixed-seed sketches, with cleared L-BFGS curvature and unchanged current source, leave MRI4 at31.235%, MRI2 at14.723%, and CT0 at91.045% (previously91.052%). Every attempt counts toward the original1000-attempt cap, including150 discarded initialization probes for MRI2. Totals are383/232/44 respectively; the unchanged two-failed-search safeguard terminates each trial. Saved histories, objective nonincrease, cumulative counters, and budget accounting pass checks. This is a negative control, not a production change. Evidence: `sketch_recovery_mri4/`, `sketch_recovery_mri2/`, and `sketch_recovery_ct0/`.
 
 ## Coarse generator and source-selection controls
 
@@ -63,7 +65,7 @@ On32 paired250-square sources, uniform5 produces24 empty samples, uniform10/20 e
 
 With the same cached measurement-informed MRI1 source, DLR gives12.306% at5 steps/rank32,2.405% at5 steps/rank128, and **2.354% at20 steps/rank32**. The latter two use648 JVP columns and648 VJP columns per factor refresh under the zero-enrichment profile, including eight startup oversampling columns; wall time is not established by this count. Changing the step count also changes the discrete generator, so this does not isolate factor integration error. D-Flow/P-Flow at20 steps finish0.943/8.547% on that source. The corresponding CT control finishes at60.271% for DLR, versus37.118% at5 steps/rank32 and39.215% at5 steps/rank128; D-Flow/P-Flow at20 steps finish54.627/212.706%. This is further evidence against a universal refinement default.
 
-A separate restart test gives all three methods identical cached pools of four sources, probes each briefly, and selects by measurement objective only. All probes count toward the shared1000-attempt budget. Its current results and budget/source checks are in [the restart report](multistart_report/report.md). Partial reconstruction gains are not final results.
+A separate restart test gives all three methods identical cached pools of four sources, probes each briefly, and selects by measurement objective only. All probes count toward the shared1000-attempt budget. Completed reused-basis DLR results are3.155% on250MRI2 and8.298% on250CT7. The fixed-sketch200CT1 restart finishes at30.332%, versus99.781% for its native rank32 Gaussian control; this comparison changes both initialization and rank. Full method results and budget/source checks are in [the restart report](multistart_report/report.md). These selected cases do not establish population performance.
 
 ## CT precision and optimizer conditioning
 
