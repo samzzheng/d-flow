@@ -21,6 +21,26 @@ from sampler.ode_samplers import euler_flow
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 
 
+class RankRecordingEvaluator(run.Evaluator):
+    rank_history_path: Path
+
+    def gradient(self, source: torch.Tensor, method: str) -> torch.Tensor:
+        ranks: list[dict[str, int | float]] = []
+
+        def record(step: int, alpha: float, factors: tuple[torch.Tensor, torch.Tensor, torch.Tensor]) -> None:
+            ranks.append(dict(flow_step=step, alpha=float(alpha), rank=factors[1].shape[0]))
+
+        self.settings["dlr"]["factor_callback"] = record
+        try:
+            gradient = super().gradient(source, method)
+        finally:
+            self.settings["dlr"].pop("factor_callback")
+        with self.rank_history_path.open("a") as output:
+            output.write(json.dumps(dict(evaluation=self.counts["gradients"],
+                                         objective=self.value, ranks=ranks)) + "\n")
+        return gradient
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("diagnose", "reconstruct"))
@@ -31,10 +51,14 @@ def main() -> None:
     parser.add_argument("--cases", nargs="+", default=[
         "r250_shapes_ct10/sample_000", "r250_shapes_mri4/sample_001",
         "r250_shapes_mri4/sample_000"])
-    parser.add_argument("--variants", nargs="+", choices=("baseline", "prefix2", "prefix5", "measurement", "random_mix"),
+    parser.add_argument("--variants", nargs="+", choices=("baseline", "prefix2", "prefix5", "measurement", "random_mix", "adaptive", "rank128"),
                         default=["prefix2", "prefix5"])
     parser.add_argument("--backend", choices=("fast", "native", "native_primal"), default="fast")
     parser.add_argument("--rank", type=int)
+    parser.add_argument("--source-cache-roots", type=Path, nargs="*", default=[])
+    parser.add_argument("--rank-min", type=int, default=4)
+    parser.add_argument("--rank-max", type=int, default=128)
+    parser.add_argument("--rank-tol", type=float, default=1e-3)
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
@@ -50,7 +74,9 @@ def main() -> None:
         settings["dlr"]["rank"] = args.rank
     args.out.mkdir(parents=True, exist_ok=True)
     evidence = dict(baseline=str(args.baseline.resolve()), cases=args.cases,
-                    variants=args.variants, backend=args.backend, rank=settings["dlr"]["rank"], source_sha256=source_hashes(),
+                    variants=args.variants, backend=args.backend, rank=settings["dlr"]["rank"],
+                    source_cache_roots=list(map(str, args.source_cache_roots)), source_sha256=source_hashes(),
+                    adaptive=dict(rank_min=args.rank_min, rank_max=args.rank_max, rank_tol=args.rank_tol),
                     script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     run.write_json(args.out / f"{args.action}_config.json", evidence)
     rows: list[dict[str, Any]] = []
@@ -117,8 +143,24 @@ def main() -> None:
                 configuration = deepcopy(settings)
                 if variant.startswith("prefix"):
                     configuration["dlr"]["residual_sketch_steps"] = int(variant[-1])
+                elif variant == "adaptive":
+                    configuration["dlr"].update(adaptive_rank=True, rank_min=args.rank_min,
+                                               rank_max=args.rank_max, rank_tol=args.rank_tol)
+                elif variant == "rank128":
+                    configuration["dlr"]["rank"] = args.rank_max
                 initial = inputs["initial"]
-                if variant in ("measurement", "random_mix"):
+                caches = [root / variant / name / "inputs.pt" for root in args.source_cache_roots
+                          if (root / variant / name / "inputs.pt").exists()]
+                if args.source_cache_roots and variant in ("measurement", "random_mix"):
+                    cached_path, = caches
+                    cached = torch.load(cached_path, map_location=device, weights_only=True)
+                    assert cached["protocol"]["checkpoint_sha256"] == protocol["checkpoint_sha256"]
+                    assert cached["protocol"]["operator"] == protocol["operator"]
+                    assert cached["protocol"]["source_seed"] == protocol["source_seed"]
+                    assert torch.equal(cached["observed"], inputs["observed"])
+                    assert torch.equal(cached["truth"], inputs["truth"])
+                    initial = cached["initial"]
+                elif variant in ("measurement", "random_mix"):
                     if variant == "measurement":
                         variable = torch.zeros_like(initial, requires_grad=True)
                         pairing = (operator(variable).conj() * inputs["observed"]).real.sum()
@@ -138,8 +180,11 @@ def main() -> None:
                 results = {}
                 methods = run.METHODS if variant in ("measurement", "random_mix") else ("DLR D-Flow",)
                 for method in methods:
-                    evaluator = run.Evaluator(model, operator, inputs["observed"], configuration,
+                    evaluator_type = RankRecordingEvaluator if variant == "adaptive" else run.Evaluator
+                    evaluator = evaluator_type(model, operator, inputs["observed"], configuration,
                                               protocol["dlr_seed"], products)
+                    if isinstance(evaluator, RankRecordingEvaluator):
+                        evaluator.rank_history_path = path / "rank_history.jsonl"
                     stem = method.lower().replace("-", "_").replace(" ", "_")
                     results[method] = run.solve(evaluator, method, initial, inputs["truth"], inputs["clean"],
                                                path / f"{stem}.pt", paired, [False])
