@@ -1,0 +1,36 @@
+{
+  "parent_sha256": "aba1eda3f71a0440f2aa29b6544b0b6b131f72e66c6b4ef9149e0165b31c15a0",
+  "checks": "Saved real and complex array metrics, objective, monotonicity, pairing, rank-only settings or precision settings, preserved rank-control history, and original attempt budgets passed.",
+  "results": {
+    "floor_128": {
+      "status": "stalled",
+      "source_dtype": "torch.float32",
+      "image_error_percent": 11.658585226731915,
+      "measurement_residual_percent": 7.848128501046081,
+      "objective": 1.0643755354668931,
+      "total_attempts": 238,
+      "terminal_rank": 128,
+      "history_rows": 89
+    },
+    "floor_64": {
+      "status": "stalled",
+      "source_dtype": "torch.float32",
+      "image_error_percent": 11.658585226731915,
+      "measurement_residual_percent": 7.848128501046081,
+      "objective": 1.0643755354668931,
+      "total_attempts": 238,
+      "terminal_rank": 64,
+      "history_rows": 89
+    },
+    "unchanged": {
+      "status": "stalled",
+      "source_dtype": "torch.float32",
+      "image_error_percent": 11.658585226733322,
+      "measurement_residual_percent": 7.848128501140768,
+      "objective": 1.0643755354857651,
+      "total_attempts": 237,
+      "terminal_rank": 32,
+      "history_rows": 88
+    }
+  }
+}

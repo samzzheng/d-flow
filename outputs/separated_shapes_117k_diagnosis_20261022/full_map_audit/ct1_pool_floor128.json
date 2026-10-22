@@ -1,0 +1,76 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/multistart_adaptive_200ct1/r200_shapes_ct10/sample_001/pool.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/multistart_adaptive_200ct1/r200_shapes_ct10/sample_001/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "d091f6dce9da26974725ba2623b698571409b2f6359f8c7c1d4ea5d597c3f784",
+  "checkpoint_sha256": "e589cd4ed64e2465c3c2a6db64e14658e4860dc9c1faa1bd503da168d73b46bb",
+  "objective": 0.021877228094321167,
+  "image_error": 0.27582645416259766,
+  "exact_gradient_norm": 0.0031938632018864155,
+  "adjoint_relative_error": 5.3502462833421305e-06,
+  "rows": [
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "canonical",
+      "startup": "legacy",
+      "adaptive_rank_min": 128,
+      "terminal_rank": 128,
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.9611744284629822,
+      "subspace_relative_error": 0.8710899949073792,
+      "coefficient_relative_error": 0.4062834084033966,
+      "cosine": 0.28060102462768555,
+      "norm_ratio": 0.331525057554245,
+      "oracle_scalar": -0.023482773452997208,
+      "oracle_scalar_corrected_error": 0.9494746327400208,
+      "endpoint_relative_error": 0.0,
+      "gradient_capture_path": [
+        {
+          "step": 0,
+          "alpha": 1.0,
+          "rank": 0,
+          "retained_squared_gradient_fraction": 0.0
+        },
+        {
+          "step": 1,
+          "alpha": 0.8,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.2064485102891922
+        },
+        {
+          "step": 2,
+          "alpha": 0.6000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.12655648589134216
+        },
+        {
+          "step": 3,
+          "alpha": 0.4000000000000001,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.13186946511268616
+        },
+        {
+          "step": 4,
+          "alpha": 0.20000000000000007,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.16653190553188324
+        },
+        {
+          "step": 5,
+          "alpha": 5.551115123125783e-17,
+          "rank": 128,
+          "retained_squared_gradient_fraction": 0.24120651185512543
+        }
+      ]
+    }
+  ],
+  "increment_substeps": 0,
+  "startup": "legacy",
+  "startup_sha256": "7f2fb0672116f194c9d11a76a951782319b4830e48ccfdbc705f38ee12265b41",
+  "factor_integrator_sha256": "fc988d65ce74ec8a24edf131f7953b25793251a99a205434cdcc72856253fcbd",
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}
