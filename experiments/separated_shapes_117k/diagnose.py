@@ -73,7 +73,8 @@ def main() -> None:
         "r250_shapes_mri4/sample_000"])
     parser.add_argument("--variants", nargs="+", choices=("baseline", "prefix2", "prefix5", "measurement", "random_mix", "adaptive", "rank128", "terminal_seed"),
                         default=["prefix2", "prefix5"])
-    parser.add_argument("--backend", choices=("fast", "native", "native_primal"), default="fast")
+    parser.add_argument("--backend", choices=("fast", "native", "native_primal"), default="native_primal",
+        help="Native normalization by default; fast explicitly reproduces legacy manual statistics")
     parser.add_argument("--rank", type=int)
     parser.add_argument("--flow-steps", type=int)
     parser.add_argument("--methods", choices=run.METHODS, nargs="+")

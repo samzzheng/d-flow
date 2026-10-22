@@ -125,6 +125,48 @@
       "image_error": 0.30331653356552124,
       "residual": 0.13780204951763153,
       "source_hash": "308fb7512b9cddfc25301c1624fa55c6e8fe6a6d061c1726867c433a4b99a9c3"
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "run": "multistart_goal1_ct7",
+      "method": "DLR D-Flow",
+      "selected": "measurement_half",
+      "status": "running",
+      "rank": 128,
+      "goal_steps": 1,
+      "complete": false,
+      "total_attempts": 690,
+      "image_error": 0.16596035659313202,
+      "residual": 0.05766819790005684,
+      "source_hash": "412f4dd9577a6f2c94a80c150eefed717d5c13fc4a5e0cc2041aca852c5174d3"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_002",
+      "run": "multistart_goal1_mri2",
+      "method": "DLR D-Flow",
+      "selected": "measurement_half",
+      "status": "running",
+      "rank": 128,
+      "goal_steps": 1,
+      "complete": false,
+      "total_attempts": 690,
+      "image_error": 0.02890576422214508,
+      "residual": 0.013536406680941582,
+      "source_hash": "d9e273d9d1a3aead1952d50f8f48b53537ab03860c65e46fce2a7e7bddd05bad"
+    },
+    {
+      "case": "r200_shapes_ct10/sample_001",
+      "run": "multistart_goal1_200ct1",
+      "method": "DLR D-Flow",
+      "selected": "measurement_half",
+      "status": "running",
+      "rank": 128,
+      "goal_steps": 1,
+      "complete": false,
+      "total_attempts": 727,
+      "image_error": 0.1726602464914322,
+      "residual": 0.014512857422232628,
+      "source_hash": "308fb7512b9cddfc25301c1624fa55c6e8fe6a6d061c1726867c433a4b99a9c3"
     }
   ],
   "checks_passed": true
