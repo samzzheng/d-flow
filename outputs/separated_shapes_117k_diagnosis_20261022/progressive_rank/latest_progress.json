@@ -24,42 +24,63 @@
     "case": "r250_shapes_ct10/sample_007",
     "variant": "retain_initial256",
     "status": "running",
-    "attempt": 110,
-    "image_error": 93.64013075828552,
-    "residual": 69.3081259727478,
+    "attempt": 250,
+    "image_error": 33.8979035615921,
+    "residual": 20.196938514709473,
     "first_terminal_rank": 32,
-    "last_terminal_rank": 256,
+    "last_terminal_rank": 145,
     "last_rank_path": [
       256,
       256,
       256,
       256,
-      256
+      145
     ],
-    "last_rank_objective": 6.254090049529108,
+    "last_rank_objective": 0.5402533592353771,
     "initial_rank_below_cap_evaluations": 0,
-    "rank_evaluations": 119,
-    "terminal_at_cap_fraction": 0.4369747899159664
+    "rank_evaluations": 250,
+    "terminal_at_cap_fraction": 0.436
   },
   {
     "case": "r250_shapes_mri4/sample_004",
     "variant": "unrestricted256",
-    "status": "running",
-    "attempt": 960,
-    "image_error": 1.4889644458889961,
-    "residual": 0.7759822532534599,
+    "status": "step_limit",
+    "attempt": 1000,
+    "image_error": 1.4921088702976704,
+    "residual": 0.7719898130744696,
     "first_terminal_rank": 82,
-    "last_terminal_rank": 254,
+    "last_terminal_rank": 255,
     "last_rank_path": [
       256,
       256,
       256,
       256,
-      254
+      255
     ],
-    "last_rank_objective": 0.09387686926512023,
+    "last_rank_objective": 0.09292636000767841,
     "initial_rank_below_cap_evaluations": 0,
-    "rank_evaluations": 947,
+    "rank_evaluations": 984,
+    "terminal_at_cap_fraction": 0.0
+  },
+  {
+    "case": "r250_shapes_mri4/sample_004",
+    "variant": "retain_initial256",
+    "status": "running",
+    "attempt": 90,
+    "image_error": 31.121647357940674,
+    "residual": 30.221322178840637,
+    "first_terminal_rank": 82,
+    "last_terminal_rank": 99,
+    "last_rank_path": [
+      256,
+      256,
+      191,
+      99,
+      99
+    ],
+    "last_rank_objective": 142.15457208105096,
+    "initial_rank_below_cap_evaluations": 0,
+    "rank_evaluations": 99,
     "terminal_at_cap_fraction": 0.0
   }
 ]

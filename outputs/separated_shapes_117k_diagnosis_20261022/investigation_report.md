@@ -114,3 +114,11 @@ At the same CT200 plateau source, appending the discarded positive aggregate sec
 [Curvature diagnostic](full_map_audit/ct1_aggregate_secant_report.md).
 
 The completed CT7 panel verifies cached truth/observation/source pairing and shows all four reconstructed shapes. D-Flow reaches1.495%, P-Flow104.025%, and the corrected adaptive32–256 DLR5.194% image error. This is a completed-method comparison on one sample, not a population ranking. [Paired panel](progressive_rank/r250_shapes_ct10/sample_007/unrestricted256/paired_methods.png) · [Historical comparison scope](progressive_rank/ct7_historical_comparison.json).
+
+## Completed MRI high-start control and numerical sensitivity
+
+MRI250 sample4 unrestricted32–256 completes1000 attempts at1.4921% image error and0.7720% measurement residual. Independent saved-array verification checks source/model/operator pairing, original history preservation, caps, alpha, ranks and complex residual metrics. Its paired D-Flow/P-Flow image errors are0.99%/1.53%; the shared comparison panel is inspected. This is one successful selected case, not a general cure.
+
+The initial-floor-only control is mathematically equivalent on the recorded unrestricted trajectories: initialization already retains256 in every refresh. The first accepted objectives differ by roughly4.08e-8 relatively for MRI, yet at attempt20 the objective difference reaches30.9%. Both later pass through similar31% image-error plateaus. The floor-only arm remains partial; do not interpret divergent trajectories as evidence for a changed rank policy. [Trajectory sensitivity](progressive_rank/trajectory_sensitivity.md).
+
+The requested fixed1024/2048 audits also completed on MRI250 sample1. At the original source, relative gradient errors decline63.04/46.38/38.06/35.79% at ranks32/256/1024/2048; at the failed endpoint45.59/29.24/23.52/21.84%. These reference the FP32 map and do not resolve failed-endpoint precision sensitivity. Both high ranks fit on GPU1. Paired fresh-source reconstructions are running sequentially; no high-rank accuracy result yet. [High-rank audit](high_rank/report.md).
