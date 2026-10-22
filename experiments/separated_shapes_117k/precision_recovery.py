@@ -21,7 +21,7 @@ from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.optimizer import SweepLBFGS
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from experiments.separated_shapes_117k.scale_recovery import FrozenSeedEvaluator
-from experiments.separated_shapes_117k.optimizer_controls import AngleSafeguardedLBFGS
+from experiments.separated_shapes_117k.optimizer_controls import AngleSafeguardedLBFGS, CapStartedLBFGS
 from experiments.separated_shapes_117k.sketch_initialization import retained_seed_startup
 
 
@@ -42,9 +42,13 @@ def main() -> None:
         help="Branch from an existing FP64 precision-control snapshot without resetting optimizer state")
     parser.add_argument("--direction-cosine", type=float, default=0.,
         help="Experimental minimum descent angle; zero keeps the original LBFGS direction")
+    parser.add_argument("--cap-started-direction", action="store_true",
+        help="Start later Armijo searches at the existing displacement cap, preserving the LBFGS ray")
     args = parser.parse_args()
     if not 0 <= args.direction_cosine < 1 or (args.direction_cosine and not args.resume_parent_state):
         parser.error("Direction safeguarding requires a preserved parent state and a cosine in (0,1)")
+    if args.cap_started_direction and (not args.resume_parent_state or args.direction_cosine):
+        parser.error("Cap-started searches require preserved parent state and a separate control from angle safeguarding")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
@@ -96,6 +100,7 @@ def main() -> None:
         product_backend=args.products,
         dtypes=args.dtypes, initialization_prefix=args.initialization_prefix,
         resume_parent_state=args.resume_parent_state, direction_cosine=args.direction_cosine,
+        cap_started_direction=args.cap_started_direction,
         attempts_in_other_starts=recovery.get("attempts_in_other_starts",
             protocol.get("experiment", {}).get("budget", settings["stopping"]["max_updates"])-settings["stopping"]["max_updates"]),
         total_budget=recovery.get("total_budget", protocol.get("experiment", {}).get("budget", settings["stopping"]["max_updates"])),
@@ -110,6 +115,7 @@ def main() -> None:
             assert previous_config[key] == configuration[key]
         assert previous_config.get("resume_parent_state", False) == args.resume_parent_state
         assert previous_config.get("direction_cosine", 0.) == args.direction_cosine
+        assert previous_config.get("cap_started_direction", False) == args.cap_started_direction
         if limit < previous_config["attempt_limit"]:
             parser.error("Resume cannot lower the recorded attempt limit")
         segments = previous_config.get("segments", []) + [
@@ -119,7 +125,7 @@ def main() -> None:
         parser.error("No saved control to resume")
     configuration["segments"] = segments
     if args.resume_parent_state:
-        configuration["note"] = "Preserve parent source, gradient, curvature, basis, history and attempt count; change only the recorded direction-angle safeguard. Original total budget retained."
+        configuration["note"] = "Preserve parent source, gradient, curvature, basis, history and attempt count; change only the recorded direction-angle or starting-length control. Original total budget retained."
     run.write_json(config_path, configuration)
     enriched.SPECIALIZE_ZERO_ENRICHMENT = True
     enriched.SKIP_UNTRUNCATED_SVD = True
@@ -164,7 +170,8 @@ def main() -> None:
         if retained:
             evaluator.seed_direction = seed.to(device=device, dtype=dtype)
         evaluator.method = "DLR D-Flow"
-        optimizer_type = AngleSafeguardedLBFGS if args.direction_cosine else SweepLBFGS
+        optimizer_type = (AngleSafeguardedLBFGS if args.direction_cosine else
+                          CapStartedLBFGS if args.cap_started_direction else SweepLBFGS)
         optimizer = optimizer_type(source, evaluator.objective, **{
             **({"minimum_cosine": args.direction_cosine} if args.direction_cosine else {}),
             **settings["optimizer"], "step_cap": settings["optimizer"]["step_cap"]*source.numel()**.5,

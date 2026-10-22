@@ -78,3 +78,20 @@ class AngleSafeguardedLBFGS(SweepLBFGS):
 
     def _direction(self) -> torch.Tensor:
         return safeguard_direction(super()._direction(), self.g, self.minimum_cosine)
+
+
+class CapStartedLBFGS(SweepLBFGS):
+    """Start later searches at the existing cap, preserving the LBFGS ray.
+
+    The first attempt retains the established initial scaling. Later attempts
+    may require more objective trials; geometric Armijo and its budget remain
+    unchanged, and no additional gradient evaluation is introduced.
+    """
+
+    def _direction(self) -> torch.Tensor:
+        direction = super()._direction()
+        if self.step_attempts > 0 and self.step_cap > 0 and self.lr > 0:
+            norm = float(direction.norm())
+            if 0 < norm < float("inf"):
+                direction = direction*(self.step_cap/(self.lr*norm))
+        return direction

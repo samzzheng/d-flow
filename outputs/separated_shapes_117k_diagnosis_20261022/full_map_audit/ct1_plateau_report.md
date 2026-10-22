@@ -18,3 +18,13 @@ The existing optimizer accepts the tiny first trial, cannot expand it within tha
 The previously queued angle control starts earlier, before this plateau, and should still run unchanged. A separate bounded step-expansion control would be needed to test the later scale mechanism without conflating the two interventions. No production optimizer setting is changed.
 
 [Verification](ct1_plateau_verification.json) · [Saved proposal](ct1_plateau_length0.json) · [Cap-started proposal](ct1_plateau_length2.json) · [CPU cross-check](ct1_plateau_direction_cpu.json) · [Paired50-update baseline](../direction_recovery_ct1_cos005/baseline_first050.json).
+
+## Queued starting-length control
+
+`CapStartedLBFGS` now supplies the separate experimental control. It preserves the first-attempt scaling and normalizes later valid L-BFGS directions so the initial proposed displacement equals the existing cap. It keeps the ray, curvature history, geometric halving, trial budget, strict objective decrease and gradient-evaluation policy. It can require more objective evaluations; this is not a free speedup.
+
+A branch from the saved attempt250 snapshot is queued after the angle control, onGPU1. Its state and three curvature pairs are preserved; its complete history prefix matches the ongoing unchanged prefix3 baseline. It has638 selected-source attempts left within the original888+112=1000 total budget. No angle safeguard is applied in this arm. Queue PID1560792 was verified live.
+
+Four CPU tests cover the angle guarantees plus preserved first-attempt behavior, the unchanged L-BFGS ray, cap compliance and recovery from an artificially small curvature scale. The restored real checkpoint also proposes displacement2 as intended. The idle angle queue was restarted after reviewing the added implementation branch and updating its recorded hashes; active GPU workers were left running.
+
+[Starting-length queue](../cap_started_recovery_ct1/queue.json) · [State restoration check](../cap_started_recovery_ct1/initial_state_verification.json).

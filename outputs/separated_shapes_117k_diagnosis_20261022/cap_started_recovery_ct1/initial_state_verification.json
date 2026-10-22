@@ -1,0 +1,8 @@
+{
+  "initial_attempts": 250,
+  "curvature_pairs": 3,
+  "proposed_displacement": 2.000000000000001,
+  "baseline_prefix_matches": true,
+  "total_budget": 1000,
+  "queued_after_pid": 1560397
+}

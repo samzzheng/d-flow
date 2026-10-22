@@ -51,7 +51,7 @@ At a saved CT prefix3 state, gradient error is only1.34% but L-BFGS predicts51.5
 
 ## Accepted tiny-step plateau
 
-Later in the same CT continuation, the direction aligns well with the approximate gradient, but its norm is only8.66e-8. Native GPU checks confirm actual descent; starting geometric Armijo at the existing cap instead accepts0.125, increasing the one-step objective decrease2.99e-11 to1.99e-5 at five versus one trial evaluations. Approximation error has meanwhile risen to91.24%. Thus gradient accuracy, direction angle and step length are separate issues. The failed-search safeguard does not address accepted tiny steps. [Plateau audit](full_map_audit/ct1_plateau_report.md).
+Later in the same CT continuation, the direction aligns well with the approximate gradient, but its norm is only8.66e-8. Native GPU checks confirm actual descent; starting geometric Armijo at the existing cap instead accepts0.125, increasing the one-step objective decrease2.99e-11 to1.99e-5 at five versus one trial evaluations. Approximation error has meanwhile risen to91.24%. Thus gradient accuracy, direction angle and step length are separate issues. The failed-search safeguard does not address accepted tiny steps. A separate cap-started L-BFGS continuation from the saved attempt250 state is now queued after the angle control; it retains the ray and history and does not combine the two changes. [Plateau audit](full_map_audit/ct1_plateau_report.md).
 
 ## Current bounded recovery tests
 
