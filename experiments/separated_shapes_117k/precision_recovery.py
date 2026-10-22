@@ -1,7 +1,8 @@
-"""Paired native-arithmetic continuations of a retained-seed DLR endpoint."""
+"""Paired native-arithmetic continuations of failed DLR endpoints."""
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 from copy import deepcopy
 import hashlib
 import json
@@ -43,16 +44,21 @@ def main() -> None:
     inputs = torch.load(args.inputs, map_location="cpu", weights_only=True)
     protocol = parent["protocol"]
     recovery = protocol["scale_recovery"]
-    if not recovery.get("retain_seed") or recovery["variant"] != "gradient_seed":
-        parser.error("Use the completed informed retained-seed control")
+    retained = recovery.get("retain_seed", False)
+    if not (retained and recovery["variant"] == "gradient_seed") and not recovery.get("rank_floors"):
+        parser.error("Use a completed informed retained-seed or adaptive rank-floor control")
+    if parent["status"] not in run.TERMINAL or not parent["optimizer"]["consecutive_failures"]:
+        parser.error("The parent must have completed with rejected searches")
     settings = deepcopy(recovery["settings"])
     initial_attempts = parent["optimizer"]["step_attempts"]
     limit = min(initial_attempts + args.additional_attempts, settings["stopping"]["max_updates"])
     if not initial_attempts < limit:
         parser.error("No requested or original attempt budget remains")
-    seeds = torch.load(args.source.parents[1]/"seeds.pt", map_location="cpu", weights_only=True)
-    seed = seeds["directions"]["gradient_seed"]
-    assert hashlib.sha256(seed.numpy().tobytes()).hexdigest() == recovery["seed_sha256"]["gradient_seed"]
+    seed = None
+    if retained:
+        seeds = torch.load(args.source.parents[1]/"seeds.pt", map_location="cpu", weights_only=True)
+        seed = seeds["directions"]["gradient_seed"]
+        assert hashlib.sha256(seed.numpy().tobytes()).hexdigest() == recovery["seed_sha256"]["gradient_seed"]
     for key in ("checkpoint_sha256", "operator", "source_seed"):
         assert protocol[key] == inputs["protocol"][key]
     resolution = protocol["job"]["resolution"]
@@ -63,8 +69,10 @@ def main() -> None:
         parent_sha256=hashlib.sha256(args.source.read_bytes()).hexdigest(),
         script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         initial_attempts=initial_attempts, attempt_limit=limit, settings=settings,
-        seed_sha256=recovery["seed_sha256"]["gradient_seed"],
-        note="Both native autodiff backends; cold curvature; same promoted source, frozen seed, right basis and original attempt count. Each precision recomputes its initial objective.")
+        seed_sha256=recovery["seed_sha256"]["gradient_seed"] if retained else None,
+        attempts_in_other_starts=recovery.get("attempts_in_other_starts", 0),
+        total_budget=recovery.get("total_budget", settings["stopping"]["max_updates"]),
+        note="Both native autodiff backends; cold curvature; same promoted source, initialization, right basis and original attempt count. Each precision recomputes its initial objective.")
     config_path = args.out/"config.json"
     segments = []
     if config_path.exists():
@@ -112,9 +120,11 @@ def main() -> None:
         state = parent if saved is None else saved
         source = state["source"].to(device=device, dtype=dtype).clone().requires_grad_(True)
         products = ChunkedAutodiffProducts(model, columns=4)
-        evaluator = FrozenSeedEvaluator(model, operator, observed, settings, protocol["dlr_seed"], products)
+        evaluator_type = FrozenSeedEvaluator if retained else run.Evaluator
+        evaluator = evaluator_type(model, operator, observed, settings, protocol["dlr_seed"], products)
         evaluator.previous_v = state["previous_v"].to(device=device, dtype=dtype)
-        evaluator.seed_direction = seed.to(device=device, dtype=dtype)
+        if retained:
+            evaluator.seed_direction = seed.to(device=device, dtype=dtype)
         evaluator.method = "DLR D-Flow"
         optimizer = SweepLBFGS(source, evaluator.objective, **{
             **settings["optimizer"], "step_cap": settings["optimizer"]["step_cap"]*source.numel()**.5,
@@ -136,7 +146,8 @@ def main() -> None:
             source.grad = evaluator.gradient(source, "DLR D-Flow")
             return source.new_tensor(evaluator.value, dtype=torch.float64)
 
-        with patch.object(residual_startup, "residual_sketch_startup", retained_seed_startup):
+        with (patch.object(residual_startup, "residual_sketch_startup", retained_seed_startup)
+              if retained else nullcontext()):
             status = "running"
             while status == "running":
                 before = source.detach().clone()
@@ -160,7 +171,9 @@ def main() -> None:
                         evaluations=evaluator.counts, optimizer={key: value for key, value in vars(optimizer).items()
                             if key not in {"source", "objective", "_direction_graph"}},
                         elapsed_seconds=prior_seconds+time.monotonic()-started))
-                    summary[label] = dict(status=status, final=history[-1], additional_attempts=optimizer.step_attempts-initial_attempts)
+                    summary[label] = dict(status=status, final=history[-1], additional_attempts=optimizer.step_attempts-initial_attempts,
+                        total_attempts=configuration["attempts_in_other_starts"]+optimizer.step_attempts,
+                        terminal_rank=evaluator.previous_v.shape[1])
                     run.write_json(args.out/"summary.json", summary)
                     print(label, status, history[-1], flush=True)
         del evaluator, optimizer, products, model
