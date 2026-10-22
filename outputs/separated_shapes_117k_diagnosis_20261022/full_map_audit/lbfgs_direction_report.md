@@ -51,3 +51,9 @@ Both arms share the complete saved prefix through attempt190 and are compared at
 The full-budget angle run remains active; this is a common-prefix comparison, not its final result. The cap-started control is still pending. [Recorded comparison](../direction_recovery_ct1_cos005/comparison_first050.json).
 
 ![Matched50-update comparison](../direction_recovery_ct1_cos005/comparison_first050.png)
+
+## First100 paired reconstruction updates
+
+At attempt290, unchanged versus safeguarded image errors are26.933785% and26.933439%; the difference is only0.000346 percentage points. Residuals are12.828768% and12.827640%. The safeguard has used1201 line-search objective evaluations versus168. This extends the negative practical result: no meaningful image advantage has appeared after100 matched updates. The full-budget run remains active; this is not its final outcome.
+
+[Recorded100-update comparison](../direction_recovery_ct1_cos005/comparison_first100.json) · [Convergence figure](../direction_recovery_ct1_cos005/comparison_first100.png).
