@@ -2,9 +2,9 @@
   "parent": "outputs/separated_shapes_117k_diagnosis_20261022/adaptive_rank_recovery_mri2/floor_64/dlr_d_flow.pt",
   "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/multistart_adaptive_mri2/r250_shapes_mri4/sample_002/pool.pt",
   "parent_sha256": "27f2e037e39fe53e64206a48aa7151273acd06e9a98ebae87948aeab4eb051f6",
-  "script_sha256": "d24472e44ea39066313db85d68cf883911950ff35aca801fadd48da233fcfdca",
+  "script_sha256": "8442e454ef130ce077a9f076ebebbdbd69235668228330b434c256a9983d5c47",
   "initial_attempts": 88,
-  "attempt_limit": 138,
+  "attempt_limit": 850,
   "settings": {
     "version": 1,
     "resolutions": [
@@ -94,8 +94,15 @@
     "diagnostic_figures": true
   },
   "seed_sha256": null,
+  "product_backend": "graphed",
   "attempts_in_other_starts": 150,
   "total_budget": 1000,
-  "note": "Both native autodiff backends; cold curvature; same promoted source, initialization, right basis and original attempt count. Each precision recomputes its initial objective.",
-  "segments": []
+  "note": "Paired precision with the recorded derivative backend; cold curvature at initial launch; same promoted source, initialization, right basis and original attempt count. Resume preserves optimizer state; each precision recomputes its initial objective.",
+  "segments": [
+    {
+      "attempt_limit": 138,
+      "script_sha256": "d24472e44ea39066313db85d68cf883911950ff35aca801fadd48da233fcfdca",
+      "product_backend": "native"
+    }
+  ]
 }

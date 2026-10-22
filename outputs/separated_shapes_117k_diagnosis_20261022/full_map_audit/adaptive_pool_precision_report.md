@@ -49,7 +49,11 @@ The best FP64 DLR-direction displacement is7.629e-5. The exact-gradient directio
 
 For a normalized descent direction, the local change is approximately minus displacement times the directional slope plus one half the squared displacement times directional curvature. A positive gradient cosine establishes descent in exact arithmetic; it does not put the resulting decrease above forward-roundoff error. Here higher precision exposes a small decrease. Whether that leads to an accurate solution still requires a continuation test.
 
-A paired native-autodiff FP32/FP64 continuation is running for up to50 additional attempts from the floor64 parent. Both reset curvature and preserve the same source, right basis, initialization, adaptive64–128 bounds and original remaining budget. The 150 attempts spent on discarded sources remain charged to each arm. No informed seed is introduced.
+The paired native-autodiff first segment is complete. FP32 remains at11.659% image error and7.848% residual after two additional attempts; FP64 reaches **11.367% image error and7.496% residual** after50 additional attempts. Both initially reset curvature and preserve the same source, right basis, initialization, adaptive64–128 bounds and original remaining budget. This is modest improvement, not a reconstruction rescue. The150 discarded-source attempts remain charged to each arm. No informed seed is introduced. [Segment verification](../native_precision_recovery_mri2_floor64/segment_050_verification.json).
+
+![First native precision segment](../native_precision_recovery_mri2_floor64/segment_050_convergence.png)
+
+The FP64 arm is now resumed with source, gradient, right basis, curvature pairs and history preserved, up to the original total1000-attempt limit. The derivative backend changes to validated CUDA graph replay in full FP64; this transition is explicit in the saved configuration. The FP32 arm is not restarted. [Backend validation](fp64_backend_report.md) · [Resume verification](../native_precision_recovery_mri2_floor64/resume_verification.json).
 
 [Continuation protocol](../native_precision_recovery_mri2_floor64/config.json) · [Live continuation results](../native_precision_recovery_mri2_floor64/summary.json) · [FP32 audit](mri2_floor64_precision_fp32.json) · [FP64 audit](mri2_floor64_precision_fp64.json)
 
