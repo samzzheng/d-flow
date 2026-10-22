@@ -13,7 +13,7 @@ from functools import partial
 import torch
 
 from dlr_dflow.api import approx_source_gradient, load_flow_model, sensitivity_factors
-from dlr_dflow.implementation import enriched, tangent_unet
+from dlr_dflow.implementation import enriched, tangent_unet, residual_startup
 from dlr_dflow.implementation.graphed_products import GraphedAProducts
 from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
@@ -21,6 +21,7 @@ from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from sampler.ode_samplers import euler_flow
 from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step, pure_ksl_step, subdivided_increment_step
 from experiments.separated_shapes_117k.exact_suffix import task_terminal_factors
+from experiments.separated_shapes_117k.sketch_initialization import retained_seed_startup
 
 
 class DiscreteProducts:
@@ -93,6 +94,8 @@ def main() -> None:
     seed_control.add_argument("--terminal-seed", action="store_true")
     seed_control.add_argument("--source-gradient-seed", action="store_true",
         help="Oracle diagnostic: replace one sketch column with the exact source gradient")
+    parser.add_argument("--startup", choices=("legacy", "matched", "retained"), default="legacy",
+        help="Matched Rademacher control or initialization that explicitly retains the first supplied seed")
     parser.add_argument("--track-gradient-capture", action="store_true",
         help="Record exact source-gradient energy retained by each intermediate right basis")
     parser.add_argument("--line-search-audit", action="store_true")
@@ -109,6 +112,10 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.startup == "retained" and not (args.source_gradient_seed or args.terminal_seed):
+        parser.error("Retained startup needs a specified seed direction")
+    if args.startup != "legacy" and args.factor_arithmetic == "canonical":
+        parser.error("Startup controls require the fixed-rank factor path")
     if args.increment_substeps < 0:
         parser.error("Increment substeps must be nonnegative")
     if args.reference_oversampling < 1:
@@ -177,7 +184,8 @@ def main() -> None:
         checkpoint_sha256=protocol["checkpoint_sha256"], objective=float(loss.detach()),
         image_error=float((image.detach()-inputs["truth"]).norm()/inputs["truth"].norm()),
         exact_gradient_norm=float(exact.norm()), adjoint_relative_error=error, rows=[],
-        increment_substeps=args.increment_substeps,
+        increment_substeps=args.increment_substeps, startup=args.startup,
+        startup_sha256=hashlib.sha256(Path(retained_seed_startup.__wrapped__.__code__.co_filename).read_bytes()).hexdigest(),
         factor_integrator_sha256=hashlib.sha256(Path(subdivided_increment_step.__code__.co_filename).read_bytes()).hexdigest(),
         note="Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.")
     if args.repeat_gradients:
@@ -268,6 +276,8 @@ def main() -> None:
     for rank in args.ranks:
         for warm in (False, True) if saved is not None and saved.get("previous_v") is not None else (False,):
             options = {**settings["dlr"], "rank": rank}
+            if args.startup != "legacy":
+                options["residual_sketch_steps"] = 1
             prefix_factors: dict[int, tuple[float, tuple[torch.Tensor, ...]]] = {}
             if args.suffix_audit or args.track_gradient_capture:
                 options["factor_callback"] = lambda step, alpha, factors: prefix_factors.update({
@@ -285,7 +295,10 @@ def main() -> None:
                               partial(stable_sl_step, recompress=False) if args.stable_ksl else
                               pure_ksl_step if args.pure_ksl else stable_sl_step if args.stable_sl else
                               refined_increment_step if args.refined_increment else
-                              increment_ksl_step if args.increment_ksl else enriched._zero_enrichment_step):
+                              increment_ksl_step if args.increment_ksl else enriched._zero_enrichment_step), patch.object(
+                                  residual_startup, "residual_sketch_startup",
+                                  partial(retained_seed_startup, retain_seed=args.startup == "retained")
+                                  if args.startup != "legacy" else residual_startup.residual_sketch_startup):
                 endpoint, factors, alpha = sensitivity_factors(model, source, settings["flow_steps"],
                     **options, seed=protocol["dlr_seed"], products=products,
                     seed_basis=seed_basis)
@@ -298,7 +311,7 @@ def main() -> None:
             if not warm:
                 fresh_estimate = estimate.clone()
             row = dict(method="subdivided_increment" if args.increment_substeps else "stable_ksl" if args.stable_ksl else "pure_ksl" if args.pure_ksl else "stable_sl" if args.stable_sl else "refined_increment" if args.refined_increment else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
-                       factor_arithmetic=args.factor_arithmetic,
+                       factor_arithmetic=args.factor_arithmetic, startup=args.startup,
                        terminal_seed=args.terminal_seed, source_gradient_seed=args.source_gradient_seed,
                        **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))

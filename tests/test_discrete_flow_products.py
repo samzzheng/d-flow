@@ -2,6 +2,7 @@
 import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
+from functools import partial
 
 import torch
 
@@ -15,6 +16,8 @@ from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from experiments.separated_shapes_117k.exact_suffix import suffix_gradient, task_terminal_factors, task_gradient
 from dlr_dflow.api import sensitivity_factors
 from dlr_dflow.implementation.enriched import _thin_svd
+from dlr_dflow.implementation import residual_startup
+from experiments.separated_shapes_117k.sketch_initialization import retained_seed_startup
 
 
 class NonlinearVelocity(torch.nn.Module):
@@ -28,6 +31,45 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_retained_seed_startup_keeps_direction_and_dense_residual_action(self) -> None:
+        torch.manual_seed(92)
+        model = NonlinearVelocity()
+        source = .1*torch.randn(1, 1, 3, 3, dtype=torch.float64)
+        direction = torch.randn(9, 1, dtype=source.dtype)
+        direction /= direction.norm()
+        products = ChunkedAutodiffProducts(model)
+        time = source.new_tensor([0.])
+        matrix = torch.func.jacrev(lambda value: model(value, time))(source).reshape(9, 9)
+        target = .2*(matrix+torch.eye(9, dtype=source.dtype))
+        for rank in (1, 3, 9):
+            image, (left, core, right), completed = retained_seed_startup(
+                model, source, 5, rank, 2, 1, torch.Generator().manual_seed(7),
+                products=products, seed_basis=direction)
+            torch.testing.assert_close(right @ (right.T @ direction), direction, atol=1e-11, rtol=1e-11)
+            torch.testing.assert_close(left @ core @ right.T, target @ right @ right.T, atol=1e-11, rtol=1e-11)
+            torch.testing.assert_close(image, source+.2*model(source,time), atol=1e-11, rtol=1e-11)
+            self.assertEqual(completed, 1)
+            self.assertEqual(core.shape, (rank,rank))
+            if rank == 9:
+                torch.testing.assert_close(left @ core @ right.T, target, atol=1e-11, rtol=1e-11)
+
+    def test_startup_control_reproduces_existing_evolution(self) -> None:
+        torch.manual_seed(93)
+        model = NonlinearVelocity()
+        source = .1*torch.randn(1, 1, 3, 3, dtype=torch.float64)
+        seed = torch.randn(9, 2, dtype=source.dtype)
+        options = dict(rank=3, trace_probes=0, enrichment_probes=0,
+                       initialization_oversampling=2, seed=14, seed_basis=seed)
+        ordinary_image, ordinary, ordinary_alpha = sensitivity_factors(
+            model, source, 5, products=ChunkedAutodiffProducts(model), **options)
+        with patch.object(residual_startup, "residual_sketch_startup", partial(retained_seed_startup, retain_seed=False)):
+            image, actual, alpha = sensitivity_factors(model, source, 5,
+                products=ChunkedAutodiffProducts(model), residual_sketch_steps=1, **options)
+        torch.testing.assert_close(image, ordinary_image, atol=0, rtol=0)
+        torch.testing.assert_close(actual[0] @ actual[1] @ actual[2].T,
+                                   ordinary[0] @ ordinary[1] @ ordinary[2].T, atol=1e-11, rtol=1e-11)
+        self.assertEqual(alpha, ordinary_alpha)
+
     def test_notes_ksl_matches_three_dense_euler_stages_without_recompression(self) -> None:
         torch.manual_seed(88)
         d, h, alpha = 12, .2, .6
