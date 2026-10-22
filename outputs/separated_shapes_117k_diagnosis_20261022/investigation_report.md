@@ -53,6 +53,14 @@ At a saved CT prefix3 state, gradient error is only1.34% but L-BFGS predicts51.5
 
 Later in the same CT continuation, the direction aligns well with the approximate gradient, but its norm is only8.66e-8. Native GPU checks confirm actual descent; starting geometric Armijo at the existing cap instead accepts0.125, increasing the one-step objective decrease2.99e-11 to1.99e-5 at five versus one trial evaluations. Approximation error has meanwhile risen to91.24%. Thus gradient accuracy, direction angle and step length are separate issues. The failed-search safeguard does not address accepted tiny steps. A separate cap-started L-BFGS continuation from the saved attempt250 state is now queued after the angle control; it retains the ray and history and does not combine the two changes. [Plateau audit](full_map_audit/ct1_plateau_report.md).
 
+## Higher-start, gradual rank compression
+
+A separate paired pilot now tests rank256 with floor32 and relative core cutoff0.001 on250CT7 and250MRI4. The three controls are unrestricted truncation, retain rank256 only at initialization, and retain256 then discard at most half the current rank per flow step. Every gradient evaluation starts with the same high-rank sketch mechanism; previous-V reuse and the optimizer remain unchanged. No production defaults change.
+
+At the shared initial source, unrestricted and initialization-retained controls already have the same rank paths. Gradual compression only changes the last retained rank: CT32 to69, MRI82 to126. Gradient errors are essentially unchanged (CT35.87–35.89%, MRI63.64–63.65%). Thus retaining more terminal directions alone provides no initial fixed-point rescue in these cases; subsequent reconstruction behavior remains open. Live-checkpoint verification confirms source/model/operator/seed pairing, saved image and complex residual metrics, objective monotonicity, displacement caps and rank bounds. CPU verification accumulates norms in FP64 to avoid reduction differences with saved CUDA FP32 metrics.
+
+[Progressive-rank pilot](progressive_rank/report.md) · [Latest checkpoint verification](progressive_rank/live_verification.json)
+
 ## Current bounded recovery tests
 
 - The three-object MRI4 retained-seed FP64 continuation completed the original1000-attempt budget: image error94.224% to73.720%. This is substantial numerical progress but remains an inaccurate reconstruction.

@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-10-22T13:26:06.565674-04:00",
+  "rows": [
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "variant": "unrestricted256",
+      "status": "running",
+      "step": 40,
+      "image_error_percent": 97.78735566655867,
+      "residual_percent": 75.24568398437982,
+      "verified_rank_evaluations": 48
+    },
+    {
+      "case": "r250_shapes_mri4/sample_004",
+      "variant": "unrestricted256",
+      "status": "running",
+      "step": 20,
+      "image_error_percent": 81.45126187019314,
+      "residual_percent": 81.43077355786988,
+      "verified_rank_evaluations": 30
+    }
+  ],
+  "checks": [
+    "cached initial source hash",
+    "model/operator/seeds",
+    "monotone saved objective",
+    "displacement cap",
+    "saved image/complex residual metrics in FP64",
+    "rank bounds, monotonicity and gradual retention",
+    "analytical alpha path"
+  ],
+  "note": "Live checkpoints are partial evidence, not a convergence or accuracy conclusion."
+}
