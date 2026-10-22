@@ -21,7 +21,7 @@ from sampler.ode_samplers import euler_flow
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, refined_increment_step
-from experiments.separated_shapes_117k.exact_suffix import ExactSuffixEvaluator
+from experiments.separated_shapes_117k.exact_suffix import ExactSuffixEvaluator, TaskTerminalEvaluator
 
 
 class RankRecordingEvaluator(run.Evaluator):
@@ -93,7 +93,11 @@ def main() -> None:
     parser.add_argument("--rank-tol", type=float, default=1e-3)
     parser.add_argument("--exact-suffix-steps", type=int, default=0,
         help="Experimental hybrid: DLR prefix followed by exact Euler adjoints")
+    parser.add_argument("--task-terminal", action="store_true",
+        help="Experimental rank-preserving projection that includes the terminal loss gradient")
     args = parser.parse_args()
+    if args.task_terminal and args.exact_suffix_steps:
+        parser.error("Choose either exact suffix or task-oriented terminal factors")
     if args.factor_integrator != "original" and "adaptive" in args.variants:
         parser.error("The increment integrator control currently requires fixed rank")
     if args.history_fallback:
@@ -118,7 +122,7 @@ def main() -> None:
         settings["flow_steps"] = args.flow_steps
     if not 0 <= args.exact_suffix_steps < settings["flow_steps"]:
         parser.error("Exact suffix must leave at least one DLR prefix step")
-    if args.exact_suffix_steps and (set(args.variants) & {"prefix2", "prefix5", "adaptive", "terminal_seed"}):
+    if (args.exact_suffix_steps or args.task_terminal) and (set(args.variants) & {"prefix2", "prefix5", "adaptive", "terminal_seed"}):
         parser.error("Exact suffix control currently requires a fixed-rank ordinary initializer")
     if args.no_reuse_v:
         settings["dlr_reuse_previous_v"] = False
@@ -137,6 +141,9 @@ def main() -> None:
         evidence["exact_suffix_steps"] = args.exact_suffix_steps
         evidence["exact_suffix_sha256"] = hashlib.sha256(
             Path(ExactSuffixEvaluator.gradient.__code__.co_filename).read_bytes()).hexdigest()
+    if args.task_terminal:
+        evidence["task_terminal_sha256"] = hashlib.sha256(
+            Path(TaskTerminalEvaluator.gradient.__code__.co_filename).read_bytes()).hexdigest()
     if args.methods:
         evidence["methods"] = args.methods
     if args.factor_integrator != "original":
@@ -268,6 +275,9 @@ def main() -> None:
                     paired.update(gradient_variant="DLR-prefix/exact-suffix hybrid; not terminal rank-r DLR",
                                   exact_suffix_steps=args.exact_suffix_steps,
                                   exact_suffix_sha256=evidence["exact_suffix_sha256"])
+                if args.task_terminal:
+                    paired.update(gradient_variant="Goal-oriented rank-r terminal Euler projection",
+                                  task_terminal_sha256=evidence["task_terminal_sha256"])
                 if initialization_selection is not None:
                     assert initialization_selection["source_sha256"] == paired["initial_source_sha256"]
                     paired["initialization_selection"] = initialization_selection
@@ -284,6 +294,8 @@ def main() -> None:
                                       "terminal_seed": TerminalSeedEvaluator}.get(variant, run.Evaluator)
                     if args.exact_suffix_steps:
                         evaluator_type = ExactSuffixEvaluator
+                    if args.task_terminal:
+                        evaluator_type = TaskTerminalEvaluator
                     evaluator = evaluator_type(model, operator, inputs["observed"], configuration,
                                               protocol["dlr_seed"], products)
                     if isinstance(evaluator, ExactSuffixEvaluator):
@@ -301,6 +313,7 @@ def main() -> None:
                     observation=inputs["observed"], include_errors=True,
                     measurement_log=isinstance(operator, MRI), residual_vmax=RESIDUAL_VMAX[protocol["job"]["problem"]],
                     title=(f"{name}: {variant}, {args.factor_integrator} factors, noiseless"
+                           + (", goal-oriented rank-r terminal projection" if args.task_terminal else "")
                            + (f", DLR-prefix + {args.exact_suffix_steps} exact suffix steps" if args.exact_suffix_steps else "")))
                 fig.savefig(path / "comparison.png", dpi=120)
                 run.plt.close(fig)

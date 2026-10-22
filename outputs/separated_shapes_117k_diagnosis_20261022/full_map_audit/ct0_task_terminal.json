@@ -1,0 +1,271 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/initialization_controls/measurement/r250_shapes_ct10/sample_000/inputs.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/initialization_controls/measurement/r250_shapes_ct10/sample_000/dlr_d_flow.pt",
+  "dtype": "torch.float32",
+  "source_sha256": "ba74970464506575c2c17a9276ff969a3064bda0b5c704d5b5d0e3c8e877bc1b",
+  "checkpoint_sha256": "6bfb077cca3b49ec94aff9249ce48939d75e9044e766876622e6fdd43ec285ff",
+  "objective": 0.06725408548861349,
+  "image_error": 0.3711836338043213,
+  "exact_gradient_norm": 0.005950447637587786,
+  "adjoint_relative_error": 1.4089064279687591e-05,
+  "rows": [
+    {
+      "method": "dynamic",
+      "rank": 32,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "relative_error": 0.6962993144989014,
+      "subspace_relative_error": 0.6728653907775879,
+      "coefficient_relative_error": 0.1791234314441681,
+      "cosine": 0.7247982025146484,
+      "norm_ratio": 0.6239765882492065,
+      "oracle_scalar": -0.003132868092507124,
+      "oracle_scalar_corrected_error": 0.6961602568626404,
+      "endpoint_relative_error": 0.0,
+      "exact_suffix_diagnostics": [
+        {
+          "prefix_steps": 5,
+          "suffix_steps": 0,
+          "relative_error": 0.6962993144989014,
+          "cosine": 0.7247981429100037,
+          "norm_ratio": 0.6239766478538513
+        },
+        {
+          "prefix_steps": 4,
+          "suffix_steps": 1,
+          "relative_error": 0.6881015300750732,
+          "cosine": 0.7318592071533203,
+          "norm_ratio": 0.6364569067955017
+        },
+        {
+          "prefix_steps": 3,
+          "suffix_steps": 2,
+          "relative_error": 0.6745453476905823,
+          "cosine": 0.7460812926292419,
+          "norm_ratio": 0.6381527781486511
+        },
+        {
+          "prefix_steps": 2,
+          "suffix_steps": 3,
+          "relative_error": 0.5374289155006409,
+          "cosine": 0.8670668601989746,
+          "norm_ratio": 0.6654863357543945
+        },
+        {
+          "prefix_steps": 1,
+          "suffix_steps": 4,
+          "relative_error": 0.12724275887012482,
+          "cosine": 0.9955679178237915,
+          "norm_ratio": 0.9098588228225708
+        },
+        {
+          "prefix_steps": 0,
+          "suffix_steps": 5,
+          "relative_error": 3.0508694180753082e-05,
+          "cosine": 1.0,
+          "norm_ratio": 0.9999995827674866
+        }
+      ],
+      "task_terminal_equivalence": {
+        "rank": 32,
+        "relative_error": 0.6881037950515747,
+        "difference_from_exact_suffix_over_exact_norm": 1.6780941223260015e-05
+      }
+    },
+    {
+      "method": "dynamic",
+      "rank": 32,
+      "warm": true,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "relative_error": 0.5469057559967041,
+      "subspace_relative_error": 0.5391027331352234,
+      "coefficient_relative_error": 0.0920552909374237,
+      "cosine": 0.8371952176094055,
+      "norm_ratio": 0.8359450697898865,
+      "oracle_scalar": -0.010566913522779942,
+      "oracle_scalar_corrected_error": 0.5448877811431885,
+      "endpoint_relative_error": 0.0,
+      "exact_suffix_diagnostics": [
+        {
+          "prefix_steps": 5,
+          "suffix_steps": 0,
+          "relative_error": 0.5469057559967041,
+          "cosine": 0.8371951580047607,
+          "norm_ratio": 0.8359450697898865
+        },
+        {
+          "prefix_steps": 4,
+          "suffix_steps": 1,
+          "relative_error": 0.5357753038406372,
+          "cosine": 0.844361424446106,
+          "norm_ratio": 0.8454930782318115
+        },
+        {
+          "prefix_steps": 3,
+          "suffix_steps": 2,
+          "relative_error": 0.5235111117362976,
+          "cosine": 0.8520463705062866,
+          "norm_ratio": 0.8452038168907166
+        },
+        {
+          "prefix_steps": 2,
+          "suffix_steps": 3,
+          "relative_error": 0.39647820591926575,
+          "cosine": 0.920067548751831,
+          "norm_ratio": 0.8590822219848633
+        },
+        {
+          "prefix_steps": 1,
+          "suffix_steps": 4,
+          "relative_error": 0.022373536601662636,
+          "cosine": 0.9997526407241821,
+          "norm_ratio": 0.997344434261322
+        },
+        {
+          "prefix_steps": 0,
+          "suffix_steps": 5,
+          "relative_error": 2.64868613157887e-05,
+          "cosine": 1.0,
+          "norm_ratio": 0.9999992847442627
+        }
+      ],
+      "task_terminal_equivalence": {
+        "rank": 32,
+        "relative_error": 0.535775363445282,
+        "difference_from_exact_suffix_over_exact_norm": 2.3280090317712165e-05
+      }
+    },
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "relative_error": 0.7860812544822693,
+      "subspace_relative_error": 0.5983974933624268,
+      "coefficient_relative_error": 0.509763240814209,
+      "cosine": 0.6254553198814392,
+      "norm_ratio": 0.5299668908119202,
+      "oracle_scalar": -0.0017254597041755915,
+      "oracle_scalar_corrected_error": 0.7860439419746399,
+      "endpoint_relative_error": 0.0,
+      "exact_suffix_diagnostics": [
+        {
+          "prefix_steps": 5,
+          "suffix_steps": 0,
+          "relative_error": 0.7860813736915588,
+          "cosine": 0.625455379486084,
+          "norm_ratio": 0.5299668908119202
+        },
+        {
+          "prefix_steps": 4,
+          "suffix_steps": 1,
+          "relative_error": 0.7840492129325867,
+          "cosine": 0.626024067401886,
+          "norm_ratio": 0.5445423722267151
+        },
+        {
+          "prefix_steps": 3,
+          "suffix_steps": 2,
+          "relative_error": 0.7699898481369019,
+          "cosine": 0.6461424827575684,
+          "norm_ratio": 0.5442386269569397
+        },
+        {
+          "prefix_steps": 2,
+          "suffix_steps": 3,
+          "relative_error": 0.6064706444740295,
+          "cosine": 0.8351848125457764,
+          "norm_ratio": 0.5795673727989197
+        },
+        {
+          "prefix_steps": 1,
+          "suffix_steps": 4,
+          "relative_error": 0.10910137742757797,
+          "cosine": 0.9970583915710449,
+          "norm_ratio": 0.9194155335426331
+        },
+        {
+          "prefix_steps": 0,
+          "suffix_steps": 5,
+          "relative_error": 2.8616330382646993e-05,
+          "cosine": 1.0,
+          "norm_ratio": 1.0000001192092896
+        }
+      ],
+      "task_terminal_equivalence": {
+        "rank": 128,
+        "relative_error": 0.7840495705604553,
+        "difference_from_exact_suffix_over_exact_norm": 6.620247859245865e-06
+      }
+    },
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": true,
+      "factor_arithmetic": "specialized",
+      "terminal_seed": false,
+      "relative_error": 0.5340879559516907,
+      "subspace_relative_error": 0.44089648127555847,
+      "coefficient_relative_error": 0.30143827199935913,
+      "cosine": 0.8454398512840271,
+      "norm_ratio": 0.8411482572555542,
+      "oracle_scalar": -0.012076044455170631,
+      "oracle_scalar_corrected_error": 0.5313873291015625,
+      "endpoint_relative_error": 0.0,
+      "exact_suffix_diagnostics": [
+        {
+          "prefix_steps": 5,
+          "suffix_steps": 0,
+          "relative_error": 0.5340880155563354,
+          "cosine": 0.8454398512840271,
+          "norm_ratio": 0.8411482572555542
+        },
+        {
+          "prefix_steps": 4,
+          "suffix_steps": 1,
+          "relative_error": 0.5256352424621582,
+          "cosine": 0.8507102131843567,
+          "norm_ratio": 0.8503818511962891
+        },
+        {
+          "prefix_steps": 3,
+          "suffix_steps": 2,
+          "relative_error": 0.5145511627197266,
+          "cosine": 0.8574926853179932,
+          "norm_ratio": 0.8499759435653687
+        },
+        {
+          "prefix_steps": 2,
+          "suffix_steps": 3,
+          "relative_error": 0.3914687931537628,
+          "cosine": 0.9221032857894897,
+          "norm_ratio": 0.8627568483352661
+        },
+        {
+          "prefix_steps": 1,
+          "suffix_steps": 4,
+          "relative_error": 0.022036341950297356,
+          "cosine": 0.9997602701187134,
+          "norm_ratio": 0.9972971081733704
+        },
+        {
+          "prefix_steps": 0,
+          "suffix_steps": 5,
+          "relative_error": 2.88024984911317e-05,
+          "cosine": 1.0,
+          "norm_ratio": 1.0000003576278687
+        }
+      ],
+      "task_terminal_equivalence": {
+        "rank": 128,
+        "relative_error": 0.5256352424621582,
+        "difference_from_exact_suffix_over_exact_norm": 1.445238376618363e-05
+      }
+    }
+  ],
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "status": "complete"
+}

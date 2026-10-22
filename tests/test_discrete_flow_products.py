@@ -1,6 +1,7 @@
 """The audit differentiates the complete discrete map in the correct order."""
 import unittest
 from unittest.mock import patch
+from types import SimpleNamespace
 
 import torch
 
@@ -9,7 +10,7 @@ from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, 
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 from sampler.ode_samplers import euler_flow
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
-from experiments.separated_shapes_117k.exact_suffix import suffix_gradient
+from experiments.separated_shapes_117k.exact_suffix import suffix_gradient, task_terminal_factors
 from dlr_dflow.api import sensitivity_factors
 
 
@@ -24,6 +25,25 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_task_terminal_preserves_rank_and_exact_target_gradient_action(self) -> None:
+        torch.manual_seed(71)
+        d, h = 16, .2
+        matrix = torch.randn(d, d, dtype=torch.float64)
+        products = SimpleNamespace(A=lambda q: matrix @ q, AT=lambda q: matrix.T @ q)
+        for rank in (1, 4, 16):
+            U, _ = torch.linalg.qr(torch.randn(d, rank, dtype=matrix.dtype))
+            V, _ = torch.linalg.qr(torch.randn(d, rank, dtype=matrix.dtype))
+            S = torch.randn(rank, rank, dtype=matrix.dtype)
+            terminal = torch.randn(d, 1, dtype=matrix.dtype)
+            target = (torch.eye(d, dtype=matrix.dtype)+h*matrix) @ (h*torch.eye(d, dtype=matrix.dtype)+U @ S @ V.T)
+            left, core, right = task_terminal_factors((U, S, V), terminal, h, products)
+            self.assertEqual(core.shape, (rank, rank))
+            torch.testing.assert_close(left.T @ left, torch.eye(rank, dtype=matrix.dtype), atol=1e-11, rtol=1e-11)
+            torch.testing.assert_close(right.T @ right, torch.eye(rank, dtype=matrix.dtype), atol=1e-11, rtol=1e-11)
+            torch.testing.assert_close(right @ core.T @ left.T @ terminal, target.T @ terminal, atol=1e-10, rtol=1e-10)
+            if rank < d:
+                self.assertGreater(float((left @ core @ right.T-target).norm()), 1e-3)
+
     def test_exact_suffix_uses_low_rank_prefix_instead_of_full_gradient(self) -> None:
         torch.manual_seed(61)
         model = NonlinearVelocity()

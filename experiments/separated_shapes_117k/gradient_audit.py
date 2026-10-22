@@ -19,6 +19,7 @@ from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from sampler.ode_samplers import euler_flow
 from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step, refined_increment_step
+from experiments.separated_shapes_117k.exact_suffix import task_terminal_factors
 
 
 class DiscreteProducts:
@@ -249,6 +250,18 @@ def main() -> None:
                         reference.local.set_state((prefix-1)*reference.h, reference.points[prefix-1])
                         suffix = suffix + reference.h*reference.local.AT(suffix)
                 row["exact_suffix_diagnostics"] = suffix_rows
+                baseline, prefix = prefix_factors[settings["flow_steps"]-1]
+                products.set_state((settings["flow_steps"]-1)*reference.h, reference.points[-1])
+                left, core, right = task_terminal_factors(prefix, terminal, reference.h, products)
+                task_gradient = right @ (core.T @ (left.T @ terminal.reshape(-1, 1)))
+                reference.local.set_state((settings["flow_steps"]-1)*reference.h, reference.points[-1])
+                pullback = terminal.reshape(-1, 1)
+                pullback = pullback + reference.h*reference.local.AT(pullback)
+                left_prefix, core_prefix, right_prefix = prefix
+                hybrid = baseline*pullback + right_prefix @ (core_prefix.T @ (left_prefix.T @ pullback))
+                row["task_terminal_equivalence"] = dict(rank=core.shape[0],
+                    relative_error=float((task_gradient-exact).norm()/exact.norm()),
+                    difference_from_exact_suffix_over_exact_norm=float((task_gradient-hybrid).norm()/exact.norm()))
             if args.line_search_audit:
                 row["line_trials"] = line_trials(estimate)
             run.write_json(args.out, report)
