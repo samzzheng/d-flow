@@ -14,9 +14,17 @@ import matplotlib.pyplot as plt
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("root", type=Path)
+    parser.add_argument("--fixed-control-roots", nargs="*", type=Path, default=[])
     args = parser.parse_args()
     config = json.loads((args.root / "reconstruct_config.json").read_text())
     adaptive = config["adaptive"]
+    controls = []
+    for root in args.fixed_control_roots:
+        control = json.loads((root / "reconstruct_config.json").read_text())
+        bounds = control["adaptive"]
+        if bounds["rank_min"] != bounds["rank_max"]:
+            raise ValueError(f"Expected a fixed-rank control: {root}")
+        controls.append((root, control, f"fixed{bounds['rank_min']}_canonical"))
     lines = [
         "# Separated-shapes adaptive-rank pilot",
         f"Updated {datetime.now().astimezone().isoformat(timespec='minutes')}.",
@@ -30,6 +38,8 @@ def main() -> None:
         "The maximum-rank initialization sketch is rebuilt at each gradient evaluation. "
         "With zero enrichment, rank can only decrease within one flow solve; "
         "it can increase again at the next gradient evaluation.",
+        "Fixed-rank canonical controls use equal rank bounds in the adaptive code path. "
+        "They help distinguish rank selection from changes in factor arithmetic and execution.",
         "",
         "Errors below use the last saved source. Partial results are explicitly marked; "
         "these selected cases do not estimate population performance.",
@@ -39,11 +49,15 @@ def main() -> None:
     ]
     rank_sections: list[str] = []
     completed = 0
+    total = 0
     for case in config["cases"]:
         paired_keys: set[tuple[str, str]] = set()
         histories = {}
-        for variant in config["variants"]:
-            folder = args.root / variant / case
+        folders = [(variant, args.root / variant / case) for variant in config["variants"]]
+        folders.extend((label, root / "adaptive" / case) for root, control, label in controls
+                       if case in control["cases"])
+        total += len(folders)
+        for variant, folder in folders:
             path = folder / "dlr_d_flow.json"
             if not path.exists():
                 lines.append(f"| {case} | {variant} | Pending | — | — | — |")
@@ -95,7 +109,7 @@ def main() -> None:
         rank_sections.extend(["", f"## {case}", "",
             "Last recorded flow ranks: " + " → ".join(str(item["rank"]) for item in records[-1]["ranks"]) + ".",
             f"![Rank history]({filename})"])
-    lines.extend(["", f"Completed {completed}/{len(config['cases'])*len(config['variants'])} method runs.",
+    lines.extend(["", f"Completed {completed}/{total} method runs.",
                   "All available variants within each case have matching initial-source and checkpoint hashes.",
                   *rank_sections])
     (args.root / "report.md").write_text("\n".join(lines) + "\n")

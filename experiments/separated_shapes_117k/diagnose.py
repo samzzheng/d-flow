@@ -74,6 +74,8 @@ def main() -> None:
     parser.add_argument("--backend", choices=("fast", "native", "native_primal"), default="fast")
     parser.add_argument("--rank", type=int)
     parser.add_argument("--source-cache-roots", type=Path, nargs="*", default=[])
+    parser.add_argument("--source-cache-variant", choices=("measurement", "random_mix"),
+        help="Use one cached initialization across the requested rank variants")
     parser.add_argument("--resume-script-sha256",
         help="Previously recorded script hash after a compatibility review; all other protocol checks remain enabled")
     parser.add_argument("--restart-source", type=Path,
@@ -108,6 +110,10 @@ def main() -> None:
     if args.restart_source:
         evidence["restart_source"] = str(args.restart_source)
     evidence["history_fallback"] = args.history_fallback
+    if args.source_cache_variant:
+        if not args.source_cache_roots:
+            parser.error("--source-cache-variant requires --source-cache-roots")
+        evidence["source_cache_variant"] = args.source_cache_variant
     run.write_json(args.out / f"{args.action}_config.json", evidence)
     if args.resume_script_sha256:
         run.write_json(args.out / "resume_script_review.json", dict(
@@ -189,9 +195,11 @@ def main() -> None:
                 elif variant == "rank128":
                     configuration["dlr"]["rank"] = args.rank_max
                 initial = inputs["initial"] if restart is None else restart["source"]
-                caches = [root / variant / name / "inputs.pt" for root in args.source_cache_roots
-                          if (root / variant / name / "inputs.pt").exists()]
-                if args.source_cache_roots and variant in ("measurement", "random_mix"):
+                cache_variant = args.source_cache_variant or variant
+                initialization_selection = None
+                caches = [root / cache_variant / name / "inputs.pt" for root in args.source_cache_roots
+                          if (root / cache_variant / name / "inputs.pt").exists()]
+                if args.source_cache_roots and cache_variant in ("measurement", "random_mix"):
                     cached_path, = caches
                     cached = torch.load(cached_path, map_location=device, weights_only=True)
                     assert cached["protocol"]["checkpoint_sha256"] == protocol["checkpoint_sha256"]
@@ -200,6 +208,7 @@ def main() -> None:
                     assert torch.equal(cached["observed"], inputs["observed"])
                     assert torch.equal(cached["truth"], inputs["truth"])
                     initial = cached["initial"]
+                    initialization_selection = cached["protocol"].get("initialization_selection")
                 elif variant in ("measurement", "random_mix"):
                     if variant == "measurement":
                         variable = torch.zeros_like(initial, requires_grad=True)
@@ -216,6 +225,9 @@ def main() -> None:
                 paired = {**protocol, "variant": variant, "backend": args.backend, "settings": configuration,
                     "initial_source_sha256": hashlib.sha256(initial.cpu().numpy().tobytes()).hexdigest(),
                     "diagnostic_script_sha256": args.resume_script_sha256 or evidence["script_sha256"]}
+                if initialization_selection is not None:
+                    assert initialization_selection["source_sha256"] == paired["initial_source_sha256"]
+                    paired["initialization_selection"] = initialization_selection
                 if args.history_fallback:
                     paired["history_fallback"] = True
                 if restart is not None:

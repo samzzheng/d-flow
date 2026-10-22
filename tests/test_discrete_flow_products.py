@@ -4,7 +4,7 @@ import unittest
 import torch
 
 from experiments.separated_shapes_117k.gradient_audit import DiscreteProducts
-from experiments.separated_shapes_117k.ksl_stability import stable_sl_step
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step
 from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 from sampler.ode_samplers import euler_flow
 
@@ -20,6 +20,28 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_increment_ksl_matches_dense_frozen_field_and_full_rank_euler(self) -> None:
+        torch.manual_seed(31)
+        dimension, h, alpha = 12, .2, .6
+        matrix = torch.randn(dimension, dimension, dtype=torch.float64)
+        identity = torch.eye(dimension, dtype=matrix.dtype)
+        for rank in (4, dimension):
+            U, _ = torch.linalg.qr(torch.randn(dimension, rank, dtype=matrix.dtype))
+            V, _ = torch.linalg.qr(torch.randn(dimension, rank, dtype=matrix.dtype))
+            S = torch.randn(rank, rank, dtype=matrix.dtype)
+            Y = U @ S @ V.T
+            forcing = matrix @ (alpha * identity + Y) + identity
+            expected_U, expected_S = torch.linalg.qr(U @ S + h * forcing @ V)
+            expected_S = expected_S - h * expected_U.T @ forcing @ V
+            expected_V, R_L = torch.linalg.qr(V @ expected_S.T + h * forcing.T @ expected_U)
+            actual, _, _ = increment_ksl_step(lambda value: matrix @ value,
+                lambda value: matrix.T @ value, (U, S, V), U[:, :0], U[:, :0], h, alpha)
+            reconstructed = actual[0] @ actual[1] @ actual[2].T
+            torch.testing.assert_close(reconstructed, expected_U @ R_L.T @ expected_V.T,
+                                       atol=1e-11, rtol=1e-11)
+            if rank == dimension:
+                torch.testing.assert_close(reconstructed, Y + h * forcing, atol=1e-11, rtol=1e-11)
+
     def test_history_recovery_preserves_armijo_and_changes_rejected_direction(self) -> None:
         source = torch.tensor([1., 0.], dtype=torch.float64, requires_grad=True)
         objective = lambda value: float(.5*value[0].square() + .1*value[1].square())

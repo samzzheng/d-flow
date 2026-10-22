@@ -6,6 +6,32 @@ import torch
 from dlr_dflow.implementation.types import Factors
 
 
+def increment_ksl_step(
+    A: Callable[[torch.Tensor], torch.Tensor],
+    AT: Callable[[torch.Tensor], torch.Tensor],
+    factors: Factors,
+    probe_sensitivities: torch.Tensor,
+    probes: torch.Tensor,
+    step_size: float,
+    alpha: float,
+) -> tuple[Factors, torch.Tensor, float]:
+    """Apply KSL to the frozen Euler increment F=A(alpha I+Y)+I.
+
+    K=US+h F V; QR gives U1,R_K. With F held fixed, the S and L
+    substeps give L=V(R_K-h U1.T F V).T+h F.T U1=(Y+h F).T U1.
+    Thus both the bases and the core approximate the same Euler target.
+    This is an explicit increment/retraction variant, not exact integration
+    of the continuously varying sensitivity ODE. No extra products are used.
+    """
+    U, S, V = factors
+    US = U @ S
+    U1, _ = torch.linalg.qr(US + step_size * (A(alpha * V + US) + V))
+    ATU1 = AT(U1)
+    L1 = V @ (S.T @ (U.T @ (U1 + step_size * ATU1))) + step_size * (alpha * ATU1 + U1)
+    V1, R_L = torch.linalg.qr(L1)
+    return (U1, R_L.T, V1), probe_sensitivities, -1.0
+
+
 def stable_sl_step(
     A: Callable[[torch.Tensor], torch.Tensor],
     AT: Callable[[torch.Tensor], torch.Tensor],

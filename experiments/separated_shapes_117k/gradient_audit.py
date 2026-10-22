@@ -18,7 +18,7 @@ from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from sampler.ode_samplers import euler_flow
-from experiments.separated_shapes_117k.ksl_stability import stable_sl_step
+from experiments.separated_shapes_117k.ksl_stability import increment_ksl_step, stable_sl_step
 
 
 class DiscreteProducts:
@@ -68,7 +68,9 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--ranks", nargs="+", type=int, default=[32, 128])
     parser.add_argument("--power-iterations", type=int, default=3)
-    parser.add_argument("--stable-sl", action="store_true")
+    integrator = parser.add_mutually_exclusive_group()
+    integrator.add_argument("--stable-sl", action="store_true")
+    integrator.add_argument("--increment-ksl", action="store_true")
     parser.add_argument("--skip-reference", action="store_true")
     parser.add_argument("--terminal-seed", action="store_true")
     parser.add_argument("--line-search-audit", action="store_true")
@@ -173,12 +175,13 @@ def main() -> None:
                 seed_basis = (terminal.reshape(-1, 1) if seed_basis is None else
                               torch.cat([terminal.reshape(-1, 1), seed_basis], dim=1))
             with patch.object(enriched, "_zero_enrichment_step",
-                              stable_sl_step if args.stable_sl else enriched._zero_enrichment_step):
+                              stable_sl_step if args.stable_sl else
+                              increment_ksl_step if args.increment_ksl else enriched._zero_enrichment_step):
                 endpoint, factors, alpha = sensitivity_factors(model, source, settings["flow_steps"],
                     **options, seed=protocol["dlr_seed"], products=products,
                     seed_basis=seed_basis)
             estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
-            row = dict(method="stable_sl" if args.stable_sl else "dynamic", rank=rank, warm=warm,
+            row = dict(method="stable_sl" if args.stable_sl else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
                        terminal_seed=args.terminal_seed, **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
             report["rows"].append(row)
