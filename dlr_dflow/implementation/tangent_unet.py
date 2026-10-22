@@ -31,9 +31,9 @@ def _conv(m: nn.Conv2d, p, d):
 # learned weights are zero. Native forward statistics are shared with the JVP.
 FUSED_GN = True
 FUSED_GN_CONTIG = True
-# Native forward statistics win for small images; the explicit reduction has
-# better occupancy once each of the few normalization groups becomes large.
-GN_STATS_MODE = "manual"
+# Match the model's forward map. Small reduction differences from manual
+# statistics can amplify along sensitive trajectories and reverse gradients.
+GN_STATS_MODE = "native"
 # Shared tapes can fold the normalization affine weight, conditioning scale,
 # and SiLU derivative into one primal-sized coefficient. Each derivative lane
 # then needs one multiply instead of recomputing sigmoid and affine products.

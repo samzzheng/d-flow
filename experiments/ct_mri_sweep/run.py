@@ -28,7 +28,7 @@ from sampler.ode_samplers import euler_flow
 from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
 from .operators import CT, MRI, noisy_measurement
 from .optimizer import SweepLBFGS
-from .validation import ChunkedEagerProducts
+from .validation import ChunkedAutodiffProducts
 
 ROOT = Path(__file__).resolve().parents[2]
 Settings = dict[str, Any]
@@ -317,7 +317,7 @@ def main() -> None:
     test_hash = hashlib.sha256(data["test"][:settings["samples"]].numpy().tobytes()).hexdigest()
     model, _ = load_flow_model(job.resolution, job.circles, settings["epoch"], str(device), run)
     checkpoint_hash = hashlib.sha256((run / f"checkpoints/epoch_{settings['epoch']:04d}.pt").read_bytes()).hexdigest()
-    tangent_unet.GN_STATS_MODE = "native" if job.resolution <= 96 else "manual"
+    tangent_unet.GN_STATS_MODE = execution.get("dlr_norm_stats", "native")
     tangent_unet.GN_ACTION_BACKEND = execution["dlr_fused_norm"]
     tangent_unet.GN_PRIMAL_BACKEND = execution["dlr_fused_primal"]
     enriched.SPECIALIZE_ZERO_ENRICHMENT = execution["dlr_specialized_algebra"]
@@ -382,7 +382,7 @@ def main() -> None:
                     _, gx = endpoint_gradient(canonical, operator, observed)
                     fast_image, fast_factors, alpha = sensitivity_factors(
                         model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed, products=products)
-                    reference_products = ChunkedEagerProducts(model) if settings["dlr"]["rank"] > 16 else None
+                    reference_products = ChunkedAutodiffProducts(model)
                     _, reference_factors, _ = sensitivity_factors(
                         model, initial, settings["flow_steps"], **settings["dlr"], seed=dlr_seed, products=reference_products)
                     fast_gradient = approx_source_gradient(fast_factors, gx, alpha)
@@ -408,7 +408,9 @@ def main() -> None:
                         "passed": passed, "gradient_relative_error_graph_vs_eager_dlr": error if math.isfinite(error) else None,
                         "seeded_gradient_relative_error_graph_vs_eager_dlr": seeded_error if seeded_error is not None and math.isfinite(seeded_error) else None,
                         "endpoint_relative_error_fast_vs_native": endpoint_error if math.isfinite(endpoint_error) else None, "terminal_alpha": float(alpha),
-                        "checkpoint_sha256": checkpoint_hash, "note": "Reference-sample execution equivalence, not DLR vs exact gradient accuracy."}
+                        "checkpoint_sha256": checkpoint_hash,
+                        "reference_backend": "native_model_torch_func_autodiff",
+                        "note": "Reference-sample execution equivalence, not DLR vs exact gradient accuracy."}
                     write_json(output / f"backend_validation_{args.sample_start:03d}.json", validation)
                     if not passed:
                         raise RuntimeError("Fast backend validation failed; see backend_validation output")

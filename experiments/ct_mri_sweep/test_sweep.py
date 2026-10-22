@@ -16,7 +16,7 @@ from p_flow import proxy_gradient
 from .operators import CT, MRI, noisy_measurement
 from .run import Evaluator, Job, jobs, metrics, model_ready, reviewed_source_hashes, solve
 from . import queue
-from .validation import ChunkedEagerProducts
+from .validation import ChunkedAutodiffProducts, ChunkedEagerProducts
 from scripts.reconstruction_figures import METHODS, RESIDUAL_VMAX, plot_reconstruction_comparison
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,6 +28,21 @@ class LinearVelocity(torch.nn.Module):
 
 
 class SweepTests(unittest.TestCase):
+    def test_autodiff_reference_is_independent_of_hand_products(self) -> None:
+        class NonlinearVelocity(torch.nn.Module):
+            def forward(self, image: torch.Tensor, time: torch.Tensor) -> torch.Tensor:
+                return image.sin() + time[:, None, None, None] * image.mean()
+
+        torch.set_num_threads(1)
+        source = torch.randn(1, 1, 3, 3, dtype=torch.float64)
+        directions = torch.randn(9, 5, dtype=torch.float64)
+        jacobian = torch.diag(source.flatten().cos()) + torch.full((9, 9), .4/9, dtype=torch.float64)
+        with patch("experiments.ct_mri_sweep.validation.make_A_products", side_effect=AssertionError("hand backend used")):
+            products = ChunkedAutodiffProducts(NonlinearVelocity(), columns=2)
+            products.set_state(.4, source)
+            torch.testing.assert_close(products.A(directions), jacobian @ directions)
+            torch.testing.assert_close(products.AT(directions), jacobian.T @ directions)
+
     def setUp(self) -> None:
         torch.set_num_threads(1)
         self.settings = json.loads(Path(__file__).with_name("config.json").read_text())
