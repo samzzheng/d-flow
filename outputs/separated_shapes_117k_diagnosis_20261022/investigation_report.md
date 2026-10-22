@@ -47,7 +47,7 @@ The paired oversampling0/8 diagnostic found no stability advantage from removing
 
 ## L-BFGS directional amplification
 
-At a saved CT prefix3 state, gradient error is only1.34% but L-BFGS predicts51.5 times the true first-order decrease along its proposed direction. Native GPU derivatives and finite differences confirm this. An experimental minimum descent cosine0.05 improves the same-state accepted objective decrease1.18e-9 to5.21e-6 with the same10 trials, without extra model derivatives. This candidate has geometric regression tests but no completed paired reconstruction yet. [Direction audit and safeguard](full_map_audit/lbfgs_direction_report.md).
+At a saved CT prefix3 state, gradient error is only1.34% but L-BFGS predicts51.5 times the true first-order decrease along its proposed direction. Native GPU derivatives and finite differences confirm this. An experimental minimum descent cosine0.05 improves the same-state accepted objective decrease1.18e-9 to5.21e-6 with the same10 trials, without extra model derivatives. This candidate has geometric regression tests; a preserved-state paired reconstruction is queued after the current same-sample controls. It changes only the direction cosine to0.05 and keeps the original budget. No completed reconstruction result yet. [Direction audit and safeguard](full_map_audit/lbfgs_direction_report.md).
 
 ## Current bounded recovery tests
 

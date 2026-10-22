@@ -35,3 +35,9 @@ The0.05 safeguard gives roughly4409 times the objective decrease at the same10-t
 A separate CPU snapshot of MRI2 at attempt540 has37.32% gradient error and retains about78% of its predicted directional decrease. It does not show the same severe slope cancellation; no GPU-equivalent claim is made for that CPU result.
 
 [Native GPU direction](ct1_lbfgs_direction_gpu.json) · [Unchanged Armijo](ct1_direction_angle0.json) · [Cosine0.05](ct1_direction_angle0.05.json) · [Cosine0.1](ct1_direction_angle0.1.json) · [CPU MRI snapshot](mri2_lbfgs_direction_cpu.json).
+
+## Queued paired reconstruction
+
+A preserved-state branch now waits for both existing same-sample CT continuations to finish. It starts from the exact audited attempt190 snapshot, preserving source, gradient,49 curvature pairs, right basis, history and counters. Only the minimum direction cosine changes to0.05. The existing prefix3 trajectory supplies the unchanged baseline; its full history prefix matches the snapshot. Both have the original1000-total-attempt cap (888 selected-source plus112 earlier discarded-source attempts). The new branch can use698 remaining selected-source attempts. Compare common completed prefixes and report early terminations separately.
+
+The queue validates the predecessor PID and start time, completed summaries and hashes of inputs and changed implementation files before launching onGPU1. Queue PID1556220 was verified live. This is queued work, not a reconstruction result. [Queue configuration](../direction_recovery_ct1_cos005/queue.json).

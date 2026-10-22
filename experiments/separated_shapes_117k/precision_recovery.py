@@ -21,6 +21,7 @@ from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.optimizer import SweepLBFGS
 from experiments.ct_mri_sweep.validation import ChunkedAutodiffProducts
 from experiments.separated_shapes_117k.scale_recovery import FrozenSeedEvaluator
+from experiments.separated_shapes_117k.optimizer_controls import AngleSafeguardedLBFGS
 from experiments.separated_shapes_117k.sketch_initialization import retained_seed_startup
 
 
@@ -37,7 +38,13 @@ def main() -> None:
         help="Cold restart with the existing prefix sketch at the parent's fixed requested rank; leave at least one KSL step")
     parser.add_argument("--resume", action="store_true",
         help="Extend the saved paired control within its original budget, preserving curvature")
+    parser.add_argument("--resume-parent-state", action="store_true",
+        help="Branch from an existing FP64 precision-control snapshot without resetting optimizer state")
+    parser.add_argument("--direction-cosine", type=float, default=0.,
+        help="Experimental minimum descent angle; zero keeps the original LBFGS direction")
     args = parser.parse_args()
+    if not 0 <= args.direction_cosine < 1 or (args.direction_cosine and not args.resume_parent_state):
+        parser.error("Direction safeguarding requires a preserved parent state and a cosine in (0,1)")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
@@ -51,11 +58,15 @@ def main() -> None:
     protocol = parent["protocol"]
     recovery = protocol.get("scale_recovery", {})
     retained = recovery.get("retain_seed", False)
-    if args.initialization_prefix is None and not (retained and recovery["variant"] == "gradient_seed") and not recovery.get("rank_floors"):
+    if args.resume_parent_state:
+        if retained or "precision_recovery" not in protocol or args.dtypes != ["float64"] or parent["source"].dtype != torch.float64:
+            parser.error("Preserved-state branches require an FP64 precision-control parent and --dtypes float64")
+    elif args.initialization_prefix is None and not (retained and recovery["variant"] == "gradient_seed") and not recovery.get("rank_floors"):
         parser.error("Use a completed informed retained-seed or adaptive rank-floor control")
-    if parent["status"] not in run.TERMINAL or not parent["optimizer"]["consecutive_failures"]:
+    if not args.resume_parent_state and (parent["status"] not in run.TERMINAL or not parent["optimizer"]["consecutive_failures"]):
         parser.error("The parent must have completed with rejected searches")
-    settings = deepcopy(recovery.get("settings", protocol.get("continuation_settings", protocol.get("settings"))))
+    settings = deepcopy(protocol["precision_recovery"]["settings"] if args.resume_parent_state else
+        recovery.get("settings", protocol.get("continuation_settings", protocol.get("settings"))))
     if args.initialization_prefix is not None:
         experiment = protocol.get("experiment", {})
         if (retained or experiment.get("factor_integrator", "original") != "original"
@@ -84,6 +95,7 @@ def main() -> None:
         seed_sha256=recovery["seed_sha256"]["gradient_seed"] if retained else None,
         product_backend=args.products,
         dtypes=args.dtypes, initialization_prefix=args.initialization_prefix,
+        resume_parent_state=args.resume_parent_state, direction_cosine=args.direction_cosine,
         attempts_in_other_starts=recovery.get("attempts_in_other_starts",
             protocol.get("experiment", {}).get("budget", settings["stopping"]["max_updates"])-settings["stopping"]["max_updates"]),
         total_budget=recovery.get("total_budget", protocol.get("experiment", {}).get("budget", settings["stopping"]["max_updates"])),
@@ -96,6 +108,8 @@ def main() -> None:
         previous_config = json.loads(config_path.read_text())
         for key in ("parent_sha256", "settings", "seed_sha256", "initial_attempts"):
             assert previous_config[key] == configuration[key]
+        assert previous_config.get("resume_parent_state", False) == args.resume_parent_state
+        assert previous_config.get("direction_cosine", 0.) == args.direction_cosine
         if limit < previous_config["attempt_limit"]:
             parser.error("Resume cannot lower the recorded attempt limit")
         segments = previous_config.get("segments", []) + [
@@ -104,6 +118,8 @@ def main() -> None:
     elif args.resume:
         parser.error("No saved control to resume")
     configuration["segments"] = segments
+    if args.resume_parent_state:
+        configuration["note"] = "Preserve parent source, gradient, curvature, basis, history and attempt count; change only the recorded direction-angle safeguard. Original total budget retained."
     run.write_json(config_path, configuration)
     enriched.SPECIALIZE_ZERO_ENRICHMENT = True
     enriched.SKIP_UNTRUNCATED_SVD = True
@@ -148,18 +164,23 @@ def main() -> None:
         if retained:
             evaluator.seed_direction = seed.to(device=device, dtype=dtype)
         evaluator.method = "DLR D-Flow"
-        optimizer = SweepLBFGS(source, evaluator.objective, **{
+        optimizer_type = AngleSafeguardedLBFGS if args.direction_cosine else SweepLBFGS
+        optimizer = optimizer_type(source, evaluator.objective, **{
+            **({"minimum_cosine": args.direction_cosine} if args.direction_cosine else {}),
             **settings["optimizer"], "step_cap": settings["optimizer"]["step_cap"]*source.numel()**.5,
             "project": settings["source_projection"]})
         optimizer.step_attempts = initial_attempts
-        if saved is not None:
-            for name, value in saved["optimizer"].items():
+        optimizer_parent = saved if saved is not None else parent if args.resume_parent_state else None
+        if optimizer_parent is not None:
+            for name, value in optimizer_parent["optimizer"].items():
+                if name == "minimum_cosine":
+                    continue
                 setattr(optimizer, name, run.tensor_tree(value, device))
-            evaluator.counts = saved["evaluations"].copy()
+            evaluator.counts = optimizer_parent["evaluations"].copy()
         evaluator.objective(source.detach())
-        history = deepcopy(saved["history"]) if saved is not None else [dict(step=initial_attempts, phi=evaluator.value,
+        history = deepcopy(optimizer_parent["history"]) if optimizer_parent is not None else [dict(step=initial_attempts, phi=evaluator.value,
             **run.metrics(evaluator.image, evaluator.measurement, truth, clean, observed))]
-        if saved is not None:
+        if optimizer_parent is not None:
             assert math.isclose(evaluator.value, history[-1]["phi"], rel_tol=1e-12, abs_tol=1e-12)
         prior_seconds = 0.0 if saved is None else saved["elapsed_seconds"]
         started = time.monotonic()

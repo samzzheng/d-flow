@@ -1,0 +1,43 @@
+{
+  "status": "queued",
+  "dependency_pid": 1548051,
+  "dependency_start_time": "266585181",
+  "completed_summaries": [
+    "outputs/separated_shapes_117k_diagnosis_20261022/prefix_recovery_200ct1/prefix_3/summary.json",
+    "outputs/separated_shapes_117k_diagnosis_20261022/prefix_recovery_200ct1/prefix_1/summary.json"
+  ],
+  "file_hashes": {
+    "outputs/separated_shapes_117k_diagnosis_20261022/full_map_audit/ct1_lbfgs_direction_cpu.pt": "527f2f44cd3ad185fcec901876596f4cecdf021d825786bd81f7a8dd56e03f08",
+    "outputs/separated_shapes_117k_diagnosis_20261022/multistart_adaptive_200ct1/r200_shapes_ct10/sample_001/pool.pt": "d7ed0f06ccce072b6294ceae8ec178e2021098b4cfc8a744a4849fed0cc78d88",
+    "experiments/separated_shapes_117k/precision_recovery.py": "701ea76c9a789bc702c8cbfce12e108204f735de761ae6e4643a7defedbcfd1f",
+    "experiments/separated_shapes_117k/optimizer_controls.py": "e8a2f13d009fc67a0a98fd9f06691476c71afb664c6236ca561170540fd48025"
+  },
+  "command": [
+    "uv",
+    "run",
+    "--no-sync",
+    "--python",
+    ".venv/bin/python",
+    "python",
+    "-u",
+    "-m",
+    "experiments.separated_shapes_117k.precision_recovery",
+    "--source",
+    "outputs/separated_shapes_117k_diagnosis_20261022/full_map_audit/ct1_lbfgs_direction_cpu.pt",
+    "--inputs",
+    "outputs/separated_shapes_117k_diagnosis_20261022/multistart_adaptive_200ct1/r200_shapes_ct10/sample_001/pool.pt",
+    "--out",
+    "outputs/separated_shapes_117k_diagnosis_20261022/direction_recovery_ct1_cos005",
+    "--additional-attempts",
+    "698",
+    "--products",
+    "graphed",
+    "--dtypes",
+    "float64",
+    "--resume-parent-state",
+    "--direction-cosine",
+    "0.05"
+  ],
+  "log": "/tmp/direction_recovery_ct1_cos005.log",
+  "note": "Same-sample controls run sequentially. Preserve source/gradient/49 curvature pairs/history at attempt190; compare to the existing unchanged prefix3 trajectory. Original budget888 selected-source plus112 discarded-source attempts."
+}
