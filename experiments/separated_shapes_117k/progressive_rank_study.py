@@ -11,7 +11,7 @@ import torch
 
 from dlr_dflow.api import load_flow_model
 from dlr_dflow.implementation import tangent_unet
-from dlr_dflow.implementation.graphed_products import GraphedAProducts
+from experiments.separated_shapes_117k.bounded_products import BoundedGraphedProducts
 from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.queue import source_hashes
@@ -36,6 +36,8 @@ def main() -> None:
     parser.add_argument("--case", required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--diagnostics-only", action="store_true")
+    parser.add_argument("--resume-reviewed-script-sha256",
+        help="Previous script hash after review of the graph-cache-only change; preserve saved protocol and optimizer")
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
@@ -69,7 +71,7 @@ def main() -> None:
     tangent_unet.GN_STATS_MODE = "native"
     tangent_unet.GN_ACTION_BACKEND = "native"
     tangent_unet.GN_PRIMAL_BACKEND = "native"
-    products = GraphedAProducts(model, inputs["initial"], share_linearization=True,
+    products = BoundedGraphedProducts(model, inputs["initial"], share_linearization=True,
         full_step_graphs=False, max_jvp_columns=20, max_vjp_columns=16)
     directory = args.out/args.case
     directory.mkdir(parents=True, exist_ok=True)
@@ -81,7 +83,19 @@ def main() -> None:
         note="Rank adaptation within each 5-step flow; fresh high-rank initialization each gradient, previous V reuse unchanged. No growth within a pass, no enrichment, analytical alpha. Three paired controls; no production default changes.")
     config = directory/"config.json"
     if config.exists():
-        assert json.loads(config.read_text()) == experiment
+        previous = json.loads(config.read_text())
+        if args.resume_reviewed_script_sha256:
+            assert previous["script_sha256"] == args.resume_reviewed_script_sha256
+            assert {key: value for key, value in previous.items() if key != "script_sha256"} == {
+                key: value for key, value in experiment.items() if key != "script_sha256"}
+            run.write_json(directory/"resume_cache_review.json", dict(
+                previous_script_sha256=previous["script_sha256"], current_script_sha256=experiment["script_sha256"],
+                bounded_products_sha256=hashlib.sha256(Path(BoundedGraphedProducts.__init__.__code__.co_filename).read_bytes()).hexdigest(),
+                graph_cache_size=products.cache_size,
+                note="Resume after confirmed per-process graph-cache OOM. Only graph eviction changes; widths, factor equations, optimizer/source/history/basis and budgets remain unchanged."))
+            experiment = previous
+        else:
+            assert previous == experiment
     run.write_json(config, experiment)
     variable = inputs["initial"].detach().requires_grad_(True)
     exact_evaluator = run.Evaluator(model, operator, inputs["observed"], settings, protocol["dlr_seed"], products)

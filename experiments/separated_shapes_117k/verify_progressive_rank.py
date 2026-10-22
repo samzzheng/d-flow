@@ -27,6 +27,13 @@ def main() -> None:
         for key in ("checkpoint_sha256", "operator", "source_seed", "dlr_seed"):
             assert saved["protocol"][key] == inputs["protocol"][key]
         history = saved["history"]
+        snapshot = path.with_name("before_cache_resume.pt")
+        if snapshot.exists():
+            before = torch.load(snapshot, map_location="cpu", weights_only=True)
+            assert saved["protocol"] == before["protocol"]
+            assert history[:len(before["history"])] == before["history"]
+            assert saved["optimizer"]["step_attempts"] >= before["optimizer"]["step_attempts"]
+            assert all(saved["evaluations"][key] >= value for key, value in before["evaluations"].items())
         assert all(right["phi"] <= left["phi"] for left, right in zip(history, history[1:]))
         cap = config["settings"]["optimizer"]["step_cap"] * math.sqrt(inputs["initial"].numel())
         assert all(row.get("source_step_norm", 0) <= cap*(1+1e-4) for row in history)
@@ -56,7 +63,8 @@ def main() -> None:
     evidence = dict(checked_at=datetime.datetime.now().astimezone().isoformat(), rows=rows,
         checks=["cached initial source hash", "model/operator/seeds", "monotone saved objective",
                 "displacement cap", "saved image/complex residual metrics in FP64",
-                "rank bounds, monotonicity and gradual retention", "analytical alpha path"],
+                "rank bounds, monotonicity and gradual retention", "analytical alpha path",
+                "pre-OOM history/protocol preserved where a resume snapshot exists"],
         note="Live checkpoints are partial evidence, not a convergence or accuracy conclusion.")
     (args.root/"live_verification.json").write_text(json.dumps(evidence, indent=2)+"\n")
     print(json.dumps(evidence, indent=2))

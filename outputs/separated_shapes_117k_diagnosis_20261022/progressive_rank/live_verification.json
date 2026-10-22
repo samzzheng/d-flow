@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-22T13:26:06.565674-04:00",
+  "checked_at": "2026-10-22T13:30:44.508145-04:00",
   "rows": [
     {
       "case": "r250_shapes_ct10/sample_007",
@@ -8,7 +8,7 @@
       "step": 40,
       "image_error_percent": 97.78735566655867,
       "residual_percent": 75.24568398437982,
-      "verified_rank_evaluations": 48
+      "verified_rank_evaluations": 51
     },
     {
       "case": "r250_shapes_mri4/sample_004",
@@ -17,7 +17,7 @@
       "step": 20,
       "image_error_percent": 81.45126187019314,
       "residual_percent": 81.43077355786988,
-      "verified_rank_evaluations": 30
+      "verified_rank_evaluations": 32
     }
   ],
   "checks": [
@@ -27,7 +27,8 @@
     "displacement cap",
     "saved image/complex residual metrics in FP64",
     "rank bounds, monotonicity and gradual retention",
-    "analytical alpha path"
+    "analytical alpha path",
+    "pre-OOM history/protocol preserved where a resume snapshot exists"
   ],
   "note": "Live checkpoints are partial evidence, not a convergence or accuracy conclusion."
 }
