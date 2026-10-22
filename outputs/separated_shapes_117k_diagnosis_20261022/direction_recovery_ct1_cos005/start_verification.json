@@ -1,0 +1,32 @@
+{
+  "status": "partial",
+  "checked_step": 195,
+  "preserved_history_prefix": true,
+  "unchanged_factor_settings": true,
+  "first_step_matches_native_fixed_state_trial": true,
+  "first_new_step": {
+    "step": 191,
+    "phi": 0.020835449528428335,
+    "source_step_norm": 0.0012866506941047547,
+    "line_search_trials": 10,
+    "image_relative_l2": 0.2692617615382425,
+    "measurement_relative_l2_clean": 0.1282896338251106,
+    "measurement_relative_l2_noisy": 0.1282896338251106,
+    "residual_over_noise": null
+  },
+  "checked_final": {
+    "step": 195,
+    "phi": 0.020835233895896706,
+    "source_step_norm": 0.00026814906262924226,
+    "line_search_trials": 12,
+    "image_relative_l2": 0.2692818693741341,
+    "measurement_relative_l2_clean": 0.128288969968781,
+    "measurement_relative_l2_noisy": 0.128288969968781,
+    "residual_over_noise": null
+  },
+  "image_and_measurement_metrics_recomputed": true,
+  "total_budget": 1000,
+  "baseline_process_suspended_in_memory": 1548058,
+  "active_angle_process": 1562521,
+  "coordinator": 1562517
+}

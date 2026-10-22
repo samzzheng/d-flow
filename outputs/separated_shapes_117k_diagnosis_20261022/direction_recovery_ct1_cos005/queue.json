@@ -1,5 +1,5 @@
 {
-  "status": "queued",
+  "status": "running",
   "dependency_pid": 1548051,
   "dependency_start_time": "266585181",
   "completed_summaries": [
@@ -52,5 +52,6 @@
       "new": "02863ec83de87fc81ab01d7f9f2762150781c82786812c58d65c66865769737f"
     }
   ],
-  "hash_update_reason": "Added a separate cap-started control; original and angle paths retain their existing behavior. Queue had not launched; existing GPU workers remain running."
+  "hash_update_reason": "Added a separate cap-started control; original and angle paths retain their existing behavior. Queue had not launched; existing GPU workers remain running.",
+  "scheduling": "priority sequence with baseline suspended"
 }
