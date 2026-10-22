@@ -1,0 +1,56 @@
+{
+  "inputs": "outputs/separated_shapes_117k_diagnosis_20261022/multistart_adaptive_200ct1/r200_shapes_ct10/sample_001/pool.pt",
+  "source": "outputs/separated_shapes_117k_diagnosis_20261022/prefix_recovery_200ct1/prefix_3/float64/dlr_d_flow.pt",
+  "dtype": "torch.float64",
+  "original_source_sha256": "8a32d3dfdfc46278cb7b1649bcf39710382546c2d77e3bbaecce68f21f5fa945",
+  "source_gradient_step": 0.0,
+  "source_sha256": "8a32d3dfdfc46278cb7b1649bcf39710382546c2d77e3bbaecce68f21f5fa945",
+  "checkpoint_sha256": "e589cd4ed64e2465c3c2a6db64e14658e4860dc9c1faa1bd503da168d73b46bb",
+  "objective": 0.021048120101966758,
+  "image_error": 0.2733665826010954,
+  "exact_gradient_norm": 0.4593803732775696,
+  "adjoint_relative_error": 3.8864732459458747e-16,
+  "rows": [
+    {
+      "method": "dynamic",
+      "rank": 128,
+      "warm": false,
+      "factor_arithmetic": "specialized",
+      "startup": "legacy",
+      "residual_sketch_steps": 3,
+      "initialization_oversampling": 0,
+      "adaptive_rank_min": null,
+      "terminal_rank": 128,
+      "terminal_seed": false,
+      "source_gradient_seed": false,
+      "relative_error": 0.013595828394066124,
+      "subspace_relative_error": 0.009918570095096614,
+      "coefficient_relative_error": 0.00929884492777154,
+      "cosine": 0.9999371562748705,
+      "norm_ratio": 0.9922454042770676,
+      "oracle_scalar": -0.011105541014391507,
+      "oracle_scalar_corrected_error": 0.013586500328606763,
+      "endpoint_relative_error": 0.0,
+      "native_dlr_comparison": {
+        "relative_backend_difference": 1.7304638006322068e-13,
+        "difference_over_exact_norm": 1.717044753445297e-13,
+        "projected_exact_gradient_difference": 1.138315562254101e-13,
+        "native_gradient_error": 0.013595828393991228,
+        "native_endpoint_relative_error": 0.0,
+        "native_alpha": 0.0,
+        "passed": true
+      }
+    }
+  ],
+  "increment_substeps": 0,
+  "startup": "legacy",
+  "startup_sha256": "7f2fb0672116f194c9d11a76a951782319b4830e48ccfdbc705f38ee12265b41",
+  "factor_integrator_sha256": "fc988d65ce74ec8a24edf131f7953b25793251a99a205434cdcc72856253fcbd",
+  "note": "Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.",
+  "paired_sketch": {
+    "width": 136,
+    "seed": 152261008,
+    "sha256": "95f8a894d0dfa0b8624342e86afc49e431f909bb4b83ed4b92bbe01e6352cfb4"
+  },
+  "status": "complete"
+}

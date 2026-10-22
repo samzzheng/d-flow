@@ -103,6 +103,13 @@ def main() -> None:
         help="Matched Rademacher control or initialization that explicitly retains the first supplied seed")
     parser.add_argument("--residual-sketch-steps", type=int,
         help="Use the existing exact Euler-prefix sketch initialization at fixed requested rank")
+    parser.add_argument("--initialization-oversampling", type=int)
+    parser.add_argument("--paired-sketch-width", type=int,
+        help="Supply nested normalized Gaussian sketch columns for fresh-basis controls")
+    parser.add_argument("--source-gradient-step", type=float, default=0.,
+        help="Diagnostic displacement along the negative normalized saved gradient")
+    parser.add_argument("--save-gradients", action="store_true",
+        help="Save exact/approximate actions and the source alongside each dynamic row")
     parser.add_argument("--track-gradient-capture", action="store_true",
         help="Record exact source-gradient energy retained by each intermediate right basis")
     parser.add_argument("--track-jacobian-defect", action="store_true",
@@ -121,6 +128,10 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
+    if args.initialization_oversampling is not None and args.initialization_oversampling < 0:
+        parser.error("Initialization oversampling must be nonnegative")
+    if args.source_gradient_step < 0 or (args.source_gradient_step and args.source is None):
+        parser.error("Source perturbations require a saved source and nonnegative displacement")
     if args.residual_sketch_steps is not None and (
             args.startup != "legacy" or args.adaptive_min is not None or args.factor_arithmetic == "canonical"):
         parser.error("Prefix sketches require the existing initializer and a fixed-rank arithmetic path")
@@ -170,6 +181,11 @@ def main() -> None:
     if saved is not None:
         assert saved["protocol"]["checkpoint_sha256"] == protocol["checkpoint_sha256"]
         assert saved["protocol"]["operator"] == protocol["operator"]
+    if args.paired_sketch_width is not None and (
+            args.paired_sketch_width < max(args.ranks)+(args.initialization_oversampling
+                if args.initialization_oversampling is not None else settings["dlr"].get("initialization_oversampling", 8))
+            or (saved is not None and saved.get("previous_v") is not None)):
+        parser.error("Paired sketches must cover every requested width and require a fresh-basis source")
     model, _ = load_flow_model(resolution, 0, 500, str(device), folder)
     info = protocol["operator"]
     operator = (CT(resolution, protocol["job"]["level"], device) if protocol["job"]["problem"] == "ct"
@@ -189,6 +205,13 @@ def main() -> None:
         if isinstance(operator, CT):
             # Preserve the recorded geometry; only promote its existing values.
             operator.grids = tuple(grid.double() for grid in operator.grids)
+    original_source_hash = hashlib.sha256(source.cpu().numpy().tobytes()).hexdigest()
+    if args.source_gradient_step:
+        direction = saved["optimizer"]["g"].to(source).reshape_as(source)
+        norm = direction.norm()
+        if not torch.isfinite(norm) or norm == 0:
+            raise FloatingPointError("The saved gradient cannot supply a diagnostic direction")
+        source = source-args.source_gradient_step*direction/norm
     variable = source.detach().requires_grad_(True)
     image = euler_flow(model, variable, settings["flow_steps"])
     loss = .5 * (operator(image) - inputs["observed"]).abs().square().sum(dtype=torch.float64)
@@ -202,6 +225,7 @@ def main() -> None:
     if error > 1e-3:
         raise RuntimeError(f"Full-map adjoint fails exact-gradient consistency: {error}")
     report: dict[str, Any] = dict(inputs=str(args.inputs), source=str(args.source), dtype=str(source.dtype),
+        original_source_sha256=original_source_hash, source_gradient_step=args.source_gradient_step,
         source_sha256=hashlib.sha256(source.cpu().numpy().tobytes()).hexdigest(),
         checkpoint_sha256=protocol["checkpoint_sha256"], objective=float(loss.detach()),
         image_error=float((image.detach()-inputs["truth"]).norm()/inputs["truth"].norm()),
@@ -296,9 +320,19 @@ def main() -> None:
     products = GraphedAProducts(model, source, share_linearization=True,
         full_step_graphs=not (args.stable_sl or args.stable_ksl) and args.factor_arithmetic == "specialized",
         max_jvp_columns=20, max_vjp_columns=16, max_step_jvp_columns=6, max_step_vjp_columns=4)
+    paired_sketch = None
+    if args.paired_sketch_width is not None:
+        paired_sketch = torch.randn(source.numel(), args.paired_sketch_width,
+            generator=torch.Generator(device=device).manual_seed(protocol["dlr_seed"]+100000000),
+            device=device, dtype=source.dtype)
+        paired_sketch *= source.numel()**.5/paired_sketch.norm(dim=0, keepdim=True)
+        report["paired_sketch"] = dict(width=args.paired_sketch_width, seed=protocol["dlr_seed"]+100000000,
+            sha256=hashlib.sha256(paired_sketch.cpu().numpy().tobytes()).hexdigest())
     for rank in args.ranks:
         for warm in (False, True) if saved is not None and saved.get("previous_v") is not None else (False,):
             options = {**settings["dlr"], "rank": rank}
+            if args.initialization_oversampling is not None:
+                options["initialization_oversampling"] = args.initialization_oversampling
             if args.residual_sketch_steps is not None:
                 options.update(residual_sketch_steps=args.residual_sketch_steps, adaptive_rank=False)
             if args.startup != "legacy":
@@ -312,6 +346,8 @@ def main() -> None:
             if args.adaptive_min is not None:
                 options.update(adaptive_rank=True, rank_min=args.adaptive_min, rank_max=rank, rank_tol=1e-3)
             seed_basis = saved["previous_v"] if warm else None
+            if paired_sketch is not None:
+                seed_basis = paired_sketch
             if args.terminal_seed:
                 seed_basis = (terminal.reshape(-1, 1) if seed_basis is None else
                               torch.cat([terminal.reshape(-1, 1), seed_basis], dim=1))
@@ -357,10 +393,14 @@ def main() -> None:
             row = dict(method="subdivided_increment" if args.increment_substeps else "stable_ksl" if args.stable_ksl else "pure_ksl" if args.pure_ksl else "stable_sl" if args.stable_sl else "refined_increment" if args.refined_increment else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
                        factor_arithmetic=args.factor_arithmetic, startup=args.startup,
                        residual_sketch_steps=options.get("residual_sketch_steps"),
+                       initialization_oversampling=options.get("initialization_oversampling"),
                        adaptive_rank_min=args.adaptive_min, terminal_rank=factors[1].shape[0],
                        terminal_seed=args.terminal_seed, source_gradient_seed=args.source_gradient_seed,
                        **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
+            if args.save_gradients:
+                run.save_tensor(args.out.with_name(args.out.stem+f"_rank{rank}_{'warm' if warm else 'fresh'}.pt"),
+                    dict(source=source, exact=exact, approximate=estimate))
             if timings:
                 row["warm_factor_and_gradient_seconds"] = timings
             if args.track_gradient_capture:

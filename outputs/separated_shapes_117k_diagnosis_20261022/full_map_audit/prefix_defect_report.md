@@ -60,6 +60,6 @@ The step3 initializer substantially improves the gradient here. Length4 is sligh
 
 ![Prefix defect and initialization control](ct1_prefix_defect.png)
 
-Paired FP64 reconstruction continuations now compare prefix1 and prefix3 from the same failed source. Both use fixed rank128, the original optimizer and right-basis-reuse setting, cold optimizer histories, and up to50 additional attempts charged against the original1000-attempt total. The two arms run sequentially. Their results are pending; gradient improvement alone is not reconstruction evidence.
+Paired FP64 reconstruction continuations now compare prefix1 and prefix3 from the same failed source. Both use fixed rank128, the original optimizer and right-basis-reuse setting, cold optimizer histories, and up to50 additional attempts charged against the original1000-attempt total. The two arms run sequentially. Both segments are complete. Prefix1 ends at27.5825% image error and13.1456% residual; prefix3 ends at27.3367% and12.8943%. This is a modest improvement, not an accuracy rescue. Both used50 additional attempts (283 total including earlier source probes). [Saved-array verification](../prefix_recovery_200ct1/segment_050_verification.json) · [Convergence](../prefix_recovery_200ct1/segment_050_convergence.png).
 
 [Prefix diagnostic](ct1_fp64_prefix_defect.json) · [Dense algebra check](prefix_defect_algebra_check.json) · [Prefix1](ct1_fp64_prefix1.json) · [Prefix2](ct1_fp64_prefix2.json) · [Prefix3](ct1_fp64_prefix3.json) · [Prefix4](ct1_fp64_prefix4.json)

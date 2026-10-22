@@ -1,0 +1,36 @@
+{
+  "checks": "Both complete segments: saved-array image/measurement metrics, objective monotonicity, fixed-rank128 settings, matching promoted sources/data/models/seeds/optimizers, same50 additional attempts and original budget verified. Actual settings are in protocol.precision_recovery.settings.",
+  "parent_sha256": "757a491488bd857eaeaf4b7520c30fbf70dd38564b447ede59ebf9b8cec841ef",
+  "prefix1": {
+    "status": "step_limit",
+    "final": {
+      "step": 171,
+      "phi": 0.021876612977568124,
+      "source_step_norm": 2.188473403421163e-06,
+      "line_search_trials": 1,
+      "image_relative_l2": 0.27582511456680436,
+      "measurement_relative_l2_clean": 0.13145592635807946,
+      "measurement_relative_l2_noisy": 0.13145592635807946,
+      "residual_over_noise": null
+    },
+    "total_attempts": 283
+  },
+  "prefix3": {
+    "status": "step_limit",
+    "final": {
+      "step": 171,
+      "phi": 0.021048120101966758,
+      "source_step_norm": 0.020904060556989165,
+      "line_search_trials": 5,
+      "image_relative_l2": 0.2733665826010954,
+      "measurement_relative_l2_clean": 0.1289427073648722,
+      "measurement_relative_l2_noisy": 0.1289427073648722,
+      "residual_over_noise": null
+    },
+    "total_attempts": 283,
+    "history_rows": 51,
+    "history_sha256": "ce1406380d638067a86eddd994293e699de2283441cdcd6729b7e2973c56ce7a",
+    "source_sha256": "8a32d3dfdfc46278cb7b1649bcf39710382546c2d77e3bbaecce68f21f5fa945",
+    "curvature_pairs": 30
+  }
+}
