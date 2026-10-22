@@ -13,6 +13,7 @@ from dlr_dflow.implementation import enriched, tangent_unet
 from experiments.ct_mri_sweep import run
 from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.separated_shapes_117k.bounded_products import BoundedGraphedProducts
+from experiments.separated_shapes_117k.spectral_weighting import SpectralEvaluator
 
 
 def main() -> None:
@@ -26,6 +27,8 @@ def main() -> None:
     parser.add_argument("--cudnn-deterministic", action="store_true")
     parser.add_argument("--repeat-initial-gradient", type=int, default=0)
     parser.add_argument("--diagnostics-only", action="store_true")
+    parser.add_argument("--terminal-weighting", choices=("unchanged", "median_cap", "norm_matched_cap"),
+                        default="unchanged")
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
@@ -68,6 +71,7 @@ def main() -> None:
             break
         configuration = deepcopy(settings)
         configuration["dlr"].update(rank=rank, adaptive_rank=False)
+        configuration["terminal_weighting"] = args.terminal_weighting
         configuration["execution"].update(memory_fraction=args.memory_fraction,
             cudnn_deterministic=args.cudnn_deterministic, dlr_full_step_graphs=False,
             dlr_jvp_columns=20, dlr_vjp_columns=16, dlr_fused_norm="native", dlr_fused_primal="native")
@@ -78,12 +82,13 @@ def main() -> None:
             source_sha256=hashlib.sha256(initial.cpu().numpy().tobytes()).hexdigest(),
             sketch_sha256=hashlib.sha256(sketch.cpu().numpy().tobytes()).hexdigest(),
             script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            weighting_script_sha256=hashlib.sha256(Path(__file__).with_name("spectral_weighting.py").read_bytes()).hexdigest(),
             note="Paired original sources and nested random initial sketches; sequential ranks on one sample. Subsequent previous-V reuse and LBFGS/geometric Armijo unchanged; max1000 attempts with original safeguards. FP32/native products, TF32 off.")
         path = args.out/args.case/f"rank{rank}"
         path.mkdir(parents=True, exist_ok=True)
         run.write_json(path/"config.json", experiment)
         if args.repeat_initial_gradient:
-            diagnostic = run.Evaluator(model, operator, inputs["observed"], configuration, protocol["dlr_seed"], products)
+            diagnostic = SpectralEvaluator(model, operator, inputs["observed"], configuration, protocol["dlr_seed"], products)
             repeats = []
             for repeat in range(args.repeat_initial_gradient):
                 diagnostic.previous_v = sketch[:, :rank+8]
@@ -104,10 +109,12 @@ def main() -> None:
         if args.diagnostics_only:
             del products
             continue
-        evaluator = run.Evaluator(model, operator, inputs["observed"], configuration, protocol["dlr_seed"], products)
+        evaluator = SpectralEvaluator(model, operator, inputs["observed"], configuration, protocol["dlr_seed"], products)
         evaluator.previous_v = sketch[:, :rank+8]
         result = run.solve(evaluator, "DLR D-Flow", initial, inputs["truth"], inputs["observed"],
             path/"dlr_d_flow.pt", {**protocol, "experiment": experiment}, interrupted)
+        run.write_json(path/"terminal_weighting.json", dict(variant=args.terminal_weighting,
+            rows=evaluator.weighting_history))
         print(rank, result["status"], result["history"][-1], flush=True)
         del evaluator, products, result
         torch.cuda.empty_cache()

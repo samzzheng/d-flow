@@ -1,0 +1,12 @@
+{
+  "pid": 1708851,
+  "command": [
+    ".venv/bin/python",
+    "-u",
+    "-m",
+    "experiments.separated_shapes_117k.spectral_study",
+    "--out",
+    "outputs/separated_shapes_117k_diagnosis_20261022/spectral_mri2"
+  ],
+  "log": "/tmp/spectral_mri2.log"
+}

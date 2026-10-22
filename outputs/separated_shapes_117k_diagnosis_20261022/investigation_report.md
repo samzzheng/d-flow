@@ -154,3 +154,7 @@ Rank5096 completed its first gradient, then reached its original allocation cap 
 ## Deterministic MRI trajectories reproduce but still fail
 
 The full MRI250 sample2 control now completes: default cuDNN gives99.6882% image error after96 attempts; both deterministic repeats give99.6894% after145. All146 non-timing history records and final source tensors match exactly between the deterministic repeats. Frozen-source DLR gradients also reproduce bitwise, whereas default execution varies up to1.78e-5 relatively. This isolates a repeatability correction without demonstrating an accuracy correction. Production defaults are unchanged, and CT-adjoint reproducibility is not established. [Paired control report](deterministic_mri2/report.md).
+
+## Terminal spectral reweighting control is running
+
+An isolated rank32 MRI250 sample2 experiment compares unchanged terminal weighting, a lower-median singular-value cap, and the cap rescaled to the original gradient norm. All use the original cached source and sketch, deterministic execution and unchanged factor evolution/optimizer/budget. The fresh unchanged run exactly reproduces the earlier145-attempt failure. The initial cap rotates the gradient to cosine0.4367 and reduces its norm to0.00943 times the original, motivating the norm-matched control. Modified-arm reconstructions are incomplete; no accuracy correction is established. [Protocol and current evidence](spectral_mri2/report.md).
