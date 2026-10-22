@@ -1,6 +1,13 @@
 .venv/
 data/*
 __pycache__/
+# Raw tensors/checkpoints remain local; commit summaries, code and figures.
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.npy
+*.npz
 # Keep output summaries, reports, and aggregate figures; leave raw artifacts local.
 /outputs/**/*.pt
 /outputs/**/sample_[0-9]*/
