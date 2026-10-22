@@ -1,0 +1,21 @@
+{
+  "native_endpoint_objective_match": true,
+  "paired_direction_slope": true,
+  "original_accepted": {
+    "displacement": 8.65602847210941e-08,
+    "change": -2.9852009753028597e-11,
+    "accepted": true
+  },
+  "cap_started_accepted": {
+    "displacement": 0.125,
+    "change": -1.989319169391421e-05,
+    "accepted": true
+  },
+  "no_rank_or_gradient_change": true,
+  "later_state_observation": {
+    "step": 270,
+    "source_sha256": "f0be83763fec98ccaeea5a2510c86b3e3007a3c2a2c067184b9c24eb37b61225",
+    "accumulated_s_dot_y": 4.460863298707809e-17,
+    "curvature_history_unchanged": true
+  }
+}

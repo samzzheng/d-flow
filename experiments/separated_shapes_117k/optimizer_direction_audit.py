@@ -23,9 +23,13 @@ def main() -> None:
     parser.add_argument("--device", choices=("cpu", "cuda:1"), default="cpu")
     parser.add_argument("--minimum-direction-cosine", type=float, default=0.)
     parser.add_argument("--line-trials", action="store_true")
+    parser.add_argument("--trial-starting-displacement", type=float, default=0.,
+        help="Diagnostic line-search starting length; zero uses the saved optimizer proposal")
     args = parser.parse_args()
     if not 0 <= args.minimum_direction_cosine < 1:
         parser.error("Minimum direction cosine must lie in [0,1)")
+    if args.trial_starting_displacement < 0:
+        parser.error("Trial starting displacement must be nonnegative")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device(args.device)
@@ -97,7 +101,7 @@ def main() -> None:
             finite_differences.append(dict(displacement=displacement, slope=slope,
                 relative_slope_error=abs(slope-exact_slope)/max(abs(exact_slope), 1e-30)))
         if args.line_trials:
-            displacement = min(float(norm)*settings["optimizer"]["lr"],
+            displacement = min(args.trial_starting_displacement or float(norm)*settings["optimizer"]["lr"],
                 settings["optimizer"]["step_cap"]*source.numel()**.5)
             for _ in range(settings["optimizer"]["max_ls"]):
                 trial = source+displacement*direction.reshape_as(source)
@@ -117,10 +121,12 @@ def main() -> None:
         device=args.device, endpoint_relative_difference=endpoint_error, objective_absolute_difference=objective_error,
         objective=float(objective.detach()), saved_objective=saved["history"][-1]["phi"],
         gradient_relative_error=float((approximate-exact).norm()/exact.norm()),
+        exact_gradient_norm=float(exact.norm()), approximate_gradient_norm=float(approximate.norm()),
         gradient_cosine=float(approximate.dot(exact)/(approximate.norm()*exact.norm())),
         unit_direction_exact_slope=exact_slope, unit_direction_predicted_slope=predicted_slope,
         direction_norm_before_normalization=float(norm), fallback=bool(used_fallback),
         minimum_direction_cosine=args.minimum_direction_cosine, line_trials=line_trials,
+        trial_starting_displacement=args.trial_starting_displacement,
         direction_error_slope_fraction=float((exact-approximate).dot(direction)/abs(predicted_slope)),
         exact_direction_cosine=float(-exact.dot(direction)/exact.norm()),
         finite_differences=finite_differences,

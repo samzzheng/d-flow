@@ -49,6 +49,10 @@ The paired oversampling0/8 diagnostic found no stability advantage from removing
 
 At a saved CT prefix3 state, gradient error is only1.34% but L-BFGS predicts51.5 times the true first-order decrease along its proposed direction. Native GPU derivatives and finite differences confirm this. An experimental minimum descent cosine0.05 improves the same-state accepted objective decrease1.18e-9 to5.21e-6 with the same10 trials, without extra model derivatives. This candidate has geometric regression tests; a preserved-state paired reconstruction is queued after the current same-sample controls. It changes only the direction cosine to0.05 and keeps the original budget. No completed reconstruction result yet. [Direction audit and safeguard](full_map_audit/lbfgs_direction_report.md).
 
+## Accepted tiny-step plateau
+
+Later in the same CT continuation, the direction aligns well with the approximate gradient, but its norm is only8.66e-8. Native GPU checks confirm actual descent; starting geometric Armijo at the existing cap instead accepts0.125, increasing the one-step objective decrease2.99e-11 to1.99e-5 at five versus one trial evaluations. Approximation error has meanwhile risen to91.24%. Thus gradient accuracy, direction angle and step length are separate issues. The failed-search safeguard does not address accepted tiny steps. [Plateau audit](full_map_audit/ct1_plateau_report.md).
+
 ## Current bounded recovery tests
 
 - The three-object MRI4 retained-seed FP64 continuation completed the original1000-attempt budget: image error94.224% to73.720%. This is substantial numerical progress but remains an inaccurate reconstruction.
