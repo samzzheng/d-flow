@@ -68,6 +68,8 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--ranks", nargs="+", type=int, default=[32, 128])
     parser.add_argument("--power-iterations", type=int, default=3)
+    parser.add_argument("--basis-refreshes", type=int, default=0,
+        help="Repeatedly reuse the returned right basis at an unchanged source")
     integrator = parser.add_mutually_exclusive_group()
     integrator.add_argument("--stable-sl", action="store_true")
     integrator.add_argument("--increment-ksl", action="store_true")
@@ -83,6 +85,8 @@ def main() -> None:
     args = parser.parse_args()
     if args.factor_arithmetic != "specialized" and (args.stable_sl or args.increment_ksl):
         parser.error("Factor arithmetic controls require the original integrator")
+    if args.basis_refreshes < 0 or (args.basis_refreshes and (args.stable_sl or args.increment_ksl or args.terminal_seed)):
+        parser.error("Basis refresh diagnostics require a nonnegative count and the original integrator")
     torch.set_num_threads(2)
     torch.set_num_interop_threads(1)
     device = torch.device("cuda:1")
@@ -188,6 +192,8 @@ def main() -> None:
                     **options, seed=protocol["dlr_seed"], products=products,
                     seed_basis=seed_basis)
             estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
+            if not warm:
+                fresh_estimate = estimate.clone()
             row = dict(method="stable_sl" if args.stable_sl else "increment_ksl" if args.increment_ksl else "dynamic", rank=rank, warm=warm,
                        factor_arithmetic=args.factor_arithmetic,
                        terminal_seed=args.terminal_seed, **scores(estimate, exact, factors[2], terminal),
@@ -197,6 +203,30 @@ def main() -> None:
                 row["line_trials"] = line_trials(estimate)
             run.write_json(args.out, report)
             print(json.dumps({key: value for key, value in row.items() if key != "line_trials"}), flush=True)
+        for refresh in range(1, args.basis_refreshes + 1):
+            previous = estimate
+            endpoint, factors, alpha = sensitivity_factors(model, source, settings["flow_steps"],
+                **options, seed=protocol["dlr_seed"], products=products, seed_basis=factors[2])
+            estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
+            row = dict(method="fixed_source_basis_refresh", rank=rank, refresh=refresh,
+                factor_arithmetic=args.factor_arithmetic, **scores(estimate, exact, factors[2], terminal),
+                change_over_exact_norm=float((estimate-previous).norm()/exact.norm()),
+                change_over_previous_norm=float((estimate-previous).norm()/previous.norm()),
+                endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
+            report["rows"].append(row)
+            run.write_json(args.out, report)
+            print(json.dumps(row), flush=True)
+        if args.basis_refreshes:
+            endpoint, factors, alpha = sensitivity_factors(model, source, settings["flow_steps"],
+                **options, seed=protocol["dlr_seed"], products=products, seed_basis=None)
+            estimate = approx_source_gradient(factors, terminal, alpha).reshape(-1, 1)
+            row = dict(method="fixed_source_fresh_repeat", rank=rank,
+                change_over_exact_norm=float((estimate-fresh_estimate).norm()/exact.norm()),
+                change_over_previous_norm=float((estimate-fresh_estimate).norm()/fresh_estimate.norm()),
+                endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
+            report["rows"].append(row)
+            run.write_json(args.out, report)
+            print(json.dumps(row), flush=True)
     del products, factors, endpoint, estimate
     torch.cuda.empty_cache()
     if args.skip_reference:

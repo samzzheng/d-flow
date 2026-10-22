@@ -35,7 +35,35 @@ The terminal-gradient seed replaces one existing random sketch column. It retain
 
 The terminal-gradient sketch change was compared with an identical cold-optimizer restart at the saved failed sources. Both arms reuse the saved V basis and receive the same additional optimizer budget. The unchanged MRI1 restart makes no progress (12.306%); the seeded restart finishes at11.018%. CT0 and MRI0 make no progress with either restart, remaining37.118% and9.336%. This is not sufficient evidence to promote the sketch change.
 
-The separate rank-adaptive pilot remains active. Its first MRI case fails at every tested rank choice; its completed CT20 adaptive result is3.742%, versus fixed32's3.946% and fixed128's3.999%. A single close CT comparison does not establish an adaptive advantage, especially given GPU floating-point sensitivity. On MRI4, however, adaptive rank completes1000 attempts at**1.743%**, while fixed32 ended at94.224%; the fixed128 control remains unfinished. Additional adaptive runs on CT0/MRI1/MRI0 Gaussian starts finish at101.799/100.024/99.767%, so adaptive rank does not universally prevent collapse.
+The four-case rank-adaptive pilot is complete. MRI2 fails at every tested rank choice; CT20 adaptive gives3.742%, versus fixed32's3.946% and fixed128's3.999%. MRI4 adaptive finishes at1.743%, versus fixed32's94.224% and fixed128's31.235%; however, fixed128 using the canonical adaptive-code path also reaches1.597%, so changing rank is not required for that rescue. CT7 adaptive worsens to97.082%, versus46.905% for fixed32 and34.280% for fixed128. Additional adaptive runs on CT0/MRI1/MRI0 Gaussian starts finish at101.799/100.024/99.767%. Adaptation is not a universal correction, and close differences need repeated trials.
+
+## Basis reuse and L-BFGS consistency
+
+At the failed rank128 MRI4 endpoint, hold the source, model, measurements, and flow grid fixed. Repeatedly returning the terminal right basis to the next initialization changes the estimated gradient by **8.12–19.00% of its previous norm** per refresh. Repeating the fixed-seed unseeded sketch changes it by only **0.00253%**. Every endpoint is identical to the native Euler endpoint. Evidence: `full_map_audit/mri4_fixed_source_basis_drift_verified.json`.
+
+Write the approximate gradient as $\hat g(z;V_{\mathrm{seed}})$, where the second argument is the initialization basis, not the terminal factor. A curvature difference with changing seeds contains two effects:
+
+$$
+\begin{aligned}
+\hat g(z_{k+1};V_k)-\hat g(z_k;V_{k-1})
+={}&[\hat g(z_{k+1};V_k)-\hat g(z_k;V_k)]\\
+ &+[\hat g(z_k;V_k)-\hat g(z_k;V_{k-1})].
+\end{aligned}
+$$
+
+The second term changes the gradient without moving the source. Thus L-BFGS can interpret approximation drift as objective curvature. A fixed-seed sketch removes this particular state dependence in exact arithmetic; it does not make the approximate field an exact or necessarily conservative gradient.
+
+Disabling reuse in the paired rank128 MRI4 reconstruction finishes at **2.102%** after1000 attempts, versus31.235% after370 attempts with reuse (both had a1000-attempt cap and the same stopping safeguards). This supports the mechanism as a contributor. It does not prove a universal fix: fresh-sketch MRI1 and CT0 still finish at100.024% and91.052%. Rank32 and successful-case controls are running before any default change.
+
+## Coarse generator and source-selection controls
+
+The saved117k unconditional evaluations show substantial five-step sampling collapse. At resolutions64/96/128/160/200/250, the numbers with no detected foreground are4/14/4/39/65/71 out of128; at100 steps they are0/0/0/1/5/5. Detection uses8-connected components above0.5 with at least4 pixels; this is not geometric certification. See `sampling_quality_summary.json`.
+
+On32 paired250-square sources, uniform5 produces24 empty samples, uniform10/20 each2, and the proposed nonuniform5 grids31/32. Uniform5 reproduces the saved images to5.37e-6 relative error. Nevertheless, a ten-step Gaussian-start MRI1 test still fails for D-Flow and DLR while P-Flow reaches1.780%. Sampling refinement alone is not an inverse correction.
+
+With the same cached measurement-informed MRI1 source, DLR gives12.306% at5 steps/rank32,2.405% at5 steps/rank128, and **2.354% at20 steps/rank32**. The latter two use648 JVP columns and648 VJP columns per factor refresh under the zero-enrichment profile, including eight startup oversampling columns; wall time is not established by this count. Changing the step count also changes the discrete generator, so this does not isolate factor integration error. D-Flow/P-Flow at20 steps finish0.943/8.547% on that source. The corresponding CT control is unfinished.
+
+A separate restart test gives all three methods identical cached pools of four sources, probes each briefly, and selects by measurement objective only. All probes count toward the shared1000-attempt budget. Its current results and budget/source checks are in [the restart report](multistart_report/report.md). Partial reconstruction gains are not final results.
 
 ## CT precision and optimizer conditioning
 
@@ -48,7 +76,7 @@ An isolated optimizer control retries the older half of the L-BFGS history after
 ## Reproducibility
 
 - Fixed-source code: `experiments/separated_shapes_117k/gradient_audit.py`.
-- Independent product, frozen-S/L, and optimizer recovery checks: `tests/test_discrete_flow_products.py` (three tests pass).
+- Independent product, frozen-S/L, and optimizer recovery checks: `tests/test_discrete_flow_products.py` (four tests pass, including frozen-increment KSL and the full-rank Euler identity).
 - Raw evidence: `full_map_audit/` in this directory.
 - Paired restart controls: `terminal_seed_restart/`, `terminal_seed_restart_ct0/`, `terminal_seed_restart_mri0/`.
 - Adaptive pilot: [rank paths and current saved metrics](adaptive_pilot/report.md).

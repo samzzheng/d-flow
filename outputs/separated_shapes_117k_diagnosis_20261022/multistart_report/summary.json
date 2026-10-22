@@ -1,0 +1,71 @@
+{
+  "rows": [
+    {
+      "case": "r250_shapes_mri4/sample_002",
+      "method": "D-Flow",
+      "selected": "measurement_half",
+      "status": "step_limit",
+      "complete": true,
+      "total_attempts": 1000,
+      "image_error": 0.017315950244665146,
+      "residual": 0.0022453274577856064,
+      "source_hash": "d9e273d9d1a3aead1952d50f8f48b53537ab03860c65e46fce2a7e7bddd05bad"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_002",
+      "method": "P-Flow",
+      "selected": "original",
+      "status": "stalled",
+      "complete": true,
+      "total_attempts": 269,
+      "image_error": 0.03597387671470642,
+      "residual": 0.018624335527420044,
+      "source_hash": "0cc5f541a169ed2ffb864a9b438f0d350c4f479c316c332576477f16a5ae776d"
+    },
+    {
+      "case": "r250_shapes_mri4/sample_002",
+      "method": "DLR D-Flow",
+      "selected": "measurement_half",
+      "status": "running",
+      "complete": false,
+      "total_attempts": 870,
+      "image_error": 0.03153315559029579,
+      "residual": 0.015926292166113853,
+      "source_hash": "d9e273d9d1a3aead1952d50f8f48b53537ab03860c65e46fce2a7e7bddd05bad"
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "method": "D-Flow",
+      "selected": "measurement_half",
+      "status": "step_limit",
+      "complete": true,
+      "total_attempts": 1000,
+      "image_error": 0.036646414548158646,
+      "residual": 0.0003443015448283404,
+      "source_hash": "412f4dd9577a6f2c94a80c150eefed717d5c13fc4a5e0cc2041aca852c5174d3"
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "method": "P-Flow",
+      "selected": "independent",
+      "status": "step_limit",
+      "complete": true,
+      "total_attempts": 1000,
+      "image_error": 0.08869230002164841,
+      "residual": 0.019066423177719116,
+      "source_hash": "6417784d7c7fae087a99abb8c141d8e490078f4fbe326eff037f92dd941629b3"
+    },
+    {
+      "case": "r250_shapes_ct10/sample_007",
+      "method": "DLR D-Flow",
+      "selected": "measurement_half",
+      "status": "running",
+      "complete": false,
+      "total_attempts": 500,
+      "image_error": 0.14413148164749146,
+      "residual": 0.04387813061475754,
+      "source_hash": "412f4dd9577a6f2c94a80c150eefed717d5c13fc4a5e0cc2041aca852c5174d3"
+    }
+  ],
+  "checks_passed": true
+}
