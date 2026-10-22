@@ -19,6 +19,7 @@ from experiments.ct_mri_sweep.operators import CT, MRI
 from experiments.ct_mri_sweep.queue import source_hashes
 from sampler.ode_samplers import euler_flow
 from scripts.reconstruction_figures import RESIDUAL_VMAX, plot_reconstruction_comparison
+from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 
 
 class RankRecordingEvaluator(run.Evaluator):
@@ -77,10 +78,13 @@ def main() -> None:
         help="Previously recorded script hash after a compatibility review; all other protocol checks remain enabled")
     parser.add_argument("--restart-source", type=Path,
         help="One-case cold-optimizer continuation from a saved source, with its previous right basis")
+    parser.add_argument("--history-fallback", action="store_true")
     parser.add_argument("--rank-min", type=int, default=4)
     parser.add_argument("--rank-max", type=int, default=128)
     parser.add_argument("--rank-tol", type=float, default=1e-3)
     args = parser.parse_args()
+    if args.history_fallback:
+        run.SweepLBFGS = HistoryFallbackLBFGS
     if args.restart_source and (len(args.cases) != 1 or set(args.variants) - {"baseline", "terminal_seed"}):
         parser.error("Restart controls require one case and baseline/terminal_seed variants")
     torch.set_num_threads(2)
@@ -103,6 +107,7 @@ def main() -> None:
                     script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     if args.restart_source:
         evidence["restart_source"] = str(args.restart_source)
+    evidence["history_fallback"] = args.history_fallback
     run.write_json(args.out / f"{args.action}_config.json", evidence)
     if args.resume_script_sha256:
         run.write_json(args.out / "resume_script_review.json", dict(
@@ -211,6 +216,8 @@ def main() -> None:
                 paired = {**protocol, "variant": variant, "backend": args.backend, "settings": configuration,
                     "initial_source_sha256": hashlib.sha256(initial.cpu().numpy().tobytes()).hexdigest(),
                     "diagnostic_script_sha256": args.resume_script_sha256 or evidence["script_sha256"]}
+                if args.history_fallback:
+                    paired["history_fallback"] = True
                 if restart is not None:
                     paired["restart_source"] = str(args.restart_source)
                     paired["restart_source_sha256"] = hashlib.sha256(args.restart_source.read_bytes()).hexdigest()

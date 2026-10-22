@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -70,6 +71,9 @@ def main() -> None:
     parser.add_argument("--stable-sl", action="store_true")
     parser.add_argument("--skip-reference", action="store_true")
     parser.add_argument("--terminal-seed", action="store_true")
+    parser.add_argument("--line-search-audit", action="store_true")
+    parser.add_argument("--exact-only", action="store_true")
+    parser.add_argument("--double", action="store_true")
     parser.add_argument("--manifest", type=Path,
         default=Path("outputs/separated_shapes_117k_noiseless_20261021/production/manifest.json"))
     args = parser.parse_args()
@@ -98,6 +102,19 @@ def main() -> None:
                 else MRI(resolution, 4, info["mask_seed"], device, info["pattern"]))
     if isinstance(operator, MRI):
         assert torch.equal(inputs["mask"], operator.mask)
+    if args.double:
+        if not args.exact_only:
+            parser.error("The double-precision control is restricted to exact-gradient line probes")
+        model = model.double()
+        # The training embedding intentionally computes FP32 sin/cos; preserve
+        # those features and promote them for the double-precision linear layer.
+        model.time_proj.register_forward_pre_hook(lambda module, arguments: (arguments[0].double(),))
+        source = source.double()
+        inputs["truth"] = inputs["truth"].double()
+        inputs["observed"] = inputs["observed"].to(torch.complex128 if inputs["observed"].is_complex() else torch.float64)
+        if isinstance(operator, CT):
+            # Preserve the recorded geometry; only promote its existing values.
+            operator.grids = tuple(grid.double() for grid in operator.grids)
     variable = source.detach().requires_grad_(True)
     image = euler_flow(model, variable, settings["flow_steps"])
     loss = .5 * (operator(image) - inputs["observed"]).abs().square().sum(dtype=torch.float64)
@@ -110,12 +127,38 @@ def main() -> None:
     error = float((independent - exact).norm() / exact.norm())
     if error > 1e-3:
         raise RuntimeError(f"Full-map adjoint fails exact-gradient consistency: {error}")
-    report: dict[str, Any] = dict(inputs=str(args.inputs), source=str(args.source),
+    report: dict[str, Any] = dict(inputs=str(args.inputs), source=str(args.source), dtype=str(source.dtype),
         source_sha256=hashlib.sha256(source.cpu().numpy().tobytes()).hexdigest(),
         checkpoint_sha256=protocol["checkpoint_sha256"], objective=float(loss.detach()),
         image_error=float((image.detach()-inputs["truth"]).norm()/inputs["truth"].norm()),
         exact_gradient_norm=float(exact.norm()), adjoint_relative_error=error, rows=[],
         note="Fixed-source diagnostic. Terminal randomized references are not certified truncated SVDs.")
+
+    @torch.no_grad()
+    def line_trials(gradient: torch.Tensor) -> list[dict[str, Any]]:
+        direction = -gradient.reshape_as(source) / gradient.norm()
+        cap = settings["optimizer"]["step_cap"] * math.sqrt(source.numel())
+        records = []
+        for index in range(30):
+            displacement = cap * 2.0 ** -index
+            candidate = source + displacement * direction
+            if torch.equal(candidate, source):
+                break
+            candidate_image = euler_flow(model, candidate, settings["flow_steps"])
+            candidate_loss = .5 * (operator(candidate_image)-inputs["observed"]).abs().square().sum(dtype=torch.float64)
+            change = float(candidate_loss) - report["objective"]
+            records.append(dict(displacement=displacement, change=change,
+                linear_prediction=displacement*float((exact.reshape_as(source)*direction).sum()),
+                armijo=change < 0 and change <= -settings["optimizer"]["c1"]*displacement*float(gradient.norm()),
+                image_error=float((candidate_image-inputs["truth"]).norm()/inputs["truth"].norm())))
+        return records
+
+    if args.line_search_audit:
+        report["exact_gradient_trials"] = line_trials(exact)
+    if args.exact_only:
+        report["status"] = "complete"
+        run.write_json(args.out, report)
+        return
     tangent_unet.GN_STATS_MODE = "native"
     tangent_unet.GN_ACTION_BACKEND = "triton"
     tangent_unet.GN_PRIMAL_BACKEND = "full"
@@ -139,8 +182,10 @@ def main() -> None:
                        terminal_seed=args.terminal_seed, **scores(estimate, exact, factors[2], terminal),
                        endpoint_relative_error=float((endpoint-image.detach()).norm()/image.detach().norm()))
             report["rows"].append(row)
+            if args.line_search_audit:
+                row["line_trials"] = line_trials(estimate)
             run.write_json(args.out, report)
-            print(json.dumps(row), flush=True)
+            print(json.dumps({key: value for key, value in row.items() if key != "line_trials"}), flush=True)
     del products, factors, endpoint, estimate
     torch.cuda.empty_cache()
     if args.skip_reference:

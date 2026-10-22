@@ -1,6 +1,6 @@
 # DLR failure investigation: fixed-source evidence
 
-Snapshot: 2026-10-22, 01:50 local time. Reconstruction controls are still running.
+Snapshot: 2026-10-22, 02:04 local time. Adaptive and optimizer controls are still running.
 
 ## Verified findings
 
@@ -33,14 +33,22 @@ The terminal-gradient seed replaces one existing random sketch column. It retain
 
 ## Reconstruction follow-up
 
-The terminal-gradient sketch change is being compared with an identical cold-optimizer restart at the saved failed sources. Both arms reuse the saved V basis and receive the same additional optimizer budget. The unchanged MRI1 restart makes no progress (12.306%); the seeded restart is progressing but is not complete. CT0 and MRI0 controls are also running.
+The terminal-gradient sketch change was compared with an identical cold-optimizer restart at the saved failed sources. Both arms reuse the saved V basis and receive the same additional optimizer budget. The unchanged MRI1 restart makes no progress (12.306%); the seeded restart finishes at11.018%. CT0 and MRI0 make no progress with either restart, remaining37.118% and9.336%. This is not sufficient evidence to promote the sketch change.
 
-The separate rank-adaptive pilot remains active. Its first MRI case fails at every tested rank choice; its completed CT20 adaptive result is 3.742%, versus fixed32's 3.946%. A single close CT comparison does not establish an adaptive advantage, especially given GPU floating-point sensitivity.
+The separate rank-adaptive pilot remains active. Its first MRI case fails at every tested rank choice; its completed CT20 adaptive result is3.742%, versus fixed32's3.946% and fixed128's3.999%. A single close CT comparison does not establish an adaptive advantage, especially given GPU floating-point sensitivity. On MRI4, however, adaptive rank has progressed below2% while fixed32 ended at94.224%; its budget and fixed128 control are unfinished. Additional adaptive runs on CT0/MRI1/MRI0 Gaussian starts finish at101.799/100.024/99.767%, so adaptive rank does not universally prevent collapse.
+
+## CT precision and optimizer conditioning
+
+At the conditioned CT0 endpoint, reused rank32 DLR has cosine0.837 with the exact gradient. Increasing rank to512 only improves it to0.857. Both the exact and DLR negative-gradient directions fail FP32 Armijo tests over30 displacement sizes, from the cap2.5 down to about5e-9. At small displacements the intended decrease is below the forward objective's floating-point variation.
+
+A bounded FP64 control preserves the checkpoint values, recorded CT grid, and observed data while promoting their arithmetic. It finds a decrease of only1.97e-9 at source displacement1.19e-6. Thus a useful descent direction can be too numerically delicate for the FP32 search to realize at this source. The tiny decrease does **not** demonstrate a precision-only reconstruction cure; full FP64 reconstruction is not being promoted.
+
+An isolated optimizer control now retries the older half of the L-BFGS history after a failed search, before falling back to no history. This tests whether retaining some curvature information avoids a numerically ineffective plain-gradient fallback. It keeps the same gradient estimators, objective, strict Armijo acceptance, displacement cap, and total attempt limit. Every rejected search still counts; halving guarantees finite history recovery. All three methods receive the same cached conditioned CT0 source and the same optimizer change. Results are pending under `history_fallback_ct0/`.
 
 ## Reproducibility
 
 - Fixed-source code: `experiments/separated_shapes_117k/gradient_audit.py`.
-- Independent product and frozen-S/L checks: `tests/test_discrete_flow_products.py` (two tests pass).
+- Independent product, frozen-S/L, and optimizer recovery checks: `tests/test_discrete_flow_products.py` (three tests pass).
 - Raw evidence: `full_map_audit/` in this directory.
 - Paired restart controls: `terminal_seed_restart/`, `terminal_seed_restart_ct0/`, `terminal_seed_restart_mri0/`.
 - Adaptive pilot: [rank paths and current saved metrics](adaptive_pilot/report.md).

@@ -5,6 +5,7 @@ import torch
 
 from experiments.separated_shapes_117k.gradient_audit import DiscreteProducts
 from experiments.separated_shapes_117k.ksl_stability import stable_sl_step
+from experiments.separated_shapes_117k.optimizer_controls import HistoryFallbackLBFGS
 from sampler.ode_samplers import euler_flow
 
 
@@ -19,6 +20,29 @@ class NonlinearVelocity(torch.nn.Module):
 
 
 class DiscreteProductTests(unittest.TestCase):
+    def test_history_recovery_preserves_armijo_and_changes_rejected_direction(self) -> None:
+        source = torch.tensor([1., 0.], dtype=torch.float64, requires_grad=True)
+        objective = lambda value: float(.5*value[0].square() + .1*value[1].square())
+        optimizer = HistoryFallbackLBFGS(source, objective, project=False, max_ls=12)
+        optimizer.state["initialized"] = True
+        optimizer.f = objective(source.detach())
+        optimizer.g = torch.tensor([1., -2.], dtype=source.dtype)
+        optimizer.S = [torch.tensor([1., 0.], dtype=source.dtype), torch.tensor([0., 1.], dtype=source.dtype)]
+        optimizer.Y = [torch.tensor([1., 0.], dtype=source.dtype), torch.tensor([-.9, 1.], dtype=source.dtype)]
+
+        def closure() -> torch.Tensor:
+            source.grad = torch.tensor([1., -2.], dtype=source.dtype)
+            return source.new_tensor(objective(source.detach()))
+
+        before = source.detach().clone()
+        optimizer.step(closure)
+        torch.testing.assert_close(source, before)
+        self.assertEqual(optimizer.history_backtracks, 1)
+        self.assertEqual(optimizer.failed_searches, 1)
+        optimizer.step(closure)
+        self.assertLess(objective(source.detach()), objective(before))
+        self.assertEqual(optimizer.step_attempts, 2)
+
     def test_stable_sl_matches_resolved_substeps_and_euler_recompression(self) -> None:
         torch.manual_seed(19)
         dimension, rank, h, alpha = 12, 4, .2, .6
